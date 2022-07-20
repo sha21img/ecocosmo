@@ -1,6 +1,8 @@
 const colors = {
   mainThemeColor1: '#395DBF',
   mainThemeColor2: '#16BCD4',
+  mainThemeColor3: '#FF50DC',
+
   mainTextColor: 'white',
   white: 'white',
   inputPlaceholdr: '#ACACAC',

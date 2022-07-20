@@ -9,6 +9,7 @@ import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
 import Alerts from './src/screens/Alerts';
 import AlertSetting from './src/screens/AlertSetting';
+import LiveMapTracking from './src/screens/LiveMapTracking';
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const Stack = createStackNavigator();
@@ -19,6 +20,11 @@ const App = () => {
       <>
         <NavigationContainer>
           <Stack.Navigator>
+          <Stack.Screen
+              name="LiveMapTracking"
+              component={LiveMapTracking}
+              options={{headerShown: false}}
+            />
             <Stack.Screen
               name="AlertSetting"
               component={AlertSetting}
