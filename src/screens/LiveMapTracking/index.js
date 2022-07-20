@@ -1,12 +1,3 @@
-// import React from 'react'
-// import {View,Text} from 'react-native'
-// function Map() {
-//   return (
-//     <View><Text>kjl</Text></View>
-//   )
-// }
-
-// export default Map
 import React, {useState} from 'react';
 import {View, Text, Image} from 'react-native';
 import style from './style';
@@ -59,6 +50,7 @@ function LiveMapTracking() {
           />
         </Animated>
       </View>
+
       <View style={style.top_container}>
         <View style={{width: '10%'}}>
           <Image source={image.leftArrowblack} />
@@ -74,10 +66,9 @@ function LiveMapTracking() {
               marginLeft: 15,
               width: '80%',
             }}>
-            <Text style={style.firstboxtext1}>MH12 RN 0790</Text>
+            <Text style={style.firstboxtext1}>{__("MH12 RN 0790")}</Text>
             <Text style={style.firstboxtext2}>
-              177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,
-              400069,India
+            {__("177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India")}
             </Text>
           </View>
         </LinearGradient>
@@ -85,6 +76,7 @@ function LiveMapTracking() {
           <Image source={image.dashboardcolor} />
         </View>
       </View>
+
       <View style={style.bottombox}>
         <LinearGradient
           colors={[colors.mainThemeColor2, colors.mainThemeColor1]}
@@ -93,15 +85,15 @@ function LiveMapTracking() {
           style={style.secondbox}>
           <View style={style.secondboxtextbox1}>
             <Image source={image.speed} style={style.speedimg} />
-            <Text style={style.secondboxtext1}>16 KM/H</Text>
-            <Text style={style.secondboxtext11}>SPEED</Text>
+            <Text style={style.secondboxtext1}>{__("16 KM/H")}</Text>
+            <Text style={style.secondboxtext11}>{__("SPEED")}</Text>
           </View>
           <View style={style.secondboxtextbox1}>
             <Image source={image.distance} style={style.locimg} />
             <Text style={{fontSize: 12, marginTop: 8, color: '#fff'}}>
-              5790456
+            {__("5790456")}
             </Text>
-            <Text style={style.secondboxtext11}>TODAY'S ODO</Text>
+            <Text style={style.secondboxtext11}>{__("TODAY'S ODO")}</Text>
           </View>
 
           <View style={{width: '50%'}}>
@@ -114,11 +106,15 @@ function LiveMapTracking() {
                 <Image source={image.taxtDriver} style={style.taxiimg} />
               </View>
               <View>
-                <Text style={style.text3}>ADD DRIVER</Text>
+                <Text style={style.text3}>{__("ADD DRIVER")}</Text>
               </View>
             </LinearGradient>
           </View>
         </LinearGradient>
+      </View>
+
+      <View style={{position: 'absolute', bottom: 200}}>
+        <Image source={image.mapPaper} style={style.mapPaper} />
       </View>
     </View>
   );

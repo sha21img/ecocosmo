@@ -80,7 +80,7 @@ function Setting() {
         end={{x: 1, y: 0.5}}
         locations={[0.5, 1.5]}
         style={styles.logoutButton}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
+        <Text style={styles.logoutButtonText}>{__('Logout')}</Text>
       </LinearGradient>
     </LinearGradient>
   );

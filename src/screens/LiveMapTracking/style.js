@@ -1,6 +1,7 @@
 import {Size} from '../../../assets/fonts/Fonts';
+import { StyleSheet } from 'react-native';
 
-export default {
+const style=StyleSheet.create( {
   container: {
     flex: 1,
     position: 'relative',
@@ -99,4 +100,9 @@ export default {
     fontSize: Size.medium,
     color: '#fff',
   },
-};
+  mapPaper:{
+    width:58,
+    height:58
+  }
+});
+export default style;

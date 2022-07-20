@@ -34,6 +34,11 @@ const App = () => {
               options={{headerShown: false}}
             />
             <Stack.Screen
+              name="Alerts"
+              component={Alerts}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
               name="LiveMapTracking"
               component={LiveMapTracking}
               options={{headerShown: false}}
@@ -53,11 +58,7 @@ const App = () => {
               component={AlertSetting}
               options={{headerShown: false}}
             />
-            <Stack.Screen
-              name="Alerts"
-              component={Alerts}
-              options={{headerShown: false}}
-            />
+
             <Stack.Screen
               name="VehicleMenu"
               component={VehicleMenu}
