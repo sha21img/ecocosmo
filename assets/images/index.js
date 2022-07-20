@@ -62,9 +62,13 @@ export const image = {
   modalImage7: require('./modalImage7.png'),
   modalCar: require('./ModalCar.png'),
   selected: require('./selected.png'),
+  leftArrowblack: require('./leftArrowblack.png'),
+  dashboardcolor: require('./dashboardcolor.png'),
+  taxtDriver: require('./taxtDriver.png'),
+  colouredLock: require('./colouredLock.png'),
+  fileRefresh: require('./fileRefresh.png'),
+  Petrol: require('./Petrol.png'),
+  right: require('./right.png'),
+  mapPaper: require('./mapPaper.png'),
 
-  
-  
-  
-  
 };

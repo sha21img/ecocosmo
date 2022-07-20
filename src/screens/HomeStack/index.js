@@ -50,7 +50,7 @@ function HomeStack() {
               index={index}
               color={renderColor(route.name)}
               selected={selected}
-              onPress={() => handlePress()}
+              onPress={() => handlePress(route.name, index)}
             />
           ))}
         </View>

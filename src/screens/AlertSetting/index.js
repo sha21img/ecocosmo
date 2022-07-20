@@ -88,18 +88,13 @@ const AlertSetting = () => {
         <View style={{marginTop: 5}}>
           {alertSetting.map(el => {
             return (
-              <View
-                key={el.id}
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 16,
-                  paddingVertical: 6,
-                }}>
-                <Text style={{fontSize: Size.large, color: colors.subheading}}>
-                  {el.name}
-                </Text>
-                <CheckBox checkBoxColor="skyblue" isChecked={false} />
+              <View key={el.id} style={styles.alertSettingContainer}>
+                <Text style={styles.FooterText}>{el.name}</Text>
+                <CheckBox
+                  checkBoxColor="skyblue"
+                  isChecked={false}
+                  onClick={e => console.log(e)}
+                />
               </View>
             );
           })}
@@ -110,18 +105,13 @@ const AlertSetting = () => {
         <View style={{marginTop: 5}}>
           {WeekDays.map(el => {
             return (
-              <View
-                key={el.id}
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 16,
-                  paddingVertical: 5,
-                }}>
-                <Text style={{fontSize: Size.large, color: colors.subheading}}>
-                  {el.days}
-                </Text>
-                <CheckBox checkBoxColor="skyblue" isChecked={false} />
+              <View key={el.id} style={styles.alertSettingContainer}>
+                <Text style={styles.FooterText}>{el.days}</Text>
+                <CheckBox
+                  checkBoxColor="skyblue"
+                  isChecked={false}
+                  onClick={e => console.log(e)}
+                />
               </View>
             );
           })}
@@ -132,10 +122,36 @@ const AlertSetting = () => {
         <View style={styles.Footer}>
           <View style={styles.FooterTextContainer}>
             <Text style={styles.FooterText}>{__('Shift 1')}</Text>
-            <TextInput placeholder="From" style={styles.FooterInput} />
-            <TextInput placeholder="To" style={styles.FooterInput} />
+            <TextInput
+              placeholder="From"
+              placeholderTextColor={colors.toggleColorOff}
+              style={styles.FooterInput}
+            />
+            <TextInput
+              placeholder="To"
+              placeholderTextColor={colors.toggleColorOff}
+              style={styles.FooterInput}
+            />
+          </View>
+          <View style={styles.FooterTextContainer}>
+            <Text style={styles.FooterText}>{__('Shift 1')}</Text>
+            <TextInput
+              placeholder="From"
+              placeholderTextColor={colors.toggleColorOff}
+              style={styles.FooterInput}
+            />
+            <TextInput
+              placeholder="To"
+              placeholderTextColor={colors.toggleColorOff}
+              style={styles.FooterInput}
+            />
           </View>
         </View>
+        <LinearGradient
+          colors={[colors.largeBtn1, colors.largeBtn2]}
+          style={styles.loginButton}>
+          <Text style={styles.loginButtonText}>{__('Login')}</Text>
+        </LinearGradient>
       </ScrollView>
     </>
   );

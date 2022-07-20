@@ -9,6 +9,10 @@ import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
 import Alerts from './src/screens/Alerts';
 import AlertSetting from './src/screens/AlertSetting';
+import LiveMapTracking from './src/screens/LiveMapTracking';
+import Setting from './src/screens/Setting';
+import ChangePassword from './src/screens/ChangePassword';
+import AboutUs from './src/screens/AboutUs';
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const Stack = createStackNavigator();
@@ -20,8 +24,13 @@ const App = () => {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
-              name="AlertSetting"
-              component={AlertSetting}
+              name="About Us"
+              component={AboutUs}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Change Password"
+              component={ChangePassword}
               options={{headerShown: false}}
             />
             <Stack.Screen
@@ -30,12 +39,33 @@ const App = () => {
               options={{headerShown: false}}
             />
             <Stack.Screen
+              name="LiveMapTracking"
+              component={LiveMapTracking}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="HomeStack"
+              component={HomeStack}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Setting"
+              component={Setting}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="AlertSetting"
+              component={AlertSetting}
+              options={{headerShown: false}}
+            />
+
+            <Stack.Screen
               name="VehicleMenu"
               component={VehicleMenu}
               options={{headerShown: false}}
             />
-            
-          <Stack.Screen
+
+            <Stack.Screen
               name="NearbyPlaces"
               component={NearbyPlaces}
               options={{headerShown: false}}
@@ -45,11 +75,7 @@ const App = () => {
               component={ForgotPassword}
               options={{headerShown: false}}
             />
-            <Stack.Screen
-              name="HomeStack"
-              component={HomeStack}
-              options={{headerShown: false}}
-            />
+
             <Stack.Screen
               name="Login"
               component={Login}

@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import colors from '../../../assets/Colors';
+import {fontFamily} from '../../../assets/FontFamily';
 import {Size} from '../../../assets/fonts/Fonts';
 
 export const styles = StyleSheet.create({
@@ -30,7 +31,7 @@ export const styles = StyleSheet.create({
   subHeaderText: {
     fontSize: Size.large,
     color: colors.subheading,
-    // fontFamily: CircularStd-Bold
+    fontFamily: fontFamily.CircularStd_Bold,
   },
   bodyheading: {
     paddingVertical: 15,
@@ -38,7 +39,23 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.toggleColorOff,
   },
-  bodyHeadingText: {fontSize: Size.large, color: colors.BodyHeading},
+  bodyHeadingText: {
+    fontSize: Size.large,
+    color: colors.BodyHeading,
+    fontFamily: fontFamily.CircularStd_Book,
+  },
+  alertSettingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    fontFamily: fontFamily.CircularStd_Bold,
+  },
+  alertSettingText: {
+    fontSize: Size.large,
+    color: colors.subheading,
+    fontFamily: fontFamily.CircularStd_Bold,
+  },
   Footer: {
     marginVertical: 15,
   },
@@ -47,8 +64,13 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
+    marginBottom: 10,
   },
-  FooterText: {fontSize: Size.compact, color: colors.textcolor},
+  FooterText: {
+    fontSize: Size.compact,
+    color: colors.textcolor,
+    fontFamily: fontFamily.CircularStd_Bold,
+  },
   FooterInput: {
     width: 133,
     height: 43,
@@ -56,5 +78,21 @@ export const styles = StyleSheet.create({
     borderColor: colors.toggleColorOff,
     borderRadius: 7,
     paddingHorizontal: 10,
+  },
+  loginButton: {
+    marginTop: 37,
+    height: 66,
+    width: '80%',
+    alignSelf: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  loginButtonText: {
+    color: colors.white,
+    fontSize: Size.extraLarge,
+    fontWeight: 'bold',
+    fontFamily: fontFamily.CircularStd_Bold,
   },
 });
