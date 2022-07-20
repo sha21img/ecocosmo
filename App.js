@@ -50,12 +50,6 @@ const App = () => {
               component={HomeStack}
               options={{headerShown: false}}
             />
-
-            <Stack.Screen
-              name="ForgotPassword"
-              component={ForgotPassword}
-              options={{headerShown: false}}
-            />
             <Stack.Screen
               name="Login"
               component={Login}
