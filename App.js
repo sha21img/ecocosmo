@@ -8,7 +8,10 @@ import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
 import Alerts from './src/screens/Alerts';
+<<<<<<< HEAD
 import AlertSetting from './src/screens/AlertSetting';
+=======
+>>>>>>> 40da7388c2aa052ca9fe55d789755d0a9f37c404
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const Stack = createStackNavigator();
@@ -19,6 +22,7 @@ const App = () => {
       <>
         <NavigationContainer>
           <Stack.Navigator>
+<<<<<<< HEAD
             <Stack.Screen
               name="AlertSetting"
               component={AlertSetting}
@@ -35,10 +39,42 @@ const App = () => {
               options={{headerShown: false}}
             />
             <Stack.Screen
+=======
+          <Stack.Screen
+>>>>>>> 40da7388c2aa052ca9fe55d789755d0a9f37c404
               name="NearbyPlaces"
               component={NearbyPlaces}
               options={{headerShown: false}}
             />
+            <Stack.Screen
+<<<<<<< HEAD
+              name="ForgotPassword"
+              component={ForgotPassword}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+=======
+              name="VehicleMenu"
+              component={VehicleMenu}
+>>>>>>> 40da7388c2aa052ca9fe55d789755d0a9f37c404
+              options={{headerShown: false}}
+            />
+            
+            <Stack.Screen
+              name="HomeStack"
+              component={HomeStack}
+              options={{headerShown: false}}
+            />
+<<<<<<< HEAD
+=======
+            <Stack.Screen
+              name="Alerts"
+              component={Alerts}
+              options={{headerShown: false}}
+            />
+
             <Stack.Screen
               name="ForgotPassword"
               component={ForgotPassword}
@@ -49,11 +85,7 @@ const App = () => {
               component={Login}
               options={{headerShown: false}}
             />
-            <Stack.Screen
-              name="HomeStack"
-              component={HomeStack}
-              options={{headerShown: false}}
-            />
+>>>>>>> 40da7388c2aa052ca9fe55d789755d0a9f37c404
           </Stack.Navigator>
         </NavigationContainer>
       </>

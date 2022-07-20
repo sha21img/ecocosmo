@@ -4,6 +4,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
+import { __ } from '../../../Utils/Translation/translation';
+
 
 const NearbyPlaces = () => {
   const places = [
@@ -39,7 +41,7 @@ const NearbyPlaces = () => {
     },
     {
       id: 7,
-      img: image.hospital,
+      img: image.Hospital,
       name: 'HOSPITAL',
     },
     {
@@ -67,7 +69,7 @@ const NearbyPlaces = () => {
         <View style={styles.header}>
           <View style={styles.headerContent1}>
             <Image source={image.backArrow} style={{height: 12, width: 23}} />
-            <Text style={styles.headerContentText}>Nearby Places</Text>
+            <Text style={styles.headerContentText}>{__("Nearby Places")}</Text>
           </View>
           <Image source={image.search} />
         </View>

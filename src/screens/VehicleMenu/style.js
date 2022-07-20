@@ -5,66 +5,66 @@ import {Size} from '../../../assets/fonts/Fonts';
 export const styles = StyleSheet.create({
   mainContainer: {
     height: '100%',
-    justifyContent: 'flex-end',
+    position: 'relative',
+    alignItems: 'center',
+
     backgroundColor: colors.mainThemeColor1,
   },
   modalBody: {
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    width: '91%',
-    alignSelf: 'center',
     alignItems: 'center',
+    width: '90%',
+    position: 'absolute',
+    bottom: 0,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
-    top: '6%',
   },
-  modaldrager: {height: 184, width: 184, bottom: '23%'},
+  modaldrager: { height: 180, width: 180,position:'absolute',top:-90,
+   },
   modalSubheading: {
     fontSize: Size.tiny,
     color: colors.lightGreen,
-    bottom: '25%',
+    marginTop:90
   },
   modalHead: {
-    bottom: '25%',
     fontSize: Size.compact,
     fontWeight: '600',
     color: colors.subheading,
-  },
-  buttonContainer: {
-    bottom: '20%',
-    height: 16,
-    width: 267,
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.underline,
+    paddingVertical: 5,
   },
   button: {
+    paddingVertical: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 9,
+    justifyContent: 'space-around',
+    paddingHorizontal: 12,
     backgroundColor: colors.callBtn,
     borderRadius: 5,
-    width: 100,
-    height: 32,
   },
   buttonText: {fontSize: Size.small, color: colors.white},
   modalContentContainer: {
+    marginVertical: 30,
     flexDirection: 'row',
+    width:'98%',
+    
     flexWrap: 'wrap',
-    bottom: '20%',
+   
+    // alignItems:'center',
+
+    
+   
+    
+
   },
-  modalCardBody: {
-    height: 85,
-    width: 81,
-    marginHorizontal: 1,
-    marginBottom: 10,
-  },
+  modalCardBody: {},
   modalCardImage: {
-    height: 52,
-    width: 52,
+    height: 50,
+    width: 50,
     alignSelf: 'center',
-    marginBottom: 10,
+    marginVertical: 10,
   },
-  modalCardText: {fontSize: Size.tiny, textAlign: 'center'},
+  modalCardText: {
+    fontSize: Size.tiny,
+    textAlign: 'center',
+    width: 80,
+  },
 });
