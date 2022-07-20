@@ -11,6 +11,8 @@ import Alerts from './src/screens/Alerts';
 import AlertSetting from './src/screens/AlertSetting';
 import LiveMapTracking from './src/screens/LiveMapTracking';
 import Setting from './src/screens/Setting';
+import ChangePassword from './src/screens/ChangePassword';
+import AboutUs from './src/screens/AboutUs';
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const Stack = createStackNavigator();
@@ -21,7 +23,17 @@ const App = () => {
       <>
         <NavigationContainer>
           <Stack.Navigator>
-          <Stack.Screen
+            <Stack.Screen
+              name="About Us"
+              component={AboutUs}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Change Password"
+              component={ChangePassword}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
               name="LiveMapTracking"
               component={LiveMapTracking}
               options={{headerShown: false}}
