@@ -46,12 +46,6 @@ const App = () => {
               options={{headerShown: false}}
             />
             <Stack.Screen
-              name="VehicleMenu"
-              component={VehicleMenu}
-              options={{headerShown: false}}
-            />
-            
-            <Stack.Screen
               name="HomeStack"
               component={HomeStack}
               options={{headerShown: false}}
