@@ -15,5 +15,7 @@ const colors = {
   toggleColoron: '#13EC54',
   toggleColorOff: '#D9D9D9',
   BodyHeading: '#A8A8A8',
+  subGradientcolour1: '#FF5050',
+  subGradientcolour2: '#FE7979',
 };
 export default colors;

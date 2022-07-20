@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Image,TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../Home';
 import Home2 from '../Home2';
@@ -50,7 +50,7 @@ function HomeStack() {
               index={index}
               color={renderColor(route.name)}
               selected={selected}
-              onPress={() => handlePress()}
+              onPress={() => handlePress(route.name, index)}
             />
           ))}
         </View>
@@ -66,11 +66,7 @@ function HomeStack() {
         activeTintColor: '#438EFA',
       }}
       tabBar={props => <CustomTabBar {...props} />}>
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        initialParams={{icon: 'home'}}
-      />
+      <Tab.Screen name="Home" component={Home} initialParams={{icon: 'home'}} />
       <Tab.Screen
         name="Home2"
         component={Home2}
