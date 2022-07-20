@@ -69,4 +69,6 @@ export const image = {
   fileRefresh: require('./fileRefresh.png'),
   Petrol: require('./Petrol.png'),
   right: require('./right.png'),
+  mapPaper: require('./mapPaper.png'),
+
 };

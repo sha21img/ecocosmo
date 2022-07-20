@@ -15,6 +15,8 @@ import styles from './style';
 import {Size} from '../../../assets/fonts/Fonts';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {__} from '../../../Utils/Translation/translation';
+
 
 const Login = () => {
   return (
@@ -27,13 +29,13 @@ const Login = () => {
         }}>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
           <TouchableOpacity style={styles.lang}>
-            <Text style={{fontSize: Size.large}}>English</Text>
+            <Text style={{fontSize: Size.large}}>{__("English")}</Text>
             <MaterialIcons size={50} color="#900" />
             <Icon size={50} color="#900" />
           </TouchableOpacity>
           <Image source={image.loginLogo} style={[styles.logo]} />
-          <Text style={[styles.headText]}>WELCOME TO</Text>
-          <Text style={[styles.headText]}>VEHICLE TRACKING SYSTEM</Text>
+          <Text style={[styles.headText]}>{__("WELCOME TO")}</Text>
+          <Text style={[styles.headText]}>{__("VEHICLE TRACKING SYSTEM")}</Text>
         </ImageBackground>
         <View style={{marginTop: 90}}>
           <View style={[styles.inputBox, {marginBottom: 20}]}>
@@ -47,12 +49,12 @@ const Login = () => {
             <Image source={image.eye} />
           </View>
 
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
+          <Text style={styles.forgotPassword}>{__("Forgot Password?")}</Text>
         </View>
         <LinearGradient
           colors={[colors.largeBtn1, colors.largeBtn2]}
           style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>Login</Text>
+          <Text style={styles.loginButtonText}>{__("Login")}</Text>
         </LinearGradient>
         <View style={styles.footerTab}>
           <Image source={image.Mob} style={{height: 34, width: 34}} />

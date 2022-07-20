@@ -5,6 +5,8 @@ import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 import {image} from '../../../assets/images';
 import ToggleSwitch from 'toggle-switch-react-native';
+import {__} from '../../../Utils/Translation/translation';
+
 
 const Alerts = () => {
   const [Ison, setIson] = useState(false);
@@ -92,7 +94,7 @@ const Alerts = () => {
                   fontSize: Size.large,
                   color: colors.white,
                 }}>
-                Alerts
+                {__('Alerts')}
               </Text>
             </View>
             <View style={{flexDirection: 'row'}}>
@@ -140,7 +142,7 @@ const Alerts = () => {
               color: colors.textcolor,
               fontWeight: '700',
             }}>
-            Alert Setting
+            {__('Alert Setting')}
           </Text>
           <ToggleSwitch
             isOn={Ison}
