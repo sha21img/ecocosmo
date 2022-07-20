@@ -48,8 +48,21 @@ function Dashboard1() {
             paddingHorizontal: 10,
             borderBottomLeftRadius: 16,
             borderBottomRightRadius: 16,
-            backgroundColor: '#00D957',
+            position:'relative'
           }}>
+          <View
+          style={{
+            position: 'absolute',
+            top:-20,
+            right: 0,
+            zIndex: 100,
+            flexDirection: 'row',
+          }}>
+          <Image source={image.location} style={{width: 45, height: 45}} />
+          <Image source={image.battery} style={{width: 45, height: 45}} />
+          <Image source={image.charge} style={{width: 45, height: 45}} />
+          <Image source={image.shokker} style={{width: 45, height: 45}} />
+        </View>
           <View
             style={{
               flexDirection: 'row',
@@ -95,19 +108,7 @@ function Dashboard1() {
             
           </Text>
         </LinearGradient>
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 89,
-            right: 0,
-            zIndex: 100,
-            flexDirection: 'row',
-          }}>
-          <Image source={image.location} style={{width: 45, height: 45}} />
-          <Image source={image.battery} style={{width: 45, height: 45}} />
-          <Image source={image.charge} style={{width: 45, height: 45}} />
-          <Image source={image.shokker} style={{width: 45, height: 45}} />
-        </View>
+        
       </View>
     </>
   );

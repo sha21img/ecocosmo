@@ -61,6 +61,7 @@ export const image = {
   modalfrontcar: require('./modalfrontcar.png'),
   modalImage7: require('./modalImage7.png'),
   modalCar: require('./ModalCar.png'),
+  selected: require('./selected.png'),
 
   
   

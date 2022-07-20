@@ -6,8 +6,8 @@ import Splash from './src/screens/Splash';
 import HomeStack from './src/screens/HomeStack';
 import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
-import VehicleMenu from './src/screens/VehicleMenu'
-import Alerts from './src/screens/Alerts'
+import VehicleMenu from './src/screens/VehicleMenu';
+import Alerts from './src/screens/Alerts';
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const Stack = createStackNavigator();
@@ -19,36 +19,37 @@ const App = () => {
         <NavigationContainer>
           <Stack.Navigator>
           <Stack.Screen
-              name="Alerts"
-              component={Alerts}
-              options={{headerShown: false}}
-            />
-          <Stack.Screen
-              name="VehicleMenu"
-              component={VehicleMenu}
-              options={{headerShown: false}}
-            />
-          <Stack.Screen
               name="NearbyPlaces"
               component={NearbyPlaces}
               options={{headerShown: false}}
             />
-          <Stack.Screen
-              name="ForgotPassword"
-              component={ForgotPassword}
+            <Stack.Screen
+              name="VehicleMenu"
+              component={VehicleMenu}
               options={{headerShown: false}}
             />
-          <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{headerShown: false}}
-            />
+            
             <Stack.Screen
               name="HomeStack"
               component={HomeStack}
               options={{headerShown: false}}
             />
-            
+            <Stack.Screen
+              name="Alerts"
+              component={Alerts}
+              options={{headerShown: false}}
+            />
+
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPassword}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{headerShown: false}}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </>

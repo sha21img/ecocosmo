@@ -127,9 +127,9 @@ function Home() {
             paddingBottom: 50,
           }}>
           {/* <Dashboard2 /> */}
-          {/* {[0, 0, 0].map(() => {
+          {[0, 0, 0].map(() => {
             return <Dashboard1 />;
-          })} */}
+          })}
         </View>
       </ScrollView>
     </>

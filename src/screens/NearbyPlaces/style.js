@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
+import { fontFamily } from '../../../assets/FontFamily';
 
 export const styles = StyleSheet.create({
   main: {
@@ -23,6 +24,7 @@ export const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: 'bold',
     fontSize: Size.large,
+    fontFamily:fontFamily.CircularStd_Bold
   },
   contentContainer: {
     marginTop: 37,
