@@ -13,7 +13,7 @@ const colors = {
   underline: '#C8C8C8',
   textcolor: '#4D4D4D',
   toggleColoron: '#13EC54',
-  toggleColorOff: '#E4E4E4',
+  toggleColorOff: '#D9D9D9',
+  BodyHeading: '#A8A8A8',
 };
-
 export default colors;
