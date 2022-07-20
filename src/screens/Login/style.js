@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginBottom: 48,
     marginTop: 21,
-    flexDirection:'row'
+    flexDirection: 'row',
   },
   logo: {
     width: 102,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   headText: {
     textAlign: 'center',
-    color: colors.mainTextColor,
+    color: colors.white,
     fontFamily: 'CircularStd-Bold.eot',
     fontSize: Size.compact,
   },

@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   headText: {
     textAlign: 'center',
-    color: colors.mainTextColor,
+    color: colors.white,
     fontFamily: 'CircularStd-Bold.eot',
     fontSize: Size.compact,
   },

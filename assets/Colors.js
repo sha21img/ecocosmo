@@ -1,8 +1,7 @@
 const colors = {
   mainThemeColor1: '#395DBF',
   mainThemeColor2: '#16BCD4',
-  mainTextColor: 'white',
-  white: 'white',
+  white: '#ffffff',
   inputPlaceholdr: '#ACACAC',
   Modalcolor1: '#BCE2FF',
   lightGreen: '#009824',
@@ -15,5 +14,11 @@ const colors = {
   toggleColoron: '#13EC54',
   toggleColorOff: '#D9D9D9',
   BodyHeading: '#A8A8A8',
+  lightGrey: '#D8D8D8',
+  grey: '#ACACAC',
+  black: '#474747',
+  green: '#46BE30',
+  textLight: '#616161',
+  textDark: '#313131',
 };
 export default colors;
