@@ -1,9 +1,7 @@
 const colors = {
   mainThemeColor1: '#395DBF',
   mainThemeColor2: '#16BCD4',
-  white: '#ffffff',
   mainThemeColor3: '#FF50DC',
-  mainTextColor: 'white',
   white: 'white',
   inputPlaceholdr: '#ACACAC',
   Modalcolor1: '#BCE2FF',
@@ -18,18 +16,15 @@ const colors = {
   toggleColoron: '#13EC54',
   toggleColorOff: '#D9D9D9',
   BodyHeading: '#A8A8A8',
-<<<<<<< HEAD
   lightGrey: '#D8D8D8',
   grey: '#ACACAC',
   black: '#474747',
   green: '#46BE30',
   textLight: '#616161',
   textDark: '#313131',
-=======
   BodyHeading2: '#A7A7A7',
   subGradientcolour1: '#FF5050',
   subGradientcolour2: '#FE7979',
   black: '#1E1E1E',
->>>>>>> 47d5efcac9847b723b2c8ef3b1f6a6c6642c7386
 };
 export default colors;
