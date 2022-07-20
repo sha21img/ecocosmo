@@ -10,6 +10,7 @@ import VehicleMenu from './src/screens/VehicleMenu';
 import Alerts from './src/screens/Alerts';
 import AlertSetting from './src/screens/AlertSetting';
 import LiveMapTracking from './src/screens/LiveMapTracking';
+import Setting from './src/screens/Setting';
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const Stack = createStackNavigator();
@@ -23,6 +24,16 @@ const App = () => {
           <Stack.Screen
               name="LiveMapTracking"
               component={LiveMapTracking}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="HomeStack"
+              component={HomeStack}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Setting"
+              component={Setting}
               options={{headerShown: false}}
             />
             <Stack.Screen
@@ -40,8 +51,8 @@ const App = () => {
               component={VehicleMenu}
               options={{headerShown: false}}
             />
-            
-          <Stack.Screen
+
+            <Stack.Screen
               name="NearbyPlaces"
               component={NearbyPlaces}
               options={{headerShown: false}}
@@ -51,11 +62,7 @@ const App = () => {
               component={ForgotPassword}
               options={{headerShown: false}}
             />
-            <Stack.Screen
-              name="HomeStack"
-              component={HomeStack}
-              options={{headerShown: false}}
-            />
+
             <Stack.Screen
               name="Login"
               component={Login}
