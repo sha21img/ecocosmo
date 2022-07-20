@@ -62,21 +62,11 @@ export const image = {
   modalImage7: require('./modalImage7.png'),
   modalCar: require('./ModalCar.png'),
   selected: require('./selected.png'),
-<<<<<<< HEAD
   leftArrowblack: require('./leftArrowblack.png'),
   dashboardcolor: require('./dashboardcolor.png'),
   taxtDriver: require('./taxtDriver.png'),
-  
-  
-  
-  
-  
-  
-  
-=======
   colouredLock: require('./colouredLock.png'),
   fileRefresh: require('./fileRefresh.png'),
   Petrol: require('./Petrol.png'),
   right: require('./right.png'),
->>>>>>> 5430f99fab1a204dacc67a96c845f7da4fc57549
 };
