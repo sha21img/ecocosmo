@@ -70,5 +70,14 @@ export const image = {
   Petrol: require('./Petrol.png'),
   right: require('./right.png'),
   mapPaper: require('./mapPaper.png'),
-
+  world: require('./world.png'),
+  telephone: require('./telephone.png'),
+  EmailOpen: require('./EmailOpen.png'),
+  callIcon: require('./callIcon.png'),
+  HomeIcon: require('./HomeIcon.png'),
+  mapIcon: require('./mapIcon.png'),
+  RenewalIcon: require('./RenewalIcon.png'),
+  reportIcon: require('./reportIcon.png'),
+  TopLight: require('./TopLight.png'),
+  AboutUsIcon: require('./AboutUsIcon.png'),
 };

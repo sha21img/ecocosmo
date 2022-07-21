@@ -2,7 +2,7 @@ const colors = {
   mainThemeColor1: '#395DBF',
   mainThemeColor2: '#16BCD4',
   mainThemeColor3: '#FF50DC',
-  white: 'white',
+  white: '#FFFFFF',
   inputPlaceholdr: '#ACACAC',
   Modalcolor1: '#BCE2FF',
   lightGreen: '#009824',
@@ -26,5 +26,6 @@ const colors = {
   subGradientcolour1: '#FF5050',
   subGradientcolour2: '#FE7979',
   black: '#1E1E1E',
+  SubContentText: '#68B9FB',
 };
 export default colors;

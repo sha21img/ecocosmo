@@ -16,7 +16,8 @@ import Dashboard2 from './Dashboard2';
 import {__} from '../../../Utils/Translation/translation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-function Home() {
+function Home(props) {
+  // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>', props.navigation);
   const [selectedLanguage, setSelectedLanguage] = useState();
   return (
     <>
@@ -26,7 +27,9 @@ function Home() {
         end={{x: 1, y: 0.5}}
         style={styles.headerContainer}>
         <View style={styles.headerDashboard}>
-          <Image source={image.drawer} style={{height: 20, width: 23}} />
+          <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+            <Image source={image.drawer} style={{height: 20, width: 23}} />
+          </TouchableOpacity>
           <View style={{marginLeft: 15}}>
             <ModalSelector
               initValue="Select tickets"
