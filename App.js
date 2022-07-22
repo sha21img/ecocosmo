@@ -23,9 +23,8 @@ import {image} from './assets/images';
 import {__} from './Utils/Translation/translation';
 import {Size} from './assets/fonts/Fonts';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import UrlTracking from './src/screens/UrlTracking';
+// import UrlTracking from './src/screrens/UrlTracking';
 import ForgotPassword_1 from './src/screens/ForgetPassword-1';
-import MyAccount from './src/screens/MyAccount';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -215,6 +214,11 @@ const App = () => {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
+              name="AlertSetting"
+              component={AlertSetting}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
               name="MainScreen"
               component={MainScreen}
               options={{headerShown: false}}
@@ -224,32 +228,21 @@ const App = () => {
               component={ForgotPassword_1}
               options={{headerShown: false}}
             />
-            <Stack.Screen
+            {/* <Stack.Screen
               name="UrlTracking"
-              component={UrlTracking}
+              component={U}
               options={{headerShown: false}}
-            />
+            /> */}
 
             <Stack.Screen
               name="ForgotPassword"
               component={ForgotPassword}
               options={{headerShown: false}}
             />
-            <Stack.Screen
-              name="Change Password"
-              component={ChangePassword}
-              options={{headerShown: false}}
-            />
 
             <Stack.Screen
               name="Login"
               component={Login}
-              options={{headerShown: false}}
-            />
-
-            <Stack.Screen
-              name="Change Password"
-              component={ChangePassword}
               options={{headerShown: false}}
             />
             <Stack.Screen
@@ -259,13 +252,14 @@ const App = () => {
             />
 
             <Stack.Screen
-              name="Setting"
-              component={Setting}
+              name="Change Password"
+              component={ChangePassword}
               options={{headerShown: false}}
             />
+
             <Stack.Screen
-              name="AlertSetting"
-              component={AlertSetting}
+              name="Setting"
+              component={Setting}
               options={{headerShown: false}}
             />
 

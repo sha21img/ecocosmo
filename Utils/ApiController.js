@@ -18,9 +18,10 @@ export const axiosPostData = async (url, formData) => {
     });
 };
 
-export const axiosGetData = async url => {
+export const axiosGetData = async (url, formData) => {
+  console.log(url);
   return axios
-    .get(`${baseUrl}/${url}`, {
+    .get(`${baseUrl}/${url}`, formData, {
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
       },

@@ -1,5 +1,5 @@
-import React from 'react';
-import {Image, Text, TextInput, View} from 'react-native';
+import React, {useState} from 'react';
+import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
@@ -8,8 +8,42 @@ import {styles} from './style';
 import CheckBox from 'react-native-check-box';
 import {__} from '../../../Utils/Translation/translation';
 import {ScrollView} from 'react-native-gesture-handler';
+import {axiosGetData} from '../../../Utils/ApiController';
 
 const AlertSetting = () => {
+  const [daysset, setDays] = useState([]);
+
+  const handleDays = id => {
+    console.log(id);
+    if (daysset.includes(id)) {
+      let a = daysset.filter(el => {
+        return el != id;
+      });
+      setDays(a);
+    } else {
+      setDays([...daysset, id]);
+    }
+  };
+
+  let day = daysset.join(',');
+
+  const accountid = 'rrenterprises';
+  const password = 'b4e82dac5f70e501df1fde474d8c3aa6';
+  const imei = '351608080774446';
+  const alertType = 'overspeed';
+  const data = 90;
+  const isactive = 'Yes';
+  const mobiles = '7719932222';
+  const isSms = 1;
+  const isCall = 0;
+  const isEmail = 0;
+  const isPush = 1;
+  const isAnnouncement = 0;
+  const days = day;
+  const d1_on = 1;
+  const d1_off = 0;
+  const shift1_timeRange1 = '07:00,18:00';
+  const shift2_timeRange1 = '19:00,20:00';
   const alertSetting = [
     {
       id: 1,
@@ -26,34 +60,43 @@ const AlertSetting = () => {
   ];
   const WeekDays = [
     {
-      id: 1,
+      id: 0,
       days: 'Sunday',
     },
     {
-      id: 2,
+      id: 1,
       days: 'Monday',
     },
     {
-      id: 3,
+      id: 2,
       days: 'Tuesday',
     },
     {
-      id: 4,
+      id: 3,
       days: 'Wednesday',
     },
     {
-      id: 5,
+      id: 4,
       days: 'Thursday',
     },
     {
-      id: 6,
+      id: 5,
       days: 'Friday',
     },
     {
-      id: 7,
+      id: 6,
       days: 'Saturday',
     },
   ];
+
+  const postAlertResponse = async () => {
+    const response = await axiosGetData(
+      `saveVehicleAlert?accountid=${accountid}&password=${password}&imei=${imei}&alertType=${alertType}&isactive=${isactive}&data=${data}&mobiles=${mobiles}&isSms=${isSms}&isCall=${isCall}&isEmail=${isEmail}&isPush=${isPush}&isAnnouncement=${isAnnouncement}&days=${days}&d1_on=${d1_on}&d1_off=${d1_off}&shift1_timeRange1=${shift1_timeRange1}&shift2_timeRange1=${shift2_timeRange1}`,
+    );
+    console.log(response.data);
+  };
+
+  // console.log('>>>>>>>>days', day);
   return (
     <>
       <LinearGradient
@@ -88,14 +131,16 @@ const AlertSetting = () => {
         <View style={{marginTop: 5}}>
           {alertSetting.map(el => {
             return (
-              <View key={el.id} style={styles.alertSettingContainer}>
+              <TouchableOpacity
+                key={el.id}
+                style={styles.alertSettingContainer}>
                 <Text style={styles.FooterText}>{el.name}</Text>
                 <CheckBox
-                  checkBoxColor="skyblue"
                   isChecked={false}
+                  checkBoxColor="skyblue"
                   onClick={e => console.log(e)}
                 />
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -105,14 +150,17 @@ const AlertSetting = () => {
         <View style={{marginTop: 5}}>
           {WeekDays.map(el => {
             return (
-              <View key={el.id} style={styles.alertSettingContainer}>
+              <TouchableOpacity
+                key={el.id}
+                style={styles.alertSettingContainer}
+                onPress={() => handleDays(el.id)}>
                 <Text style={styles.FooterText}>{el.days}</Text>
                 <CheckBox
                   checkBoxColor="skyblue"
-                  isChecked={false}
+                  isChecked={days.includes(el.id) ? true : false}
                   onClick={e => console.log(e)}
                 />
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -147,11 +195,13 @@ const AlertSetting = () => {
             />
           </View>
         </View>
-        <LinearGradient
-          colors={[colors.largeBtn1, colors.largeBtn2]}
-          style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>{__('Login')}</Text>
-        </LinearGradient>
+        <TouchableOpacity onPress={() => postAlertResponse()}>
+          <LinearGradient
+            colors={[colors.largeBtn1, colors.largeBtn2]}
+            style={styles.loginButton}>
+            <Text style={styles.loginButtonText}>{__('Login')}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </ScrollView>
     </>
   );
