@@ -1,12 +1,13 @@
 import React from 'react';
 import {Image, Text, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 
-const ContactUs = () => {
+const ContactUs = props => {
   return (
     <>
       <LinearGradient
@@ -14,7 +15,9 @@ const ContactUs = () => {
         style={styles.main}
         locations={[0, 0.9]}>
         <View style={styles.header}>
-          <Image source={image.drawer} style={{height: 23, width: 23}} />
+          <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+            <Image source={image.drawer} style={{height: 23, width: 23}} />
+          </TouchableOpacity>
           <Text style={styles.headerContentText}>{__('Contact Us')}</Text>
         </View>
         <View style={styles.BodyContent}>
