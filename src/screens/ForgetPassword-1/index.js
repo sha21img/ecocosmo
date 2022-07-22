@@ -15,8 +15,10 @@ import styles from './style';
 import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
 
-const ForgotPassword = () => {
-  const [email, setemail] = useState('');
+const ForgotPassword_1 = () => {
+  const [otp, setOtp] = useState('');
+  const [newPassword, setnewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   return (
     <ScrollView>
       <LinearGradient
@@ -33,20 +35,34 @@ const ForgotPassword = () => {
               <Text style={{fontSize: Size.large}}>{__('English')}</Text>
             </TouchableOpacity>
           </View>
-
           <Image source={image.loginLogo} style={[styles.logo]} />
           <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
           <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
         </ImageBackground>
-        <Text style={styles.forgotPassword}>{__('Reset Password')}</Text>
+        <Text style={styles.forgotPassword}>{__('Forgot password Reset')}</Text>
         <View style={{marginTop: 23}}>
           <View style={[styles.inputBox]}>
-            <Image source={image.person} />
             <TextInput
-              placeholder="enter account ID or number"
+              placeholder="enter OTP"
               style={styles.input}
-              defaultValue={email}
-              onChangeText={email => setemail(email)}
+              defaultValue={otp}
+              onChangeText={data => setOtp(data)}
+            />
+          </View>
+          <View style={[styles.inputBox]}>
+            <TextInput
+              placeholder="enter new password"
+              style={styles.input}
+              defaultValue={newPassword}
+              onChangeText={data => setnewPassword(data)}
+            />
+          </View>
+          <View style={[styles.inputBox]}>
+            <TextInput
+              placeholder="confirm new password"
+              style={styles.input}
+              defaultValue={confirmPassword}
+              onChangeText={data => setConfirmPassword(data)}
             />
           </View>
         </View>
@@ -65,4 +81,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPassword_1;

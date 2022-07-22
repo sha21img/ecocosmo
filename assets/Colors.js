@@ -1,5 +1,6 @@
 const colors = {
   mainThemeColor1: '#395DBF',
+  mainThemeColor4: '#3B63E2',
   mainThemeColor2: '#16BCD4',
   mainThemeColor3: '#FF50DC',
   white: '#FFFFFF',
