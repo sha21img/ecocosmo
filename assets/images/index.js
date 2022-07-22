@@ -80,4 +80,6 @@ export const image = {
   reportIcon: require('./reportIcon.png'),
   TopLight: require('./TopLight.png'),
   AboutUsIcon: require('./AboutUsIcon.png'),
+  whiteCar: require('./whiteCar.png'),
+  Down: require('./Down.png'),
 };
