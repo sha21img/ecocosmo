@@ -34,19 +34,36 @@ const permanentRoutes = [
     route: 'AboutUs',
   },
   {
-    label: 'Renewals',
+    label: 'Renewal',
     icon: image.RenewalIcon,
-    route: 'Renewals',
+    route: 'Renewal',
   },
   {
     label: 'Reports',
     icon: image.reportIcon,
-    route: 'Reports',
+    route: '',
   },
   {
     label: 'Contact Us',
     icon: image.callIcon,
     route: 'ContactUs',
+  },
+];
+const Routes = [
+  {
+    label: 'Home',
+    icon: image.HomeIcon,
+    route: 'HomeStack',
+  },
+  {
+    label: 'Group Live Tracking',
+    icon: image.mapIcon,
+    route: '',
+  },
+  {
+    label: 'Alerts',
+    icon: image.TopLight,
+    route: 'Alerts',
   },
 ];
 
@@ -84,124 +101,51 @@ const DrawerContent = props => {
             paddingVertical: 34,
             paddingHorizontal: 20,
           }}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 5,
-              alignItems: 'center',
-            }}>
-            <Image source={image.HomeIcon} style={{height: 40, width: 40}} />
-            <Text
-              style={{
-                marginLeft: 20,
-                color: colors.white,
-                fontSize: Size.large,
-              }}>
-              {__('Home')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 10,
-              alignItems: 'center',
-            }}>
-            <Image source={image.mapIcon} style={{height: 40, width: 40}} />
-            <Text
-              style={{
-                marginLeft: 20,
-                color: colors.white,
-                fontSize: Size.large,
-              }}>
-              {__('Group Live Tracking')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 5,
-              alignItems: 'center',
-            }}
-            onPress={() => props.navigation.navigate('Alerts')}>
-            <Image source={image.TopLight} style={{height: 40, width: 40}} />
-            <Text
-              style={{
-                marginLeft: 20,
-                color: colors.white,
-                fontSize: Size.large,
-              }}>
-              {__('Alerts')}
-            </Text>
-          </TouchableOpacity>
+          {Routes.map(el => {
+            return (
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: 5,
+                  alignItems: 'center',
+                }}
+                onPress={() => props.navigation.navigate(el.route)}>
+                <Image source={el.icon} style={{height: 40, width: 40}} />
+                <Text
+                  style={{
+                    marginLeft: 20,
+                    color: colors.white,
+                    fontSize: Size.large,
+                  }}>
+                  {__(`${el.label}`)}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
         <View style={{flex: 3, paddingVertical: 34, paddingHorizontal: 20}}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 5,
-              alignItems: 'center',
-            }}
-            onPress={() => props.navigation.navigate('AboutUs')}>
-            <Image source={image.AboutUsIcon} style={{height: 40, width: 40}} />
-            <Text
-              style={{
-                marginLeft: 20,
-                color: colors.white,
-                fontSize: Size.large,
-              }}>
-              {__('About Us')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 5,
-              alignItems: 'center',
-            }}
-            onPress={() => props.navigation.navigate('Renewals')}>
-            <Image source={image.RenewalIcon} style={{height: 40, width: 40}} />
-            <Text
-              style={{
-                marginLeft: 20,
-                color: colors.white,
-                fontSize: Size.large,
-              }}>
-              {__('Renewals')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 5,
-              alignItems: 'center',
-            }}>
-            <Image source={image.reportIcon} style={{height: 40, width: 40}} />
-            <Text
-              style={{
-                marginLeft: 20,
-                color: colors.white,
-                fontSize: Size.large,
-              }}>
-              {__('Reports')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 5,
-              alignItems: 'center',
-            }}
-            onPress={() => props.navigation.navigate('ContactUs')}>
-            <Image source={image.callIcon} style={{height: 40, width: 40}} />
-            <Text
-              style={{
-                marginLeft: 20,
-                color: colors.white,
-                fontSize: Size.large,
-              }}>
-              {__('Contact Us')}
-            </Text>
-          </TouchableOpacity>
+          {permanentRoutes.map(el => {
+            return (
+              <TouchableOpacity
+                key={Math.random()}
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: 5,
+                  alignItems: 'center',
+                }}
+                onPress={() => props.navigation.navigate(el.route)}>
+                <Image source={el.icon} style={{height: 40, width: 40}} />
+                <Text
+                  style={{
+                    marginLeft: 20,
+                    color: colors.white,
+                    fontSize: Size.large,
+                  }}>
+                  {__(`${el.label}`)}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
           <LinearGradient
             colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
             start={{x: 0, y: 0.5}}
@@ -267,18 +211,24 @@ const App = () => {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
-              name="MainScreen"
-              component={MainScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Change Password"
-              component={ChangePassword}
+              name="Login"
+              component={Login}
               options={{headerShown: false}}
             />
             <Stack.Screen
               name="LiveMapTracking"
               component={LiveMapTracking}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="MainScreen"
+              component={MainScreen}
+              options={{headerShown: false}}
+            />
+
+            <Stack.Screen
+              name="Change Password"
+              component={ChangePassword}
               options={{headerShown: false}}
             />
 
@@ -307,12 +257,6 @@ const App = () => {
             <Stack.Screen
               name="ForgotPassword"
               component={ForgotPassword}
-              options={{headerShown: false}}
-            />
-
-            <Stack.Screen
-              name="Login"
-              component={Login}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

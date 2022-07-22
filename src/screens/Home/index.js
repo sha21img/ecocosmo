@@ -17,7 +17,6 @@ import {__} from '../../../Utils/Translation/translation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 function Home(props) {
-  // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>', props.navigation);
   const [selectedLanguage, setSelectedLanguage] = useState();
   return (
     <>

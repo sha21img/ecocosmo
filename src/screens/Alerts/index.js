@@ -7,8 +7,9 @@ import {image} from '../../../assets/images';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const Alerts = () => {
+const Alerts = props => {
   const [Ison, setIson] = useState(false);
   const alertsData = [
     {
@@ -74,7 +75,9 @@ const Alerts = () => {
           style={{height: 161, paddingHorizontal: 16}}>
           <View style={styles.navcontainer}>
             <View style={styles.navbox}>
-              <Image source={image.drawer} style={styles.dashimg} />
+              <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+                <Image source={image.drawer} style={styles.dashimg} />
+              </TouchableOpacity>
               <Text
                 style={{
                   fontSize: Size.large,

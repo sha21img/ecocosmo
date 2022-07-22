@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import colors from '../../../assets/Colors';
-
 import {Size} from '../../../assets/fonts/Fonts';
 
 const styles = StyleSheet.create({
