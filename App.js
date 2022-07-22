@@ -211,6 +211,16 @@ const App = () => {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
+              name="AlertSetting"
+              component={AlertSetting}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="MainScreen"
+              component={MainScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
               name="Login"
               component={Login}
               options={{headerShown: false}}
@@ -218,11 +228,6 @@ const App = () => {
             <Stack.Screen
               name="LiveMapTracking"
               component={LiveMapTracking}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="MainScreen"
-              component={MainScreen}
               options={{headerShown: false}}
             />
 
@@ -235,11 +240,6 @@ const App = () => {
             <Stack.Screen
               name="Setting"
               component={Setting}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="AlertSetting"
-              component={AlertSetting}
               options={{headerShown: false}}
             />
 

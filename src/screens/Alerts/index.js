@@ -8,63 +8,30 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {axiosGetData} from '../../../Utils/ApiController';
 
 const Alerts = props => {
   const [Ison, setIson] = useState(false);
-  const alertsData = [
-    {
-      id: 1,
-      name: 'AC Misuse',
-    },
-    {
-      id: 2,
-      name: 'Daily Report',
-    },
-    {
-      id: 3,
-      name: 'Fuel Tank Full',
-    },
-    {
-      id: 4,
-      name: 'Help me',
-    },
-    {
-      id: 5,
-      name: 'Hourly Location Update',
-    },
-    {
-      id: 6,
-      name: 'Idle Time',
-    },
-    {
-      id: 7,
-      name: 'Ignition OFF',
-    },
-    {
-      id: 8,
-      name: 'Ignition On',
-    },
-    {
-      id: 9,
-      name: 'Last Drive',
-    },
-    {
-      id: 10,
-      name: 'Lock Vehicle',
-    },
-    {
-      id: 11,
-      name: 'Over Speed',
-    },
-    {
-      id: 12,
-      name: 'Power Cut',
-    },
-    {
-      id: 13,
-      name: 'Waiting Time',
-    },
-  ];
+  const [alertDataResponse, setalertResponse] = useState([]);
+
+  const accountid = 'rrenterprises';
+  const password = 'b4e82dac5f70e501df1fde474d8c3aa6';
+  const imei = '459710040353691';
+
+  const AlertData = async () => {
+    const response = await axiosGetData(
+      `getAlertDetails?accountid=${accountid}&password=${password}&imei=${imei}`,
+    );
+    if (response?.data) {
+      setalertResponse(response?.data?.alert_details);
+    }
+    console.log('response', response.data);
+  };
+
+  React.useEffect(() => {
+    AlertData();
+  }, []);
+
   return (
     <>
       <View style={{height: '100%'}}>
@@ -107,12 +74,12 @@ const Alerts = props => {
           />
         </View>
         <ScrollView style={{marginVertical: 26}}>
-          {alertsData.map(el => {
+          {alertDataResponse.map(el => {
             console.log(el);
             return (
               <View key={el.id} style={styles.box2}>
                 <Text style={{fontSize: Size.large, color: colors.textcolor}}>
-                  {el.name}
+                  {el?.displayName}
                 </Text>
                 <Image source={image.selected} />
               </View>
