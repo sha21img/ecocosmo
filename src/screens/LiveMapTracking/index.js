@@ -53,7 +53,7 @@ function LiveMapTracking() {
 
       <View style={style.top_container}>
         <View style={{width: '10%'}}>
-          <Image source={image.leftArrowblack} />
+          <Image source={image.leftArrowblack} style={{width: 40,height:40}} />
         </View>
         <LinearGradient
           colors={[colors.mainThemeColor3, colors.mainThemeColor1]}
@@ -73,7 +73,7 @@ function LiveMapTracking() {
           </View>
         </LinearGradient>
         <View style={style.dashimgbox}>
-          <Image source={image.dashboardcolor} />
+          <Image source={image.dashboardcolor} style={{width: 40,height:40}}/>
         </View>
       </View>
 
