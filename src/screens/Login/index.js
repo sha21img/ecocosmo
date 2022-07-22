@@ -16,10 +16,20 @@ import {Size} from '../../../assets/fonts/Fonts';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {__} from '../../../Utils/Translation/translation';
+import {axiosGetData} from '../../../Utils/ApiController';
+import md5 from 'md5';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    var encodedPassWord = md5(password);
+
+    const response = await axiosGetData(
+      `account/${username}/${encodedPassWord}`,
+    );
+  };
 
   return (
     <ScrollView>
@@ -44,9 +54,9 @@ const Login = () => {
             <Image source={image.person} />
             <TextInput
               placeholder="enter your username"
-              defaultValue={username}
+              value={username}
               style={styles.input}
-              onChange={newText => setUsername(newText)}
+              onChangeText={newText => setUsername(newText)}
             />
           </View>
 
@@ -54,10 +64,10 @@ const Login = () => {
             <Image source={image.security} />
             <TextInput
               placeholder="enter your password"
-              defaultValue={password}
+              value={password}
               style={styles.input}
               secureTextEntry={true}
-              onChange={newText => setPassword(newText)}
+              onChangeText={newText => setPassword(newText)}
             />
             <Image source={image.eye} />
           </View>
@@ -67,7 +77,9 @@ const Login = () => {
         <LinearGradient
           colors={[colors.largeBtn1, colors.largeBtn2]}
           style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>{__('Login')}</Text>
+          <Text style={styles.loginButtonText} onPress={() => handleLogin()}>
+            {__('Login')}
+          </Text>
         </LinearGradient>
         <View style={styles.footerTab}>
           <Image source={image.Mob} style={{height: 34, width: 34}} />
