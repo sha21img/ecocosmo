@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import colors from '../../../assets/Colors';
-import {fontFamily} from '../../../assets/FontFamily';
 import {Size} from '../../../assets/fonts/Fonts';
 
 export const styles = StyleSheet.create({
@@ -10,22 +9,42 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 41,
-    height: 22,
-    width: 122,
+    width: 155,
   },
-  Card: {
-    paddingVertical: 12,
-    paddingHorizontal: 19,
+  subHeading: {
+    height: 72,
     backgroundColor: colors.white,
-    borderRadius: 7,
+    elevation: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+  },
+  subHeadingContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    height: 46,
+    borderWidth: 1,
+    borderColor: colors.toggleColorOff,
+    borderRadius: 7,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    marginVertical: 5,
+  },
+  body: {
+    flex: 3,
+  },
+  bodyContent: {
+    flexDirection: 'row',
+    backgroundColor: colors.white,
+    height: 66,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    borderRadius: 7,
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  footer: {
+    flex: 1.3,
   },
   loginButton: {
-    marginTop: 70,
-    marginBottom: 100,
     height: 66,
     width: '88%',
     alignSelf: 'center',
@@ -36,6 +55,6 @@ export const styles = StyleSheet.create({
   loginButtonText: {
     color: colors.white,
     fontSize: Size.extraLarge,
-    fontFamily: fontFamily.CircularStd_Bold,
+    // fontFamily: fontFamily.CircularStd_Bold,
   },
 });

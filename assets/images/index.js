@@ -90,4 +90,7 @@ export const image = {
   graph: require('./graph.png'),
   refresh: require('./refresh.png'),
   alllocation: require('./alllocation.png'),
+
+  whiteCar: require('./whiteCar.png'),
+  Down: require('./Down.png'),
 };
