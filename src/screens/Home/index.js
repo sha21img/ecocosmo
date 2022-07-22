@@ -60,7 +60,7 @@ function Home(props) {
       </View>
       <ScrollView>
         <View style={styles.carDetailCard}>
-          <Dashboard2 />
+          {/* <Dashboard2 /> */}
           <Dashboard1 />
           {/* {[0, 0, 0].map(() => {
             return <Dashboard1 />;
