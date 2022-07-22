@@ -243,6 +243,12 @@ const App = () => {
               component={Login}
               options={{headerShown: false}}
             />
+
+            <Stack.Screen
+              name="Change Password"
+              component={ChangePassword}
+              options={{headerShown: false}}
+            />
             <Stack.Screen
               name="LiveMapTracking"
               component={LiveMapTracking}

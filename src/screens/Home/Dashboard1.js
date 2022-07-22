@@ -1,11 +1,31 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import {__} from '../../../Utils/Translation/translation';
 import styles from './DashStyle1';
+import MapView, {
+  AnimatedRegion,
+  Animated,
+  MarkerAnimated,
+} from 'react-native-maps';
+import Geolocation from 'react-native-geolocation-service';
 
 function Dashboard1() {
+  const [coordinate, setCoordinate] = useState({
+    latitude: 26.57966,
+    longitude: 75.32111,
+  });
+  useEffect(() => {
+    Geolocation.getCurrentPosition(position => {
+      setCoordinate({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    });
+  }, []);
+  const [marginBottom, setMarginBottom] = useState(1);
+
   return (
     <>
       <View style={styles.card1Container}>
@@ -21,7 +41,41 @@ function Dashboard1() {
         </View>
       </View>
       {/*  */}
-      <View style={{backgroundColor: 'lightgreen', height: 150}}></View>
+      <View style={{backgroundColor: 'lightgreen', height: 150}}>
+        <Animated
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
+          }}
+          initialRegion={{
+            latitude: coordinate.latitude,
+            longitude: coordinate.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          followsUserLocation={true}
+          showsMyLocationButton={true}
+          showsUserLocation={true}
+          onPress={e => {
+            setCoordinate(e.nativeEvent.coordinate);
+            console.log('ontap event ');
+            console.log(e.nativeEvent.coordinate);
+          }}
+          onRegionChangeComplete={region => setCoordinate(region)}
+          onRegionChange={region => setCoordinate(region)}
+          onMapReady={() => setMarginBottom(0)}>
+          <MarkerAnimated
+            coordinate={{
+              latitude: coordinate.latitude,
+              longitude: coordinate.longitude,
+            }}
+            title={'JavaTpoint'}
+            description={'Java Training Institute'}
+          />
+        </Animated>
+      </View>
       {/*  */}
       <LinearGradient
         colors={['#45E384', '#02D958']}

@@ -1,11 +1,10 @@
 import {Size} from '../../../assets/fonts/Fonts';
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
-const style=StyleSheet.create( {
+const style = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
-    justifyContent: 'center',
   },
   map: {
     alignItems: 'center',
@@ -15,8 +14,6 @@ const style=StyleSheet.create( {
   },
   map_container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   top_container: {
     position: 'absolute',
@@ -25,13 +22,11 @@ const style=StyleSheet.create( {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingHorizontal: 10,
   },
   firstbox: {
     flexDirection: 'row',
     paddingHorizontal: 15,
-    backgroundColor: 'green',
-    paddingVertical: 5,
+    paddingVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,
@@ -44,6 +39,7 @@ const style=StyleSheet.create( {
   firstboxtext2: {
     fontSize: Size.tiny,
     color: '#fff',
+    marginVertical: 5,
   },
   dashimgbox: {
     width: '15%',
@@ -100,9 +96,9 @@ const style=StyleSheet.create( {
     fontSize: Size.medium,
     color: '#fff',
   },
-  mapPaper:{
-    width:58,
-    height:58
-  }
+  mapPaper: {
+    width: 58,
+    height: 58,
+  },
 });
 export default style;

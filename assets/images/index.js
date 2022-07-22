@@ -80,6 +80,17 @@ export const image = {
   reportIcon: require('./reportIcon.png'),
   TopLight: require('./TopLight.png'),
   AboutUsIcon: require('./AboutUsIcon.png'),
+  vehicleon: require('./vehicleon.png'),
+  parking2: require('./parking2.png'),
+  trafficlight: require('./trafficlight.png'),
+  map: require('./map.png'),
+  share: require('./share.png'),
+  earth: require('./earth.png'),
+  keep: require('./keep.png'),
+  graph: require('./graph.png'),
+  refresh: require('./refresh.png'),
+  alllocation: require('./alllocation.png'),
+
   whiteCar: require('./whiteCar.png'),
   Down: require('./Down.png'),
 };
