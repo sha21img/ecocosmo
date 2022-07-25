@@ -15,6 +15,7 @@ import {image} from '../../../assets/images';
 import {axiosGetData} from '../../../Utils/ApiController';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
+import Toast from 'react-native-simple-toast';
 
 const CustomerProfile = () => {
   const [AcountId, SetaccountId] = useState('rrenterprises');
@@ -25,9 +26,12 @@ const CustomerProfile = () => {
 
   const handleSave = async () => {
     const response = await axiosGetData(
-      `updateprofile?accountid=${AcountId}&password=b4e82dac5f70e501df1fde474d8c3aa6&acname=rrenterprises&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
+      `updateprofile?accountid=${AcountId}&password=25f9e794323b453885f5181f1b624d0b&acname=rrenterprises&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
     );
     console.log('**************', response.data);
+    if (response.data.apiResult === 'error') {
+      Toast.show(response.data.message);
+    }
   };
 
   return (

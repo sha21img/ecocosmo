@@ -15,17 +15,14 @@ import styles from './style';
 import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
 import {axiosGetData} from '../../../Utils/ApiController';
+import Toast from 'react-native-simple-toast';
 
 const ForgotPassword = () => {
-  const [email, setemail] = useState('pushkar.img@gmail.com');
+  const [email, setemail] = useState('');
   const getOtp = async () => {
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);
-    console.log(response.data.message.message);
-    if (response.data.message.message === 'success') {
-      console.warn(response.data.message.message);
-    } else {
-      console.warn(response.data.message.message);
-    }
+    console.log(response.data);
+    Toast.show(response.data.message.message);
   };
   return (
     <ScrollView>

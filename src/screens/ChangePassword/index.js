@@ -8,11 +8,12 @@ import {__} from '../../../Utils/Translation/translation';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {axiosGetData} from '../../../Utils/ApiController';
 import md5 from 'md5';
+import Toast from 'react-native-simple-toast';
 
 const ChangePassword = () => {
-  const [Current, setCurrent] = useState('1234567890');
-  const [newPassword, setnewPassword] = useState('1234567890');
-  const [confirmPassword, setConfirmPassword] = useState('1234567890');
+  const [Current, setCurrent] = useState('123456789');
+  const [newPassword, setnewPassword] = useState('123456789');
+  const [confirmPassword, setConfirmPassword] = useState('123456789');
 
   const handleSubmit = async () => {
     const DecodedPassword = md5(Current);
@@ -22,8 +23,10 @@ const ChangePassword = () => {
       );
       if (response.data.apiResult === 'error') {
         console.warn(response.data.message);
+        Toast.show(response.data.message);
       } else {
         console.warn(response.data.apiResult);
+        Toast.show(response.data.apiResult);
       }
     } else {
       console.warn('Didnot Match confirm password');
