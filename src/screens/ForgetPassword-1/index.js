@@ -29,7 +29,7 @@ const ForgotPassword_1 = () => {
       );
       console.log(response.data);
       if (response.data.apiResult === 'error') {
-        Toast.show(response.data.message);
+        Toast.show(__(`${response.data.message}`));
       }
     } else {
       console.warn('Didnot Match confirm password');

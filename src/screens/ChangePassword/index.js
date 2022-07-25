@@ -23,10 +23,7 @@ const ChangePassword = () => {
       );
       if (response.data.apiResult === 'error') {
         console.warn(response.data.message);
-        Toast.show(response.data.message);
-      } else {
-        console.warn(response.data.apiResult);
-        Toast.show(response.data.apiResult);
+        Toast.show(__(`${response.data.message}`));
       }
     } else {
       console.warn('Didnot Match confirm password');

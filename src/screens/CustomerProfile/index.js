@@ -28,9 +28,9 @@ const CustomerProfile = () => {
     const response = await axiosGetData(
       `updateprofile?accountid=${AcountId}&password=25f9e794323b453885f5181f1b624d0b&acname=rrenterprises&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
     );
-    console.log('**************', response.data);
+    console.log('*************', response.data);
     if (response.data.apiResult === 'error') {
-      Toast.show(response.data.message);
+      Toast.show(__(`${response.data.message}`));
     }
   };
 
