@@ -14,9 +14,15 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
 import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
+import {axiosGetData} from '../../../Utils/ApiController';
 
 const ForgotPassword = () => {
   const [email, setemail] = useState('');
+
+  const getOtp = async () => {
+    const response = await axiosGetData(`forgotPasswordOtp/${email}`);
+    console.log(response.data);
+  };
   return (
     <ScrollView>
       <LinearGradient
@@ -50,11 +56,13 @@ const ForgotPassword = () => {
             />
           </View>
         </View>
-        <LinearGradient
-          colors={[colors.largeBtn1, colors.largeBtn2]}
-          style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>{__('Submit')}</Text>
-        </LinearGradient>
+        <TouchableOpacity onPress={() => getOtp()}>
+          <LinearGradient
+            colors={[colors.largeBtn1, colors.largeBtn2]}
+            style={styles.loginButton}>
+            <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
         <View style={styles.footerTab}>
           <Image source={image.Mob} style={{height: 34, width: 34}} />
           <Image source={image.whatsApp} style={{height: 34, width: 34}} />

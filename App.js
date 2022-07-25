@@ -214,6 +214,16 @@ const App = () => {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
+              name="ForgotPassword-1"
+              component={ForgotPassword_1}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPassword}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
               name="AlertSetting"
               component={AlertSetting}
               options={{headerShown: false}}
@@ -223,22 +233,12 @@ const App = () => {
               component={MainScreen}
               options={{headerShown: false}}
             />
-            <Stack.Screen
-              name="ForgotPassword-1"
-              component={ForgotPassword_1}
-              options={{headerShown: false}}
-            />
+
             {/* <Stack.Screen
               name="UrlTracking"
               component={U}
               options={{headerShown: false}}
             /> */}
-
-            <Stack.Screen
-              name="ForgotPassword"
-              component={ForgotPassword}
-              options={{headerShown: false}}
-            />
 
             <Stack.Screen
               name="Login"
