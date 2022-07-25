@@ -5,7 +5,7 @@ import {image} from '../../../assets/images';
 const Splash = () => {
   return (
     <>
-      <ImageBackground source={image.splashBackground} style={{flex: 1}} />
+      <ImageBackground source={image.splash} style={{flex: 1}} />
     </>
   );
 };
