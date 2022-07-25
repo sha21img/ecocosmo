@@ -14,11 +14,29 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
 import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
+import {axiosGetData} from '../../../Utils/ApiController';
 
 const ForgotPassword_1 = () => {
-  const [otp, setOtp] = useState('');
-  const [newPassword, setnewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState('1111');
+  const [newPassword, setnewPassword] = useState('9960135999');
+  const [confirmPassword, setConfirmPassword] = useState('9960135999');
+
+  const handleSubmit = async () => {
+    if (newPassword === confirmPassword) {
+      const response = await axiosGetData(
+        `forgotPasswordUpdate/rrenterprises/${otp}/${newPassword}`,
+      );
+      console.log(response.data);
+      console.warn(response.data.message);
+      // if (response.data.apiResult === 'error') {
+      //   console.warn(response.data.message);
+      // } else {
+      //   console.warn(response.data.apiResult);
+      // }
+    } else {
+      console.warn('Didnot Match confirm password');
+    }
+  };
   return (
     <ScrollView>
       <LinearGradient
@@ -66,11 +84,13 @@ const ForgotPassword_1 = () => {
             />
           </View>
         </View>
-        <LinearGradient
-          colors={[colors.largeBtn1, colors.largeBtn2]}
-          style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>{__('Submit')}</Text>
-        </LinearGradient>
+        <TouchableOpacity onPress={handleSubmit}>
+          <LinearGradient
+            colors={[colors.largeBtn1, colors.largeBtn2]}
+            style={styles.loginButton}>
+            <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
         <View style={styles.footerTab}>
           <Image source={image.Mob} style={{height: 34, width: 34}} />
           <Image source={image.whatsApp} style={{height: 34, width: 34}} />
