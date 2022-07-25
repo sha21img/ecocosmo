@@ -24,9 +24,11 @@ import {image} from './assets/images';
 import {__} from './Utils/Translation/translation';
 import {Size} from './assets/fonts/Fonts';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-// import UrlTracking from './src/screrens/UrlTracking';
+import UrlTracking from './src/screens/UrlTracking';
 import ForgotPassword_1 from './src/screens/ForgetPassword-1';
-
+import CustomerProfile from './src/screens/CustomerProfile';
+import Storage from './Utils/Storage';
+import {LogBox} from 'react-native';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -71,6 +73,7 @@ const Routes = [
 ];
 
 const DrawerContent = props => {
+  const {setToken} = React.useContext(AuthContext);
   return (
     <>
       <LinearGradient
@@ -150,29 +153,36 @@ const DrawerContent = props => {
               </TouchableOpacity>
             );
           })}
-          <LinearGradient
-            colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
-            start={{x: 0, y: 0.5}}
-            end={{x: 1, y: 0.5}}
-            locations={[0.5, 1.5]}
-            style={{
-              marginTop: 61,
-              height: 56,
-              width: '95%',
-              alignSelf: 'center',
-              borderRadius: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 160,
+          <TouchableOpacity
+            onPress={async () => {
+              console.log('hihi');
+              await Storage.clearToken();
+              setToken(null);
             }}>
-            <Text
+            <LinearGradient
+              colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              locations={[0.5, 1.5]}
               style={{
-                color: colors.white,
-                fontSize: Size.large,
+                marginTop: 61,
+                height: 56,
+                width: '95%',
+                alignSelf: 'center',
+                borderRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 160,
               }}>
-              {__('Logout')}
-            </Text>
-          </LinearGradient>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontSize: Size.large,
+                }}>
+                {__('Logout')}
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </LinearGradient>
     </>
@@ -203,84 +213,148 @@ const MainScreen = props => {
     </>
   );
 };
-
+export const AuthContext = React.createContext();
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [authToken, setAuthToken] = useState(null);
+  const initialState = {
+    authToken: null,
+  };
+  const reducer = (prevState, action) => {
+    switch (action.type) {
+      case 'SET_TOKEN':
+        return {
+          ...prevState,
+          authToken: action.data,
+        };
+      default:
+        return {
+          ...prevState,
+        };
+    }
+  };
+  const authContext = React.useMemo(
+    () => ({
+      setToken: async data => {
+        dispatch({type: 'SET_TOKEN', data: data});
+      },
+    }),
+    [],
+  );
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const initializeApp = async () => {
+    console.log('yuyuuyuyu');
+    let userProfile = await Storage.getLogin('login');
+    console.log('userProfile', userProfile);
+    if (userProfile) {
+      console.log('ifff');
+      dispatch({type: 'SET_TOKEN', data: userProfile});
+    }
+    setIsLoading(!isLoading);
+  };
+  const changeLang = async () => {
+    const code = await Storage.getLanguage('language');
+    if (code == 'Hindi') {
+      // setDefaultLocale("eng");
+      setLocale('hi', 'rtl');
+    } else if (code == 'English') {
+      setLocale('en', 'rtl');
+      // setDefaultLocale("hi");
+    }
+  };
+  useEffect(() => {
+    LogBox.ignoreAllLogs();
+    changeLang();
 
-  if (!isLoading == true) {
+    initializeApp();
+  }, []);
+  console.log('state.authToken', state.authToken);
+
+  if (isLoading == true) {
     return <Splash />;
   } else {
     return (
       <>
         <NavigationContainer>
-          <Stack.Navigator>
-          <Stack.Screen
-              name="DriverBehaviour"
-              component={DriverBehaviour}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="AlertSetting"
-              component={AlertSetting}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="MainScreen"
-              component={MainScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="ForgotPassword-1"
-              component={ForgotPassword_1}
-              options={{headerShown: false}}
-            />
-            {/* <Stack.Screen
-              name="UrlTracking"
-              component={U}
-              options={{headerShown: false}}
-            /> */}
 
-            <Stack.Screen
-              name="ForgotPassword"
-              component={ForgotPassword}
-              options={{headerShown: false}}
-            />
+          <AuthContext.Provider value={authContext}>
+            <Stack.Navigator>
+              {state.authToken == 'success' ? (
+                <>
+                  <Stack.Screen
+                    name="MainScreen"
+                    component={MainScreen}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="CustomerProfile"
+                    component={CustomerProfile}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="AlertSetting"
+                    component={AlertSetting}
+                    options={{headerShown: false}}
+                  />
 
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="LiveMapTracking"
-              component={LiveMapTracking}
-              options={{headerShown: false}}
-            />
 
-            <Stack.Screen
-              name="Change Password"
-              component={ChangePassword}
-              options={{headerShown: false}}
-            />
+                  <Stack.Screen
+                    name="UrlTracking"
+                    component={UrlTracking}
+                    options={{headerShown: false}}
+                  />
 
-            <Stack.Screen
-              name="Setting"
-              component={Setting}
-              options={{headerShown: false}}
-            />
+                  <Stack.Screen
+                    name="ForgotPassword"
+                    component={ForgotPassword}
+                    options={{headerShown: false}}
+                  />
 
-            <Stack.Screen
-              name="VehicleMenu"
-              component={VehicleMenu}
-              options={{headerShown: false}}
-            />
+                  <Stack.Screen
+                    name="LiveMapTracking"
+                    component={LiveMapTracking}
+                    options={{headerShown: false}}
+                  />
 
-            <Stack.Screen
-              name="NearbyPlaces"
-              component={NearbyPlaces}
-              options={{headerShown: false}}
-            />
-          </Stack.Navigator>
+                  <Stack.Screen
+                    name="Setting"
+                    component={Setting}
+                    options={{headerShown: false}}
+                  />
+
+                  <Stack.Screen
+                    name="VehicleMenu"
+                    component={VehicleMenu}
+                    options={{headerShown: false}}
+                  />
+
+                  <Stack.Screen
+                    name="NearbyPlaces"
+                    component={NearbyPlaces}
+                    options={{headerShown: false}}
+                  />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="Login"
+                    component={Login}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="ForgotPassword-1"
+                    component={ForgotPassword_1}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Change Password"
+                    component={ChangePassword}
+                    options={{headerShown: false}}
+                  />
+                </>
+              )}
+            </Stack.Navigator>
+          </AuthContext.Provider>
         </NavigationContainer>
       </>
     );

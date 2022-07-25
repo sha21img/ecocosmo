@@ -9,6 +9,7 @@ import CheckBox from 'react-native-check-box';
 import {__} from '../../../Utils/Translation/translation';
 import {ScrollView} from 'react-native-gesture-handler';
 import {axiosGetData} from '../../../Utils/ApiController';
+import Toast from 'react-native-simple-toast';
 
 const AlertSetting = () => {
   const [daysset, setDays] = useState([]);
@@ -28,7 +29,7 @@ const AlertSetting = () => {
   let day = daysset.join(',');
 
   const accountid = 'rrenterprises';
-  const password = 'b4e82dac5f70e501df1fde474d8c3aa6';
+  const password = '25f9e794323b453885f5181f1b624d0b';
   const imei = '351608080774446';
   const alertType = 'overspeed';
   const data = 90;
@@ -93,6 +94,9 @@ const AlertSetting = () => {
     const response = await axiosGetData(
       `saveVehicleAlert?accountid=${accountid}&password=${password}&imei=${imei}&alertType=${alertType}&isactive=${isactive}&data=${data}&mobiles=${mobiles}&isSms=${isSms}&isCall=${isCall}&isEmail=${isEmail}&isPush=${isPush}&isAnnouncement=${isAnnouncement}&days=${days}&d1_on=${d1_on}&d1_off=${d1_off}&shift1_timeRange1=${shift1_timeRange1}&shift2_timeRange1=${shift2_timeRange1}`,
     );
+    if (response.data.apiResult === 'error') {
+      Toast.show(response.data.message);
+    }
     console.log(response.data);
   };
 

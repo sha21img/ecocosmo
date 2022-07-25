@@ -26,7 +26,6 @@ const colors = {
   BodyHeading2: '#A7A7A7',
   subGradientcolour1: '#FF5050',
   subGradientcolour2: '#FE7979',
-  black: '#1E1E1E',
   SubContentText: '#68B9FB',
 };
 export default colors;
