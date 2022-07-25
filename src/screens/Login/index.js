@@ -42,7 +42,7 @@ const Login = () => {
     const succcess = await Storage.SetLogin(response.data.apiResult);
 
     if (response.data.apiResult === 'error') {
-      Toast.show(response.data.message);
+      Toast.show(__(`${response.data.message}`));
     }
     console.log('123', response.data);
 

@@ -22,7 +22,7 @@ const ForgotPassword = () => {
   const getOtp = async () => {
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);
     console.log(response.data);
-    Toast.show(response.data.message.message);
+    Toast.show(__(`${response.data.message.message}`));
   };
   return (
     <ScrollView>
