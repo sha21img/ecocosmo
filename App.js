@@ -8,6 +8,7 @@ import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
 import Alerts from './src/screens/Alerts';
+import DriverBehaviour from './src/screens/DriverBehaviour';
 import AlertSetting from './src/screens/AlertSetting';
 import LiveMapTracking from './src/screens/LiveMapTracking';
 import Setting from './src/screens/Setting';
@@ -213,6 +214,11 @@ const App = () => {
       <>
         <NavigationContainer>
           <Stack.Navigator>
+          <Stack.Screen
+              name="DriverBehaviour"
+              component={DriverBehaviour}
+              options={{headerShown: false}}
+            />
             <Stack.Screen
               name="AlertSetting"
               component={AlertSetting}
