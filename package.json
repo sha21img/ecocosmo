@@ -18,6 +18,7 @@
     "@react-navigation/native": "^5.9.8",
     "@react-navigation/stack": "^5.14.9",
     "axios": "^0.27.2",
+    "britecharts-react": "^0.6.5",
     "md5": "^2.3.0",
     "react": "17.0.2",
     "react-native": "0.66.3",
