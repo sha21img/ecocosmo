@@ -15,11 +15,12 @@ import styles from './style';
 import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
 import {axiosGetData} from '../../../Utils/ApiController';
+import Toast from 'react-native-simple-toast';
 
 const ForgotPassword_1 = () => {
-  const [otp, setOtp] = useState('1111');
-  const [newPassword, setnewPassword] = useState('9960135999');
-  const [confirmPassword, setConfirmPassword] = useState('9960135999');
+  const [otp, setOtp] = useState('');
+  const [newPassword, setnewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSubmit = async () => {
     if (newPassword === confirmPassword) {
@@ -27,12 +28,9 @@ const ForgotPassword_1 = () => {
         `forgotPasswordUpdate/rrenterprises/${otp}/${newPassword}`,
       );
       console.log(response.data);
-      console.warn(response.data.message);
-      // if (response.data.apiResult === 'error') {
-      //   console.warn(response.data.message);
-      // } else {
-      //   console.warn(response.data.apiResult);
-      // }
+      if (response.data.apiResult === 'error') {
+        Toast.show(response.data.message);
+      }
     } else {
       console.warn('Didnot Match confirm password');
     }

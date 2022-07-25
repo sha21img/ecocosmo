@@ -5,7 +5,7 @@ import {Size} from '../../../assets/fonts/Fonts';
 const styles = StyleSheet.create({
   head: {
     width: '100%',
-    marginTop: 50
+    marginTop: 50,
   },
   lang: {
     backgroundColor: 'white',
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 7,
     paddingHorizontal: 15,
-    justifyContent:'space-around'
   },
   input: {
     backgroundColor: colors.white,
@@ -59,7 +58,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 160,
   },
   loginButtonText: {
     color: colors.white,
@@ -76,6 +74,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     elevation: 3,
+    marginTop: 160,
   },
 });
 export default styles;

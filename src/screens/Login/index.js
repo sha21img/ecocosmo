@@ -20,6 +20,7 @@ import Storage from '../../../Utils/Storage';
 import {AuthContext} from '../../../App';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Toast from 'react-native-simple-toast';
 
 import ModalSelector from 'react-native-modal-selector';
 
@@ -39,7 +40,12 @@ const Login = () => {
       `account/${username}/${encodedPassWord}`,
     );
     const succcess = await Storage.SetLogin(response.data.apiResult);
-    console.log('123', succcess);
+
+    if (response.data.apiResult === 'error') {
+      Toast.show(response.data.message);
+    }
+    console.log('123', response.data);
+
     setToken(succcess);
   };
   // const data = [{language: 'English'}, {language: 'Hindi'}];
