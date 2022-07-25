@@ -23,9 +23,9 @@ import {image} from './assets/images';
 import {__} from './Utils/Translation/translation';
 import {Size} from './assets/fonts/Fonts';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-// import UrlTracking from './src/screrens/UrlTracking';
+import UrlTracking from './src/screens/UrlTracking';
 import ForgotPassword_1 from './src/screens/ForgetPassword-1';
-
+import CustomerProfile from './src/screens/CustomerProfile';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -214,6 +214,11 @@ const App = () => {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
+              name="CustomerProfile"
+              component={CustomerProfile}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
               name="AlertSetting"
               component={AlertSetting}
               options={{headerShown: false}}
@@ -228,11 +233,11 @@ const App = () => {
               component={ForgotPassword_1}
               options={{headerShown: false}}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
               name="UrlTracking"
-              component={U}
+              component={UrlTracking}
               options={{headerShown: false}}
-            /> */}
+            />
 
             <Stack.Screen
               name="ForgotPassword"
