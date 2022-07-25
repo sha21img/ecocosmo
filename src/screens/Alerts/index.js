@@ -74,17 +74,26 @@ const Alerts = props => {
           />
         </View>
         <ScrollView style={{marginVertical: 26}}>
-          {alertDataResponse.map(el => {
-            console.log(el);
-            return (
-              <View key={el.id} style={styles.box2}>
-                <Text style={{fontSize: Size.large, color: colors.textcolor}}>
-                  {el?.displayName}
-                </Text>
-                <Image source={image.selected} />
-              </View>
-            );
-          })}
+          {Ison
+            ? alertDataResponse.map(el => {
+                return (
+                  <View key={el.id} style={styles.box2}>
+                    <Text
+                      style={{fontSize: Size.large, color: colors.textcolor}}>
+                      {el?.displayName}
+                    </Text>
+                    <View
+                      style={{
+                        backgroundColor:
+                          el.isActive === 'Yes' ? 'blue' : 'lightgrey',
+                        height: 20,
+                        width: 20,
+                        borderRadius: 50,
+                      }}></View>
+                  </View>
+                );
+              })
+            : null}
         </ScrollView>
       </View>
     </>

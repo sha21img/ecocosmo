@@ -5,6 +5,7 @@ import {Size} from '../../../assets/fonts/Fonts';
 const styles = StyleSheet.create({
   head: {
     width: '100%',
+    marginTop: 50
   },
   lang: {
     backgroundColor: 'white',
@@ -36,6 +37,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 7,
     paddingHorizontal: 15,
+    justifyContent:'space-around'
   },
   input: {
     backgroundColor: colors.white,
