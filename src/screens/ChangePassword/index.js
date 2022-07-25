@@ -1,12 +1,35 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, Text, View, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {axiosGetData} from '../../../Utils/ApiController';
+import md5 from 'md5';
 
 const ChangePassword = () => {
+  const [Current, setCurrent] = useState('1234567890');
+  const [newPassword, setnewPassword] = useState('1234567890');
+  const [confirmPassword, setConfirmPassword] = useState('1234567890');
+
+  const handleSubmit = async () => {
+    const DecodedPassword = md5(Current);
+    if (newPassword === confirmPassword) {
+      const response = await axiosGetData(
+        `changepassword?accountid=rrenterprises&password=${DecodedPassword}&newpassword=${newPassword}`,
+      );
+      if (response.data.apiResult === 'error') {
+        console.warn(response.data.message);
+      } else {
+        console.warn(response.data.apiResult);
+      }
+    } else {
+      console.warn('Didnot Match confirm password');
+    }
+  };
+
   return (
     <>
       <LinearGradient
@@ -27,6 +50,8 @@ const ChangePassword = () => {
               placeholder="Enter current password"
               placeholderTextColor={'#BBBBBB'}
               style={styles.input}
+              defaultValue={Current}
+              onChangeText={data => setCurrent(data)}
             />
           </View>
           <Text style={styles.inputHeading}>{__('New Password')}</Text>
@@ -36,6 +61,8 @@ const ChangePassword = () => {
               placeholder="Enter password"
               placeholderTextColor={'#BBBBBB'}
               style={styles.input}
+              defaultValue={newPassword}
+              onChangeText={data => setnewPassword(data)}
             />
           </View>
           <Text style={styles.inputHeading}>{__('Confirm New Password')}</Text>
@@ -45,13 +72,17 @@ const ChangePassword = () => {
               placeholder="Enter password"
               placeholderTextColor={'#BBBBBB'}
               style={styles.input}
+              defaultValue={confirmPassword}
+              onChangeText={data => setConfirmPassword(data)}
             />
           </View>
-          <LinearGradient
-            colors={[colors.largeBtn1, colors.largeBtn2]}
-            style={styles.loginButton}>
-            <Text style={styles.loginButtonText}>{__('Submit')}</Text>
-          </LinearGradient>
+          <TouchableOpacity onPress={handleSubmit}>
+            <LinearGradient
+              colors={[colors.largeBtn1, colors.largeBtn2]}
+              style={styles.loginButton}>
+              <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </LinearGradient>
       </LinearGradient>
     </>
