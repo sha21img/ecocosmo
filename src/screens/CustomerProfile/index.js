@@ -7,7 +7,7 @@ import {image} from '../../../assets/images';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 
-const MyAccount = () => {
+const CustomerProfile = () => {
   return (
     <>
       <LinearGradient
@@ -26,4 +26,4 @@ const MyAccount = () => {
     </>
   );
 };
-export default MyAccount;
+export default CustomerProfile;
