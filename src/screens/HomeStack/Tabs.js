@@ -1,15 +1,14 @@
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 
 import {image} from '../../../assets/images';
 
-function Tabs({color, tab, onPress, icon, selected, index}) {
-  console.log('selected', selected);
-  // const icons=icon
-  console.log('tab', tab);
+function Tabs({color, tab, onPress, icon, isSelected, index}) {
   return (
     <TouchableOpacity
-      onPress={() => onPress(tab.name, index)}
+      onPress={() => {
+        onPress(tab.name, index);
+      }}
       style={{
         flex: 1,
         alignItems: 'center',
@@ -17,7 +16,7 @@ function Tabs({color, tab, onPress, icon, selected, index}) {
         padding: 5,
       }}>
       <Image
-        source={image[icon]}
+        source={tab.name == isSelected ? image[icon] : null}
         resizeMode="contain"
         style={{
           width: 40,
