@@ -7,7 +7,6 @@ import Notifications from '../Notifications';
 import CustomerProfile from '../CustomerProfile';
 import Setting from '../Setting';
 import Tabs from './Tabs';
-// import {AntDesign} from 'react-native-vector-icons/AntDesign'
 
 function HomeStack() {
   const Tab = createBottomTabNavigator();
