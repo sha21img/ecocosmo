@@ -50,7 +50,7 @@ const ForgotPassword = () => {
           <View style={[styles.inputBox]}>
             <Image source={image.person} />
             <TextInput
-              placeholder="enter account ID or number"
+              placeholder={__('enter account ID or number')}
               style={styles.input}
               defaultValue={email}
               onChangeText={email => setemail(email)}

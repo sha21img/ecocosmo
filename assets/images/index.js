@@ -94,4 +94,5 @@ export const image = {
   whiteCar: require('./whiteCar.png'),
   Down: require('./Down.png'),
   Phone: require('./Phone.png'),
+  callimg: require('./callimg.png'),
 };
