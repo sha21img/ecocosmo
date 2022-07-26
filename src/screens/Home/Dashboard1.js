@@ -90,19 +90,19 @@ function Dashboard1() {
           }}>
           <View style={styles.driverDetailBox}>
             <Text style={styles.driverDetailText1}>{__('CHECK IN TIME')}</Text>
-            <Text style={styles.driverDetailText2}>{__('17:57:45')}</Text>
+            <Text style={styles.driverDetailText2}>17:57:45</Text>
           </View>
           <View style={styles.driverDetailBox}>
             <Text style={styles.driverDetailText1}>{__('TODAYS ODO')}</Text>
-            <Text style={styles.driverDetailText2}>{__('5790456 KM')}</Text>
+            <Text style={styles.driverDetailText2}>5790456{" "}{__('KM')}</Text>
           </View>
           <View style={styles.driverDetailBox}>
             <Text style={styles.driverDetailText1}>{__('SPEED')}</Text>
-            <Text style={styles.driverDetailText2}>{__('16KM./H')}</Text>
+            <Text style={styles.driverDetailText2}>16{" "}{__('KM/H')}</Text>
           </View>
         </View>
         <TouchableOpacity style={styles.button}>
-          <Image source={image.callimg} style={{height: 11, width: 11}} />
+          <Image source={image.callimg} style={{height:11, width: 11,marginRight:5}} />
           <Text style={styles.buttonText}> {__('Call')}</Text>
         </TouchableOpacity>
       </LinearGradient>

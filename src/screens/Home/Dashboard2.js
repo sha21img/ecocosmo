@@ -27,7 +27,7 @@ function Dashboard2() {
                 />
                 <Text style={styles.driverCarDetailsText}>17:57:45</Text>
                 <Text style={styles.driverCarDetailsText1}>
-                  {__('CHECK-IN TIME')}
+                  {__('CHECK IN TIME')}
                 </Text>
               </View>
               <View style={styles.driverCarDetails}>
