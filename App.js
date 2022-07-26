@@ -9,6 +9,7 @@ import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
 import Alerts from './src/screens/Alerts';
 import DriverBehaviour from './src/screens/DriverBehaviour';
+import DistanceReport from './src/screens/DistanceReport';
 import AlertSetting from './src/screens/AlertSetting';
 import LiveMapTracking from './src/screens/LiveMapTracking';
 import Setting from './src/screens/Setting';
@@ -45,8 +46,8 @@ const permanentRoutes = [
   },
   {
     label: 'Reports',
-    icon: image.reportIcon,
-    route: '',
+    icon: image.mapIcon,
+    route: 'DistanceReport',
   },
   {
     label: 'Contact Us',
@@ -209,6 +210,7 @@ const MainScreen = props => {
         <Drawer.Screen name="AboutUs" component={AboutUs} />
         <Drawer.Screen name="Renewal" component={Renewal} />
         <Drawer.Screen name="ContactUs" component={ContactUs} />
+        <Drawer.Screen name="DistanceReport" component={DistanceReport} />
       </Drawer.Navigator>
     </>
   );
@@ -276,7 +278,6 @@ const App = () => {
     return (
       <>
         <NavigationContainer>
-
           <AuthContext.Provider value={authContext}>
             <Stack.Navigator>
               {state.authToken == 'success' ? (
@@ -297,10 +298,14 @@ const App = () => {
                     options={{headerShown: false}}
                   />
 
-
                   <Stack.Screen
                     name="UrlTracking"
                     component={UrlTracking}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="DriverBehaviour"
+                    component={DriverBehaviour}
                     options={{headerShown: false}}
                   />
 

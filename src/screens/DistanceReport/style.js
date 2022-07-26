@@ -4,34 +4,25 @@ import {Size} from '../../../assets/fonts/Fonts';
 
 const styles = StyleSheet.create({
   mainContainer: {
-    flex:1,
-    
+    flex: 1,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',padding: 20,
+    alignItems: 'center',
+    padding: 20,
   },
   headerDashboard: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  //   dashboardContainer: {
-  //     flexDirection: 'row',
-  //     alignItems: 'center',
-  //   },
   dashboardText: {
     color: colors.white,
     fontSize: Size.large,
     fontWeight: 'bold',
-    marginLeft: 15,
+    marginLeft: 10,
   },
-  //   dashboardArrow: {
-  //     height: 6,
-  //     width: 10,
-  //     marginHorizontal: 5,
-  //   },
   alertContainer: {
     flexDirection: 'row',
     width: '50%',
