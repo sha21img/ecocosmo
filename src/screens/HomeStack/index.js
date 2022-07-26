@@ -75,12 +75,12 @@ function HomeStack() {
       <Tab.Screen
         name="Notifications"
         component={Notifications}
-        initialParams={{icon: 'customerprofile'}}
+        initialParams={{icon: 'notification'}}
       />
       <Tab.Screen
         name="CustomerProfile"
         component={CustomerProfile}
-        initialParams={{icon: 'notification'}}
+        initialParams={{icon: 'customerprofile'}}
       />
       <Tab.Screen
         name="Setting"
