@@ -186,7 +186,7 @@ const AlertSetting = () => {
             />
           </View>
           <View style={styles.FooterTextContainer}>
-            <Text style={styles.FooterText}>{__('Shift 1')}</Text>
+            <Text style={styles.FooterText}>{__('Shift 2')}</Text>
             <TextInput
               placeholder="From"
               placeholderTextColor={colors.toggleColorOff}
