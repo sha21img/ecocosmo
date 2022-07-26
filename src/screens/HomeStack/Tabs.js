@@ -16,7 +16,21 @@ function Tabs({color, tab, onPress, icon, isSelected, index}) {
         padding: 5,
       }}>
       <Image
-        source={tab.name == isSelected ? image[icon] : null}
+        source={
+          tab.name == isSelected
+            ? image[icon]
+            : tab.name == 'Home'
+            ? image.home
+            : tab.name == 'Home2'
+            ? image.home2unselected
+            : tab.name == 'Notifications'
+            ? image.notifyUnSelected
+            : tab.name == 'CustomerProfile'
+            ? image.customerprofileUnSelect
+            : tab.name == 'Setting'
+            ? image.settingUnSelect
+            : null
+        }
         resizeMode="contain"
         style={{
           width: 40,
