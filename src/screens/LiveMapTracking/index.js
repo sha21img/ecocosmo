@@ -57,8 +57,6 @@ function LiveMapTracking() {
           showsUserLocation={true}
           onPress={e => {
             setCoordinate(e.nativeEvent.coordinate);
-            console.log('ontap event ');
-            console.log(e.nativeEvent.coordinate);
           }}
           onRegionChangeComplete={region => setCoordinate(region)}
           onRegionChange={region => setCoordinate(region)}
@@ -93,7 +91,7 @@ function LiveMapTracking() {
               marginLeft: 15,
               width: '80%',
             }}>
-            <Text style={style.firstboxtext1}>{__('MH12 RN 0790')}</Text>
+            <Text style={style.firstboxtext1}>MH12 RN 0790'</Text>
             <Text style={style.firstboxtext2}>
               {__(
                 '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India',
@@ -119,13 +117,13 @@ function LiveMapTracking() {
           style={style.secondbox}>
           <View style={style.secondboxtextbox1}>
             <Image source={image.speed} style={style.speedimg} />
-            <Text style={style.secondboxtext1}>{__('16 KM/H')}</Text>
+            <Text style={style.secondboxtext1}>16 {__('KM/H')}</Text>
             <Text style={style.secondboxtext11}>{__('SPEED')}</Text>
           </View>
           <View style={style.secondboxtextbox1}>
             <Image source={image.distance} style={style.locimg} />
             <Text style={{fontSize: 12, marginTop: 8, color: '#fff'}}>
-              {__('5790456')}
+              5790456
             </Text>
             <Text style={style.secondboxtext11}>{__("TODAY'S ODO")}</Text>
           </View>

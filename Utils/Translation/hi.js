@@ -4,8 +4,7 @@ export default {
   'enter your username': 'अपना उपयोगकर्ता नाम दर्ज करें',
   'enter your password': 'अपना पासवर्ड डालें',
   // vehicle menu
-  'RUNNING 14M 38KM/H': 'रनिंग 14M 38KM/H',
-  'MH12 RN 0790': 'एमएच12 आरएन 0790',
+  RUNNING: 'दौड़ना',
   'Call Driver': 'चालक को बुलाओ',
   //setting
   Settings: 'समायोजन',
@@ -22,15 +21,40 @@ export default {
   'Forgot Password?': 'पासवर्ड भूल गए?',
   Login: 'लॉग इन करें',
   //livemap tracking
-  'MH12 RN 0790': 'एमएच12 आरएन 0790',
   '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India':
     '177 न्यू अपोलो इंडस्ट्रीयल एस्टेट मोगरा लेन अंधेरी मुंबई, भरूच, 400069, भारत',
-  '16 KM/H': '16 किमी/घंटा',
+  'KM/H': 'किमी/घंटा',
   SPEED: 'रफ़्तार',
-  5790456: '5790456',
   "TODAY'S ODO": 'आज का ओडीओ',
   'ADD DRIVER': 'ड्राइवर जोड़ें',
   //home index
   'All (10)': 'सभी (10)',
-  Running: 'चल रहा है',
+
+  //URL
+  'URL Tracking': 'यूआरएल ट्रैकिंग',
+  'All Vehicle': 'सभी वाहन',
+  'Select Date': 'तारीख़ चुनें',
+  'Select Time': 'समय चुनें',
+  Duration: 'अवधि',
+  'Asset Description': 'संपत्ति विवरण',
+  'Share URL': 'यूआरएल साझा करें',
+
+  //Renewals
+  Renewals: 'नवीकरण',
+  Submit: 'प्रस्तुत करना',
+
+  //Dashboard1
+  'TODAYS ODO': 'टुडे वनडे',
+  Call: 'बुलाना',
+
+  //Dashboard2
+  'CHECK-IN TIME': 'समय पर जांचो',
+
+  //Home
+  'Dashboard 1': 'डैशबोर्ड 1',
+  All: 'सभी',
+
+  // Forgot Password
+  'Reset Password': 'पासवर्ड रीसेट',
+  'enter account ID or number': 'खाता आईडी या नंबर दर्ज करें',
 };

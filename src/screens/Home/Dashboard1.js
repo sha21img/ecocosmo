@@ -31,11 +31,11 @@ function Dashboard1() {
       <View style={styles.card1Container}>
         <Image source={image.car} />
         <View style={{paddingHorizontal: 10}}>
-          <Text style={styles.driverCarNumber}>{__('MH12 RN 0790')}</Text>
+          <Text style={styles.driverCarNumber}>MH12 RN 0790</Text>
           <View style={styles.driverCarSpeedBox}>
             <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>
             <Text style={styles.driverCarSpeed}>
-              {__('Running 14m 38km/h')}
+              {__('Running')} 14m 38km/h
             </Text>
           </View>
         </View>
@@ -60,8 +60,6 @@ function Dashboard1() {
           showsUserLocation={true}
           onPress={e => {
             setCoordinate(e.nativeEvent.coordinate);
-            console.log('ontap event ');
-            console.log(e.nativeEvent.coordinate);
           }}
           onRegionChangeComplete={region => setCoordinate(region)}
           onRegionChange={region => setCoordinate(region)}
@@ -103,8 +101,9 @@ function Dashboard1() {
             <Text style={styles.driverDetailText2}>{__('16KM./H')}</Text>
           </View>
         </View>
-        <TouchableOpacity>
-          <Image source={image.call} />
+        <TouchableOpacity style={styles.button}>
+          <Image source={image.callimg} style={{height: 11, width: 11}} />
+          <Text style={styles.buttonText}> {__('Call')}</Text>
         </TouchableOpacity>
       </LinearGradient>
       <LinearGradient

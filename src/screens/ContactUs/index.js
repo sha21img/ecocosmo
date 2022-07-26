@@ -1,13 +1,30 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
+import {axiosGetData} from '../../../Utils/ApiController';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 
 const ContactUs = props => {
+  const [details, setDetails] = useState();
+
+  const contactUsDetails = async () => {
+    const response = await axiosGetData(`loginScreenCompanyDetails`);
+    console.log(response.data);
+    setDetails(response.data);
+    // if (response.data.apiResult === 'error') {
+    //   // Toast.show(__(`${response.data.message}`));
+    // }
+    console.log(response.data);
+  };
+
+  useEffect(() => {
+    contactUsDetails();
+  }, []);
+
   return (
     <>
       <LinearGradient
