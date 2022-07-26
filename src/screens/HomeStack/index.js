@@ -7,18 +7,15 @@ import Notifications from '../Notifications';
 import CustomerProfile from '../CustomerProfile';
 import Setting from '../Setting';
 import Tabs from './Tabs';
-// import {AntDesign} from 'react-native-vector-icons/AntDesign'
 
 function HomeStack() {
   const Tab = createBottomTabNavigator();
+  const [isSelected, setIsSelected] = useState('Home');
   const CustomTabBar = ({state, navigation}) => {
-    const [selected, setSelected] = useState('Home');
     const {routes} = state;
-    const renderColor = currentTab =>
-      currentTab === selected ? 'red' : 'black';
     const handlePress = (activeTab, index) => {
+      setIsSelected(activeTab);
       if (state.index !== index) {
-        setSelected(activeTab);
         navigation.navigate(activeTab);
       }
     };
@@ -48,9 +45,8 @@ function HomeStack() {
               icon={route.params.icon}
               key={route.key}
               index={index}
-              color={renderColor(route.name)}
-              selected={selected}
-              onPress={() => handlePress(route.name, index)}
+              isSelected={isSelected}
+              onPress={handlePress}
             />
           ))}
         </View>
@@ -75,12 +71,12 @@ function HomeStack() {
       <Tab.Screen
         name="Notifications"
         component={Notifications}
-        initialParams={{icon: 'customerprofile'}}
+        initialParams={{icon: 'notification'}}
       />
       <Tab.Screen
         name="CustomerProfile"
         component={CustomerProfile}
-        initialParams={{icon: 'notification'}}
+        initialParams={{icon: 'customerprofile'}}
       />
       <Tab.Screen
         name="Setting"

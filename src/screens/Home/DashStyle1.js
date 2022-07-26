@@ -70,5 +70,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     textAlign: 'center',
   },
+  buttonText: {fontSize: Size.medium, color: colors.white},
+    button: {
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: colors.callBtn,
+    borderRadius: 5,
+  },
 });
 export default styles;

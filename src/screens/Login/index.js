@@ -26,7 +26,8 @@ import ModalSelector from 'react-native-modal-selector';
 
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
 
-const Login = () => {
+const Login = ({navigation}) => {
+  console.log('navigatoi0n', navigation.navigate);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(true);
@@ -42,7 +43,7 @@ const Login = () => {
     const succcess = await Storage.SetLogin(response.data.apiResult);
 
     if (response.data.apiResult === 'error') {
-      Toast.show(response.data.message);
+      Toast.show(__(`${response.data.message}`));
     }
     console.log('123', response.data);
 
@@ -106,11 +107,6 @@ const Login = () => {
           </TouchableOpacity>
         </ModalSelector>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
-          {/* <TouchableOpacity style={styles.lang}>
-            <Text style={{fontSize: Size.large}}>{__('English')}</Text>
-            <MaterialIcons size={50} color="#900" />
-            <Icon size={50} color="#900" />
-          </TouchableOpacity> */}
           <Image source={image.loginLogo} style={[styles.logo]} />
           <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
           <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
@@ -145,8 +141,10 @@ const Login = () => {
               />
             </TouchableOpacity>
           </View>
-
-          <Text style={styles.forgotPassword}>{__('Forgot Password?')}</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={styles.forgotPassword}>{__('Forgot Password?')}</Text>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={() => handleLogin()}>
           <LinearGradient

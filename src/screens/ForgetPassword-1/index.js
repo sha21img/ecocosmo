@@ -16,11 +16,16 @@ import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Toast from 'react-native-simple-toast';
+import ModalSelector from 'react-native-modal-selector';
+import {setDefaultLocale} from '../../../Utils/Translation/translation';
+
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const ForgotPassword_1 = () => {
   const [otp, setOtp] = useState('');
   const [newPassword, setnewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [language, setLanguage] = useState('English');
 
   const handleSubmit = async () => {
     if (newPassword === confirmPassword) {
@@ -29,11 +34,20 @@ const ForgotPassword_1 = () => {
       );
       console.log(response.data);
       if (response.data.apiResult === 'error') {
-        Toast.show(response.data.message);
+        Toast.show(__(`${response.data.message}`));
       }
     } else {
       console.warn('Didnot Match confirm password');
     }
+  };
+  let index = 0;
+
+  const data = [
+    {key: index++, label: 'English'},
+    {key: index++, label: 'Hindi'},
+  ];
+  const changeLanguage = language => {
+    return __(language);
   };
   return (
     <ScrollView>
@@ -45,12 +59,52 @@ const ForgotPassword_1 = () => {
           height: '100%',
         }}>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
-          <View style={styles.headerContainer}>
+          {/* <View style={styles.headerContainer}>
             <Image source={image.backArrow} style={{height: 12, width: 23}} />
             <TouchableOpacity style={styles.lang}>
               <Text style={{fontSize: Size.large}}>{__('English')}</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
+          <ModalSelector
+            initValue="Select tickets"
+            accessible={true}
+            scrollViewAccessibilityLabel={'Scrollable options'}
+            cancelButtonAccessibilityLabel={'Cancel Button'}
+            style={{marginLeft: 'auto'}}
+            data={data}
+            onChange={option => {
+              console.log('option', option.label);
+              setLanguage(option.label);
+              setDefaultLocale(option.label);
+            }}>
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: '#fff',
+                borderRadius: 30,
+                paddingHorizontal: 18,
+                justifyContent: 'space-around',
+              }}>
+              <TextInput
+                style={{
+                  color: colors.black,
+                  fontSize: Size.medium,
+                  marginRight: 5,
+                  height: 40,
+                }}
+                editable={false}
+                value={changeLanguage(language)}
+              />
+              <MaterialIcons
+                style={{
+                  color: '#47BC30',
+                  fontSize: 16,
+                }}
+                name={'keyboard-arrow-down'}
+              />
+            </TouchableOpacity>
+          </ModalSelector>
           <Image source={image.loginLogo} style={[styles.logo]} />
           <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
           <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
@@ -59,7 +113,7 @@ const ForgotPassword_1 = () => {
         <View style={{marginTop: 23}}>
           <View style={[styles.inputBox]}>
             <TextInput
-              placeholder="enter OTP"
+              placeholder={__('enter OTP')}
               style={styles.input}
               defaultValue={otp}
               onChangeText={data => setOtp(data)}
@@ -67,7 +121,7 @@ const ForgotPassword_1 = () => {
           </View>
           <View style={[styles.inputBox]}>
             <TextInput
-              placeholder="enter new password"
+              placeholder={__('enter new password')}
               style={styles.input}
               defaultValue={newPassword}
               onChangeText={data => setnewPassword(data)}
@@ -75,7 +129,7 @@ const ForgotPassword_1 = () => {
           </View>
           <View style={[styles.inputBox]}>
             <TextInput
-              placeholder="confirm new password"
+              placeholder={__('confirm new password')}
               style={styles.input}
               defaultValue={confirmPassword}
               onChangeText={data => setConfirmPassword(data)}

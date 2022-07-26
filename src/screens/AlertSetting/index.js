@@ -95,7 +95,7 @@ const AlertSetting = () => {
       `saveVehicleAlert?accountid=${accountid}&password=${password}&imei=${imei}&alertType=${alertType}&isactive=${isactive}&data=${data}&mobiles=${mobiles}&isSms=${isSms}&isCall=${isCall}&isEmail=${isEmail}&isPush=${isPush}&isAnnouncement=${isAnnouncement}&days=${days}&d1_on=${d1_on}&d1_off=${d1_off}&shift1_timeRange1=${shift1_timeRange1}&shift2_timeRange1=${shift2_timeRange1}`,
     );
     if (response.data.apiResult === 'error') {
-      Toast.show(response.data.message);
+      Toast.show(__(`${response.data.message}`));
     }
     console.log(response.data);
   };
@@ -186,7 +186,7 @@ const AlertSetting = () => {
             />
           </View>
           <View style={styles.FooterTextContainer}>
-            <Text style={styles.FooterText}>{__('Shift 1')}</Text>
+            <Text style={styles.FooterText}>{__('Shift 2')}</Text>
             <TextInput
               placeholder="From"
               placeholderTextColor={colors.toggleColorOff}

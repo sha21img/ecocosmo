@@ -15,9 +15,9 @@ function Dashboard2() {
           <View style={styles.driverDetails}>
             <View>
               <Text style={styles.driverCarSpeed}>
-                {__('RUNNING 14M 38KM/H')}
+                {__('RUNNING')} 14M 38KM/H
               </Text>
-              <Text style={styles.driverCarNumber}>{__('MH12 RN 0790')}</Text>
+              <Text style={styles.driverCarNumber}>MH12 RN 0790</Text>
             </View>
             <View style={styles.driverCarDetailsBox}>
               <View style={styles.driverCarDetails}>
@@ -25,11 +25,9 @@ function Dashboard2() {
                   source={image.clock}
                   style={styles.driverCarDetailsImage}
                 />
-                <Text style={styles.driverCarDetailsText}>
-                  {__('17:57:45')}
-                </Text>
+                <Text style={styles.driverCarDetailsText}>17:57:45</Text>
                 <Text style={styles.driverCarDetailsText1}>
-                  {__('CHECK-IN TIME')}
+                  {__('CHECK IN TIME')}
                 </Text>
               </View>
               <View style={styles.driverCarDetails}>
@@ -37,7 +35,7 @@ function Dashboard2() {
                   source={image.speed}
                   style={styles.driverCarDetailsImage}
                 />
-                <Text style={styles.driverCarDetailsText}>{__('16 KM/H')}</Text>
+                <Text style={styles.driverCarDetailsText}>16 {__('KM/H')}</Text>
                 <Text style={styles.driverCarDetailsText1}>{__('SPEED')}</Text>
               </View>
               <View style={styles.driverCarDetails}>
@@ -45,7 +43,7 @@ function Dashboard2() {
                   source={image.distance}
                   style={styles.driverCarDetailsImage1}
                 />
-                <Text style={styles.driverCarDetailsText}>{__('5790456')}</Text>
+                <Text style={styles.driverCarDetailsText}>5790456</Text>
                 <Text style={styles.driverCarDetailsText1}>
                   {__("TODAY'S ODO")}
                 </Text>

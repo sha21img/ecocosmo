@@ -31,11 +31,11 @@ function Dashboard1() {
       <View style={styles.card1Container}>
         <Image source={image.car} />
         <View style={{paddingHorizontal: 10}}>
-          <Text style={styles.driverCarNumber}>{__('MH12 RN 0790')}</Text>
+          <Text style={styles.driverCarNumber}>MH12 RN 0790</Text>
           <View style={styles.driverCarSpeedBox}>
             <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>
             <Text style={styles.driverCarSpeed}>
-              {__('Running 14m 38km/h')}
+              {__('Running')} 14m 38km/h
             </Text>
           </View>
         </View>
@@ -60,8 +60,6 @@ function Dashboard1() {
           showsUserLocation={true}
           onPress={e => {
             setCoordinate(e.nativeEvent.coordinate);
-            console.log('ontap event ');
-            console.log(e.nativeEvent.coordinate);
           }}
           onRegionChangeComplete={region => setCoordinate(region)}
           onRegionChange={region => setCoordinate(region)}
@@ -92,19 +90,20 @@ function Dashboard1() {
           }}>
           <View style={styles.driverDetailBox}>
             <Text style={styles.driverDetailText1}>{__('CHECK IN TIME')}</Text>
-            <Text style={styles.driverDetailText2}>{__('17:57:45')}</Text>
+            <Text style={styles.driverDetailText2}>17:57:45</Text>
           </View>
           <View style={styles.driverDetailBox}>
             <Text style={styles.driverDetailText1}>{__('TODAYS ODO')}</Text>
-            <Text style={styles.driverDetailText2}>{__('5790456 KM')}</Text>
+            <Text style={styles.driverDetailText2}>5790456{" "}{__('KM')}</Text>
           </View>
           <View style={styles.driverDetailBox}>
             <Text style={styles.driverDetailText1}>{__('SPEED')}</Text>
-            <Text style={styles.driverDetailText2}>{__('16KM./H')}</Text>
+            <Text style={styles.driverDetailText2}>16{" "}{__('KM/H')}</Text>
           </View>
         </View>
-        <TouchableOpacity>
-          <Image source={image.call} />
+        <TouchableOpacity style={styles.button}>
+          <Image source={image.callimg} style={{height:11, width: 11,marginRight:5}} />
+          <Text style={styles.buttonText}> {__('Call')}</Text>
         </TouchableOpacity>
       </LinearGradient>
       <LinearGradient

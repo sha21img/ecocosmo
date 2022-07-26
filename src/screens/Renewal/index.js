@@ -49,7 +49,9 @@ const Renewal = props => {
         end={{x: 1, y: 0.5}}
         style={styles.header}>
         <View style={styles.headerContainer}>
-          <Image source={image.backArrow} style={{height: 12, width: 23}} />
+          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+            <Image source={image.backArrow} style={{height: 12, width: 23}} />
+          </TouchableOpacity>
           <Text
             style={{
               fontSize: Size.large,

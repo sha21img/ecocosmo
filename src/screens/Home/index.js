@@ -18,6 +18,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 function Home(props) {
   const [selectedLanguage, setSelectedLanguage] = useState();
+  const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
+
+  let index = 0;
+
+  const data = [
+    {key: index++, label: 'Dashboard 1'},
+    {key: index++, label: 'Dashboard 2'},
+  ];
+  const changeDasboardType = dashBoardType => {
+    return __(dashBoardType);
+  };
   return (
     <>
       <LinearGradient
@@ -33,14 +44,21 @@ function Home(props) {
             <ModalSelector
               initValue="Select tickets"
               accessible={true}
+              data={data}
               scrollViewAccessibilityLabel={'Scrollable options'}
-              cancelButtonAccessibilityLabel={'Cancel Button'}
-              style={{flexDirection: 'row'}}>
+              // cancelButtonAccessibilityLabel={'Cancel Button'}
+              style={{flexDirection: 'row'}}
+              onChange={option => {
+                console.log('option', option.label);
+                setDashBoardType(option.label);
+              }}>
               <TouchableOpacity style={styles.dashboardContainer}>
                 <TextInput
                   style={styles.dashboardText}
                   editable={false}
-                  value="Dashboard 1"
+                  value={changeDasboardType(dashBoardType)}
+
+                  // value={__('Dashboard 1')}
                 />
                 <Image source={image.arrowDown} style={styles.dashboardArrow} />
               </TouchableOpacity>
@@ -54,17 +72,18 @@ function Home(props) {
       </LinearGradient>
       <View style={styles.catagoryBox}>
         <ScrollView horizontal={true}>
-          <Text style={styles.catagoryTextActive}>{__('All (10)')}</Text>
-          <Text style={styles.catagoryTextInactive}>{__('Running(5)')}</Text>
+          <Text style={styles.catagoryTextActive}>{__('All')} (10)</Text>
+          <Text style={styles.catagoryTextInactive}>{__('Running')}(5)</Text>
         </ScrollView>
       </View>
       <ScrollView>
         <View style={styles.carDetailCard}>
           {/* <Dashboard2 /> */}
-          <Dashboard1 />
+          {dashBoardType === 'Dashboard 1' ? <Dashboard1 /> : null}
           {/* {[0, 0, 0].map(() => {
             return <Dashboard1 />;
           })} */}
+          {dashBoardType === 'Dashboard 2' ? <Dashboard2 /> : null}
         </View>
       </ScrollView>
     </>

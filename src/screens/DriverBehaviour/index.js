@@ -19,6 +19,7 @@ function DriverBehaviour() {
       <LinearGradient
         colors={['#16BCD4', '#395DBF']}
         style={styles.mainContainer}>
+
         <ScrollView>
           <View style={styles.headerContainer}>
             <View style={styles.headerDashboard}>
@@ -49,6 +50,7 @@ function DriverBehaviour() {
                     {__('MH12 RN 0790')}
                   </Text>
                 </View>
+
                 <View style={styles.driverCarDetailsBox}>
                   <View style={styles.driverCarDetails}>
                     <Image

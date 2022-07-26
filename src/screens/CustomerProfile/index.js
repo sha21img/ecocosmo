@@ -28,9 +28,9 @@ const CustomerProfile = () => {
     const response = await axiosGetData(
       `updateprofile?accountid=${AcountId}&password=25f9e794323b453885f5181f1b624d0b&acname=rrenterprises&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
     );
-    console.log('**************', response.data);
+    console.log('*************', response.data);
     if (response.data.apiResult === 'error') {
-      Toast.show(response.data.message);
+      Toast.show(__(`${response.data.message}`));
     }
   };
 
@@ -68,7 +68,7 @@ const CustomerProfile = () => {
                   />
                   <TextInput
                     style={styles.textField}
-                    placeholder="Account ID"
+                    placeholder={__('Account ID')}
                     defaultValue={AcountId}
                     onChangeText={newText => SetaccountId(newText)}
                   />
@@ -81,7 +81,7 @@ const CustomerProfile = () => {
                   />
                   <TextInput
                     style={styles.textField}
-                    placeholder="Email ID"
+                    placeholder={__('Email ID')}
                     defaultValue={email}
                     onChangeText={newText => Setemail(newText)}
                   />
@@ -93,7 +93,7 @@ const CustomerProfile = () => {
                   <Image source={image.Phone} style={{width: 15, height: 14}} />
                   <TextInput
                     style={styles.textField}
-                    placeholder="Primary Mobile Number"
+                    placeholder={__('Primary Mobile Number *')}
                     defaultValue={primaryMobile}
                     onChangeText={newText => SetprimaryMobile(newText)}
                   />
@@ -105,7 +105,7 @@ const CustomerProfile = () => {
                   <Image source={image.Phone} style={{width: 15, height: 14}} />
                   <TextInput
                     style={styles.textField}
-                    placeholder="Secondary Mobile Number"
+                    placeholder={__('Secondary Mobile Number *')}
                     defaultValue={secMobile}
                     onChangeText={newText => SetsecMobile(newText)}
                   />
@@ -118,7 +118,7 @@ const CustomerProfile = () => {
                   />
                   <TextInput
                     style={styles.textField}
-                    placeholder="Address"
+                    placeholder={__('Address *')}
                     numberOfLines={3}
                     multiline={true}
                     defaultValue={Address}
