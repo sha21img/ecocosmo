@@ -106,11 +106,7 @@ const Login = () => {
           </TouchableOpacity>
         </ModalSelector>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
-          {/* <TouchableOpacity style={styles.lang}>
-            <Text style={{fontSize: Size.large}}>{__('English')}</Text>
-            <MaterialIcons size={50} color="#900" />
-            <Icon size={50} color="#900" />
-          </TouchableOpacity> */}
+          
           <Image source={image.loginLogo} style={[styles.logo]} />
           <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
           <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
