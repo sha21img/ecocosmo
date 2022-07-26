@@ -11,14 +11,12 @@ import Tabs from './Tabs';
 
 function HomeStack() {
   const Tab = createBottomTabNavigator();
+  const [isSelected, setIsSelected] = useState('Home');
   const CustomTabBar = ({state, navigation}) => {
-    const [selected, setSelected] = useState('Home');
     const {routes} = state;
-    const renderColor = currentTab =>
-      currentTab === selected ? 'red' : 'black';
     const handlePress = (activeTab, index) => {
+      setIsSelected(activeTab);
       if (state.index !== index) {
-        setSelected(activeTab);
         navigation.navigate(activeTab);
       }
     };
@@ -48,9 +46,8 @@ function HomeStack() {
               icon={route.params.icon}
               key={route.key}
               index={index}
-              color={renderColor(route.name)}
-              selected={selected}
-              onPress={() => handlePress(route.name, index)}
+              isSelected={isSelected}
+              onPress={handlePress}
             />
           ))}
         </View>
