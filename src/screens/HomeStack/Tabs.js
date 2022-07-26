@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 
 import {image} from '../../../assets/images';
