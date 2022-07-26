@@ -95,4 +95,7 @@ export const image = {
   Down: require('./Down.png'),
   Phone: require('./Phone.png'),
   callimg: require('./callimg.png'),
+  notifyUnSelected: require('./notifyUnSelected.png'),
+  settingUnSelect: require('./settingUnSelect.png'),
+  customerprofileUnSelect: require('./customerprofileUnSelect.png'),
 };

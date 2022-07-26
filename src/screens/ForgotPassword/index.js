@@ -17,12 +17,16 @@ import {__} from '../../../Utils/Translation/translation';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Toast from 'react-native-simple-toast';
 
-const ForgotPassword = () => {
+const ForgotPassword = ({navigation}) => {
   const [email, setemail] = useState('');
   const getOtp = async () => {
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);
     console.log(response.data);
-    Toast.show(__(`${response.data.message.message}`));
+    if (response.data.message.message === 'success') {
+      navigation.navigate('ForgotPassword-1');
+    } else {
+      Toast.show(__(`${response.data.message.message}`));
+    }
   };
   return (
     <ScrollView>
@@ -35,7 +39,9 @@ const ForgotPassword = () => {
         }}>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
           <View style={styles.headerContainer}>
-            <Image source={image.backArrow} style={{height: 12, width: 23}} />
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Image source={image.backArrow} style={{height: 12, width: 23}} />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.lang}>
               <Text style={{fontSize: Size.large}}>{__('English')}</Text>
             </TouchableOpacity>
