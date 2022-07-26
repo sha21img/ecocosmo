@@ -27,7 +27,7 @@ function DriverBehaviour() {
             <TextInput
               style={styles.dashboardText}
               editable={false}
-              value="Dashboard 1"
+              value="MH12 RN 0790"
             />
           </View>
           <View style={styles.alertContainer}>
@@ -42,7 +42,7 @@ function DriverBehaviour() {
             <View style={styles.driverDetails}>
               <View>
                 <Text style={styles.driverCarSpeed}>
-                  {__('RUNNING 14M 38KM/H')}
+                  {__('RUNNING')} 14M 38KM/H
                 </Text>
                 <Text style={styles.driverCarNumber}>{__('MH12 RN 0790')}</Text>
               </View>
@@ -53,7 +53,7 @@ function DriverBehaviour() {
                     style={styles.driverCarDetailsImage}
                   />
                   <Text style={styles.driverCarDetailsText}>
-                    {__('17:57:45')}
+                    17:57:45
                   </Text>
                   <Text style={styles.driverCarDetailsText1}>
                     {__('CHECK-IN TIME')}
@@ -65,7 +65,7 @@ function DriverBehaviour() {
                     style={styles.driverCarDetailsImage}
                   />
                   <Text style={styles.driverCarDetailsText}>
-                    {__('16 KM/H')}
+                  16{__(' KM/H')}
                   </Text>
                   <Text style={styles.driverCarDetailsText1}>
                     {__('SPEED')}
@@ -77,7 +77,7 @@ function DriverBehaviour() {
                     style={styles.driverCarDetailsImage1}
                   />
                   <Text style={styles.driverCarDetailsText}>
-                    {__('5790456')}
+                    5790456
                   </Text>
                   <Text style={styles.driverCarDetailsText1}>
                     {__("TODAY'S ODO")}
