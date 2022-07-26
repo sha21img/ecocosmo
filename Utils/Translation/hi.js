@@ -55,7 +55,7 @@ export default {
   Call: 'बुलाना',
 
   //Dashboard2
-  'CHECK-IN TIME': 'समय पर जांचो',
+  'CHECK IN TIME': 'समय पर जांचो',
 
   //Home
   'Dashboard 1': 'डैशबोर्ड 1',
@@ -112,6 +112,9 @@ export default {
   "enter OTP":"ओटीपी दर्ज करें",
   "enter new password":"नया पासवर्ड दर्ज करें",
   "confirm new password":"नए पासवर्ड की पुष्टि करें",
+
+  // 
+  'KM':"किमी"
   
 
 
