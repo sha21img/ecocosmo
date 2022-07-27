@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import {__} from '../../../Utils/Translation/translation';
@@ -10,8 +17,8 @@ import MapView, {
   MarkerAnimated,
 } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import {axiosGetData} from '../../../Utils/ApiController';
-function Dashboard1({details}) {
+import colors from '../../../assets/Colors';
+function Dashboard1({details, isShow}) {
   const [coordinate, setCoordinate] = useState({
     latitude: 26.57966,
     longitude: 75.32111,
@@ -145,14 +152,24 @@ function Dashboard1({details}) {
 
   return (
     <>
-      {
+      {!isShow ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator  color={colors.white} />
+        </View>
+      ) : (
         <FlatList
           data={details}
-          // keyExtractor={deta}
+          contentContainerStyle={{paddingBottom: 100}}
+          keyExtractor={({item, index}) => index}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
         />
-      }
+      )}
     </>
   );
 }

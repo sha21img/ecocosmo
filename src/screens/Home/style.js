@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    backgroundColor: colors.white
+    // backgroundColor: colors.white
   },
   catagoryTextActive: {
     minWidth: 80,
@@ -70,6 +70,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingBottom: 100,
     paddingVertical: 15,
+    // backgroundColor: colors.white,
+    height:"100%"
   },
 });
 export default styles;

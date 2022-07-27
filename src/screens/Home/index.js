@@ -110,118 +110,118 @@ function Home(props) {
           <Image source={image.search} style={styles.searchIcon} />
         </View>
       </LinearGradient>
-      <View style={styles.catagoryBox}>
-        <ScrollView horizontal={true}>
-          <TouchableOpacity
-            onPress={() => {
-              getDetails(), setType('All');
-            }}>
-            <Text
-              style={[
-                styles.catagoryTextActive,
-                {
-                  backgroundColor:
-                    type == 'All' ? colors.mainThemeColor1 : '#D8D8D8',
-                  color: type == 'All' ? colors.white : colors.inputPlaceholdr,
-                },
-              ]}>
-              {__('All')} {(details.length)}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => getRunningData('Running')}>
-            <Text
-              style={[
-                styles.catagoryTextActive,
-                {
-                  backgroundColor:
-                    type == 'Running' ? colors.mainThemeColor1 : '#D8D8D8',
-                  color:
-                    type == 'Running' ? colors.white : colors.inputPlaceholdr,
-                },
-              ]}>
-              {__('Running')}
-              {(countObj.Running)}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => getRunningData('Idle')}>
-            <Text
-              style={[
-                styles.catagoryTextActive,
-                {
-                  backgroundColor:
-                    type == 'Idle' ? colors.mainThemeColor1 : '#D8D8D8',
-                  color: type == 'Idle' ? colors.white : colors.inputPlaceholdr,
-                },
-              ]}>
-              {__('Stop')}
-              {(countObj.Idle)}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => getRunningData('In-Active')}>
-            <Text
-              style={[
-                styles.catagoryTextActive,
-                {
-                  backgroundColor:
-                    type == 'In-Active' ? colors.mainThemeColor1 : '#D8D8D8',
-                  color:
-                    type == 'In-Active' ? colors.white : colors.inputPlaceholdr,
-                },
-              ]}>
-              {__('In-Active')}
-              {(countObj['In-Active'])}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => getRunningData('No GPS')}>
-            <Text
-              style={[
-                styles.catagoryTextActive,
-                {
-                  backgroundColor:
-                    type == 'No GPS' ? colors.mainThemeColor1 : '#D8D8D8',
-                  color:
-                    type == 'No GPS' ? colors.white : colors.inputPlaceholdr,
-                },
-              ]}>
-              {__('No GPS')}
-              {(countObj['No GPS'])}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => getRunningData('Waiting')}>
-            <Text
-              style={[
-                styles.catagoryTextActive,
-                {
-                  backgroundColor:
-                    type == 'Waiting' ? colors.mainThemeColor1 : '#D8D8D8',
-                  color:
-                    type == 'Waiting' ? colors.white : colors.inputPlaceholdr,
-                },
-              ]}>
-              {__('Waiting')}
-              {(countObj.Waiting)}
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
-      <ScrollView style={{backgroundColor: colors.white}}>
-        <View style={styles.carDetailCard}>
-          {dashBoardType === 'Dashboard 1' && isShow ? (
-            <Dashboard1 details={details} />
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
+      {isShow ? (
+        <View style={styles.catagoryBox}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <TouchableOpacity
+              onPress={() => {
+                getDetails(), setType('All');
               }}>
-              <ActivityIndicator />
-            </View>
-          )}
-
-          {dashBoardType === 'Dashboard 2' ? <Dashboard2 /> : null}
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'All' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'All' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('All')} {details.length}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('Running')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'Running' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'Running' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('Running')}
+                {countObj.Running}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('Idle')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'Idle' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'Idle' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('Stop')}
+                {countObj.Idle}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('In-Active')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'In-Active' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'In-Active'
+                        ? colors.white
+                        : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('In-Active')}
+                {countObj['In-Active']}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('No GPS')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'No GPS' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'No GPS' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('No GPS')}
+                {countObj['No GPS']}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('Waiting')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'Waiting' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'Waiting' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('Waiting')}
+                {countObj.Waiting}
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
-      </ScrollView>
+      ) : null}
+
+      {/* <ScrollView style={{backgroundColor: colors.white}}> */}
+      <View style={styles.carDetailCard}>
+        {dashBoardType === 'Dashboard 1' ? (
+          <Dashboard1 details={details} isShow={isShow}/>
+        ) : null}
+
+        {dashBoardType === 'Dashboard 2' ? (
+          <Dashboard2 details={details}  isShow={isShow}/>
+        ) : null}
+      </View>
+      {/* </ScrollView> */}
     </>
   );
 }
