@@ -30,7 +30,7 @@ const Login = ({navigation}) => {
   console.log('navigatoi0n', navigation.navigate);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const [language, setLanguage] = useState('English');
   const {setToken} = React.useContext(AuthContext);
 
@@ -137,7 +137,7 @@ const Login = ({navigation}) => {
                   color: '#AEAEAE',
                   fontSize: 16,
                 }}
-                name={!show ? 'eye' : 'eye-slash'}
+                name={show ? 'eye' : 'eye-slash'}
               />
             </TouchableOpacity>
           </View>

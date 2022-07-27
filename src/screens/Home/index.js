@@ -15,6 +15,7 @@ import Dashboard1 from './Dashboard1';
 import Dashboard2 from './Dashboard2';
 import {__} from '../../../Utils/Translation/translation';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import colors from '../../../assets/Colors';
 
 function Home(props) {
   const [selectedLanguage, setSelectedLanguage] = useState();
@@ -76,7 +77,7 @@ function Home(props) {
           <Text style={styles.catagoryTextInactive}>{__('Running')}(5)</Text>
         </ScrollView>
       </View>
-      <ScrollView>
+      <ScrollView style={{backgroundColor:colors.white}}>
         <View style={styles.carDetailCard}>
           {/* <Dashboard2 /> */}
           {dashBoardType === 'Dashboard 1' ? <Dashboard1 /> : null}

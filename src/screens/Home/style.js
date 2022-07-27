@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     paddingVertical: 10,
+    backgroundColor: colors.white
   },
   catagoryTextActive: {
     minWidth: 80,
