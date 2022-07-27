@@ -19,6 +19,7 @@ import MapView, {
 import Geolocation from 'react-native-geolocation-service';
 import colors from '../../../assets/Colors';
 function Dashboard1({details, isShow}) {
+  console.log("-0987654321",isShow)
   const [coordinate, setCoordinate] = useState({
     latitude: 26.57966,
     longitude: 75.32111,
@@ -112,7 +113,7 @@ function Dashboard1({details, isShow}) {
               <Text style={styles.driverDetailText1}>{__('TODAYS ODO')}</Text>
               <Text style={styles.driverDetailText2}>
                 {/* 5790456 {__('KM')} */}
-                {Math.floor(item.todaysODO)}
+                {Math.floor(item.todaysODO)}{" "}{__('KM')}
                 {/* {Number(item.todaysODO).toFixed()} {__('KM')} */}
               </Text>
             </View>
@@ -120,7 +121,7 @@ function Dashboard1({details, isShow}) {
               <Text style={styles.driverDetailText1}>{__('SPEED')}</Text>
               <Text style={styles.driverDetailText2}>
                 {/* {item.speed} */}
-                {Math.floor(item.speed)}
+                {Math.floor(item.speed)}{" "}
 
                 {__('KM/H')}
               </Text>
@@ -159,7 +160,7 @@ function Dashboard1({details, isShow}) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <ActivityIndicator  color={colors.white} />
+          <ActivityIndicator  />
         </View>
       ) : (
         <FlatList

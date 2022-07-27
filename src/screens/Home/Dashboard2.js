@@ -44,7 +44,7 @@ function Dashboard2({details,isShow}) {
                     style={styles.driverCarDetailsImage}
                   />
                   <Text style={styles.driverCarDetailsText}>
-                    {Math.floor(item.speed)}
+                    {Math.floor(item.speed)}{" "}{__('KM/H')}
                     {/* {__('KM/H')} */}
                   </Text>
                   <Text style={styles.driverCarDetailsText1}>
@@ -175,7 +175,7 @@ function Dashboard2({details,isShow}) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <ActivityIndicator  color={colors.white} />
+          <ActivityIndicator   />
         </View>
       ) : (
         <FlatList

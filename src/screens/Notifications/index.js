@@ -28,7 +28,6 @@ function Notifications(props) {
   const GetNotification = async () => {
     let accountid = 'GlobalCars';
     let password = '62d959fc42e70781bd2a5bb242d4d7c6';
-    // getNotifications/GlobalCars/62d959fc42e70781bd2a5bb242d4d7c6
     setLoading(true);
     const response = await axiosGetData(
       `getNotifications/${accountid}/${password}`,
@@ -82,7 +81,7 @@ function Notifications(props) {
               Engine on
             </Text>
             <Text style={{color: '#ACACAC', fontSize: 12}}>
-              20-07-2022, 10:42:30
+              {item.timeStamp}
             </Text>
           </View>
         </View>
