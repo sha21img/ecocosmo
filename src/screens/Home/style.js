@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
     minWidth: 80,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    backgroundColor: colors.mainThemeColor1,
+    // backgroundColor: colors.mainThemeColor1,
     borderRadius: 50,
     textAlign: 'center',
     marginRight: 10,
-    color: colors.white,
+    // color: colors.white,
   },
   catagoryTextInactive: {
     minWidth: 80,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   carDetailCard: {
     paddingHorizontal: 15,
-    paddingBottom: 50,
+    paddingBottom: 100,
     paddingVertical: 15,
   },
 });
