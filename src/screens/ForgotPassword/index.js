@@ -4,6 +4,7 @@ import {
   ImageBackground,
   ScrollView,
   Text,
+  ActivityIndicator,
   TextInput,
   TouchableOpacity,
   View,
@@ -23,16 +24,20 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 const ForgotPassword = ({navigation}) => {
+  const [loading, setLoading] = useState(false);
   const [email, setemail] = useState('');
   const [language, setLanguage] = useState('English');
 
   const getOtp = async () => {
+    setLoading(true);
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);
     console.log(response.data);
     if (response.data.message.message === 'success') {
       navigation.navigate('ForgotPassword-1');
+      setLoading(false);
     } else {
-      Toast.show(__(`${response.data.message.message}`));
+      Toast.show(__(`${response.data.message}`));
+      setLoading(false);
     }
   };
   let index = 0;
@@ -44,14 +49,14 @@ const ForgotPassword = ({navigation}) => {
     return __(language);
   };
   return (
-    <ScrollView>
-      <LinearGradient
-        colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
-        style={{
-          padding: 24,
-          width: '100%',
-          height: '100%',
-        }}>
+    <LinearGradient
+      colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
+      style={{
+        padding: 24,
+        width: '100%',
+        height: '100%',
+      }}>
+      <ScrollView>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
           <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -122,7 +127,11 @@ const ForgotPassword = ({navigation}) => {
           <LinearGradient
             colors={[colors.largeBtn1, colors.largeBtn2]}
             style={styles.loginButton}>
-            <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+            {loading ? (
+              <ActivityIndicator color={colors.white} />
+            ) : (
+              <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
 
@@ -131,8 +140,8 @@ const ForgotPassword = ({navigation}) => {
           <Image source={image.whatsApp} style={{height: 34, width: 34}} />
           <Image source={image.incomingCall} style={{height: 34, width: 34}} />
         </View>
-      </LinearGradient>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 

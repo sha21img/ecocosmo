@@ -7,6 +7,7 @@ import Notifications from '../Notifications';
 import CustomerProfile from '../CustomerProfile';
 import Setting from '../Setting';
 import Tabs from './Tabs';
+import colors from '../../../assets/Colors';
 
 function HomeStack() {
   const Tab = createBottomTabNavigator();
@@ -32,12 +33,12 @@ function HomeStack() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            backgroundColor: '#fff',
+            backgroundColor: colors.white,
             width: '90%',
             borderRadius: 100,
-            height: 52,
             paddingHorizontal: 20,
             paddingVertical: 6,
+            elevation: 2,
           }}>
           {routes.map((route, index) => (
             <Tabs

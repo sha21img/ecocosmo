@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ActivityIndicator,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -21,20 +22,20 @@ import {AuthContext} from '../../../App';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-simple-toast';
-
 import ModalSelector from 'react-native-modal-selector';
-
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
 
 const Login = ({navigation}) => {
   console.log('navigatoi0n', navigation.navigate);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [language, setLanguage] = useState('English');
   const {setToken} = React.useContext(AuthContext);
 
   const handleLogin = async () => {
+    setLoading(true);
     var encodedPassWord = md5(password);
 
     const response = await axiosGetData(
@@ -42,8 +43,11 @@ const Login = ({navigation}) => {
     );
     const succcess = await Storage.SetLogin(response.data.apiResult);
 
-    if (response.data.apiResult === 'error') {
+    if (response.data.apiResult === 'success') {
+      setLoading(false);
+    } else {
       Toast.show(__(`${response.data.message}`));
+      setLoading(false);
     }
     console.log('123', response.data);
 
@@ -146,11 +150,16 @@ const Login = ({navigation}) => {
             <Text style={styles.forgotPassword}>{__('Forgot Password?')}</Text>
           </TouchableOpacity>
         </View>
+
         <TouchableOpacity onPress={() => handleLogin()}>
           <LinearGradient
             colors={[colors.largeBtn1, colors.largeBtn2]}
             style={styles.loginButton}>
-            <Text style={styles.loginButtonText}>{__('Login')}</Text>
+            {loading ? (
+              <ActivityIndicator color={colors.white} />
+            ) : (
+              <Text style={styles.loginButtonText}>{__('Login')}</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
         <View style={styles.footerTab}>

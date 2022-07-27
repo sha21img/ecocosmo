@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {Image, ScrollView, Text, TextInput, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  ActivityIndicator,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
@@ -8,24 +15,30 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {axiosGetData} from '../../../Utils/ApiController';
 
 const Alerts = props => {
-  const [Ison, setIson] = useState(false);
+  const [Ison, setIson] = useState(true);
   const [alertDataResponse, setalertResponse] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const accountid = 'rrenterprises';
   const password = '25f9e794323b453885f5181f1b624d0b';
   const imei = '459710040353691';
 
   const AlertData = async () => {
+    setLoading(true);
     const response = await axiosGetData(
       `getAlertDetails?accountid=${accountid}&password=${password}&imei=${imei}`,
     );
     if (response?.data) {
       setalertResponse(response?.data?.alert_details);
+      setLoading(false);
     }
-    console.log('response', response.data);
+    setLoading(false);
   };
 
   React.useEffect(() => {
@@ -39,7 +52,7 @@ const Alerts = props => {
           colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
           start={{x: 0, y: 0.5}}
           end={{x: 1, y: 0.5}}
-          style={{height: 161, paddingHorizontal: 16}}>
+          style={{paddingHorizontal: 16}}>
           <View style={styles.navcontainer}>
             <View style={styles.navbox}>
               <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
@@ -49,18 +62,43 @@ const Alerts = props => {
                 style={{
                   fontSize: Size.large,
                   color: colors.white,
+                  paddingHorizontal:10
                 }}>
                 {__('Alerts')}
               </Text>
             </View>
-            <Image source={image.search} />
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '50%',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}>
+              <Entypo
+                style={{
+                  color: colors.white,
+                  fontSize: 20,
+                }}
+                name={'share'}
+              />
+              <Image
+                source={image.search}
+                style={{height: 18, width: 18, marginLeft: 15}}
+              />
+            </View>
           </View>
           <View style={styles.textinputbox}>
             <TextInput
               placeholder="Select vehicle number"
               style={styles.textinput}
             />
-            <Text>‸</Text>
+            <MaterialIcons
+              style={{
+                color: '#3D3D3D',
+                fontSize: 18,
+              }}
+              name={'keyboard-arrow-down'}
+            />
           </View>
         </LinearGradient>
         <View style={styles.box1}>
@@ -73,27 +111,38 @@ const Alerts = props => {
             onToggle={() => setIson(!Ison)}
           />
         </View>
-        <ScrollView style={{marginVertical: 26}}>
-          {Ison
-            ? alertDataResponse.map(el => {
-                return (
-                  <View key={el.id} style={styles.box2}>
-                    <Text
-                      style={{fontSize: Size.large, color: colors.textcolor}}>
-                      {el?.displayName}
-                    </Text>
-                    <View
-                      style={{
-                        backgroundColor:
-                          el.isActive === 'Yes' ? 'blue' : 'lightgrey',
-                        height: 20,
-                        width: 20,
-                        borderRadius: 50,
-                      }}></View>
-                  </View>
-                );
-              })
-            : null}
+        <ScrollView style={{}}>
+          {loading ? (
+            <ActivityIndicator color={colors.white} />
+          ) : (
+            <>
+              {Ison
+                ? alertDataResponse.map(el => {
+                    return (
+                      <>
+                        <View key={el.id} style={styles.box2}>
+                          <Text
+                            style={{
+                              fontSize: Size.large,
+                              color: colors.textcolor,
+                            }}>
+                            {el?.displayName}
+                          </Text>
+                          <AntDesign
+                            style={{
+                              color:
+                                el.isActive === 'Yes' ? '#395dbf' : '#d9d9d9',
+                              fontSize: 26,
+                            }}
+                            name={'checkcircle'}
+                          />
+                        </View>
+                      </>
+                    );
+                  })
+                : null}
+            </>
+          )}
         </ScrollView>
       </View>
     </>

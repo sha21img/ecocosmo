@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, Text, View, TextInput} from 'react-native';
+import {Image, Text, View, ActivityIndicator, TextInput} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
@@ -10,23 +10,29 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import md5 from 'md5';
 import Toast from 'react-native-simple-toast';
 
-const ChangePassword = () => {
+const ChangePassword = props => {
   const [Current, setCurrent] = useState('123456789');
   const [newPassword, setnewPassword] = useState('123456789');
   const [confirmPassword, setConfirmPassword] = useState('123456789');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    setLoading(true);
     const DecodedPassword = md5(Current);
     if (newPassword === confirmPassword) {
       const response = await axiosGetData(
         `changepassword?accountid=rrenterprises&password=${DecodedPassword}&newpassword=${newPassword}`,
       );
-      if (response.data.apiResult === 'error') {
+      if (response.data.apiResult === 'success') {
+        setLoading(false);
+      } else {
         console.warn(response.data.message);
         Toast.show(__(`${response.data.message}`));
+        setLoading(false);
       }
     } else {
       console.warn('Didnot Match confirm password');
+      setLoading(false);
     }
   };
 
@@ -37,7 +43,9 @@ const ChangePassword = () => {
         style={styles.main}
         locations={[0, 0.9]}>
         <View style={styles.header}>
-          <Image source={image.backArrow} style={{height: 12, width: 23}} />
+          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+            <Image source={image.backArrow} style={{height: 12, width: 23}} />
+          </TouchableOpacity>
           <Text style={styles.headerContentText}>{__('Change Password')}</Text>
         </View>
         <LinearGradient
@@ -80,7 +88,11 @@ const ChangePassword = () => {
             <LinearGradient
               colors={[colors.largeBtn1, colors.largeBtn2]}
               style={styles.loginButton}>
-              <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+              {loading ? (
+                <ActivityIndicator color={colors.white} />
+              ) : (
+                <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+              )}
             </LinearGradient>
           </TouchableOpacity>
         </LinearGradient>

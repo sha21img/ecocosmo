@@ -99,4 +99,7 @@ export const image = {
   settingUnSelect: require('./settingUnSelect.png'),
   customerprofileUnSelect: require('./customerprofileUnSelect.png'),
   home2unselected: require('./home2unselected.png'),
+  notificationSmall: require('./notificationSmall.png'),
+  carRedUp: require('./carRedUp.png'),
+  carWhiteUp: require('./carWhiteUp.png'),
 };

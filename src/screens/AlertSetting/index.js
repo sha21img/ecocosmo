@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  Text,
+  TextInput,
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
@@ -13,9 +20,9 @@ import Toast from 'react-native-simple-toast';
 
 const AlertSetting = () => {
   const [daysset, setDays] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleDays = id => {
-    console.log(id);
     if (daysset.includes(id)) {
       let a = daysset.filter(el => {
         return el != id;
@@ -91,16 +98,18 @@ const AlertSetting = () => {
   ];
 
   const postAlertResponse = async () => {
+    setLoading(true);
     const response = await axiosGetData(
       `saveVehicleAlert?accountid=${accountid}&password=${password}&imei=${imei}&alertType=${alertType}&isactive=${isactive}&data=${data}&mobiles=${mobiles}&isSms=${isSms}&isCall=${isCall}&isEmail=${isEmail}&isPush=${isPush}&isAnnouncement=${isAnnouncement}&days=${days}&d1_on=${d1_on}&d1_off=${d1_off}&shift1_timeRange1=${shift1_timeRange1}&shift2_timeRange1=${shift2_timeRange1}`,
     );
-    if (response.data.apiResult === 'error') {
+    if (response.data.apiResult === 'success') {
+      setLoading(false);
+    } else {
       Toast.show(__(`${response.data.message}`));
+      setLoading(false);
     }
-    console.log(response.data);
   };
 
-  // console.log('>>>>>>>>days', day);
   return (
     <>
       <LinearGradient
@@ -203,7 +212,11 @@ const AlertSetting = () => {
           <LinearGradient
             colors={[colors.largeBtn1, colors.largeBtn2]}
             style={styles.loginButton}>
-            <Text style={styles.loginButtonText}>{__('Login')}</Text>
+            {loading ? (
+              <ActivityIndicator color={colors.white} />
+            ) : (
+              <Text style={styles.loginButtonText}>{__('Login')}</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
       </ScrollView>

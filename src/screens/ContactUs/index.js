@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, ActivityIndicator, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
@@ -9,11 +9,11 @@ import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 
 const ContactUs = props => {
+  const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState();
 
   const contactUsDetails = async () => {
     const response = await axiosGetData(`loginScreenCompanyDetails`);
-    console.log(response.data);
     setDetails(response.data);
     // if (response.data.apiResult === 'error') {
     //   // Toast.show(__(`${response.data.message}`));
@@ -27,6 +27,7 @@ const ContactUs = props => {
 
   return (
     <>
+      <ActivityIndicator color={colors.white} />
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
         style={styles.main}

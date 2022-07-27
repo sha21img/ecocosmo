@@ -5,6 +5,7 @@ import {
   ImageBackground,
   ScrollView,
   Text,
+  ActivityIndicator,
   TextInput,
   View,
 } from 'react-native';
@@ -17,20 +18,24 @@ import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 import Toast from 'react-native-simple-toast';
 
-const CustomerProfile = () => {
+const CustomerProfile = props => {
   const [AcountId, SetaccountId] = useState('rrenterprises');
   const [email, Setemail] = useState('sales@ecocosmogps.com');
   const [primaryMobile, SetprimaryMobile] = useState('7875551271');
   const [secMobile, SetsecMobile] = useState('9766918883');
-  const [Address, SetAddress] = useState('XYZ');
+  const [Address, SetAddress] = useState('177 New Apollo Indl Estate Mogra Lane Andheri,Mumbai,Bharuch, 400069,India');
+  const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
+    setLoading(true);
     const response = await axiosGetData(
       `updateprofile?accountid=${AcountId}&password=25f9e794323b453885f5181f1b624d0b&acname=rrenterprises&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
     );
-    console.log('*************', response.data);
-    if (response.data.apiResult === 'error') {
+    if (response.data.apiResult === 'success') {
+      setLoading(false);
+    } else {
       Toast.show(__(`${response.data.message}`));
+      setLoading(false);
     }
   };
 
@@ -41,8 +46,13 @@ const CustomerProfile = () => {
         style={{flex: 1}}>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
           <View style={styles.headContainer}>
-            <View style={[styles.headContainer, styles.headsubContainerWidth]}>
-              <Image source={image.drawer} style={{height: 20, width: 22}} />
+            <View style={styles.headContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  props.navigation.openDrawer();
+                }}>
+                <Image source={image.drawer} style={{height: 20, width: 22}} />
+              </TouchableOpacity>
               <Text style={styles.headerText}>{__('My Account')}</Text>
             </View>
             <TouchableOpacity style={styles.editContainer}>
@@ -111,13 +121,13 @@ const CustomerProfile = () => {
                   />
                 </View>
                 <Text style={styles.textFieldHeading}>{__('Address *')}</Text>
-                <View style={styles.TextFieldSubContainer}>
+                <View style={styles.TextFieldAddress}>
                   <Image
                     source={image.madalImage1}
-                    style={{width: 15, height: 15}}
+                    style={{width: 15, height: 15,}}
                   />
                   <TextInput
-                    style={styles.textField}
+                    style={styles.textFieldAddress}
                     placeholder={__('Address *')}
                     numberOfLines={3}
                     multiline={true}
@@ -129,7 +139,11 @@ const CustomerProfile = () => {
                   <LinearGradient
                     colors={[colors.largeBtn1, colors.largeBtn2]}
                     style={styles.loginButton}>
-                    <Text style={styles.loginButtonText}>{__('Save')}</Text>
+                    {loading ? (
+                      <ActivityIndicator color={colors.white} />
+                    ) : (
+                      <Text style={styles.loginButtonText}>{__('Save')}</Text>
+                    )}
                   </LinearGradient>
                 </TouchableOpacity>
               </View>

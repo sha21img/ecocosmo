@@ -11,7 +11,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Storage from '../../../Utils/Storage';
 import {AuthContext} from '../../../App';
 
-function Setting() {
+function Setting({navigation}) {
   const [Ison, setIson] = useState(true);
   const {setToken} = React.useContext(AuthContext);
 
@@ -21,7 +21,9 @@ function Setting() {
       style={styles.header}>
       <View style={styles.headerContainer}>
         <View style={styles.headerImageCont}>
-          <Image source={image.drawer} style={{height: 20, width: 23}} />
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <Image source={image.drawer} style={{height: 20, width: 23}} />
+          </TouchableOpacity>
           <Text
             style={{
               fontSize: Size.large,
@@ -31,22 +33,27 @@ function Setting() {
           </Text>
         </View>
       </View>
-      <View style={styles.BodyContent}>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '60%',
-          }}>
-          <View style={{width: 24}}>
-            <Image
-              source={image.colouredLock}
-              style={{width: 13, height: 18}}
-            />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('ChangePassword');
+        }}>
+        <View style={styles.BodyContent}>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: '60%',
+            }}>
+            <View style={{width: 24}}>
+              <Image
+                source={image.colouredLock}
+                style={{width: 13, height: 18}}
+              />
+            </View>
+            <Text style={styles.BodyContentText}>{__('Change Password')}</Text>
           </View>
-          <Text style={styles.BodyContentText}>{__('Change Password')}</Text>
+          <Image source={image.right} />
         </View>
-        <Image source={image.right} />
-      </View>
+      </TouchableOpacity>
       <View style={styles.BodyContent}>
         <View
           style={{
