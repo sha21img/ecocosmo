@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
   View,
 } from 'react-native';
 import colors from '../../../assets/Colors';
@@ -22,22 +23,26 @@ import {setDefaultLocale} from '../../../Utils/Translation/translation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const ForgotPassword_1 = () => {
+  const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [newPassword, setnewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [language, setLanguage] = useState('English');
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (newPassword === confirmPassword) {
       const response = await axiosGetData(
         `forgotPasswordUpdate/rrenterprises/${otp}/${newPassword}`,
       );
-      console.log(response.data);
+      setLoading(false);
       if (response.data.apiResult === 'error') {
         Toast.show(__(`${response.data.message}`));
+        setLoading(false);
       }
     } else {
       console.warn('Didnot Match confirm password');
+      setLoading(false);
     }
   };
   let index = 0;
@@ -140,7 +145,11 @@ const ForgotPassword_1 = () => {
           <LinearGradient
             colors={[colors.largeBtn1, colors.largeBtn2]}
             style={styles.loginButton}>
-            <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+            {loading ? (
+              <ActivityIndicator color={colors.white} />
+            ) : (
+              <Text style={styles.loginButtonText}>{__('Submit')}</Text>
+            )}
           </LinearGradient>
         </TouchableOpacity>
         <View style={styles.footerTab}>

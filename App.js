@@ -156,7 +156,6 @@ const DrawerContent = props => {
           })}
           <TouchableOpacity
             onPress={async () => {
-              console.log('hihi');
               await Storage.clearToken();
               setToken(null);
             }}>
@@ -245,11 +244,8 @@ const App = () => {
   );
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const initializeApp = async () => {
-    console.log('yuyuuyuyu');
     let userProfile = await Storage.getLogin('login');
-    console.log('userProfile', userProfile);
     if (userProfile) {
-      console.log('ifff');
       dispatch({type: 'SET_TOKEN', data: userProfile});
     }
     setIsLoading(!isLoading);
@@ -304,18 +300,20 @@ const App = () => {
                     options={{headerShown: false}}
                   />
                   <Stack.Screen
+                    name="DistanceReport"
+                    component={DistanceReport}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
                     name="DriverBehaviour"
                     component={DriverBehaviour}
                     options={{headerShown: false}}
                   />
-
-
                   <Stack.Screen
                     name="LiveMapTracking"
                     component={LiveMapTracking}
                     options={{headerShown: false}}
                   />
-
                   <Stack.Screen
                     name="Setting"
                     component={Setting}
@@ -331,6 +329,11 @@ const App = () => {
                   <Stack.Screen
                     name="NearbyPlaces"
                     component={NearbyPlaces}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="ChangePassword"
+                    component={ChangePassword}
                     options={{headerShown: false}}
                   />
                 </>
@@ -349,11 +352,6 @@ const App = () => {
                   <Stack.Screen
                     name="ForgotPassword-1"
                     component={ForgotPassword_1}
-                    options={{headerShown: false}}
-                  />
-                  <Stack.Screen
-                    name="Change Password"
-                    component={ChangePassword}
                     options={{headerShown: false}}
                   />
                 </>

@@ -4,13 +4,15 @@ import {Size} from '../../../assets/fonts/Fonts';
 
 const styles = StyleSheet.create({
   mainContainer: {
-    flex: 1,
+    // flex: 1,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
   },
   headerDashboard: {
     flex: 1,
