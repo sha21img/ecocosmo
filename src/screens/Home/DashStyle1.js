@@ -10,10 +10,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     elevation: 1,
+    width:'100%',
   },
   driverCarNumber: {
     fontSize: Size.extraLarge,
     color: colors.black,
+    // flexWrap: 'wrap',
+    // flexGrow: 1,
   },
   driverCarSpeedBox: {
     flexDirection: 'row',

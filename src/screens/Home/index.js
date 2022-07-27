@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -15,10 +16,15 @@ import Dashboard1 from './Dashboard1';
 import Dashboard2 from './Dashboard2';
 import {__} from '../../../Utils/Translation/translation';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import colors from '../../../assets/Colors';
+import {axiosGetData} from '../../../Utils/ApiController';
 
 function Home(props) {
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
+  const [details, setDetails] = useState([]);
+  const [isShow, setIsShow] = useState(false);
+  const [type, setType] = useState('All');
 
   let index = 0;
 
@@ -28,6 +34,42 @@ function Home(props) {
   ];
   const changeDasboardType = dashBoardType => {
     return __(dashBoardType);
+  };
+  let username = 'Globalcars';
+  let encodedPassWord = '62d959fc42e70781bd2a5bb242d4d7c6';
+  let id = '0';
+  const [countObj, setCountObj] = useState({
+    Running: 0,
+    Waiting: 0,
+    Idle: 0,
+    'In-Active': 0,
+    'No GPS': 0,
+  });
+  const getDetails = async () => {
+    const response = await axiosGetData(
+      `vehicles/${username}/${encodedPassWord}/${id}`,
+    );
+    const detail = response.data.vehicles;
+    setDetails(detail);
+    const detailsLength = detail.forEach(element => {
+      setCountObj(prev => {
+        return {...prev, [element.status]: prev[element.status] + 1};
+      });
+    });
+    setIsShow(!isShow);
+  };
+  console.log(countObj);
+  useEffect(() => {
+    getDetails();
+  }, []);
+  const getRunningData = data => {
+    setType(data);
+    setIsShow(!isShow);
+    const filterDetails = details.filter(item => {
+      return item.status == data;
+    });
+    setDetails(filterDetails);
+    setIsShow(!isShow);
   };
   return (
     <>
@@ -57,8 +99,6 @@ function Home(props) {
                   style={styles.dashboardText}
                   editable={false}
                   value={changeDasboardType(dashBoardType)}
-
-                  // value={__('Dashboard 1')}
                 />
                 <Image source={image.arrowDown} style={styles.dashboardArrow} />
               </TouchableOpacity>
@@ -70,22 +110,118 @@ function Home(props) {
           <Image source={image.search} style={styles.searchIcon} />
         </View>
       </LinearGradient>
-      <View style={styles.catagoryBox}>
-        <ScrollView horizontal={true}>
-          <Text style={styles.catagoryTextActive}>{__('All')} (10)</Text>
-          <Text style={styles.catagoryTextInactive}>{__('Running')}(5)</Text>
-        </ScrollView>
-      </View>
-      <ScrollView>
-        <View style={styles.carDetailCard}>
-          {/* <Dashboard2 /> */}
-          {dashBoardType === 'Dashboard 1' ? <Dashboard1 /> : null}
-          {/* {[0, 0, 0].map(() => {
-            return <Dashboard1 />;
-          })} */}
-          {dashBoardType === 'Dashboard 2' ? <Dashboard2 /> : null}
+      {isShow ? (
+        <View style={styles.catagoryBox}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <TouchableOpacity
+              onPress={() => {
+                getDetails(), setType('All');
+              }}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'All' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'All' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('All')} {details.length}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('Running')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'Running' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'Running' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('Running')}
+                {countObj.Running}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('Idle')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'Idle' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'Idle' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('Stop')}
+                {countObj.Idle}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('In-Active')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'In-Active' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'In-Active'
+                        ? colors.white
+                        : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('In-Active')}
+                {countObj['In-Active']}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('No GPS')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'No GPS' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'No GPS' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('No GPS')}
+                {countObj['No GPS']}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => getRunningData('Waiting')}>
+              <Text
+                style={[
+                  styles.catagoryTextActive,
+                  {
+                    backgroundColor:
+                      type == 'Waiting' ? colors.mainThemeColor1 : '#D8D8D8',
+                    color:
+                      type == 'Waiting' ? colors.white : colors.inputPlaceholdr,
+                  },
+                ]}>
+                {__('Waiting')}
+                {countObj.Waiting}
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
-      </ScrollView>
+      ) : null}
+
+      {/* <ScrollView style={{backgroundColor: colors.white}}> */}
+      <View style={styles.carDetailCard}>
+        {dashBoardType === 'Dashboard 1' ? (
+          <Dashboard1 details={details} isShow={isShow}/>
+        ) : null}
+
+        {dashBoardType === 'Dashboard 2' ? (
+          <Dashboard2 details={details}  isShow={isShow}/>
+        ) : null}
+      </View>
+      {/* </ScrollView> */}
     </>
   );
 }

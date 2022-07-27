@@ -8,9 +8,13 @@ import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import Storage from '../../../Utils/Storage';
+import {AuthContext} from '../../../App';
 
 function Setting({navigation}) {
   const [Ison, setIson] = useState(true);
+  const {setToken} = React.useContext(AuthContext);
+
   return (
     <LinearGradient
       colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
@@ -82,14 +86,21 @@ function Setting({navigation}) {
           onToggle={() => setIson(!Ison)}
         />
       </View>
-      <LinearGradient
-        colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
-        start={{x: 0, y: 0.5}}
-        end={{x: 1, y: 0.5}}
-        locations={[0.5, 1.5]}
-        style={styles.logoutButton}>
-        <Text style={styles.logoutButtonText}>{__('Logout')}</Text>
-      </LinearGradient>
+      <TouchableOpacity
+        onPress={async () => {
+          console.log('hihi');
+          await Storage.clearToken();
+          setToken(null);
+        }}>
+        <LinearGradient
+          colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
+          start={{x: 0, y: 0.5}}
+          end={{x: 1, y: 0.5}}
+          locations={[0.5, 1.5]}
+          style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>{__('Logout')}</Text>
+        </LinearGradient>
+      </TouchableOpacity>
     </LinearGradient>
   );
 }

@@ -17,10 +17,17 @@ import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Toast from 'react-native-simple-toast';
+import ModalSelector from 'react-native-modal-selector';
+import {setDefaultLocale} from '../../../Utils/Translation/translation';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+
 
 const ForgotPassword = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [email, setemail] = useState('');
+  const [language, setLanguage] = useState('English');
+
   const getOtp = async () => {
     setLoading(true);
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);
@@ -32,6 +39,14 @@ const ForgotPassword = ({navigation}) => {
       Toast.show(__(`${response.data.message}`));
       setLoading(false);
     }
+  };
+  let index = 0;
+  const data = [
+    {key: index++, label: 'English'},
+    {key: index++, label: 'Hindi'},
+  ];
+  const changeLanguage = language => {
+    return __(language);
   };
   return (
     <LinearGradient
@@ -47,9 +62,49 @@ const ForgotPassword = ({navigation}) => {
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Image source={image.backArrow} style={{height: 12, width: 23}} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.lang}>
+            <ModalSelector
+              initValue="Select tickets"
+              accessible={true}
+              scrollViewAccessibilityLabel={'Scrollable options'}
+              cancelButtonAccessibilityLabel={'Cancel Button'}
+              style={{marginLeft: 'auto'}}
+              data={data}
+              onChange={option => {
+                console.log('option', option.label);
+                setLanguage(option.label);
+                setDefaultLocale(option.label);
+              }}>
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                  borderRadius: 30,
+                  paddingHorizontal: 18,
+                  justifyContent: 'space-around',
+                }}>
+                <TextInput
+                  style={{
+                    color: colors.black,
+                    fontSize: Size.medium,
+                    marginRight: 5,
+                    height: 40,
+                  }}
+                  editable={false}
+                  value={changeLanguage(language)}
+                />
+                <MaterialIcons
+                  style={{
+                    color: '#47BC30',
+                    fontSize: 16,
+                  }}
+                  name={'keyboard-arrow-down'}
+                />
+              </TouchableOpacity>
+            </ModalSelector>
+            {/* <TouchableOpacity style={styles.lang}>
               <Text style={{fontSize: Size.large}}>{__('English')}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           <Image source={image.loginLogo} style={[styles.logo]} />
