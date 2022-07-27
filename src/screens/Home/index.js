@@ -23,6 +23,7 @@ function Home(props) {
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
+  const [filterDetails, setFilterDetails] = useState([]);
   const [isShow, setIsShow] = useState(false);
   const [type, setType] = useState('All');
 
@@ -51,6 +52,7 @@ function Home(props) {
     );
     const detail = response.data.vehicles;
     setDetails(detail);
+    setFilterDetails(detail);
     const detailsLength = detail.forEach(element => {
       setCountObj(prev => {
         return {...prev, [element.status]: prev[element.status] + 1};
@@ -64,12 +66,11 @@ function Home(props) {
   }, []);
   const getRunningData = data => {
     setType(data);
-    setIsShow(!isShow);
     const filterDetails = details.filter(item => {
       return item.status == data;
     });
-    setDetails(filterDetails);
-    setIsShow(!isShow);
+    console.log("filterDetailsfilterDetails",filterDetails)
+    setFilterDetails(filterDetails)
   };
   return (
     <>
@@ -214,11 +215,11 @@ function Home(props) {
       {/* <ScrollView style={{backgroundColor: colors.white}}> */}
       <View style={styles.carDetailCard}>
         {dashBoardType === 'Dashboard 1' ? (
-          <Dashboard1 details={details} isShow={isShow}/>
+          <Dashboard1 details={filterDetails} isShow={isShow}/>
         ) : null}
 
         {dashBoardType === 'Dashboard 2' ? (
-          <Dashboard2 details={details}  isShow={isShow}/>
+          <Dashboard2 details={filterDetails}  isShow={isShow}/>
         ) : null}
       </View>
       {/* </ScrollView> */}
