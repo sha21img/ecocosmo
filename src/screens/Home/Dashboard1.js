@@ -163,7 +163,6 @@ function Dashboard1({details, isShow}) {
           <View style={{paddingHorizontal: 10}}>
             <Text style={styles.driverCarNumber}>
               {item.deviceId}
-              {/* MH12 RN 0790 */}
             </Text>
             <View style={styles.driverCarSpeedBox}>
               <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>

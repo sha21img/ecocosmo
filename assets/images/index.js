@@ -36,7 +36,6 @@ export const image = {
   modalmap: require('./modalmap.png'),
   modalNav: require('./modalNav.png'),
   nightShelter: require('./nightShelter.png'),
-  parking1: require('./parking1.png'),
   parking: require('./parking.png'),
   person: require('./person.png'),
   petrolPump: require('./petrolPump.png'),
@@ -102,4 +101,6 @@ export const image = {
   notificationSmall: require('./notificationSmall.png'),
   carRedUp: require('./carRedUp.png'),
   carWhiteUp: require('./carWhiteUp.png'),
+  shareDark: require('./shareDark.png'),
+  reportIcon: require('./reportIcon.png'),
 };

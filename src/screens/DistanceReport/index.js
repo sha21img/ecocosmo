@@ -13,6 +13,7 @@ import styles from './style';
 import {__} from '../../../Utils/Translation/translation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Picker from '../common/Picker';
+import {VictoryBar, VictoryChart, VictoryTheme} from 'victory-native';
 
 function DistanceReport(props) {
   const [isVisible, setIsVisible] = useState(false);
@@ -50,7 +51,7 @@ function DistanceReport(props) {
             />
           </View>
           <View style={styles.alertContainer}>
-            <Image source={image.search} style={styles.searchIcon} />
+            <Image source={image.reportIcon} style={styles.searchIcon} />
             <Image source={image.search} style={styles.searchIcon} />
           </View>
         </View>
@@ -170,6 +171,35 @@ function DistanceReport(props) {
             name={'keyboard-arrow-down'}
           />
         </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          width: '100%',
+          backgroundColor: 'lightgreen',
+        }}>
+        <View style={{width: '10%', backgroundColor: 'lightblue', padding: 20}}>
+          <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+            Odometer Total km
+          </Text>
+          <TouchableOpacity style={{paddingVertical: 5}}>
+            <Image source={image.shareDark} style={{width: 22, height: 22}} />
+          </TouchableOpacity>
+        </View>
+        <View style={{width: '100%', backgroundColor: 'lightpink'}}>
+          <VictoryChart width={350}>
+            <VictoryBar
+              data={[
+                {year: '1900', earnings: 10000},
+                {year: '2012', earnings: 16500},
+                {year: '2013', earnings: 14250},
+                {year: '2014', earnings: 19000},
+              ]}
+              x="quarter"
+              y="earnings"
+            />
+          </VictoryChart>
+        </View>
       </View>
     </>
   );

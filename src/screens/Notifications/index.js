@@ -24,10 +24,11 @@ import {axiosGetData} from '../../../Utils/ApiController';
 function Notifications(props) {
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState([]);
-
   const GetNotification = async () => {
-    let accountid = 'GlobalCars';
-    let password = '62d959fc42e70781bd2a5bb242d4d7c6';
+    // let accountid = 'GlobalCars';
+    let accountid = 'rrenterprises';
+    let password = '25f9e794323b453885f5181f1b624d0b';
+    // let password = '62d959fc42e70781bd2a5bb242d4d7c6';
     setLoading(true);
     const response = await axiosGetData(
       `getNotifications/${accountid}/${password}`,
@@ -70,7 +71,7 @@ function Notifications(props) {
                 fontSize: 20,
                 fontWeight: 'bold',
               }}>
-              MH12 RN 0790
+              {item.deviceId}
             </Text>
             <Text
               style={{
@@ -78,7 +79,7 @@ function Notifications(props) {
                 fontSize: 12,
                 fontWeight: 'bold',
               }}>
-              Engine on
+              {item.message.includes('ON') ? 'Engine on' : 'Engine off'}
             </Text>
             <Text style={{color: '#ACACAC', fontSize: 12}}>
               {item.timeStamp}
@@ -155,7 +156,7 @@ function Notifications(props) {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <ActivityIndicator color={colors.white} size="large" />
+            <ActivityIndicator color={colors.black} size="large" />
           </View>
         ) : (
           <FlatList

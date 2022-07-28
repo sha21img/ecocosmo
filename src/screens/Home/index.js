@@ -80,7 +80,9 @@ function Home(props) {
         end={{x: 1, y: 0.5}}
         style={styles.headerContainer}>
         <View style={styles.headerDashboard}>
-          <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+          <TouchableOpacity
+            style={{paddingVertical: 10}}
+            onPress={() => props.navigation.openDrawer()}>
             <Image source={image.drawer} style={{height: 20, width: 23}} />
           </TouchableOpacity>
           <View style={{marginLeft: 15}}>
