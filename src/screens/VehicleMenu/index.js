@@ -1,12 +1,14 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Modal, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
 
-const VehicleMenu = () => {
+const VehicleMenu = props => {
+  console.log('vehiclsa menu', props.details);
+  const {details} = props;
   const data = [
     {
       id: 1,
@@ -57,35 +59,47 @@ const VehicleMenu = () => {
   ];
   return (
     <>
-      <View style={styles.mainContainer}>
-        <LinearGradient
-          colors={[colors.Modalcolor1, colors.white]}
-          style={styles.modalBody}>
-          <Image source={image.carUp} style={styles.modaldrager} />
-          <Text style={styles.modalSubheading}>{__('RUNNING')} 14M 38KM/H</Text>
-          <Text style={styles.modalHead}>MH12 RN 0790</Text>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={props.visible}
+        onRequestClose={() => props.setVisible(false)}>
+        <View style={styles.mainContainer}>
+          <LinearGradient
+            colors={[colors.Modalcolor1, colors.white]}
+            style={styles.modalBody}>
+            <Image source={image.carUp} style={styles.modaldrager} />
+            <Text style={styles.modalSubheading}>
+              {details.statusMessage}
+              {/* {__('RUNNING')} 14M 38KM/H */}
+            </Text>
+            <Text style={styles.modalHead}>{details.deviceId}</Text>
 
-          <TouchableOpacity style={styles.button}>
-            <Image source={image.callimg} style={{height: 11, width: 11}} />
-            <Text style={styles.buttonText}> {__('Call Driver')}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.button}>
+              <Image source={image.callimg} style={{height: 11, width: 11}} />
+              <Text style={styles.buttonText}> {__('Call Driver')}</Text>
+            </TouchableOpacity>
 
-          <View>
-            <View style={styles.modalContentContainer}>
-              {data.map(el => {
-                return (
-                  <>
-                    <View key={el.id} style={styles.modalCardBody}>
-                      <Image source={el.image} style={styles.modalCardImage} />
-                      <Text style={styles.modalCardText}>{el.data}</Text>
-                    </View>
-                  </>
-                );
-              })}
+            <View>
+              <View style={styles.modalContentContainer}>
+                {data.map(el => {
+                  return (
+                    <>
+                      <View key={el.id} style={styles.modalCardBody}>
+                        <Image
+                          source={el.image}
+                          style={styles.modalCardImage}
+                        />
+                        <Text style={styles.modalCardText}>{el.data}</Text>
+                      </View>
+                    </>
+                  );
+                })}
+              </View>
             </View>
-          </View>
-        </LinearGradient>
-      </View>
+          </LinearGradient>
+        </View>
+      </Modal>
     </>
   );
 };

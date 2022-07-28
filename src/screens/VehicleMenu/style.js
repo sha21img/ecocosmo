@@ -7,8 +7,7 @@ export const styles = StyleSheet.create({
     height: '100%',
     position: 'relative',
     alignItems: 'center',
-
-    backgroundColor: colors.mainThemeColor1,
+    backgroundColor: 'rgba(57, 93, 191, 0.8)',
   },
   modalBody: {
     alignItems: 'center',
@@ -18,12 +17,11 @@ export const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
   },
-  modaldrager: { height: 180, width: 180,position:'absolute',top:-90,
-   },
+  modaldrager: {height: 180, width: 180, position: 'absolute', top: -90},
   modalSubheading: {
     fontSize: Size.tiny,
     color: colors.lightGreen,
-    marginTop:90
+    marginTop: 90,
   },
   modalHead: {
     fontSize: Size.compact,
@@ -44,16 +42,11 @@ export const styles = StyleSheet.create({
   modalContentContainer: {
     marginVertical: 30,
     flexDirection: 'row',
-    width:'98%',
-    
+    width: '98%',
+
     flexWrap: 'wrap',
-   
+
     // alignItems:'center',
-
-    
-   
-    
-
   },
   modalCardBody: {},
   modalCardImage: {

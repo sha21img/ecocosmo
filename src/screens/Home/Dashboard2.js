@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -12,15 +12,22 @@ import LinearGradient from 'react-native-linear-gradient';
 import {__} from '../../../Utils/Translation/translation';
 import styles from './DashStyle2';
 import colors from '../../../assets/Colors';
+import VehicleMenu from '../VehicleMenu';
 
 function Dashboard2({details, isShow}) {
+  const [isData, isSetData] = useState({});
+  const [visible, setVisible] = useState(false);
+
   const renderItem = ({item}) => {
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     const newDate = new Date(date);
     const filterDate = newDate.toLocaleTimeString('en-US');
 
     return (
-      <>
+      <TouchableOpacity
+        onPress={() => {
+          isSetData(item), setVisible(true);
+        }}>
         <LinearGradient
           colors={['#BCE2FF', '#FFFFFF']}
           style={styles.card2Container}>
@@ -198,7 +205,7 @@ function Dashboard2({details, isShow}) {
             {/* {__('177 New Apollo Mogra Lane Andheri,Mumbai, Bharuch,400069,India')} */}
           </Text>
         </LinearGradient>
-      </>
+      </TouchableOpacity>
     );
   };
   return (
@@ -221,6 +228,8 @@ function Dashboard2({details, isShow}) {
           renderItem={renderItem}
         />
       )}
+
+      <VehicleMenu visible={visible} setVisible={setVisible} details={isData} />
     </>
   );
 }
