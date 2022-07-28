@@ -146,7 +146,6 @@ function DistanceReport(props) {
             </TouchableOpacity>
           </View>
         </LinearGradient>
-
         <View
           style={{
             flexDirection: 'row',
