@@ -5,6 +5,7 @@ import {Size} from '../../../assets/fonts/Fonts';
 const styles = StyleSheet.create({
   mainContainer: {
     // flex: 1,
+    backgroundColor:'white'
   },
   headerContainer: {
     flexDirection: 'row',

@@ -76,7 +76,6 @@ export const image = {
   HomeIcon: require('./HomeIcon.png'),
   mapIcon: require('./mapIcon.png'),
   RenewalIcon: require('./RenewalIcon.png'),
-  reportIcon: require('./reportIcon.png'),
   TopLight: require('./TopLight.png'),
   AboutUsIcon: require('./AboutUsIcon.png'),
   vehicleon: require('./vehicleon.png'),
@@ -102,5 +101,6 @@ export const image = {
   carRedUp: require('./carRedUp.png'),
   carWhiteUp: require('./carWhiteUp.png'),
   shareDark: require('./shareDark.png'),
-  reportIcon: require('./reportIcon.png'),
+  carGreenUp: require('./carGreenUp.png'),
+  
 };

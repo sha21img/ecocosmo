@@ -60,6 +60,7 @@ function Home(props) {
         return {...prev, [element.status]: prev[element.status] + 1};
       });
     });
+    console.log('this is a api data =-=-=-=-=-=', response.data.vehicles[0]);
     setIsShow(false);
   };
   useEffect(() => {

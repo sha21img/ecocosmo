@@ -54,7 +54,7 @@ function LiveMapTracking() {
           }}
           followsUserLocation={true}
           showsMyLocationButton={true}
-          showsUserLocation={true}
+          // showsUserLocation={true}
           onPress={e => {
             setCoordinate(e.nativeEvent.coordinate);
           }}
@@ -72,11 +72,11 @@ function LiveMapTracking() {
         </Animated>
       </View>
 
-      <View style={style.top_container}>
+      {/* <View style={style.top_container}>
         <View style={{width: '10%'}}>
           <Image
             source={image.leftArrowblack}
-            style={{width: 35, height: 18}}
+            style={{width: 30, height: 18}}
           />
         </View>
         <LinearGradient
@@ -85,13 +85,19 @@ function LiveMapTracking() {
           end={{x: 0, y: 0}}
           locations={[0, 0.9]}
           style={style.firstbox}>
-          <Image source={image.carUp} style={{width: 50, height: 50}} />
+          <View
+            style={{
+              width: '10%',
+              alignItems: 'center',
+            }}>
+            <Image source={image.carGreenUp} style={{width: 20, height: 40}} />
+          </View>
           <View
             style={{
               marginLeft: 15,
-              width: '80%',
+              width: '90%',
             }}>
-            <Text style={style.firstboxtext1}>MH12 RN 0790'</Text>
+            <Text style={style.firstboxtext1}>MH12 RN 0790</Text>
             <Text style={style.firstboxtext2}>
               {__(
                 '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India',
@@ -107,7 +113,7 @@ function LiveMapTracking() {
             style={{width: 44, height: 44}}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View style={style.bottombox}>
         <LinearGradient
@@ -195,19 +201,24 @@ function LiveMapTracking() {
         : null}
 
       {/* modal2 */}
-      {/* <View
+      <View
         style={{
           position: 'absolute',
           top: 18,
           flexDirection: 'row',
           width: '100%',
-          alignItems: 'center',
+          // alignItems: 'center',
           justifyContent: 'space-around',
         }}>
-        <View style={{width: '10%'}}>
+        <View
+          style={{
+            width: '10%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
           <Image
             source={image.leftArrowblack}
-            style={{width: 35, height: 18}}
+            style={{width: 30, height: 18}}
           />
         </View>
         <LinearGradient
@@ -222,39 +233,54 @@ function LiveMapTracking() {
           <View
             style={{
               flexDirection: 'row',
-              paddingHorizontal: 15,
+              paddingHorizontal: 10,
               paddingVertical: 8,
               width: '100%',
+              justifyContent: 'space-between',
             }}>
-            <View style={{width: '10%'}}>
-              <Image source={image.carUp} style={{width: 20, height: 50}} />
+            <View
+              style={{
+                width: '15%',
+                alignItems: 'center',
+              }}>
+              <Image
+                source={image.carGreenUp}
+                style={{width: 20, height: 40}}
+              />
             </View>
             <View
               style={{
-                marginLeft: 15,
+                // marginLeft: 25,
                 width: '70%',
+                // marginLeft:'auto'
+                // marginHorizontal: 20
               }}>
-              <Text style={style.firstboxtext1}>{__('MH12 RN 0790')}</Text>
+              <Text style={style.firstboxtext1}>MH12 RN 0790</Text>
               <Text style={style.firstboxtext2}>
                 {__(
                   '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India',
                 )}
               </Text>
+
               <View
                 style={{
                   backgroundColor: '#24A520',
                   padding: 9,
                   flexDirection: 'row',
-                  maxWidth: '70%',
+                  width: '66%',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   borderRadius: 6,
                 }}>
-                <Icon name="call" />
+                <Icon name="call" color="#fff" />
                 <Text style={{color: '#fff'}}>Call Driver</Text>
               </View>
             </View>
-            <View style={{alignItems: 'center'}}>
+            <View
+              style={{
+                alignItems: 'center',
+                width: '15%',
+              }}>
               <Image source={image.refresh} style={{width: 25, height: 25}} />
             </View>
           </View>
@@ -267,7 +293,7 @@ function LiveMapTracking() {
             style={{width: 44, height: 44}}
           />
         </TouchableOpacity>
-      </View> */}
+      </View>
 
       {/*  */}
     </View>

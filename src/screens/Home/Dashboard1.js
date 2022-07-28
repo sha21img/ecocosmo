@@ -217,15 +217,7 @@ function Dashboard1({details, isShow}) {
               <Marker
                 // ref={markerRef}
                 key={index.toString()}
-                // onCalloutPress={() => onPressMarker(item.id)}
-                // description={item.description}
-                // title={item.title}
-                // coordinate={item.latlng}
                 coordinate={{
-                  // latitude: 26.9110637,
-                  // longitude: 75.7376412,
-                  // latitude:
-                  // longitude:
                   latitude: parseFloat(item.lat),
                   longitude: parseFloat(item.lng),
                 }}>
@@ -236,66 +228,6 @@ function Dashboard1({details, isShow}) {
                     width: 50,
                   }}
                 />
-                {/* <Callout tooltip>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        backgroundColor: '#fff',
-                        borderRadius: 10,
-                        width: 120,
-                        elevation: 2,
-                        position: 'relative',
-                        // borderWidth: 0.5,
-                        // borderColor: '#ccc',
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          width: '100%',
-                          padding: 10,
-                        }}>
-                        <View
-                          style={{
-                            backgroundColor: 'lightgrey',
-                            borderRadius: 50,
-                            height: 40,
-                            width: 40,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                          <Text>Aval.</Text>
-                          <Text>0</Text>
-                        </View>
-                        <View
-                          style={{
-                            marginHorizontal: 8,
-                          }}>
-                          <Text>RM 25</Text>
-                          <Text>AC 7</Text>
-                        </View>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        bottom: 8,
-                        height: 0,
-                        width: 0,
-                        borderStyle: 'solid',
-                        borderLeftWidth: 20,
-                        borderRightWidth: 20,
-                        borderBottomWidth: 17,
-                        // elevation:5,
-                        borderLeftColor: 'transparent',
-                        borderRightColor: 'transparent',
-                        borderBottomColor: 'white',
-                        transform: [{rotate: '180deg'}],
-                        // margin: 0,
-                        // marginTop:0,
-                        marginLeft: 40,
-                        // borderWidth: 0,
-                        borderColor: 'transparent',
-                      }}></View>
-                  </Callout> */}
               </Marker>
             </MapView>
           </View>
@@ -304,10 +236,26 @@ function Dashboard1({details, isShow}) {
             colors={['#45E384', '#02D958']}
             style={styles.driverCarDetailBox}>
             <View style={styles.imageContainer}>
-              <Image source={image.location} style={styles.images} />
-              <Image source={image.battery} style={styles.images} />
-              <Image source={image.charge} style={styles.images} />
-              <Image source={image.shokker} style={styles.images} />
+              {parseFloat(item.validPacketTimeStamp) -
+                parseFloat(item.lastPowerCutTime) >
+              300 ? (
+                <Image source={image.battery} style={styles.images} />
+              ) : null}
+
+              {parseFloat(item.validPacketTimeStamp) -
+                parseFloat(item.lastLowBatteryTime) >
+              21600 ? (
+                <Image source={image.charge} style={styles.images} />
+              ) : null}
+
+              {parseFloat(item.lastNoGpsSignalTime) >
+              parseFloat(item.validPacketTimeStamp) ? (
+                <Image source={image.location} style={styles.images} />
+              ) : null}
+
+              {parseFloat(item.statusTermInfo & 2) == 2 ? (
+                <Image source={image.shokker} style={styles.images} />
+              ) : null}
             </View>
             <View
               style={{

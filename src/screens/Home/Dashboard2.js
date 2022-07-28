@@ -94,6 +94,7 @@ function Dashboard2({details, isShow}) {
             style={{
               flexDirection: 'row',
               width: '100%',
+              justifyContent: 'space-between',
             }}>
             <LinearGradient
               colors={['#5AB8B5', '#3C6A74']}
@@ -101,65 +102,86 @@ function Dashboard2({details, isShow}) {
               end={{x: 0, y: 0.5}}
               style={{
                 flexDirection: 'row',
-                width: '65%',
+                maxWidth: '65%',
                 justifyContent: 'space-around',
                 marginHorizontal: 10,
                 paddingHorizontal: 5,
                 borderRadius: 6,
               }}>
-              <View
-                style={{
-                  paddingHorizontal: 18,
-                  paddingVertical: 6,
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  source={image.locationWhite}
-                  style={{width: 13, height: 18}}
-                />
-              </View>
-              <LinearGradient
-                colors={['#D4D4D4', 'transparent', 'transparent']}
-                style={{padding: 0.5}}></LinearGradient>
-              <View
-                style={{
-                  paddingHorizontal: 18,
-                  paddingVertical: 6,
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  source={image.batteryWhite}
-                  style={{width: 20, height: 15}}
-                />
-              </View>
-              <LinearGradient
-                colors={['#D4D4D4', 'transparent', 'transparent']}
-                style={{padding: 0.5}}></LinearGradient>
-              <View
-                style={{
-                  paddingHorizontal: 18,
-                  paddingVertical: 6,
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  source={image.cahrgeWhite}
-                  style={{width: 10, height: 20}}
-                />
-              </View>
-              <LinearGradient
-                colors={['#D4D4D4', 'transparent', 'transparent']}
-                style={{padding: 0.5}}></LinearGradient>
-              <View
-                style={{
-                  paddingHorizontal: 18,
-                  paddingVertical: 6,
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  source={image.chargePin}
-                  style={{width: 10, height: 18}}
-                />
-              </View>
+              {parseFloat(item.validPacketTimeStamp) -
+                parseFloat(item.lastPowerCutTime) >
+              300 ? (
+                <>
+                  <View
+                    style={{
+                      paddingHorizontal: 18,
+                      paddingVertical: 6,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={image.batteryWhite}
+                      style={{width: 20, height: 15}}
+                    />
+                  </View>
+                  <LinearGradient
+                    colors={['#D4D4D4', 'transparent', 'transparent']}
+                    style={{padding: 0.5}}></LinearGradient>
+                </>
+              ) : null}
+              {parseFloat(item.validPacketTimeStamp) -
+                parseFloat(item.lastLowBatteryTime) >
+              21600 ? (
+                <>
+                  <View
+                    style={{
+                      paddingHorizontal: 18,
+                      paddingVertical: 6,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={image.cahrgeWhite}
+                      style={{width: 10, height: 20}}
+                    />
+                  </View>
+                  <LinearGradient
+                    colors={['#D4D4D4', 'transparent', 'transparent']}
+                    style={{padding: 0.5}}></LinearGradient>
+                </>
+              ) : null}
+              {parseFloat(item.lastNoGpsSignalTime) >
+              parseFloat(item.validPacketTimeStamp) ? (
+                <>
+                  <View
+                    style={{
+                      paddingHorizontal: 18,
+                      paddingVertical: 6,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={image.locationWhite}
+                      style={{width: 13, height: 18}}
+                    />
+                  </View>
+                  <LinearGradient
+                    colors={['#D4D4D4', 'transparent', 'transparent']}
+                    style={{padding: 0.5}}></LinearGradient>
+                </>
+              ) : null}
+              {parseFloat(item.statusTermInfo & 2) == 2 ? (
+                <>
+                  <View
+                    style={{
+                      paddingHorizontal: 18,
+                      paddingVertical: 6,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={image.chargePin}
+                      style={{width: 10, height: 18}}
+                    />
+                  </View>
+                </>
+              ) : null}
             </LinearGradient>
             <View
               style={{

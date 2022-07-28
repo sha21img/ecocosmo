@@ -44,7 +44,7 @@ const style = StyleSheet.create({
   dashimgbox: {
     width: '15%',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   bottombox: {
     alignItems: 'center',
