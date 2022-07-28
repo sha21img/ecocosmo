@@ -60,7 +60,6 @@ function Home(props) {
     });
     setIsShow(!isShow);
   };
-  console.log(countObj);
   useEffect(() => {
     getDetails();
   }, []);
@@ -69,8 +68,7 @@ function Home(props) {
     const filterDetails = details.filter(item => {
       return item.status == data;
     });
-    console.log("filterDetailsfilterDetails",filterDetails)
-    setFilterDetails(filterDetails)
+    setFilterDetails(filterDetails);
   };
   return (
     <>
@@ -80,7 +78,9 @@ function Home(props) {
         end={{x: 1, y: 0.5}}
         style={styles.headerContainer}>
         <View style={styles.headerDashboard}>
-          <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+          <TouchableOpacity
+            style={{paddingVertical: 10}}
+            onPress={() => props.navigation.openDrawer()}>
             <Image source={image.drawer} style={{height: 20, width: 23}} />
           </TouchableOpacity>
           <View style={{marginLeft: 15}}>
@@ -92,7 +92,6 @@ function Home(props) {
               // cancelButtonAccessibilityLabel={'Cancel Button'}
               style={{flexDirection: 'row'}}
               onChange={option => {
-                console.log('option', option.label);
                 setDashBoardType(option.label);
               }}>
               <TouchableOpacity style={styles.dashboardContainer}>
@@ -215,11 +214,11 @@ function Home(props) {
       {/* <ScrollView style={{backgroundColor: colors.white}}> */}
       <View style={styles.carDetailCard}>
         {dashBoardType === 'Dashboard 1' ? (
-          <Dashboard1 details={filterDetails} isShow={isShow}/>
+          <Dashboard1 details={filterDetails} isShow={isShow} />
         ) : null}
 
         {dashBoardType === 'Dashboard 2' ? (
-          <Dashboard2 details={filterDetails}  isShow={isShow}/>
+          <Dashboard2 details={filterDetails} isShow={isShow} />
         ) : null}
       </View>
       {/* </ScrollView> */}

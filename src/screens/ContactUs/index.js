@@ -27,7 +27,7 @@ const ContactUs = props => {
 
   return (
     <>
-      <ActivityIndicator color={colors.white} />
+      {/* <ActivityIndicator color={colors.white} /> */}
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
         style={styles.main}

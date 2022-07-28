@@ -54,7 +54,7 @@ function Setting({navigation}) {
           <Image source={image.right} />
         </View>
       </TouchableOpacity>
-      <View style={styles.BodyContent}>
+      <TouchableOpacity onPress={()=> navigation.navigate('Renewal')} style={styles.BodyContent}>
         <View
           style={{
             flexDirection: 'row',
@@ -66,7 +66,7 @@ function Setting({navigation}) {
           <Text style={styles.BodyContentText}>{__('Renewal Details')}</Text>
         </View>
         <Image source={image.right} />
-      </View>
+      </TouchableOpacity>
       <View style={styles.BodyContent}>
         <View
           style={{
