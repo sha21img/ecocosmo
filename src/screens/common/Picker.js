@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 function Picker(props) {
-  const {data = [], isVisible, onPress} = props;
+  const {data = [], isVisible, onPress, clicked} = props;
   return (
     <>
       {isVisible ? (
@@ -17,7 +17,8 @@ function Picker(props) {
           style={{
             backgroundColor: 'blue',
             width: '100%',
-            height: 770,
+            // flex:3,
+            height: '100%',
             position: 'absolute',
             justifyContent: 'center',
             alignItems: 'center',
@@ -26,8 +27,14 @@ function Picker(props) {
             style={{
               backgroundColor: 'red',
             }}>
-            {data.map(item => {
-              return <Text>{item.name}</Text>;
+            {data.map((item, index) => {
+              return (
+                <TouchableOpacity
+                  style={{padding: 10}}
+                  onPress={() =>{ clicked(item, index),onPress()}}>
+                  <Text key={index}>{item.name}</Text>
+                </TouchableOpacity>
+              );
             })}
           </View>
           <TouchableOpacity onPress={() => onPress()}>
