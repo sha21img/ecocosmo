@@ -161,9 +161,7 @@ function Dashboard1({details, isShow}) {
           />
           {/* <Image source={image.car} /> */}
           <View style={{paddingHorizontal: 10}}>
-            <Text style={styles.driverCarNumber}>
-              {item.deviceId}
-            </Text>
+            <Text style={styles.driverCarNumber}>{item.deviceId}</Text>
             <View style={styles.driverCarSpeedBox}>
               <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>
               <Text style={styles.driverCarSpeed}>
@@ -293,10 +291,31 @@ function Dashboard1({details, isShow}) {
           colors={['#45E384', '#02D958']}
           style={styles.driverCarDetailBox}>
           <View style={styles.imageContainer}>
-            <Image source={image.location} style={styles.images} />
+            {parseFloat(item.validPacketTimeStamp) -
+              parseFloat(item.lastPowerCutTime) >
+            300 ? (
+              <Image source={image.battery} style={styles.images} />
+            ) : null}
+
+            {parseFloat(item.validPacketTimeStamp) -
+              parseFloat(item.lastLowBatteryTime) >
+            21600 ? (
+              <Image source={image.charge} style={styles.images} />
+            ) : null}
+
+            {parseFloat(item.lastNoGpsSignalTime) >
+            parseFloat(item.validPacketTimeStamp) ? (
+              <Image source={image.location} style={styles.images} />
+            ) : null}
+
+            {parseFloat(item.statusTermInfo & 2) == 2 ? (
+              <Image source={image.shokker} style={styles.images} />
+            ) : null}
+
+            {/* <Image source={image.location} style={styles.images} />
             <Image source={image.battery} style={styles.images} />
             <Image source={image.charge} style={styles.images} />
-            <Image source={image.shokker} style={styles.images} />
+            <Image source={image.shokker} style={styles.images} />  */}
           </View>
           <View
             style={{
