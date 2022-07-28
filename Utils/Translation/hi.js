@@ -15,7 +15,6 @@ export default {
   //near by place
   'Nearby Places': 'निकटवर्ती स्थान',
   //login
-  'English': 'अंग्रेज़ी',
   'WELCOME TO': 'आपका स्वागत है',
   'VEHICLE TRACKING SYSTEM': 'वाहन ट्रैकिंग प्रणाली',
   'Forgot Password?': 'पासवर्ड भूल गए?',

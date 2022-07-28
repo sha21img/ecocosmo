@@ -1,14 +1,23 @@
 import React from 'react';
-import {View, Text, Image, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import {__} from '../../../Utils/Translation/translation';
 import styles from './DashStyle2';
 import colors from '../../../assets/Colors';
 
-function Dashboard2({details,isShow}) {
+function Dashboard2({details, isShow}) {
   const renderItem = ({item}) => {
-    // console.log(item);
+    const date = parseFloat(item.validPacketTimeStamp) + 19800;
+    const newDate = new Date(date);
+    const filterDate = newDate.toLocaleTimeString('en-US');
 
     return (
       <>
@@ -33,7 +42,11 @@ function Dashboard2({details,isShow}) {
                     source={image.clock}
                     style={styles.driverCarDetailsImage}
                   />
-                  <Text style={styles.driverCarDetailsText}>17:57:45</Text>
+                  <Text style={styles.driverCarDetailsText}>
+                {filterDate}
+                  {/* {} */}
+                  {/* 17:57:45 */}
+                  </Text>
                   <Text style={styles.driverCarDetailsText1}>
                     {__('CHECK IN TIME')}
                   </Text>
@@ -44,7 +57,7 @@ function Dashboard2({details,isShow}) {
                     style={styles.driverCarDetailsImage}
                   />
                   <Text style={styles.driverCarDetailsText}>
-                    {Math.floor(item.speed)}{" "}{__('KM/H')}
+                    {Math.floor(item.speed)} {__('KM/H')}
                     {/* {__('KM/H')} */}
                   </Text>
                   <Text style={styles.driverCarDetailsText1}>
@@ -168,14 +181,14 @@ function Dashboard2({details,isShow}) {
   };
   return (
     <>
-      {!isShow ? (
+      {isShow ? (
         <View
           style={{
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <ActivityIndicator   />
+          <ActivityIndicator />
         </View>
       ) : (
         <FlatList

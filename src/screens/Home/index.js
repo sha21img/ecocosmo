@@ -24,7 +24,7 @@ function Home(props) {
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
   const [filterDetails, setFilterDetails] = useState([]);
-  const [isShow, setIsShow] = useState(false);
+  const [isShow, setIsShow] = useState(true);
   const [type, setType] = useState('All');
 
   let index = 0;
@@ -47,6 +47,7 @@ function Home(props) {
     'No GPS': 0,
   });
   const getDetails = async () => {
+    setIsShow(true);
     const response = await axiosGetData(
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
@@ -58,9 +59,8 @@ function Home(props) {
         return {...prev, [element.status]: prev[element.status] + 1};
       });
     });
-    setIsShow(!isShow);
+    setIsShow(false);
   };
-  console.log(countObj);
   useEffect(() => {
     getDetails();
   }, []);
@@ -69,8 +69,8 @@ function Home(props) {
     const filterDetails = details.filter(item => {
       return item.status == data;
     });
-    console.log("filterDetailsfilterDetails",filterDetails)
-    setFilterDetails(filterDetails)
+    setFilterDetails(filterDetails);
+    setIsShow(false);
   };
   return (
     <>
@@ -92,7 +92,6 @@ function Home(props) {
               // cancelButtonAccessibilityLabel={'Cancel Button'}
               style={{flexDirection: 'row'}}
               onChange={option => {
-                console.log('option', option.label);
                 setDashBoardType(option.label);
               }}>
               <TouchableOpacity style={styles.dashboardContainer}>
@@ -111,7 +110,7 @@ function Home(props) {
           <Image source={image.search} style={styles.searchIcon} />
         </View>
       </LinearGradient>
-      {isShow ? (
+      {!isShow ? (
         <View style={styles.catagoryBox}>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <TouchableOpacity
@@ -131,7 +130,10 @@ function Home(props) {
                 {__('All')} {details.length}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => getRunningData('Running')}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsShow(true), getRunningData('Running');
+              }}>
               <Text
                 style={[
                   styles.catagoryTextActive,
@@ -215,11 +217,11 @@ function Home(props) {
       {/* <ScrollView style={{backgroundColor: colors.white}}> */}
       <View style={styles.carDetailCard}>
         {dashBoardType === 'Dashboard 1' ? (
-          <Dashboard1 details={filterDetails} isShow={isShow}/>
+          <Dashboard1 details={filterDetails} isShow={isShow} />
         ) : null}
 
         {dashBoardType === 'Dashboard 2' ? (
-          <Dashboard2 details={filterDetails}  isShow={isShow}/>
+          <Dashboard2 details={filterDetails} isShow={isShow} />
         ) : null}
       </View>
       {/* </ScrollView> */}
