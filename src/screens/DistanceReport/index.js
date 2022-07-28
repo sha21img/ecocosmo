@@ -51,7 +51,7 @@ function DistanceReport(props) {
             />
           </View>
           <View style={styles.alertContainer}>
-            <Image source={image.reportIcon} style={styles.searchIcon} />
+            <Image source={image.keep} style={styles.searchIcon} />
             <Image source={image.search} style={styles.searchIcon} />
           </View>
         </View>

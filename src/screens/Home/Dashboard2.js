@@ -43,9 +43,9 @@ function Dashboard2({details, isShow}) {
                     style={styles.driverCarDetailsImage}
                   />
                   <Text style={styles.driverCarDetailsText}>
-                {filterDate}
-                  {/* {} */}
-                  {/* 17:57:45 */}
+                    {filterDate}
+                    {/* {} */}
+                    {/* 17:57:45 */}
                   </Text>
                   <Text style={styles.driverCarDetailsText1}>
                     {__('CHECK IN TIME')}
