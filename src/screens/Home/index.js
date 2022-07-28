@@ -24,7 +24,7 @@ function Home(props) {
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
   const [filterDetails, setFilterDetails] = useState([]);
-  const [isShow, setIsShow] = useState(false);
+  const [isShow, setIsShow] = useState(true);
   const [type, setType] = useState('All');
 
   let index = 0;
@@ -47,6 +47,7 @@ function Home(props) {
     'No GPS': 0,
   });
   const getDetails = async () => {
+    setIsShow(true);
     const response = await axiosGetData(
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
@@ -58,7 +59,7 @@ function Home(props) {
         return {...prev, [element.status]: prev[element.status] + 1};
       });
     });
-    setIsShow(!isShow);
+    setIsShow(false);
   };
   useEffect(() => {
     getDetails();
@@ -69,6 +70,7 @@ function Home(props) {
       return item.status == data;
     });
     setFilterDetails(filterDetails);
+    setIsShow(false);
   };
   return (
     <>
@@ -110,7 +112,7 @@ function Home(props) {
           <Image source={image.search} style={styles.searchIcon} />
         </View>
       </LinearGradient>
-      {isShow ? (
+      {!isShow ? (
         <View style={styles.catagoryBox}>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <TouchableOpacity
@@ -130,7 +132,10 @@ function Home(props) {
                 {__('All')} {details.length}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => getRunningData('Running')}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsShow(true), getRunningData('Running');
+              }}>
               <Text
                 style={[
                   styles.catagoryTextActive,
