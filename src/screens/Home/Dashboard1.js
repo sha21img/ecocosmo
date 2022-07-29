@@ -238,24 +238,19 @@ function Dashboard1({details, isShow}) {
             <View style={styles.imageContainer}>
               {parseFloat(item.validPacketTimeStamp) -
                 parseFloat(item.lastPowerCutTime) >
-              300 ? (
-                <Image source={image.battery} style={styles.images} />
-              ) : null}
+                300 && <Image source={image.battery} style={styles.images} />}
 
               {parseFloat(item.validPacketTimeStamp) -
                 parseFloat(item.lastLowBatteryTime) >
-              21600 ? (
-                <Image source={image.charge} style={styles.images} />
-              ) : null}
+                21600 && <Image source={image.charge} style={styles.images} />}
 
               {parseFloat(item.lastNoGpsSignalTime) >
-              parseFloat(item.validPacketTimeStamp) ? (
+                parseFloat(item.validPacketTimeStamp) && (
                 <Image source={image.location} style={styles.images} />
-              ) : null}
-
-              {parseFloat(item.statusTermInfo & 2) == 2 ? (
+              )}
+              {parseFloat(item.statusTermInfo & 2) == 2 && (
                 <Image source={image.shokker} style={styles.images} />
-              ) : null}
+              )}
             </View>
             <View
               style={{

@@ -20,18 +20,20 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {axiosGetData} from '../../../Utils/ApiController';
-
+import Storage from '../../../Utils/Storage';
 function Notifications(props) {
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState([]);
   const GetNotification = async () => {
     // let accountid = 'GlobalCars';
-    let accountid = 'rrenterprises';
-    let password = '25f9e794323b453885f5181f1b624d0b';
+    const succcess = await Storage.getLoginDetail('login_detail');
+
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
     // let password = '62d959fc42e70781bd2a5bb242d4d7c6';
     setLoading(true);
     const response = await axiosGetData(
-      `getNotifications/${accountid}/${password}`,
+      `getNotifications/${username}/${encodedPassWord}`,
     );
     if (response?.data.apiResult == 'success') {
       setLoading(false);

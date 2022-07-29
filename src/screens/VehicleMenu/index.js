@@ -1,14 +1,16 @@
 import React from 'react';
-import {Image, Modal, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Modal, Text, TouchableOpacity, View,Linking} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
+import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 
 const VehicleMenu = props => {
-  console.log('vehiclsa menu', props.details);
-  const {details} = props;
+  const {details,visible} = props;
+  console.log("details",details)
   const data = [
     {
       id: 1,
@@ -57,12 +59,31 @@ const VehicleMenu = props => {
     },
     {id: 10, image: image.modalmap, data: 'MAP HISTORY'},
   ];
+  const calling=async()=>{
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    console.log('data',response.data.driverDetails)
+    const driverDetails=response.data.driverDetails
+    const filterData=driverDetails.filter((item)=>{
+      console.log("item.imei",item.deviceId)
+      console.log("details.imei",details.deviceId)
+      return item.deviceId===details.deviceId
+
+    })
+    const phoneNumber=filterData[0].mobilenumber
+    console.log("filterDatafilterData",filterData[0].mobilenumber)
+    Linking.openURL(`tel:${phoneNumber}`)
+  }
   return (
     <>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={props.visible}
+        visible={visible}
         onRequestClose={() => props.setVisible(false)}>
         <View style={styles.mainContainer}>
           <LinearGradient
@@ -75,7 +96,7 @@ const VehicleMenu = props => {
             </Text>
             <Text style={styles.modalHead}>{details.deviceId}</Text>
 
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={()=>calling()}>
               <Image source={image.callimg} style={{height: 11, width: 11}} />
               <Text style={styles.buttonText}> {__('Call Driver')}</Text>
             </TouchableOpacity>

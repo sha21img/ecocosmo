@@ -41,7 +41,10 @@ const Login = ({navigation}) => {
     const response = await axiosGetData(
       `account/${username}/${encodedPassWord}`,
     );
+    console.log("response.data",response.data)
     const succcess = await Storage.SetLogin(response.data.apiResult);
+    const detail=await Storage.SetLoginDetail(response.data);
+    
 
     if (response.data.apiResult === 'success') {
       setLoading(false);
