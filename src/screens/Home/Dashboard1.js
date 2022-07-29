@@ -54,7 +54,6 @@ function Dashboard1({details, isShow}) {
     setIsLoading(false);
   };
   const checkPermissionAndroid = () => {
-    // console.log('checkPermissionAndroid');
     check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
       .then(result => {
         switch (result) {
@@ -99,22 +98,15 @@ function Dashboard1({details, isShow}) {
   };
   const getLocations = () => {
     // Geolocation.getCurrentPosition(position => {
-    //   console.log('pos1234567890', position);
     // });
 
     Geolocation.getCurrentPosition(position => {
-      // console.log(
-      //   'position.latitude, position.longitude',
-      //   position.coords.latitude,
-      //   position.coords.longitude,
-      // );
       setCoordinate({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       });
     });
   };
-  // console.log('coordinatecoordinatecoordinate', coordinate);
   useEffect(() => {
     // getLocation();
     if (netInfo.isConnected) {
@@ -128,7 +120,6 @@ function Dashboard1({details, isShow}) {
   const markerRef = useRef([]);
   const onRegionalChange = useCallback(
     region => {
-      console.log('onRegionalChange', region);
       setCoordinate(region);
       // setCurrentLoc(region);
       // if (markerRef&& markerRef.current && markerRef.current.showCallout) {
@@ -194,6 +185,8 @@ function Dashboard1({details, isShow}) {
                 height: '100%',
               }}
               zoomEnabled={true}
+              scrollEnabled={false}
+              pointerEvents="none"
               minZoomLevel={15}
               initialRegion={{
                 latitude: parseFloat(item.lat),
@@ -208,8 +201,7 @@ function Dashboard1({details, isShow}) {
               // onPress={e => {
               //   setCoordinate(e.nativeEvent.coordinate);
               // }}
-              onRegionChangeComplete={region => onRegionalChange(region)}
-
+              // onRegionChangeComplete={region => onRegionalChange(region)}
               // onRegionChangeComplete={region => setCoordinate(region)}
               // onRegionChange={region => setCoordinate(region)}
               // onMapReady={() => setMarginBottom(0)}

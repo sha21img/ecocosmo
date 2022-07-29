@@ -55,7 +55,7 @@ const ForgotPassword_1 = () => {
     return __(language);
   };
   return (
-    <ScrollView
+    <ScrollView showsVerticalScrollIndicator={false}
       contentContainerStyle={{flexGrow: 1}}>
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
@@ -79,7 +79,6 @@ const ForgotPassword_1 = () => {
             style={{marginLeft: 'auto'}}
             data={data}
             onChange={option => {
-              console.log('option', option.label);
               setLanguage(option.label);
               setDefaultLocale(option.label);
             }}>

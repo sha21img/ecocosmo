@@ -32,7 +32,6 @@ const CustomerProfile = props => {
     const response = await axiosGetData(
       `updateprofile?accountid=${AcountId}&password=25f9e794323b453885f5181f1b624d0b&acname=rrenterprises&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
     );
-    console.log("response",response.data)
     if (response.data.apiResult === 'success') {
       setLoading(false);
     } else {

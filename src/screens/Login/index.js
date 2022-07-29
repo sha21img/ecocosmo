@@ -26,7 +26,6 @@ import ModalSelector from 'react-native-modal-selector';
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
 
 const Login = ({navigation}) => {
-  console.log('navigatoi0n', navigation.navigate);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,10 +40,8 @@ const Login = ({navigation}) => {
     const response = await axiosGetData(
       `account/${username}/${encodedPassWord}`,
     );
-    console.log("response.data",response.data)
     const succcess = await Storage.SetLogin(response.data.apiResult);
-    const detail=await Storage.SetLoginDetail(response.data);
-    
+    const detail = await Storage.SetLoginDetail(response.data);
 
     if (response.data.apiResult === 'success') {
       setLoading(false);
@@ -52,7 +49,6 @@ const Login = ({navigation}) => {
       Toast.show(__(`${response.data.message}`));
       setLoading(false);
     }
-    console.log('123', response.data);
 
     setToken(succcess);
   };
@@ -66,7 +62,7 @@ const Login = ({navigation}) => {
     return __(language);
   };
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
         style={{
@@ -81,7 +77,6 @@ const Login = ({navigation}) => {
           style={{marginLeft: 'auto'}}
           data={data}
           onChange={option => {
-            console.log('option', option.label);
             setLanguage(option.label);
             setDefaultLocale(option.label);
           }}>
@@ -154,7 +149,7 @@ const Login = ({navigation}) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={() => handleLogin()}>
+        <TouchableOpacity style={{margin: 20}} onPress={() => handleLogin()}>
           <LinearGradient
             colors={[colors.largeBtn1, colors.largeBtn2]}
             style={styles.loginButton}>
