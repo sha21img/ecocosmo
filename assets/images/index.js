@@ -102,5 +102,5 @@ export const image = {
   carWhiteUp: require('./carWhiteUp.png'),
   shareDark: require('./shareDark.png'),
   carGreenUp: require('./carGreenUp.png'),
-  
+  Close: require('./Close.png'),
 };

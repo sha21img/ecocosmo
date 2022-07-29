@@ -28,5 +28,6 @@ const colors = {
   subGradientcolour2: '#FE7979',
   SubContentText: '#68B9FB',
   lightGrey: '#B9B9B9',
+  subRedBtn: '#ff5050',
 };
 export default colors;

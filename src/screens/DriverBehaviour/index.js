@@ -13,7 +13,9 @@ import styles from './style';
 import {__} from '../../../Utils/Translation/translation';
 import {VictoryPie, VictoryLegend} from 'victory-native';
 
-function DriverBehaviour() {
+function DriverBehaviour(props) {
+  const {details} = props.route.params;
+  console.log('detaaaaaaaaails', details);
   return (
     <>
       <LinearGradient
@@ -28,7 +30,7 @@ function DriverBehaviour() {
               <TextInput
                 style={styles.dashboardText}
                 editable={false}
-                value="Dashboard 1"
+                value={details.deviceId}
               />
             </View>
             <View style={styles.alertContainer}>
@@ -43,11 +45,9 @@ function DriverBehaviour() {
               <View style={styles.driverDetails}>
                 <View>
                   <Text style={styles.driverCarSpeed}>
-                    {__('RUNNING 14M 38KM/H')}
+                    {details.statusMessage}
                   </Text>
-                  <Text style={styles.driverCarNumber}>
-                    {__('MH12 RN 0790')}
-                  </Text>
+                  <Text style={styles.driverCarNumber}>{details.deviceId}</Text>
                 </View>
 
                 <View style={styles.driverCarDetailsBox}>
