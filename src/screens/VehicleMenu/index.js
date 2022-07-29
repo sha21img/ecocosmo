@@ -1,68 +1,111 @@
-import React from 'react';
-import {Image, Modal, Text, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
+import {Image, Modal, Text, TouchableOpacity, View, Share} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
+import EngineStopPopup from '../EngineStopPopup';
+import {useNavigation} from '@react-navigation/native';
+import {axiosGetData} from '../../../Utils/ApiController';
 
 const VehicleMenu = props => {
-  console.log('vehiclsa menu', props.details);
-  const {details} = props;
+  const navigation = useNavigation();
+  console.log('navigation', navigation.navigate);
+  // console.log('vehiclsa menu', props);
+  const [modal, setModal] = useState(false);
+  const {details, visible} = props;
   const data = [
     {
       id: 1,
       image: image.madalImage1,
       data: 'LIVE TRACKING',
+      routeTo: 'LiveMapTracking',
     },
     {
       id: 2,
       image: image.singleBook,
       data: 'REPORTS',
+      routeTo: '',
     },
     {
       id: 3,
       image: image.tower,
       data: 'GRAPHICAL REPORTS',
+      routeTo: 'GraphicalReports',
     },
     {
       id: 4,
       image: image.doubleBook,
       data: 'GROUP REPORTS',
+      routeTo: 'Reports',
     },
     {
       id: 5,
       image: image.P,
       data: 'PARKING MODE',
+      routeTo: '',
     },
     {
       id: 6,
       image: image.modalImage5,
       data: 'DRIVER BEHAVIOR',
+      routeTo: 'DriverBehaviour',
     },
     {
       id: 7,
       image: image.modalfrontcar,
       data: 'IMMOBILIZER',
+      routeTo: '',
     },
     {
       id: 8,
       image: image.modalImage7,
       data: 'DRIVER DETAILS',
+      routeTo: '',
     },
     {
       id: 9,
       image: image.modalNav,
       data: 'URL TRACKING',
+      routeTo: 'UrlTracking',
     },
-    {id: 10, image: image.modalmap, data: 'MAP HISTORY'},
+    {id: 10, image: image.modalmap, data: 'MAP HISTORY', routeTo: ''},
   ];
+  const navigatorFrom = async data => {
+    if (data === 'UrlTracking') {
+      const response = await axiosGetData(
+        `gettrackurl/rrenterprises/25f9e794323b453885f5181f1b624d0b/351608080772390/ecvalidate/24`,
+      );
+      try {
+        const result = await Share.share({
+          message: response.data.message,
+        });
+        console.log('result', result);
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+
+      // console.log('response.data', response.data.message);
+    } else {
+      navigation.navigate(data);
+    }
+  };
   return (
     <>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={props.visible}
+        visible={visible}
         onRequestClose={() => props.setVisible(false)}>
         <View style={styles.mainContainer}>
           <LinearGradient
@@ -84,7 +127,7 @@ const VehicleMenu = props => {
               <View style={styles.modalContentContainer}>
                 {data.map(el => {
                   return (
-                    <>
+                    <TouchableOpacity onPress={() => navigatorFrom(el.routeTo)}>
                       <View key={el.id} style={styles.modalCardBody}>
                         <Image
                           source={el.image}
@@ -92,7 +135,7 @@ const VehicleMenu = props => {
                         />
                         <Text style={styles.modalCardText}>{el.data}</Text>
                       </View>
-                    </>
+                    </TouchableOpacity>
                   );
                 })}
               </View>
@@ -100,6 +143,7 @@ const VehicleMenu = props => {
           </LinearGradient>
         </View>
       </Modal>
+      <EngineStopPopup visible={modal} />
     </>
   );
 };

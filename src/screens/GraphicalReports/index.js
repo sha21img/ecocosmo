@@ -19,7 +19,7 @@ import {color} from 'react-native-reanimated';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 
-function DistanceReport(props) {
+function GraphicalReports(props) {
   const [vehicleNumber, setVehicleNumber] = useState('Select vehicle number');
 
   let index = 0;
@@ -264,7 +264,7 @@ function DistanceReport(props) {
   );
 }
 
-export default DistanceReport;
+export default GraphicalReports;
 
 // <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
 // <Text>oiyhhlu</Text>
