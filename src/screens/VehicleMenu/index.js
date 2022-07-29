@@ -1,5 +1,13 @@
 import React, {useState} from 'react';
-import {Image, Modal, Text, TouchableOpacity, View, Share} from 'react-native';
+import {
+  Image,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+  Share,
+  Linking,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
@@ -9,12 +17,14 @@ import EngineStopPopup from '../EngineStopPopup';
 import {useNavigation} from '@react-navigation/native';
 import {axiosGetData} from '../../../Utils/ApiController';
 
+import Storage from '../../../Utils/Storage';
+
 const VehicleMenu = props => {
   const navigation = useNavigation();
-  console.log('navigation', navigation.navigate);
-  // console.log('vehiclsa menu', props);
   const [modal, setModal] = useState(false);
+
   const {details, visible} = props;
+  console.log('details', details);
   const data = [
     {
       id: 1,
@@ -100,6 +110,24 @@ const VehicleMenu = props => {
       navigation.navigate(data);
     }
   };
+  const calling = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    console.log('data', response.data.driverDetails);
+    const driverDetails = response.data.driverDetails;
+    const filterData = driverDetails.filter(item => {
+      console.log('item.imei', item.deviceId);
+      console.log('details.imei', details.deviceId);
+      return item.deviceId === details.deviceId;
+    });
+    const phoneNumber = filterData[0].mobilenumber;
+    console.log('filterDatafilterData', filterData[0].mobilenumber);
+    Linking.openURL(`tel:${phoneNumber}`);
+  };
   return (
     <>
       <Modal
@@ -118,7 +146,7 @@ const VehicleMenu = props => {
             </Text>
             <Text style={styles.modalHead}>{details.deviceId}</Text>
 
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => calling()}>
               <Image source={image.callimg} style={{height: 11, width: 11}} />
               <Text style={styles.buttonText}> {__('Call Driver')}</Text>
             </TouchableOpacity>

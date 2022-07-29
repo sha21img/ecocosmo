@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Image, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
@@ -10,11 +10,40 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Storage from '../../../Utils/Storage';
 import {AuthContext} from '../../../App';
+import {axiosGetData} from '../../../Utils/ApiController';
 
 function Setting({navigation}) {
   const [Ison, setIson] = useState(true);
   const {setToken} = React.useContext(AuthContext);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const getNotification = async () => {
+    const response = await axiosGetData(
+      `getNoticationsStatus/rrenterprises/25f9e794323b453885f5181f1b624d0b`,
+    );
+    console.log(response.data.message);
+    setNotificationMessage(response.data.message);
+  };
+  useEffect(() => {
+    getNotification();
+  });
+  const sendNotification = async value => {
+    setIson(!Ison);
+    let number;
+    if (value == false) {
+      number = 0;
+    } else {
+      number = 1;
+    }
+// console.log('number',number)
+const succcess = await Storage.getLoginDetail('login_detail');
 
+let username = succcess.accountId;
+let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `stopOrStartAllNotications/${username}/${encodedPassWord}/${number}`,
+    );
+    // console.log("response",response.data)
+  };
   return (
     <LinearGradient
       colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
@@ -54,7 +83,9 @@ function Setting({navigation}) {
           <Image source={image.right} />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={()=> navigation.navigate('Renewal')} style={styles.BodyContent}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Renewal')}
+        style={styles.BodyContent}>
         <View
           style={{
             flexDirection: 'row',
@@ -79,11 +110,13 @@ function Setting({navigation}) {
           <Text style={styles.BodyContentText}>{__('Notification')}</Text>
         </View>
         <ToggleSwitch
-          isOn={Ison}
+          isOn={notificationMessage === 'ON' && Ison}
           onColor={colors.toggleColoron}
           offColor={colors.toggleColorOff}
           size="large"
-          onToggle={() => setIson(!Ison)}
+          onToggle={value => {
+            sendNotification(value), console.log(value);
+          }}
         />
       </View>
       <TouchableOpacity

@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   catagoryBox: {
     flexDirection: 'row',
-    paddingHorizontal: 15,
+    paddingLeft: 15,
     paddingVertical: 10,
     // backgroundColor: colors.white
   },
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
     paddingVertical: 15,
     // backgroundColor: colors.white,
-    height:"100%"
+    height: '100%',
   },
 });
 export default styles;

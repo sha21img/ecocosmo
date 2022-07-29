@@ -5,6 +5,7 @@ import {Size} from '../../../assets/fonts/Fonts';
 const styles = StyleSheet.create({
   head: {
     width: '100%',
+    // height:'100%'
   },
   headerContainer: {
     flexDirection: 'row',
@@ -53,13 +54,12 @@ const styles = StyleSheet.create({
     marginTop: 49,
   },
   loginButton: {
-    height: 66,
+    paddingVertical:20,
     width: '88%',
     alignSelf: 'center',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 113,
   },
   loginButtonText: {
     color: colors.white,
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footerTab: {
+    marginTop:100,
     height: 57,
     width: 200,
     backgroundColor: colors.white,

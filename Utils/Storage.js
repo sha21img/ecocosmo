@@ -18,6 +18,28 @@ class Storage {
       return error;
     }
   }
+  static async SetLoginDetail(data) {
+    console.log('asdfgf',data)
+    try {
+       await AsyncStorage.setItem('login_detail',JSON.stringify(data));
+      // console.log("result",result)
+      return data
+    } catch (error) {
+      return error;
+    }
+  }
+  static async getLoginDetail() {
+    // console.log("first")
+    // let item = {};
+    try {
+     const item = await AsyncStorage.getItem('login_detail');
+      const userProfile = JSON.parse(item);
+      return userProfile;
+    } catch (error) {
+      console.warn(error.message);
+      return null;
+    }
+  }
   static async getLogin() {
     // console.log("first")
     let item = {};

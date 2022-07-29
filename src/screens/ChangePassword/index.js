@@ -11,9 +11,9 @@ import md5 from 'md5';
 import Toast from 'react-native-simple-toast';
 
 const ChangePassword = props => {
-  const [Current, setCurrent] = useState('123456789');
-  const [newPassword, setnewPassword] = useState('123456789');
-  const [confirmPassword, setConfirmPassword] = useState('123456789');
+  const [Current, setCurrent] = useState('');
+  const [newPassword, setnewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {

@@ -17,6 +17,7 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 import Toast from 'react-native-simple-toast';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const CustomerProfile = props => {
   const [AcountId, SetaccountId] = useState('rrenterprises');
@@ -31,6 +32,7 @@ const CustomerProfile = props => {
     const response = await axiosGetData(
       `updateprofile?accountid=${AcountId}&password=25f9e794323b453885f5181f1b624d0b&acname=rrenterprises&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
     );
+    console.log("response",response.data)
     if (response.data.apiResult === 'success') {
       setLoading(false);
     } else {
@@ -56,7 +58,16 @@ const CustomerProfile = props => {
               <Text style={styles.headerText}>{__('My Account')}</Text>
             </View>
             <TouchableOpacity style={styles.editContainer}>
-              <Text style={styles.editText}>{__('🖊 Edit')}</Text>
+            <Entypo
+                style={{
+                  color: '#fff',
+                  fontSize: 10,
+                  alignSelf:'center',
+                  marginHorizontal:2
+                }}
+                name={'edit'}
+              />
+              <Text style={styles.editText}>{__('Edit')}</Text>
             </TouchableOpacity>
           </View>
           <LinearGradient
