@@ -5,6 +5,8 @@ import {Size} from '../../../assets/fonts/Fonts';
 const styles = StyleSheet.create({
   head: {
     width: '100%',
+    backgroundColor:"red"
+    // alignItems:'center'
     // height:'100%'
   },
   headerContainer: {
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
     width: 102,
     height: 102,
     alignSelf: 'center',
-    marginBottom: 27,
+    marginVertical: 27,
   },
   headText: {
     textAlign: 'center',
