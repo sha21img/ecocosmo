@@ -5,102 +5,75 @@ import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
+import {Size} from '../../../assets/fonts/Fonts';
 
 const EngineStopPopup = props => {
-  const {details} = props;
-  //   const data = [
-  //     {
-  //       id: 1,
-  //       image: image.madalImage1,
-  //       data: 'LIVE TRACKING',
-  //       routeTo: 'LiveMapTracking',
-  //     },
-  //     {
-  //       id: 2,
-  //       image: image.singleBook,
-  //       data: 'REPORTS',
-  //     },
-  //     {
-  //       id: 3,
-  //       image: image.tower,
-  //       data: 'GRAPHICAL REPORTS',
-  //       routeTo: 'GraphicalReports',
-  //     },
-  //     {
-  //       id: 4,
-  //       image: image.doubleBook,
-  //       data: 'GROUP REPORTS',
-  //       routeTo: 'Reports',
-  //     },
-  //     {
-  //       id: 5,
-  //       image: image.P,
-  //       data: 'PARKING MODE',
-  //     },
-  //     {
-  //       id: 6,
-  //       image: image.modalImage5,
-  //       data: 'DRIVER BEHAVIOR',
-  //       routeTo: 'DriverBehaviour',
-  //     },
-  //     {
-  //       id: 7,
-  //       image: image.modalfrontcar,
-  //       data: 'IMMOBILIZER',
-  //     },
-  //     {
-  //       id: 8,
-  //       image: image.modalImage7,
-  //       data: 'DRIVER DETAILS',
-  //     },
-  //     {
-  //       id: 9,
-  //       image: image.modalNav,
-  //       data: 'URL TRACKING',
-  //     },
-  //     {id: 10, image: image.modalmap, data: 'MAP HISTORY'},
-  //   ];
   return (
     <>
       <Modal
         animationType="slide"
         transparent={true}
-        // visible={true}
         visible={props.visible}
-        // onRequestClose={() => props.setVisible(false)}
-      >
+        onRequestClose={() => props.setVisible(false)}>
         <View style={styles.mainContainer}>
+          <TouchableOpacity
+            onPress={() => props.setVisible(false)}
+            style={{alignSelf: 'flex-end', marginBottom: '19%'}}>
+            <Image source={image.Close} style={{height: 26, width: 26}} />
+          </TouchableOpacity>
           <LinearGradient
             colors={[colors.Modalcolor1, colors.white]}
             style={styles.modalBody}>
-            {/* <Image source={image.carUp} style={styles.modaldrager} />
-            <Text style={styles.modalSubheading}>
-              {details.statusMessage}
+            <Text style={{color: colors.black, fontSize: Size.compact}}>
+              Do you want to Start vehicle ?
             </Text>
-            <Text style={styles.modalHead}>{details.deviceId}</Text>
-
-            <TouchableOpacity style={styles.button}>
-              <Image source={image.callimg} style={{height: 11, width: 11}} />
-              <Text style={styles.buttonText}> {__('Call Driver')}</Text>
-            </TouchableOpacity> */}
-
-            {/* <View>
-              <View style={styles.modalContentContainer}>
-                {data.map(el => {
-                  return (
-                    <>
-                      <View key={el.id} style={styles.modalCardBody}>
-                        <Image
-                          source={el.image}
-                          style={styles.modalCardImage}
-                        />
-                        <Text style={styles.modalCardText}>{el.data}</Text>
-                      </View>
-                    </>
-                  );
-                })}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '77%',
+                marginTop: 25,
+              }}>
+              <View
+                style={[
+                  styles.loginButton,
+                  {backgroundColor: colors.subRedBtn},
+                ]}>
+                <Text style={styles.loginButtonText}>{__('No')}</Text>
               </View>
-            </View> */}
+              <LinearGradient
+                colors={[colors.largeBtn1, colors.largeBtn2]}
+                style={styles.loginButton}>
+                <Text style={styles.loginButtonText}>{__('Yes')}</Text>
+              </LinearGradient>
+            </View>
+          </LinearGradient>
+          <LinearGradient
+            colors={[colors.Modalcolor1, colors.white]}
+            style={styles.modalBody}>
+            <Text style={{color: colors.black, fontSize: Size.compact}}>
+              Do you want to Stop vehicle ?
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '77%',
+                marginTop: 25,
+              }}>
+              <View
+                style={[
+                  styles.loginButton,
+                  {backgroundColor: colors.subRedBtn},
+                ]}>
+                <Text style={styles.loginButtonText}>{__('No')}</Text>
+              </View>
+              <LinearGradient
+                colors={[colors.largeBtn1, colors.largeBtn2]}
+                style={styles.loginButton}>
+                <Text style={styles.loginButtonText}>{__('Yes')}</Text>
+              </LinearGradient>
+            </View>
           </LinearGradient>
         </View>
       </Modal>

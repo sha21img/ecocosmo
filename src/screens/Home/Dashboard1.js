@@ -157,6 +157,7 @@ function Dashboard1({details, isShow}) {
           }}>
           <View style={styles.card1Container}>
             <Image
+              resizeMode="contain"
               source={{uri: item.equipmentIcon}}
               style={{
                 height: 30,
@@ -214,10 +215,11 @@ function Dashboard1({details, isShow}) {
                   longitude: parseFloat(item.lng),
                 }}>
                 <Image
+                  resizeMode="contain"
                   source={{uri: item.equipmentIcon}}
                   style={{
                     height: 20,
-                    width: 50,
+                    width: 70,
                   }}
                 />
               </Marker>

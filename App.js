@@ -211,6 +211,7 @@ const MainScreen = props => {
         <Drawer.Screen name="Renewal" component={Renewal} />
         <Drawer.Screen name="ContactUs" component={ContactUs} />
         <Drawer.Screen name="Reports" component={Reports} />
+        <Drawer.Screen name="DriverBehaviour" component={DriverBehaviour} />
       </Drawer.Navigator>
     </>
   );

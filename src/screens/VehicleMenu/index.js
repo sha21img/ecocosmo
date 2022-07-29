@@ -65,7 +65,7 @@ const VehicleMenu = props => {
       id: 7,
       image: image.modalfrontcar,
       data: 'IMMOBILIZER',
-      routeTo: '',
+      routeTo: 'EngineStopPopup',
     },
     {
       id: 8,
@@ -82,6 +82,7 @@ const VehicleMenu = props => {
     {id: 10, image: image.modalmap, data: 'MAP HISTORY', routeTo: ''},
   ];
   const navigatorFrom = async data => {
+    props.setVisible(false);
     if (data === 'UrlTracking') {
       const response = await axiosGetData(
         `gettrackurl/rrenterprises/25f9e794323b453885f5181f1b624d0b/351608080772390/ecvalidate/24`,
@@ -102,7 +103,6 @@ const VehicleMenu = props => {
       } catch (error) {
         alert(error.message);
       }
-
     } else {
       navigation.navigate(data);
     }
@@ -148,7 +148,10 @@ const VehicleMenu = props => {
               <View style={styles.modalContentContainer}>
                 {data.map(el => {
                   return (
-                    <TouchableOpacity onPress={() => {props.setVisible(false); navigatorFrom(el.routeTo)}}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigatorFrom(el.routeTo);
+                      }}>
                       <View key={el.id} style={styles.modalCardBody}>
                         <Image
                           source={el.image}
@@ -164,7 +167,7 @@ const VehicleMenu = props => {
           </LinearGradient>
         </View>
       </Modal>
-      <EngineStopPopup visible={modal} />
+      <EngineStopPopup visible={modal} setVisible={setModal} />
     </>
   );
 };
