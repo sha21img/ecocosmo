@@ -51,11 +51,10 @@ const styles = StyleSheet.create({
     fontSize: Size.large,
   },
   loginButton: {
-    marginTop: 22,
-    height: 66,
-    width: '88%',
+    width: '100%',
     alignSelf: 'center',
     borderRadius: 10,
+    paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },

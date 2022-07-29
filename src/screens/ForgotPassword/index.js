@@ -21,8 +21,6 @@ import ModalSelector from 'react-native-modal-selector';
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-
-
 const ForgotPassword = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [email, setemail] = useState('');
@@ -31,7 +29,6 @@ const ForgotPassword = ({navigation}) => {
   const getOtp = async () => {
     setLoading(true);
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);
-    console.log(response.data);
     if (response.data.message.message === 'success') {
       navigation.navigate('ForgotPassword-1');
       setLoading(false);
@@ -56,7 +53,9 @@ const ForgotPassword = ({navigation}) => {
         width: '100%',
         height: '100%',
       }}>
-      <ScrollView style={{padding:25}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{padding: 25, flexGrow: 1}}>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
           <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -70,7 +69,6 @@ const ForgotPassword = ({navigation}) => {
               style={{marginLeft: 'auto'}}
               data={data}
               onChange={option => {
-                // console.log('option', option.label);
                 setLanguage(option.label);
                 setDefaultLocale(option.label);
               }}>

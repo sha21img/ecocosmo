@@ -14,12 +14,10 @@ const ContactUs = props => {
 
   const contactUsDetails = async () => {
     const response = await axiosGetData(`loginScreenCompanyDetails`);
-    console.log("response_contactus",response.data)
     setDetails(response.data);
     // if (response.data.apiResult === 'error') {
     //   // Toast.show(__(`${response.data.message}`));
     // }
-    // console.log(response.data);
   };
 
   useEffect(() => {

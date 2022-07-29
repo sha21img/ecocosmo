@@ -24,7 +24,6 @@ const VehicleMenu = props => {
   const [modal, setModal] = useState(false);
 
   const {details, visible} = props;
-  console.log('details', details);
   const data = [
     {
       id: 1,
@@ -91,7 +90,6 @@ const VehicleMenu = props => {
         const result = await Share.share({
           message: response.data.message,
         });
-        console.log('result', result);
         if (result.action === Share.sharedAction) {
           if (result.activityType) {
             // shared with activity type of result.activityType
@@ -105,7 +103,6 @@ const VehicleMenu = props => {
         alert(error.message);
       }
 
-      // console.log('response.data', response.data.message);
     } else {
       navigation.navigate(data);
     }
@@ -117,15 +114,11 @@ const VehicleMenu = props => {
     const response = await axiosGetData(
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
-    console.log('data', response.data.driverDetails);
     const driverDetails = response.data.driverDetails;
     const filterData = driverDetails.filter(item => {
-      console.log('item.imei', item.deviceId);
-      console.log('details.imei', details.deviceId);
       return item.deviceId === details.deviceId;
     });
     const phoneNumber = filterData[0].mobilenumber;
-    console.log('filterDatafilterData', filterData[0].mobilenumber);
     Linking.openURL(`tel:${phoneNumber}`);
   };
   return (
@@ -155,7 +148,7 @@ const VehicleMenu = props => {
               <View style={styles.modalContentContainer}>
                 {data.map(el => {
                   return (
-                    <TouchableOpacity onPress={() => navigatorFrom(el.routeTo)}>
+                    <TouchableOpacity onPress={() => {props.setVisible(false); navigatorFrom(el.routeTo)}}>
                       <View key={el.id} style={styles.modalCardBody}>
                         <Image
                           source={el.image}

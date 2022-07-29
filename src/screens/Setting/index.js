@@ -20,7 +20,6 @@ function Setting({navigation}) {
     const response = await axiosGetData(
       `getNoticationsStatus/rrenterprises/25f9e794323b453885f5181f1b624d0b`,
     );
-    console.log(response.data.message);
     setNotificationMessage(response.data.message);
   };
   useEffect(() => {
@@ -34,7 +33,6 @@ function Setting({navigation}) {
     } else {
       number = 1;
     }
-// console.log('number',number)
 const succcess = await Storage.getLoginDetail('login_detail');
 
 let username = succcess.accountId;
@@ -42,7 +40,6 @@ let encodedPassWord = succcess.password;
     const response = await axiosGetData(
       `stopOrStartAllNotications/${username}/${encodedPassWord}/${number}`,
     );
-    // console.log("response",response.data)
   };
   return (
     <LinearGradient
@@ -115,13 +112,12 @@ let encodedPassWord = succcess.password;
           offColor={colors.toggleColorOff}
           size="large"
           onToggle={value => {
-            sendNotification(value), console.log(value);
+            sendNotification(value)
           }}
         />
       </View>
       <TouchableOpacity
         onPress={async () => {
-          console.log('hihi');
           await Storage.clearToken();
           setToken(null);
         }}>

@@ -7,7 +7,6 @@ import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
 
 const EngineStopPopup = props => {
-  // console.log('vehiclsa menu', props.details);
   const {details} = props;
   //   const data = [
   //     {

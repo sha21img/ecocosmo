@@ -20,7 +20,6 @@ export const axiosPostData = async (url, formData) => {
 };
 
 export const axiosGetData = async (url, formData) => {
-  console.log(url);
   return axios
     .get(`${baseUrl}/${url}`, formData, {
       headers: {
