@@ -22,6 +22,7 @@ export default {
   //livemap tracking
   '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India':
     '177 न्यू अपोलो इंडस्ट्रीयल एस्टेट मोगरा लेन अंधेरी मुंबई, भरूच, 400069, भारत',
+    "Forgot Password":"पासवर्ड भूल गए",
 
   'KM/H': 'किमी/घंटा',
   SPEED: 'रफ़्तार',

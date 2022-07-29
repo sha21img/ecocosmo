@@ -62,7 +62,9 @@ const Login = ({navigation}) => {
     return __(language);
   };
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{flexGrow: 1, justifyContent: 'space-between'}}>
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
         style={{
