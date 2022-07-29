@@ -53,6 +53,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 3,
     borderRadius: 5,
+    flexDirection:'row'
   },
   FormContainer: {
     paddingHorizontal: 16,

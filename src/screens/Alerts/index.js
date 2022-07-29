@@ -25,12 +25,14 @@ const Alerts = props => {
   const [alertDataResponse, setalertResponse] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const accountid = 'rrenterprises';
-  const password = '25f9e794323b453885f5181f1b624d0b';
-  const imei = '459710040353691';
-
   const AlertData = async () => {
     setLoading(true);
+    // const succcess = await Storage.getLoginDetail('login_detail');
+    // console.log('succcesssucccesssucccess', succcess);
+
+    const accountid = 'rrenterprises';
+    const password = '25f9e794323b453885f5181f1b624d0b';
+    const imei = '459710040353691';
     const response = await axiosGetData(
       `getAlertDetails?accountid=${accountid}&password=${password}&imei=${imei}`,
     );
@@ -62,7 +64,7 @@ const Alerts = props => {
                 style={{
                   fontSize: Size.large,
                   color: colors.white,
-                  paddingHorizontal:10
+                  paddingHorizontal: 10,
                 }}>
                 {__('Alerts')}
               </Text>

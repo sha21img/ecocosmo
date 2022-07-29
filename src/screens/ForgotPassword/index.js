@@ -52,11 +52,11 @@ const ForgotPassword = ({navigation}) => {
     <LinearGradient
       colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
       style={{
-        padding: 24,
+        // padding: 24,
         width: '100%',
         height: '100%',
       }}>
-      <ScrollView>
+      <ScrollView style={{padding:25}}>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
           <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -70,7 +70,7 @@ const ForgotPassword = ({navigation}) => {
               style={{marginLeft: 'auto'}}
               data={data}
               onChange={option => {
-                console.log('option', option.label);
+                // console.log('option', option.label);
                 setLanguage(option.label);
                 setDefaultLocale(option.label);
               }}>

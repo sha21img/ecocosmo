@@ -54,13 +54,14 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: 20,
-    height: 66,
+    padding:20,
+    // height: 66,
     width: '88%',
     alignSelf: 'center',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 160,
+    // marginBottom: 160,
   },
   loginButtonText: {
     color: colors.white,
@@ -68,6 +69,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footerTab: {
+    marginTop:100,
     height: 57,
     width: 200,
     backgroundColor: colors.white,

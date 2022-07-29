@@ -55,7 +55,8 @@ const ForgotPassword_1 = () => {
     return __(language);
   };
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{flexGrow: 1}}>
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
         style={{

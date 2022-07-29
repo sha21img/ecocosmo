@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../../../assets/Colors';
 import {axiosGetData} from '../../../Utils/ApiController';
 import VehicleMenu from '../VehicleMenu';
+import Storage from '../../../Utils/Storage';
 
 function Home(props) {
   const [selectedLanguage, setSelectedLanguage] = useState();
@@ -37,9 +38,7 @@ function Home(props) {
   const changeDasboardType = dashBoardType => {
     return __(dashBoardType);
   };
-  let username = 'Globalcars';
-  let encodedPassWord = '62d959fc42e70781bd2a5bb242d4d7c6';
-  let id = '0';
+
   const [countObj, setCountObj] = useState({
     Running: 0,
     Waiting: 0,
@@ -49,6 +48,12 @@ function Home(props) {
   });
   const getDetails = async () => {
     setIsShow(true);
+    const succcess = await Storage.getLoginDetail('login_detail');
+    // console.log('succcesssucccesssucccess', succcess);
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    let id = succcess.type;
+
     const response = await axiosGetData(
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
@@ -60,7 +65,7 @@ function Home(props) {
         return {...prev, [element.status]: prev[element.status] + 1};
       });
     });
-    console.log('this is a api data =-=-=-=-=-=', response.data.vehicles[0]);
+    // console.log('this is a api data =-=-=-=-=-=', response.data.vehicles[0]);
     setIsShow(false);
   };
   useEffect(() => {
@@ -131,7 +136,7 @@ function Home(props) {
                       type == 'All' ? colors.white : colors.inputPlaceholdr,
                   },
                 ]}>
-                {__('All')} {details.length}
+                {__('All')} ({details.length})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -148,8 +153,7 @@ function Home(props) {
                       type == 'Running' ? colors.white : colors.inputPlaceholdr,
                   },
                 ]}>
-                {__('Running')}
-                {countObj.Running}
+                {__('Running')}({countObj.Running})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => getRunningData('Idle')}>
@@ -163,8 +167,7 @@ function Home(props) {
                       type == 'Idle' ? colors.white : colors.inputPlaceholdr,
                   },
                 ]}>
-                {__('Stop')}
-                {countObj.Idle}
+                {__('Stop')}({countObj.Idle})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => getRunningData('In-Active')}>
@@ -180,8 +183,7 @@ function Home(props) {
                         : colors.inputPlaceholdr,
                   },
                 ]}>
-                {__('In-Active')}
-                {countObj['In-Active']}
+                {__('In-Active')}({countObj['In-Active']})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => getRunningData('No GPS')}>
@@ -195,8 +197,7 @@ function Home(props) {
                       type == 'No GPS' ? colors.white : colors.inputPlaceholdr,
                   },
                 ]}>
-                {__('No GPS')}
-                {countObj['No GPS']}
+                {__('No GPS')}({countObj['No GPS']})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => getRunningData('Waiting')}>
@@ -210,8 +211,7 @@ function Home(props) {
                       type == 'Waiting' ? colors.white : colors.inputPlaceholdr,
                   },
                 ]}>
-                {__('Waiting')}
-                {countObj.Waiting}
+                {__('Waiting')}({countObj.Waiting})
               </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -220,13 +220,13 @@ function Home(props) {
 
       {/* <ScrollView style={{backgroundColor: colors.white}}> */}
       <View style={styles.carDetailCard}>
-        {dashBoardType === 'Dashboard 1' ? (
+        {dashBoardType === 'Dashboard 1' && (
           <Dashboard1 details={filterDetails} isShow={isShow} />
-        ) : null}
+        )}
 
-        {dashBoardType === 'Dashboard 2' ? (
+        {dashBoardType === 'Dashboard 2' && (
           <Dashboard2 details={filterDetails} isShow={isShow} />
-        ) : null}
+        )}
       </View>
       {/* </ScrollView> */}
     </>
