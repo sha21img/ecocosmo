@@ -49,7 +49,6 @@ function Home(props) {
   const getDetails = async () => {
     setIsShow(true);
     const succcess = await Storage.getLoginDetail('login_detail');
-    // console.log('succcesssucccesssucccess', succcess);
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     let id = succcess.type;
@@ -65,7 +64,6 @@ function Home(props) {
         return {...prev, [element.status]: prev[element.status] + 1};
       });
     });
-    // console.log('this is a api data =-=-=-=-=-=', response.data.vehicles[0]);
     setIsShow(false);
   };
   useEffect(() => {

@@ -27,7 +27,6 @@ function Reports(props) {
     const response = await axiosGetData(
       'reportHistory?accountid=rrenterprises&password=25f9e794323b453885f5181f1b624d0b&imei=459710040353691&startdate=2016-09-01&enddate=2016-11-22&type=odo',
     );
-    // console.log('data', response.data);
     setItems(response.data.DeviceHistory);
   };
 
@@ -42,7 +41,6 @@ function Reports(props) {
   ];
 
   const renderItem = ({item}) => {
-    console.log('item', item);
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     const newDate = new Date(date);
     const filterDate = newDate.toLocaleTimeString('en-US');

@@ -268,7 +268,6 @@ const App = () => {
 
     initializeApp();
   }, []);
-  console.log('state.authToken', state.authToken);
 
   if (isLoading == true) {
     return <Splash />;

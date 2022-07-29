@@ -27,7 +27,6 @@ function LiveMapTracking() {
       });
     });
   }, []);
-  //   console.log("coordinate",coordinate)
   const [marginBottom, setMarginBottom] = useState(1);
   const data = [
     {imgUrl: image.vehicleon},

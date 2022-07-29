@@ -28,7 +28,6 @@ const Alerts = props => {
   const AlertData = async () => {
     setLoading(true);
     // const succcess = await Storage.getLoginDetail('login_detail');
-    // console.log('succcesssucccesssucccess', succcess);
 
     const accountid = 'rrenterprises';
     const password = '25f9e794323b453885f5181f1b624d0b';

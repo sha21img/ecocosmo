@@ -22,7 +22,7 @@ import {setDefaultLocale} from '../../../Utils/Translation/translation';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const ForgotPassword_1 = () => {
+const ForgotPassword_1 = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [newPassword, setnewPassword] = useState('');
@@ -35,13 +35,25 @@ const ForgotPassword_1 = () => {
       const response = await axiosGetData(
         `forgotPasswordUpdate/rrenterprises/${otp}/${newPassword}`,
       );
+      console.log('forgot password', response.data);
       setLoading(false);
+      if (response.data.apiResult === 'success') {
+        if (response.data.message == 'InvalidOtp') {
+          Toast.show(__(`${response.data.message}`));
+          setLoading(false);
+        } else {
+          Toast.show(__(`${response.data.message}`));
+          navigation.navigate('Login');
+        }
+      }
       if (response.data.apiResult === 'error') {
         Toast.show(__(`${response.data.message}`));
         setLoading(false);
       }
     } else {
       console.warn('Didnot Match confirm password');
+      Toast.show(__(`Didnot Match confirm password`));
+
       setLoading(false);
     }
   };
@@ -56,6 +68,7 @@ const ForgotPassword_1 = () => {
   };
   return (
     <ScrollView
+      showsVerticalScrollIndicator={false}
       contentContainerStyle={{flexGrow: 1}}>
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
@@ -64,13 +77,25 @@ const ForgotPassword_1 = () => {
           width: '100%',
           height: '100%',
         }}>
-        <ImageBackground source={image.LoginBackground} style={[styles.head]}>
-          {/* <View style={styles.headerContainer}>
+        {/* <ImageBackground source={image.LoginBackground} style={[styles.head]}> */}
+        {/* <View style={styles.headerContainer}>
             <Image source={image.backArrow} style={{height: 12, width: 23}} />
             <TouchableOpacity style={styles.lang}>
               <Text style={{fontSize: Size.large}}>{__('English')}</Text>
             </TouchableOpacity>
           </View> */}
+        <View
+          style={{
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            alignItems: 'center',
+            // marginBottom:50
+          }}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{paddingVertical: 10, alignItems: 'center'}}>
+            <Image source={image.backArrow} style={{height: 12, width: 23}} />
+          </TouchableOpacity>
           <ModalSelector
             initValue="Select tickets"
             accessible={true}
@@ -79,7 +104,6 @@ const ForgotPassword_1 = () => {
             style={{marginLeft: 'auto'}}
             data={data}
             onChange={option => {
-              console.log('option', option.label);
               setLanguage(option.label);
               setDefaultLocale(option.label);
             }}>
@@ -111,10 +135,11 @@ const ForgotPassword_1 = () => {
               />
             </TouchableOpacity>
           </ModalSelector>
-          <Image source={image.loginLogo} style={[styles.logo]} />
-          <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
-          <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
-        </ImageBackground>
+        </View>
+        <Image source={image.loginLogo} style={[styles.logo]} />
+        <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
+        <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
+        {/* </ImageBackground> */}
         <Text style={styles.forgotPassword}>{__('Forgot password Reset')}</Text>
         <View style={{marginTop: 23}}>
           <View style={[styles.inputBox]}>
