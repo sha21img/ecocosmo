@@ -9,7 +9,7 @@ import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
 import Alerts from './src/screens/Alerts';
 import DriverBehaviour from './src/screens/DriverBehaviour';
-import DistanceReport from './src/screens/DistanceReport';
+import GraphicalReports from './src/screens/GraphicalReports';
 import AlertSetting from './src/screens/AlertSetting';
 import LiveMapTracking from './src/screens/LiveMapTracking';
 import Setting from './src/screens/Setting';
@@ -30,6 +30,7 @@ import ForgotPassword_1 from './src/screens/ForgetPassword-1';
 import CustomerProfile from './src/screens/CustomerProfile';
 import Storage from './Utils/Storage';
 import {LogBox} from 'react-native';
+import Reports from './src/screens/Reports';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -47,7 +48,7 @@ const permanentRoutes = [
   {
     label: 'Reports',
     icon: image.mapIcon,
-    route: 'DistanceReport',
+    route: 'Reports',
   },
   {
     label: 'Contact Us',
@@ -209,7 +210,7 @@ const MainScreen = props => {
         <Drawer.Screen name="AboutUs" component={AboutUs} />
         <Drawer.Screen name="Renewal" component={Renewal} />
         <Drawer.Screen name="ContactUs" component={ContactUs} />
-        <Drawer.Screen name="DistanceReport" component={DistanceReport} />
+        <Drawer.Screen name="Reports" component={Reports} />
       </Drawer.Navigator>
     </>
   );
@@ -300,8 +301,13 @@ const App = () => {
                     options={{headerShown: false}}
                   />
                   <Stack.Screen
-                    name="DistanceReport"
-                    component={DistanceReport}
+                    name="Reports"
+                    component={Reports}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="GraphicalReports"
+                    component={GraphicalReports}
                     options={{headerShown: false}}
                   />
                   <Stack.Screen
