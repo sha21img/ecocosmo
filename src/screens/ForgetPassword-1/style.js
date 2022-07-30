@@ -5,7 +5,7 @@ import {Size} from '../../../assets/fonts/Fonts';
 const styles = StyleSheet.create({
   head: {
     width: '100%',
-    backgroundColor:"red"
+    backgroundColor: 'red',
     // alignItems:'center'
     // height:'100%'
   },
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.white,
     height: 66,
-    width: '86%',
+    width: '92%',
     borderRadius: 7,
   },
   forgotPassword: {
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     marginTop: 49,
   },
   loginButton: {
-    paddingVertical:20,
+    paddingVertical: 20,
     width: '88%',
     alignSelf: 'center',
     borderRadius: 10,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footerTab: {
-    marginTop:100,
+    marginTop: 100,
     height: 57,
     width: 200,
     backgroundColor: colors.white,
