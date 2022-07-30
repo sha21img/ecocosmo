@@ -19,6 +19,7 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Toast from 'react-native-simple-toast';
 import ModalSelector from 'react-native-modal-selector';
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -28,6 +29,8 @@ const ForgotPassword_1 = ({navigation}) => {
   const [newPassword, setnewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [language, setLanguage] = useState('English');
+  const [show, setShow] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -155,16 +158,42 @@ const ForgotPassword_1 = ({navigation}) => {
               placeholder={__('enter new password')}
               style={styles.input}
               defaultValue={newPassword}
+              type="password"
+              mode="outline"
+              secureTextEntry={!show ? true : false}
               onChangeText={data => setnewPassword(data)}
             />
+            <TouchableOpacity
+              onPress={() => setShow(!show)}
+              style={{padding: 10}}>
+              <FontAwesome
+                style={{
+                  color: '#AEAEAE',
+                  fontSize: 20,
+                }}
+                name={show ? 'eye' : 'eye-slash'}
+              />
+            </TouchableOpacity>
           </View>
           <View style={[styles.inputBox]}>
             <TextInput
               placeholder={__('confirm new password')}
               style={styles.input}
               defaultValue={confirmPassword}
+              secureTextEntry={!showConfirm ? true : false}
               onChangeText={data => setConfirmPassword(data)}
             />
+            <TouchableOpacity
+              style={{padding: 10}}
+              onPress={() => setShowConfirm(!showConfirm)}>
+              <FontAwesome
+                style={{
+                  color: '#AEAEAE',
+                  fontSize: 20,
+                }}
+                name={showConfirm ? 'eye' : 'eye-slash'}
+              />
+            </TouchableOpacity>
           </View>
         </View>
         <TouchableOpacity onPress={handleSubmit}>
