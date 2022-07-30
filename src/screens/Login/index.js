@@ -31,7 +31,7 @@ const Login = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [language, setLanguage] = useState('English');
-  const {setToken} = React.useContext(AuthContext);
+  const {setToken,setSplash} = React.useContext(AuthContext);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -51,6 +51,7 @@ const Login = ({navigation}) => {
     }
 
     setToken(succcess);
+    setSplash(true)
   };
   // const data = [{language: 'English'}, {language: 'Hindi'}];
   let index = 0;

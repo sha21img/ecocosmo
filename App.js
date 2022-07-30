@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Login from './src/screens/Login';
 import Splash from './src/screens/Splash';
+import SplashNew from './src/screens/SplashNew';
 import HomeStack from './src/screens/HomeStack';
 import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
@@ -191,6 +192,10 @@ const DrawerContent = props => {
 };
 
 const MainScreen = props => {
+  
+  useEffect(() => {
+    props.setSplashFalse;
+  }, [props]);
   return (
     <>
       <Drawer.Navigator
@@ -222,6 +227,7 @@ const App = () => {
   const [authToken, setAuthToken] = useState(null);
   const initialState = {
     authToken: null,
+    splash: false,
   };
   const reducer = (prevState, action) => {
     switch (action.type) {
@@ -229,6 +235,11 @@ const App = () => {
         return {
           ...prevState,
           authToken: action.data,
+        };
+      case 'SET_SPLASH':
+        return {
+          ...prevState,
+          splash: action.data,
         };
       default:
         return {
@@ -241,14 +252,21 @@ const App = () => {
       setToken: async data => {
         dispatch({type: 'SET_TOKEN', data: data});
       },
+
+      setSplash: async data => {
+        dispatch({type: 'SET_SPLASH', data: data});
+      },
     }),
+
     [],
   );
+  const setSplashFalse = () => dispatch({type: 'SET_SPLASH', data: false});
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const initializeApp = async () => {
     let userProfile = await Storage.getLogin('login');
     if (userProfile) {
       dispatch({type: 'SET_TOKEN', data: userProfile});
+      // dispatch({type: 'SET_SPLASH', data: true});
     }
     setIsLoading(!isLoading);
   };
@@ -276,19 +294,34 @@ const App = () => {
       <>
         <NavigationContainer>
           <AuthContext.Provider value={authContext}>
-            <Stack.Navigator>
+            <Stack.Navigator
+             >
               {state.authToken == 'success' ? (
                 <>
-                  <Stack.Screen
+                  {state.splash ? (
+                    <Stack.Screen
+                      name="SplashNew"
+                      component={SplashNew}
+                      options={{headerShown: false}}
+                    />
+                  ) :  <Stack.Screen
                     name="MainScreen"
-                    component={MainScreen}
+                    component={props => (
+                      <MainScreen
+                        {...props}
+                        setSplashFalse={setSplashFalse}
+                      />
+                    )}
                     options={{headerShown: false}}
-                  />
+                  />}
+                 
+
                   <Stack.Screen
                     name="CustomerProfile"
                     component={CustomerProfile}
                     options={{headerShown: false}}
                   />
+
                   <Stack.Screen
                     name="AlertSetting"
                     component={AlertSetting}
