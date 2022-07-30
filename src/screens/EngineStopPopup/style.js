@@ -9,14 +9,14 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(57, 93, 191, 0.8)',
     paddingVertical: 35,
     paddingHorizontal: 24,
+    justifyContent: 'center'
   },
   modalBody: {
     alignItems: 'center',
     width: '77%',
-    height: '28%',
-    marginTop: '19%',
+    minHeight: '20%',
     borderRadius: 20,
-    paddingVertical: 44,
+    paddingVertical: 40,
   },
   loginButton: {
     borderRadius: 10,

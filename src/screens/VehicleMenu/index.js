@@ -103,6 +103,10 @@ const VehicleMenu = props => {
       } catch (error) {
         alert(error.message);
       }
+    } else if (data === 'EngineStopPopup') {
+      setModal(true);
+    } else if (data === 'DriverBehaviour') {
+      navigation.navigate(data, {details: details});
     } else {
       navigation.navigate(data);
     }
@@ -118,6 +122,7 @@ const VehicleMenu = props => {
     const filterData = driverDetails.filter(item => {
       return item.deviceId === details.deviceId;
     });
+
     const phoneNumber = filterData[0].mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
   };

@@ -32,6 +32,7 @@ import CustomerProfile from './src/screens/CustomerProfile';
 import Storage from './Utils/Storage';
 import {LogBox} from 'react-native';
 import Reports from './src/screens/Reports';
+import {baseUrl} from './Utils/ApiController';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -90,7 +91,10 @@ const DrawerContent = props => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Image source={image.loginLogo} style={{height: 107, width: 107}} />
+          <Image
+            source={{uri: `${baseUrl}/download/appOwnerLogo`}}
+            style={{width: '100%', height: 80, resizeMode: 'contain'}}
+          />
           <Text
             style={{
               fontSize: Size.compact,
@@ -278,6 +282,10 @@ const App = () => {
     } else if (code == 'English') {
       setLocale('en', 'rtl');
       // setDefaultLocale("hi");
+    } else if (code == 'Marathi') {
+      setLocale('mth', 'rtl');
+    } else if (code == 'Gujarati') {
+      setLocale('gti', 'rtl');
     }
   };
   useEffect(() => {
