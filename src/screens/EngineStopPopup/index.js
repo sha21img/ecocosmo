@@ -18,7 +18,7 @@ const EngineStopPopup = props => {
         <View style={styles.mainContainer}>
           <TouchableOpacity
             onPress={() => props.setVisible(false)}
-            style={{alignSelf: 'flex-end', marginBottom: '19%'}}>
+            style={{alignSelf: 'flex-end', paddingVertical: 10}}>
             <Image source={image.Close} style={{height: 26, width: 26}} />
           </TouchableOpacity>
           <LinearGradient
@@ -26,33 +26,6 @@ const EngineStopPopup = props => {
             style={styles.modalBody}>
             <Text style={{color: colors.black, fontSize: Size.compact}}>
               Do you want to Start vehicle ?
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '77%',
-                marginTop: 25,
-              }}>
-              <View
-                style={[
-                  styles.loginButton,
-                  {backgroundColor: colors.subRedBtn},
-                ]}>
-                <Text style={styles.loginButtonText}>{__('No')}</Text>
-              </View>
-              <LinearGradient
-                colors={[colors.largeBtn1, colors.largeBtn2]}
-                style={styles.loginButton}>
-                <Text style={styles.loginButtonText}>{__('Yes')}</Text>
-              </LinearGradient>
-            </View>
-          </LinearGradient>
-          <LinearGradient
-            colors={[colors.Modalcolor1, colors.white]}
-            style={styles.modalBody}>
-            <Text style={{color: colors.black, fontSize: Size.compact}}>
-              Do you want to Stop vehicle ?
             </Text>
             <View
               style={{

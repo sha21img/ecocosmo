@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 import {image} from '../../../assets/images';
+import { baseUrl } from '../../../Utils/ApiController';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 
@@ -26,8 +27,8 @@ const AboutUs = props => {
           style={styles.ContentBody}>
           <View style={styles.ContentSubBody}>
             <Image
-              source={image.loginLogo}
-              style={{height: 164, width: 164, marginBottom: 36}}
+              source={{uri: `${baseUrl}/download/appOwnerLogo`}}
+              style={{width: '80%', height: 150, resizeMode: 'contain'}}
             />
             <Text style={styles.ContentBodyhead}>{__('SERVICE PARTNER')}</Text>
             <Text style={styles.ContentBodyhead2}>

@@ -20,10 +20,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   logo: {
-    width: 102,
-    height: 102,
+    width: '100%',
+    height:100,
     alignSelf: 'center',
     marginBottom: 27,
+    resizeMode: "contain",
   },
   headText: {
     textAlign: 'center',

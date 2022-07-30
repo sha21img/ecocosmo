@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {baseUrl} from '../../../Utils/ApiController';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -24,6 +25,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-simple-toast';
 import ModalSelector from 'react-native-modal-selector';
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
+import {log} from 'react-native-reanimated';
+import axios from 'axios';
 
 const Login = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -32,6 +35,9 @@ const Login = ({navigation}) => {
   const [show, setShow] = useState(false);
   const [language, setLanguage] = useState('English');
   const {setToken} = React.useContext(AuthContext);
+
+  const [logo, setLogo] = useState(null);
+  const [companyName, setCompanyName] = useState(null);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -52,11 +58,28 @@ const Login = ({navigation}) => {
 
     setToken(succcess);
   };
+  const getLogo = async () => {
+    const logo = await axiosGetData(`download/appOwnerLogo`);
+    setLogo(logo.data);
+    console.log('logo', logo.data);
+  };
+  const getCompanyName = async () => {
+    const companyName = await axiosGetData(`loginScreenCompanyName`);
+    setCompanyName(companyName.data.message);
+    console.log('logo', companyName.data.message);
+  };
+  useEffect(() => {
+    Promise.all([getLogo(), getCompanyName()]).then(values => {
+      console.log(values);
+    });
+  });
   // const data = [{language: 'English'}, {language: 'Hindi'}];
   let index = 0;
   const data = [
     {key: index++, label: 'English'},
     {key: index++, label: 'Hindi'},
+    {key: index++, label: 'Marathi'},
+    {key: index++, label: 'Gujarati'},
   ];
   const changeLanguage = language => {
     return __(language);
@@ -111,7 +134,20 @@ const Login = ({navigation}) => {
           </TouchableOpacity>
         </ModalSelector>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
-          <Image source={image.loginLogo} style={[styles.logo]} />
+          <Image
+            source={{uri: `${baseUrl}/download/appOwnerLogo`}}
+            style={[styles.logo]}
+          />
+          <Text
+            style={{
+              textAlign: 'center',
+              color: colors.white,
+              fontFamily: 'CircularStd-Bold.eot',
+              fontSize: Size.huge,
+              paddingVertical:10
+            }}>
+            {companyName}
+          </Text>
           <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
           <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
         </ImageBackground>
