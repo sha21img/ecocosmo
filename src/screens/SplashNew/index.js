@@ -8,7 +8,7 @@ import {AuthContext} from '../../../App';
 const SplashNew = () => {
   const [username, setUsername] = useState('');
   const [encodedPassWord, setEncodedPassWord] = useState('');
-  const {setToken,setSplash} = React.useContext(AuthContext);
+  const {setToken, setSplash} = React.useContext(AuthContext);
 
   const getData = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -17,9 +17,9 @@ const SplashNew = () => {
   };
   useEffect(() => {
     getData();
-    setTimeout(()=>{
-      setSplash(false)
-    },5000)
+    setTimeout(() => {
+      setSplash(false);
+    }, 3000);
   }, []);
 
   return (

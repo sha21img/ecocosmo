@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Linking,
   ActivityIndicator,
 } from 'react-native';
 import {image} from '../../../assets/images';
@@ -13,11 +14,28 @@ import {__} from '../../../Utils/Translation/translation';
 import styles from './DashStyle2';
 import colors from '../../../assets/Colors';
 import VehicleMenu from '../VehicleMenu';
+import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 
 function Dashboard2({details, isShow}) {
   const [isData, isSetData] = useState({});
   const [visible, setVisible] = useState(false);
 
+  const calling = async data => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    const filterData = driverDetails.filter(item => {
+      return item.deviceId === data.deviceId;
+    });
+    const phoneNumber = filterData[0].mobilenumber;
+    console.log(filterData[0]);
+    Linking.openURL(`tel:${phoneNumber}`);
+  };
   const renderItem = ({item}) => {
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     const newDate = new Date(date);
@@ -191,7 +209,12 @@ function Dashboard2({details, isShow}) {
                 justifyContent: 'flex-end',
                 paddingRight: 10,
               }}>
-              <Image source={image.call} style={{padding: 10}} />
+              <TouchableOpacity
+                onPress={() => {
+                  isSetData(item), calling(item);
+                }}>
+                <Image source={image.call} style={{padding: 10}} />
+              </TouchableOpacity>
             </View>
           </View>
         </LinearGradient>
@@ -229,7 +252,12 @@ function Dashboard2({details, isShow}) {
         />
       )}
 
-      <VehicleMenu visible={visible} setVisible={setVisible} details={isData} />
+      <VehicleMenu
+        visible={visible}
+        calling={calling}
+        setVisible={setVisible}
+        details={isData}
+      />
     </>
   );
 }

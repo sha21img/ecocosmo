@@ -24,16 +24,24 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   logo: {
-    width: 102,
-    height: 102,
+    width: '100%',
+    height: 100,
     alignSelf: 'center',
-    marginVertical: 27,
+    marginVertical: 20,
+    resizeMode: 'contain',
   },
   headText: {
     textAlign: 'center',
     color: colors.white,
     fontFamily: 'CircularStd-Bold.eot',
     fontSize: Size.compact,
+  },
+  companyText: {
+    textAlign: 'center',
+    color: colors.white,
+    fontFamily: 'CircularStd-Bold.eot',
+    fontSize: Size.huge,
+    paddingVertical: 10,
   },
   inputBox: {
     flexDirection: 'row',
@@ -46,14 +54,14 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.white,
     height: 66,
-    width: '92%',
+    width: '90%',
     borderRadius: 7,
   },
   forgotPassword: {
     textAlign: 'center',
     color: colors.white,
     fontSize: Size.large,
-    marginTop: 49,
+    marginTop: 35,
   },
   loginButton: {
     paddingVertical: 20,
@@ -67,18 +75,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: Size.extraLarge,
     fontWeight: 'bold',
-  },
-  footerTab: {
-    marginTop: 100,
-    height: 57,
-    width: 200,
-    backgroundColor: colors.white,
-    borderRadius: 30,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    elevation: 3,
   },
 });
 export default styles;

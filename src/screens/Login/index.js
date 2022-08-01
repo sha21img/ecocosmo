@@ -34,7 +34,7 @@ const Login = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [language, setLanguage] = useState('English');
-  const {setToken,setSplash} = React.useContext(AuthContext);
+  const {setToken, setSplash} = React.useContext(AuthContext);
 
   const [logo, setLogo] = useState(null);
   const [companyName, setCompanyName] = useState(null);
@@ -57,7 +57,7 @@ const Login = ({navigation}) => {
     }
 
     setToken(succcess);
-    setSplash(true)
+    setSplash(true);
   };
   const getLogo = async () => {
     const logo = await axiosGetData(`download/appOwnerLogo`);
@@ -91,10 +91,7 @@ const Login = ({navigation}) => {
       contentContainerStyle={{flexGrow: 1, justifyContent: 'space-between'}}>
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
-        style={{
-          padding: 24,
-          width: '100%',
-        }}>
+        style={styles.mainContainer}>
         <ModalSelector
           initValue="Select tickets"
           accessible={true}
@@ -106,22 +103,9 @@ const Login = ({navigation}) => {
             setLanguage(option.label);
             setDefaultLocale(option.label);
           }}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: '#fff',
-              borderRadius: 30,
-              paddingHorizontal: 18,
-              justifyContent: 'space-around',
-            }}>
+          <TouchableOpacity style={styles.pickerContainer}>
             <TextInput
-              style={{
-                color: colors.black,
-                fontSize: Size.medium,
-                marginRight: 5,
-                height: 40,
-              }}
+              style={styles.pickerText}
               editable={false}
               value={changeLanguage(language)}
             />
@@ -139,24 +123,15 @@ const Login = ({navigation}) => {
             source={{uri: `${baseUrl}/download/appOwnerLogo`}}
             style={[styles.logo]}
           />
-          <Text
-            style={{
-              textAlign: 'center',
-              color: colors.white,
-              fontFamily: 'CircularStd-Bold.eot',
-              fontSize: Size.huge,
-              paddingVertical:10
-            }}>
-            {companyName}
-          </Text>
+          <Text style={styles.companyText}>{companyName}</Text>
           <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
           <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
         </ImageBackground>
-        <View style={{marginTop: 90}}>
+        <View style={{marginTop: 70}}>
           <View style={[styles.inputBox, {marginBottom: 20}]}>
             <Image source={image.person} />
             <TextInput
-              placeholder={__('enter your username')}
+              placeholder={__('Enter your username')}
               value={username}
               style={styles.input}
               onChangeText={newText => setUsername(newText)}
@@ -166,7 +141,7 @@ const Login = ({navigation}) => {
           <View style={[styles.inputBox, {marginBottom: 13}]}>
             <Image source={image.security} />
             <TextInput
-              placeholder={__('enter your password')}
+              placeholder={__('Enter your password')}
               value={password}
               style={styles.input}
               secureTextEntry={!show ? true : false}
@@ -177,13 +152,18 @@ const Login = ({navigation}) => {
                 style={{
                   color: '#AEAEAE',
                   fontSize: 16,
+                  padding: 5,
                 }}
                 name={show ? 'eye' : 'eye-slash'}
               />
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('ForgotPassword')}>
+            onPress={() =>
+              navigation.navigate('ForgotPassword', {
+                companyName: companyName,
+              })
+            }>
             <Text style={styles.forgotPassword}>{__('Forgot Password?')}</Text>
           </TouchableOpacity>
         </View>
@@ -199,11 +179,6 @@ const Login = ({navigation}) => {
             )}
           </LinearGradient>
         </TouchableOpacity>
-        <View style={styles.footerTab}>
-          <Image source={image.Mob} style={{height: 34, width: 34}} />
-          <Image source={image.whatsApp} style={{height: 34, width: 34}} />
-          <Image source={image.incomingCall} style={{height: 34, width: 34}} />
-        </View>
       </LinearGradient>
     </ScrollView>
   );

@@ -3,28 +3,43 @@ import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    padding: 24,
+    height: '100%',
+    width: '100%',
+    paddingBottom: 100,
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    paddingHorizontal: 18,
+    justifyContent: 'space-around',
+  },
+  pickerText: {
+    color: colors.black,
+    fontSize: Size.medium,
+    marginRight: 5,
+    height: 40,
+  },
   head: {
     width: '100%',
-    marginTop: 50,
-  },
-  lang: {
-    backgroundColor: 'white',
-    alignSelf: 'flex-end',
-    height: 33,
-    width: 104,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
-    marginBottom: 48,
-    marginTop: 21,
-    flexDirection: 'row',
+    marginTop: 30,
   },
   logo: {
     width: '100%',
-    height:100,
+    height: 100,
     alignSelf: 'center',
     marginBottom: 27,
-    resizeMode: "contain",
+    resizeMode: 'contain',
+  },
+  companyText:{
+    textAlign: 'center',
+    color: colors.white,
+    fontFamily: 'CircularStd-Bold.eot',
+    fontSize: Size.huge,
+    paddingVertical: 10,
   },
   headText: {
     textAlign: 'center',
@@ -65,8 +80,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footerTab: {
-    height: 57,
-    width: 200,
+    width: '60%',
+    position: 'absolute',
+    bottom: 0,
+    marginVertical: 25,
+    paddingVertical: 10,
     backgroundColor: colors.white,
     borderRadius: 30,
     alignSelf: 'center',
@@ -74,7 +92,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     elevation: 3,
-    marginTop: 160,
   },
 });
 export default styles;

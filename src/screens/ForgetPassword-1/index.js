@@ -13,6 +13,7 @@ import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
+import {baseUrl} from '../../../Utils/ApiController';
 import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
 import {axiosGetData} from '../../../Utils/ApiController';
@@ -23,7 +24,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const ForgotPassword_1 = ({navigation}) => {
+const ForgotPassword_1 = (props) => {
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [newPassword, setnewPassword] = useState('');
@@ -46,7 +47,7 @@ const ForgotPassword_1 = ({navigation}) => {
           setLoading(false);
         } else {
           Toast.show(__(`${response.data.message}`));
-          navigation.navigate('Login');
+          props.navigation.navigate('Login');
         }
       }
       if (response.data.apiResult === 'error') {
@@ -92,7 +93,6 @@ const ForgotPassword_1 = ({navigation}) => {
             justifyContent: 'space-between',
             flexDirection: 'row',
             alignItems: 'center',
-            // marginBottom:50
           }}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -139,7 +139,11 @@ const ForgotPassword_1 = ({navigation}) => {
             </TouchableOpacity>
           </ModalSelector>
         </View>
-        <Image source={image.loginLogo} style={[styles.logo]} />
+        <Image
+          source={{uri: `${baseUrl}/download/appOwnerLogo`}}
+          style={[styles.logo]}
+        />
+        <Text style={styles.companyText}>{props.route.params.companyName}</Text>
         <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
         <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
         {/* </ImageBackground> */}
@@ -169,7 +173,8 @@ const ForgotPassword_1 = ({navigation}) => {
               <FontAwesome
                 style={{
                   color: '#AEAEAE',
-                  fontSize: 20,
+                  fontSize: 16,
+                  padding: 5,
                 }}
                 name={show ? 'eye' : 'eye-slash'}
               />
@@ -189,7 +194,8 @@ const ForgotPassword_1 = ({navigation}) => {
               <FontAwesome
                 style={{
                   color: '#AEAEAE',
-                  fontSize: 20,
+                  fontSize: 16,
+                  padding: 5,
                 }}
                 name={showConfirm ? 'eye' : 'eye-slash'}
               />
@@ -207,11 +213,6 @@ const ForgotPassword_1 = ({navigation}) => {
             )}
           </LinearGradient>
         </TouchableOpacity>
-        <View style={styles.footerTab}>
-          <Image source={image.Mob} style={{height: 34, width: 34}} />
-          <Image source={image.whatsApp} style={{height: 34, width: 34}} />
-          <Image source={image.incomingCall} style={{height: 34, width: 34}} />
-        </View>
       </LinearGradient>
     </ScrollView>
   );
