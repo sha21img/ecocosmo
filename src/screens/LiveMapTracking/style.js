@@ -7,13 +7,17 @@ const style = StyleSheet.create({
     position: 'relative',
   },
   map: {
+    // flex:1,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     height: '100%',
   },
   map_container: {
+    // flex: 1,
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   top_container: {
     position: 'absolute',

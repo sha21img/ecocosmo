@@ -24,6 +24,7 @@ const VehicleMenu = props => {
   const [modal, setModal] = useState(false);
 
   const {details, visible, calling} = props;
+  console.log('details', details.imei);
   const data = [
     {
       id: 1,
@@ -104,7 +105,7 @@ const VehicleMenu = props => {
         alert(error.message);
       }
     } else {
-      navigation.navigate(data);
+      navigation.navigate(data, {imei: details.imei});
     }
   };
   return (
