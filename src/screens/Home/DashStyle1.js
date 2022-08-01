@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     elevation: 1,
-    width:'100%',
+    width: '100%',
   },
   driverCarNumber: {
     fontSize: Size.extraLarge,
@@ -74,14 +74,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonText: {fontSize: Size.medium, color: colors.white},
-    button: {
-    paddingVertical: 8,
+  button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     backgroundColor: colors.callBtn,
     borderRadius: 5,
+    height: 40,
   },
 });
 export default styles;

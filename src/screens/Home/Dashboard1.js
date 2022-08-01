@@ -159,11 +159,15 @@ function Dashboard1({details, isShow}) {
     const phoneNumber = filterData[0].mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
   };
+
   const renderItem = ({item, index}) => {
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     const newDate = new Date(date);
-    const filterDate = newDate.toLocaleTimeString('en-US');
 
+    const filterTime = newDate.toLocaleTimeString('en-US');
+    const filterDate = `${newDate.getDate()}-${
+      newDate.getMonth() + 1
+    }-${newDate.getFullYear()}`;
     return (
       <>
         <TouchableOpacity
@@ -270,13 +274,13 @@ function Dashboard1({details, isShow}) {
               }}>
               <View style={styles.driverDetailBox}>
                 <Text style={styles.driverDetailText1}>
-                  {__('CHECK IN TIME')}
+                  {__('CHECK IN DATE & TIME')}
                 </Text>
-                <Text style={styles.driverDetailText2}>
-                  {filterDate}
-                  {/* {Moment(new Object(item.validPacketTimeStamp)).format('HH')} */}
-                  {/* 17:57:45 */}
-                </Text>
+                <Text style={styles.driverDetailText2}>{filterDate}</Text>
+                <Text style={styles.driverDetailText2}>{filterTime}</Text>
+
+                {/* {Moment(new Object(item.validPacketTimeStamp)).format('HH')} */}
+                {/* 17:57:45 */}
               </View>
               <View style={styles.driverDetailBox}>
                 <Text style={styles.driverDetailText1}>{__('TODAYS ODO')}</Text>
@@ -301,7 +305,7 @@ function Dashboard1({details, isShow}) {
               style={styles.button}>
               <Image
                 source={image.callimg}
-                style={{height: 11, width: 11, marginRight: 5}}
+                style={{height: 15, width: 15, marginRight: 7}}
               />
               <Text style={styles.buttonText}> {__('Call')}</Text>
             </TouchableOpacity>
