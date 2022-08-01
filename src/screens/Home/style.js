@@ -39,6 +39,13 @@ const styles = StyleSheet.create({
     height: 18,
     width: 18,
     marginLeft: 15,
+    padding: 5,
+  },
+  crossIcon: {
+    color: colors.white,
+    fontSize: 24,
+    marginLeft: 10,
+    paddingVertical: 5,
   },
   catagoryBox: {
     flexDirection: 'row',
