@@ -8,23 +8,24 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 48,
     marginTop: 21,
   },
-  lang: {
-    backgroundColor: 'white',
-    height: 33,
-    width: 104,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
-  },
   logo: {
-    width: 102,
-    height: 102,
+    width: '100%',
+    height: 100,
     alignSelf: 'center',
     marginBottom: 27,
+    resizeMode: 'contain',
+  },
+  companyText: {
+    textAlign: 'center',
+    color: colors.white,
+    fontFamily: 'CircularStd-Bold.eot',
+    fontSize: Size.huge,
+    paddingVertical: 10,
   },
   headText: {
     textAlign: 'center',
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: 20,
-    padding:20,
+    padding: 20,
     // height: 66,
     width: '88%',
     alignSelf: 'center',
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footerTab: {
-    marginTop:100,
+    marginTop: 100,
     height: 57,
     width: 200,
     backgroundColor: colors.white,

@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 import {image} from '../../../assets/images';
-import { baseUrl } from '../../../Utils/ApiController';
+import {baseUrl} from '../../../Utils/ApiController';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 
@@ -17,8 +17,18 @@ const AboutUs = props => {
         style={styles.main}
         locations={[0, 0.9]}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
-            <Image source={image.drawer} style={{height: 23, width: 23}} />
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+            }}
+            onPress={() => props.navigation.openDrawer()}>
+            <Image
+              source={image.drawer}
+              style={{
+                height: 23,
+                width: 23,
+              }}
+            />
           </TouchableOpacity>
           <Text style={styles.headerContentText}>{__('About Us')}</Text>
         </View>

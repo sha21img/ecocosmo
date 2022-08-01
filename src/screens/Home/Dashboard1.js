@@ -7,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
   Platform,
+  Linking,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -34,6 +35,8 @@ import {
 } from 'react-native-permissions';
 import Moment from 'moment';
 import VehicleMenu from '../VehicleMenu';
+import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 
 function Dashboard1({details, isShow}) {
   const [coordinate, setCoordinate] = useState({
@@ -142,6 +145,20 @@ function Dashboard1({details, isShow}) {
   // const getVehicleDetail = item => {
   //   return <VehicleMenu item={item} visible={visible} />;
   // };
+  const calling = async data => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    const filterData = driverDetails.filter(item => {
+      return item.deviceId === data.deviceId;
+    });
+    const phoneNumber = filterData[0].mobilenumber;
+    Linking.openURL(`tel:${phoneNumber}`);
+  };
   const renderItem = ({item, index}) => {
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     const newDate = new Date(date);
@@ -150,6 +167,7 @@ function Dashboard1({details, isShow}) {
     return (
       <>
         <TouchableOpacity
+          activeOpacity={0.8}
           onPress={() => {
             isSetData(item), setVisible(true);
             // return <VehicleMenu item={item} visible={visible} />;
@@ -276,7 +294,11 @@ function Dashboard1({details, isShow}) {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+              onPress={() => {
+                isSetData(item), calling(item);
+              }}
+              style={styles.button}>
               <Image
                 source={image.callimg}
                 style={{height: 11, width: 11, marginRight: 5}}
@@ -325,7 +347,12 @@ function Dashboard1({details, isShow}) {
           renderItem={(item, index) => renderItem(item, index)}
         />
       )}
-      <VehicleMenu visible={visible} setVisible={setVisible} details={isData} />
+      <VehicleMenu
+        visible={visible}
+        setVisible={setVisible}
+        details={isData}
+        calling={calling}
+      />
     </>
   );
 }

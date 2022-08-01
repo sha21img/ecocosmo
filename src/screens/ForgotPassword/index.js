@@ -12,6 +12,7 @@ import {
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
+import {baseUrl} from '../../../Utils/ApiController';
 import styles from './style';
 import {Size} from '../../../assets/fonts/Fonts';
 import {__} from '../../../Utils/Translation/translation';
@@ -21,16 +22,16 @@ import ModalSelector from 'react-native-modal-selector';
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const ForgotPassword = ({navigation}) => {
+const ForgotPassword = props => {
   const [loading, setLoading] = useState(false);
   const [email, setemail] = useState('');
   const [language, setLanguage] = useState('English');
-
+  console.log(props);
   const getOtp = async () => {
     setLoading(true);
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);
     if (response.data.message.message === 'success') {
-      navigation.navigate('ForgotPassword-1');
+      props.navigation.navigate('ForgotPassword-1', {companyName:props.route.params.companyName});
       setLoading(false);
     } else {
       Toast.show(__(`${response.data.message}`));
@@ -49,14 +50,13 @@ const ForgotPassword = ({navigation}) => {
     <LinearGradient
       colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
       style={{
-        // padding: 24,
         width: '100%',
         height: '100%',
       }}>
       <ScrollView showsVerticalScrollIndicator={false} style={{padding: 25}}>
         <ImageBackground source={image.LoginBackground} style={[styles.head]}>
           <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={() => props.navigation.goBack()}>
               <Image source={image.backArrow} style={{height: 12, width: 23}} />
             </TouchableOpacity>
             <ModalSelector
@@ -102,8 +102,13 @@ const ForgotPassword = ({navigation}) => {
               <Text style={{fontSize: Size.large}}>{__('English')}</Text>
             </TouchableOpacity> */}
           </View>
-
-          <Image source={image.loginLogo} style={[styles.logo]} />
+          <Image
+            source={{uri: `${baseUrl}/download/appOwnerLogo`}}
+            style={[styles.logo]}
+          />
+          <Text style={styles.companyText}>
+            {props.route.params.companyName}
+          </Text>
           <Text style={[styles.headText]}>{__('WELCOME TO')}</Text>
           <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
         </ImageBackground>

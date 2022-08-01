@@ -23,7 +23,7 @@ const VehicleMenu = props => {
   const navigation = useNavigation();
   const [modal, setModal] = useState(false);
 
-  const {details, visible} = props;
+  const {details, visible, calling} = props;
   const data = [
     {
       id: 1,
@@ -103,28 +103,9 @@ const VehicleMenu = props => {
       } catch (error) {
         alert(error.message);
       }
-    } else if (data === 'EngineStopPopup') {
-      setModal(true);
-    } else if (data === 'DriverBehaviour') {
-      navigation.navigate(data, {details: details});
     } else {
       navigation.navigate(data);
     }
-  };
-  const calling = async () => {
-    const succcess = await Storage.getLoginDetail('login_detail');
-    let username = succcess.accountId;
-    let encodedPassWord = succcess.password;
-    const response = await axiosGetData(
-      `getDriverDetails/${username}/${encodedPassWord}`,
-    );
-    const driverDetails = response.data.driverDetails;
-    const filterData = driverDetails.filter(item => {
-      return item.deviceId === details.deviceId;
-    });
-
-    const phoneNumber = filterData[0].mobilenumber;
-    Linking.openURL(`tel:${phoneNumber}`);
   };
   return (
     <>
@@ -144,7 +125,9 @@ const VehicleMenu = props => {
             </Text>
             <Text style={styles.modalHead}>{details.deviceId}</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => calling()}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => calling(details)}>
               <Image source={image.callimg} style={{height: 11, width: 11}} />
               <Text style={styles.buttonText}> {__('Call Driver')}</Text>
             </TouchableOpacity>
