@@ -13,6 +13,7 @@
     "@react-native-async-storage/async-storage": "github:react-native-async-storage/async-storage",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "^9.3.0",
+    "@react-native-maps/polyline-direction": "^1.0.0",
     "@react-native-picker/picker": "^2.4.2",
     "@react-navigation/bottom-tabs": "^5.11.15",
     "@react-navigation/drawer": "^5.9.0",
