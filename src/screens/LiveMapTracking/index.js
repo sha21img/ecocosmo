@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect,useRef} from 'react';
+import {View, Text, Image, TouchableOpacity,Dimensions} from 'react-native';
 import style from './style';
 import MapView, {
   AnimatedRegion,
@@ -18,19 +18,89 @@ import {__} from '../../../Utils/Translation/translation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {axiosGetData} from '../../../Utils/ApiController';
 import {useNetInfo} from '@react-native-community/netinfo';
+import PolylineDirection from '@react-native-maps/polyline-direction';
+import MapViewDirections from 'react-native-maps-directions';
 
+import { locationPermission, getCurrentLocation } from '../../../Utils/helper/helperFunction'
+const screen = Dimensions.get('window');
+const ASPECT_RATIO = screen.width / screen.height;
+const LATITUDE_DELTA = 0.04;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function LiveMapTracking({route}) {
-  // console.log('imei', route.params.imei);
-  // const mapDetail=route.params
   const [activeImg, setActiveImg] = useState(false);
   const [isActiveImg, setIsActiveImg] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [detail, setDetail] = useState({});
-  const [liveTrackDetail, setLiveTrackDetail] = useState({
-    latitude: 28.57966,
-    longitude: 77.32111,
-  });
+  
+  const mapRef = useRef()
+  const markerRef = useRef()
+  const [state, setState] = useState({
+    curLoc: {
+        latitude: 30.7046,
+        longitude: 77.1025,
+    },
+    destinationCords: {},
+    isLoading: false,
+    coordinate: new AnimatedRegion({
+        latitude: 30.7046,
+        longitude: 77.1025,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA
+    }),
+    time: 0,
+    distance: 0,
+    heading: 0
 
+})
+const { curLoc, time, distance, destinationCords, isLoading, coordinate,heading } = state
+const updateState = (data) => setState((state) => ({ ...state, ...data }));
+const GOOGLE_MAP_KEY = "AIzaSyDuMZZzYTEBs7EONdnVfmZVXJluSzVbRkc"
+useEffect(() => {
+  getLiveLocation()
+}, [])
+const getLiveLocation = async () => {
+  const locPermissionDenied = await locationPermission()
+  if (locPermissionDenied) {
+      const { latitude, longitude, heading } = await getCurrentLocation()
+      console.log("get live location after 4 second",heading)
+      animate(latitude, longitude);
+      updateState({
+          heading: heading,
+          curLoc: { latitude, longitude },
+          coordinate: new AnimatedRegion({
+              latitude: latitude,
+              longitude: longitude,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA
+          })
+      })
+  }
+}
+const animate = (latitude, longitude) => {
+  const newCoordinate = { latitude, longitude };
+  if (Platform.OS == 'android') {
+      if (markerRef.current) {
+          markerRef.current.animateMarkerToCoordinate(newCoordinate, 7000);
+      }
+  } else {
+      coordinate.timing(newCoordinate).start();
+  }
+}
+const onCenter = () => {
+  mapRef.current.animateToRegion({
+      latitude: curLoc.latitude,
+      longitude: curLoc.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+  })
+}
+
+useEffect(() => {
+  const interval = setInterval(() => {
+      getLiveLocation()
+  }, 6000);
+  return () => clearInterval(interval)
+}, [])
   const getDetails = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
@@ -40,18 +110,25 @@ function LiveMapTracking({route}) {
     );
     console.log('res', response.data);
     setDetail(response.data.vehicle);
-    setLiveTrackDetail({
-      latitude: response.data.vehicle.lat,
-      longitude: response.data.vehicle.lng,
+    setState({
+      ...state,
+      curLoc: {
+        latitude: parseFloat(response.data.vehicle.lat),
+        longitude: parseFloat(response.data.vehicle.lng),
+      },
+      destinationCords: {
+        latitude: parseFloat(response.data.vehicle.lastLat),
+        longitude: parseFloat(response.data.vehicle.lastLng),
+      },
     });
     setIsShow(true);
-    console.log('response--livetrack', response.data.vehicle);
   };
   useEffect(() => {
     getDetails();
   }, []);
-  console.log('liveTrackDetail', liveTrackDetail);
+  // console.log('liveTrackDetail', liveTrackDetail);
   const [marginBottom, setMarginBottom] = useState(1);
+  console.log("detail.markerIcon",detail.markerIcon)
   const data = [
     {imgUrl: image.vehicleon},
     {imgUrl: image.parking2},
@@ -69,35 +146,99 @@ function LiveMapTracking({route}) {
       {isShow ? (
         <View style={style.container}>
           <View style={style.map_container}>
-            <MapView
+                <MapView
+                    ref={mapRef}
+                    style={style.map}
+                    // style={StyleSheet.absoluteFill}
+                    initialRegion={{
+                        ...curLoc,
+                        latitudeDelta: LATITUDE_DELTA,
+                        longitudeDelta: LONGITUDE_DELTA,
+                    }}
+                >
+
+                    <Marker.Animated
+                        ref={markerRef}
+                        coordinate={coordinate}
+                    >
+                        <Image
+                            source={{uri: detail.markerIcon}}
+                            style={{
+                                width: 40,
+                                height: 40,
+                                transform: [{rotate: `${heading}deg`}]
+                            }}
+                            resizeMode="contain"
+                        />
+                    </Marker.Animated>
+
+                    {Object.keys(destinationCords).length > 0 && (<Marker
+                        coordinate={destinationCords}
+                        // image={{uri:detail.markerIcon}}
+                    />)}
+
+                    {Object.keys(destinationCords).length > 0 && (<MapViewDirections
+                        origin={curLoc}
+                        destination={destinationCords}
+                        apikey={GOOGLE_MAP_KEY}
+                        strokeWidth={6}
+                        strokeColor="red"
+                        optimizeWaypoints={true}
+                        onStart={(params) => {
+                            console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
+                        }}
+                        onReady={result => {
+                            console.log(`Distance: ${result.distance} km`)
+                            console.log(`Duration: ${result.duration} min.`)
+                            // fetchTime(result.distance, result.duration),
+                                mapRef.current.fitToCoordinates(result.coordinates, {
+                                    edgePadding: {
+                                        // right: 30,
+                                        // bottom: 300,
+                                        // left: 30,
+                                        // top: 100,
+                                    },
+                                });
+                        }}
+                        onError={(errorMessage) => {
+                            // console.log('GOT AN ERROR');
+                        }}
+                    />)}
+                </MapView>
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        right: 0
+                    }}
+                    onPress={onCenter}
+                >
+                    <Image 
+                        
+                    source={{uri:detail.markerIcon}} 
+
+                    />
+                </TouchableOpacity>
+            
+            {/*  */}
+            {/* <MapView
+            tracksViewChanges={false}
               style={style.map}
               provider={PROVIDER_GOOGLE}
-              // region={liveTrackDetail}
               initialRegion={{
-                // latitude: 26.9111158,
-                // longitude: 75.737648,
-                latitude: parseFloat(liveTrackDetail.latitude),
-                longitude: parseFloat(liveTrackDetail.longitude),
+                latitude: parseFloat(state.currLoc.latitude),
+                longitude: parseFloat(state.currLoc.longitude),
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
               }}
               followsUserLocation={true}
               showsMyLocationButton={true}
-              // showsUserLocation={true}
-              // onPress={e => {
-              //   setCoordinate(e.nativeEvent.coordinate);
-              // }}
-              onRegionChangeComplete={region => setLiveTrackDetail(region)}
-              onRegionChange={region => setLiveTrackDetail(region)}
               onMapReady={() => setMarginBottom(0)}>
               <Marker
-                // key={index.toString()}
                 coordinate={{
-                  latitude: parseFloat(liveTrackDetail.latitude),
-                  longitude: parseFloat(liveTrackDetail.longitude),
+                  latitude: parseFloat(state.currLoc.latitude),
+                  longitude: parseFloat(state.currLoc.longitude),
                 }}
-                // title={'JavaTpoint'}
-                // description={'Java Training Institute'}
               >
                 <Image
                   resizeMode="contain"
@@ -108,63 +249,74 @@ function LiveMapTracking({route}) {
                   }}
                 />
               </Marker>
-              <Polyline
-                coordinates={[
-                  {latitude: 37.8025259, longitude: -122.4351431},
-                  {latitude: 37.7896386, longitude: -122.421646},
-                  {latitude: 37.7665248, longitude: -122.4161628},
-                  {latitude: 37.7734153, longitude: -122.4577787},
-                  {latitude: 37.7948605, longitude: -122.4596065},
-                  {latitude: 37.8025259, longitude: -122.4351431},
-                ]}
-                strokeColor="#0000FF"
-                fillColor="rgba(255,255,255,0.5)"
-                strokeWidth={1}></Polyline>
-            </MapView>
+              <Marker
+                coordinate={{latitude:26.8976,longitude:77.7685}}
+              >
+                <Image
+                  resizeMode="contain"
+                  source={{uri: detail.markerIcon}}
+                  style={{
+                    height: 35,
+                    width: 70,
+                  }}
+                />
+              </Marker>
+              <PolylineDirection
+                origin={state.currLoc}
+                destination={{latitude:26.8976,longitude:77.7685}}
+                apiKey="AIzaSyDuMZZzYTEBs7EONdnVfmZVXJluSzVbRkc"
+                strokeWidth={4}
+                strokeColor="hotpink"
+              />
+            </MapView> */}
           </View>
-
-          {/* <View style={style.top_container}>
-        <View style={{width: '10%'}}>
-          <Image
-            source={image.leftArrowblack}
-            style={{width: 30, height: 18}}
-          />
-        </View>
-        <LinearGradient
-          colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
-          start={{x: 1.3, y: 0}}
-          end={{x: 0, y: 0}}
-          locations={[0, 0.9]}
-          style={style.firstbox}>
-          <View
-            style={{
-              width: '10%',
-              alignItems: 'center',
-            }}>
-            <Image source={image.carGreenUp} style={{width: 20, height: 40}} />
+          {/* modal1 */}
+          <View style={style.top_container}>
+            <View style={{width: '10%'}}>
+              <Image
+                source={image.leftArrowblack}
+                style={{width: 30, height: 18}}
+              />
+            </View>
+            <LinearGradient
+              colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
+              start={{x: 1.3, y: 0}}
+              end={{x: 0, y: 0}}
+              locations={[0, 0.9]}
+              style={style.firstbox}>
+              <View
+                style={{
+                  width: '10%',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={image.carGreenUp}
+                  style={{width: 20, height: 40}}
+                />
+              </View>
+              <View
+                style={{
+                  marginLeft: 15,
+                  width: '90%',
+                }}>
+                <Text style={style.firstboxtext1}>MH12 RN 0790</Text>
+                <Text style={style.firstboxtext2}>
+                  {__(
+                    '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India',
+                  )}
+                </Text>
+              </View>
+            </LinearGradient>
+            <TouchableOpacity
+              style={style.dashimgbox}
+              onPress={() => setActiveImg(!activeImg)}>
+              <Image
+                source={image.dashboardcolor}
+                style={{width: 44, height: 44}}
+              />
+            </TouchableOpacity>
           </View>
-          <View
-            style={{
-              marginLeft: 15,
-              width: '90%',
-            }}>
-            <Text style={style.firstboxtext1}>MH12 RN 0790</Text>
-            <Text style={style.firstboxtext2}>
-              {__(
-                '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India',
-              )}
-            </Text>
-          </View>
-        </LinearGradient>
-        <TouchableOpacity
-          style={style.dashimgbox}
-          onPress={() => setActiveImg(!activeImg)}>
-          <Image
-            source={image.dashboardcolor}
-            style={{width: 44, height: 44}}
-          />
-        </TouchableOpacity>
-      </View> */}
+          {/*  */}
 
           <View style={style.bottombox}>
             <LinearGradient
@@ -255,7 +407,7 @@ function LiveMapTracking({route}) {
             : null}
 
           {/* modal2 */}
-          <View
+          {/* <View
             style={{
               position: 'absolute',
               top: 18,
@@ -350,7 +502,7 @@ function LiveMapTracking({route}) {
                 style={{width: 44, height: 44}}
               />
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           {/*  */}
         </View>

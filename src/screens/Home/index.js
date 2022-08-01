@@ -15,18 +15,19 @@ import styles from './style';
 import Dashboard1 from './Dashboard1';
 import Dashboard2 from './Dashboard2';
 import {__} from '../../../Utils/Translation/translation';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../../../assets/Colors';
 import {axiosGetData} from '../../../Utils/ApiController';
-import VehicleMenu from '../VehicleMenu';
 import Storage from '../../../Utils/Storage';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 function Home(props) {
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
   const [filterDetails, setFilterDetails] = useState([]);
+  const [filteredDetails, setFilteredDetails] = useState([]);
   const [isShow, setIsShow] = useState(true);
+  const [search, setSearch] = useState(true);
   const [type, setType] = useState('All');
 
   let index = 0;
@@ -69,6 +70,13 @@ function Home(props) {
   useEffect(() => {
     getDetails();
   }, []);
+  const searchFunction = text => {
+    let filteredData = filterDetails.filter(item => {
+      return item.deviceId.includes(text);
+    });
+    setFilteredDetails(filteredData);
+    console.log('this is searched text', filteredData);
+  };
   const getRunningData = data => {
     setType(data);
     const filterDetails = details.filter(item => {
@@ -76,46 +84,84 @@ function Home(props) {
     });
     setFilterDetails(filterDetails);
     setIsShow(false);
-  };
+  };0
   return (
     <>
       <LinearGradient
         colors={['#395DBF', '#16BCD4']}
         start={{x: 0, y: 0.5}}
-        end={{x: 1, y: 0.5}}
-        style={styles.headerContainer}>
-        <View style={styles.headerDashboard}>
-          <TouchableOpacity
-            style={{paddingVertical: 10}}
-            onPress={() => props.navigation.openDrawer()}>
-            <Image source={image.drawer} style={{height: 20, width: 23}} />
-          </TouchableOpacity>
-          <View style={{marginLeft: 15}}>
-            <ModalSelector
-              initValue="Select tickets"
-              accessible={true}
-              data={data}
-              scrollViewAccessibilityLabel={'Scrollable options'}
-              // cancelButtonAccessibilityLabel={'Cancel Button'}
-              style={{flexDirection: 'row'}}
-              onChange={option => {
-                setDashBoardType(option.label);
-              }}>
-              <TouchableOpacity style={styles.dashboardContainer}>
-                <TextInput
-                  style={styles.dashboardText}
-                  editable={false}
-                  value={changeDasboardType(dashBoardType)}
-                />
-                <Image source={image.arrowDown} style={styles.dashboardArrow} />
+        end={{x: 1, y: 0.5}}>
+        <View style={styles.headerContainer}>
+          <View style={styles.headerDashboard}>
+            <TouchableOpacity
+              style={{paddingVertical: 10}}
+              onPress={() => props.navigation.openDrawer()}>
+              <Image source={image.drawer} style={{height: 20, width: 23}} />
+            </TouchableOpacity>
+            <View style={{marginLeft: 15}}>
+              <ModalSelector
+                initValue="Select tickets"
+                accessible={true}
+                data={data}
+                scrollViewAccessibilityLabel={'Scrollable options'}
+                style={{flexDirection: 'row'}}
+                onChange={option => {
+                  setDashBoardType(option.label);
+                }}>
+                <TouchableOpacity style={styles.dashboardContainer}>
+                  <TextInput
+                    style={styles.dashboardText}
+                    editable={false}
+                    value={changeDasboardType(dashBoardType)}
+                  />
+                  <Image
+                    source={image.arrowDown}
+                    style={styles.dashboardArrow}
+                  />
+                </TouchableOpacity>
+              </ModalSelector>
+            </View>
+          </View>
+          <View style={styles.alertContainer}>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate('Alerts')}>
+              <Image source={image.Alert} />
+            </TouchableOpacity>
+            {search ? (
+              <TouchableOpacity onPress={() => setSearch(false)}>
+                <Image source={image.search} style={styles.searchIcon} />
               </TouchableOpacity>
-            </ModalSelector>
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  setSearch(true), setFilterDetails(filterDetails);
+                }}>
+                <Entypo style={styles.crossIcon} name={'cross'} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
-        <View style={styles.alertContainer}>
-          <Image source={image.Alert} />
-          <Image source={image.search} style={styles.searchIcon} />
-        </View>
+        {!search ? (
+          <View
+            style={{
+              width: '100%',
+              marginBottom: 20,
+              marginTop: 10,
+              borderRadius: 7,
+              alignItems: 'center',
+            }}>
+            <TextInput
+              placeholder="Select vehicle number"
+              style={{
+                backgroundColor: colors.white,
+                borderRadius: 7,
+                width: '90%',
+                paddingHorizontal: 10,
+              }}
+              onChangeText={searchFunction}
+            />
+          </View>
+        ) : null}
       </LinearGradient>
       {!isShow ? (
         <View style={styles.catagoryBox}>
@@ -215,18 +261,23 @@ function Home(props) {
           </ScrollView>
         </View>
       ) : null}
-
-      {/* <ScrollView style={{backgroundColor: colors.white}}> */}
       <View style={styles.carDetailCard}>
         {dashBoardType === 'Dashboard 1' && (
-          <Dashboard1 details={filterDetails} isShow={isShow} />
+          <Dashboard1
+            details={
+              filteredDetails !== null &&
+              filteredDetails !== undefined &&
+              filteredDetails.length > 0
+                ? filteredDetails
+                : filterDetails
+            }
+            isShow={isShow}
+          />
         )}
-
         {dashBoardType === 'Dashboard 2' && (
           <Dashboard2 details={filterDetails} isShow={isShow} />
         )}
       </View>
-      {/* </ScrollView> */}
     </>
   );
 }
