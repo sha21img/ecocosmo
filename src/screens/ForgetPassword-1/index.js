@@ -95,7 +95,7 @@ const ForgotPassword_1 = (props) => {
             alignItems: 'center',
           }}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => props.navigation.goBack()}
             style={{paddingVertical: 10, alignItems: 'center'}}>
             <Image source={image.backArrow} style={{height: 12, width: 23}} />
           </TouchableOpacity>
