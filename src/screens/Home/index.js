@@ -24,7 +24,7 @@ function Home(props) {
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
-  const [filterDetails, setFilterDetails] = useState([]);
+  const [newFilterDetails, setNewFilterDetails] = useState([]);
   const [filteredDetails, setFilteredDetails] = useState([]);
   const [isShow, setIsShow] = useState(true);
   const [search, setSearch] = useState(true);
@@ -59,7 +59,8 @@ function Home(props) {
     );
     const detail = response.data.vehicles;
     setDetails(detail);
-    setFilterDetails(detail);
+    setFilteredDetails(detail);
+    setNewFilterDetails(detail);
     const detailsLength = detail.forEach(element => {
       setCountObj(prev => {
         return {...prev, [element.status]: prev[element.status] + 1};
@@ -71,20 +72,34 @@ function Home(props) {
     getDetails();
   }, []);
   const searchFunction = text => {
-    let filteredData = filterDetails.filter(item => {
-      return item.deviceId.includes(text);
-    });
-    setFilteredDetails(filteredData);
-    console.log('this is searched text', filteredData);
+    // let filteredData = filterDetails.filter(item => {
+    //   return item.deviceId.includes(text);
+    // });
+    // setFilteredDetails(filteredData);
+    // console.log('this is searched text', filteredData);
+    console.log("text",text)
+    if (text !== null && text !== undefined && text !== '') {
+      var newArr = [];
+      newArr = filteredDetails.filter(item => {
+        return item.deviceId.includes(text);
+      });
+      console.log("filteredDetails",filteredDetails)
+      newArr !== null && newArr !== undefined && newArr.length > 0
+        ? setNewFilterDetails(newArr)
+        : setNewFilterDetails([]);
+    } else {
+      setNewFilterDetails(filteredDetails);
+    }
   };
   const getRunningData = data => {
     setType(data);
     const filterDetails = details.filter(item => {
       return item.status == data;
     });
-    setFilterDetails(filterDetails);
+    setNewFilterDetails(filterDetails);
     setIsShow(false);
-  };0
+  };
+  0;
   return (
     <>
       <LinearGradient
@@ -134,7 +149,7 @@ function Home(props) {
             ) : (
               <TouchableOpacity
                 onPress={() => {
-                  setSearch(true), setFilterDetails(filterDetails);
+                  setSearch(true), setNewFilterDetails(filteredDetails);
                 }}>
                 <Entypo style={styles.crossIcon} name={'cross'} />
               </TouchableOpacity>
@@ -263,19 +278,10 @@ function Home(props) {
       ) : null}
       <View style={styles.carDetailCard}>
         {dashBoardType === 'Dashboard 1' && (
-          <Dashboard1
-            details={
-              filteredDetails !== null &&
-              filteredDetails !== undefined &&
-              filteredDetails.length > 0
-                ? filteredDetails
-                : filterDetails
-            }
-            isShow={isShow}
-          />
+          <Dashboard1 details={newFilterDetails} isShow={isShow} />
         )}
         {dashBoardType === 'Dashboard 2' && (
-          <Dashboard2 details={filterDetails} isShow={isShow} />
+          <Dashboard2 details={newFilterDetails} isShow={isShow} />
         )}
       </View>
     </>
