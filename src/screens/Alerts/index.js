@@ -90,7 +90,7 @@ const Alerts = props => {
           </View>
           <View style={styles.textinputbox}>
             <TextInput
-              placeholder="Select vehicle number"
+              placeholder={__('Select vehicle number')}
               style={styles.textinput}
             />
             <MaterialIcons

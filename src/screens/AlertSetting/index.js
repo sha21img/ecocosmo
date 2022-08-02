@@ -105,7 +105,7 @@ const AlertSetting = () => {
     if (response.data.apiResult === 'success') {
       setLoading(false);
     } else {
-      Toast.show(__(`${response.data.message}`));
+      Toast.show(response.data.message);
       setLoading(false);
     }
   };

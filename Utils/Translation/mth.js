@@ -1,114 +1,126 @@
 export default {
-  Home: 'ઘર',
-  gujarati: 'ગુજરાતી',
-  'enter your username': 'તમારું વપરાશકર્તા નામ દાખલ કરો',
-  'enter your password': 'તમારો પાસવર્ડ નાખો',
+  Home: 'मुख्यपृष्ठ',
+  Marathi: 'मराठी',
+  'enter your username': 'तुमचे वापरकर्तानाव प्रविष्ट करा',
+  'enter your password': 'तुमचा पासवर्ड टाका',
   // vehicle menu
-  RUNNING: 'ચાલી રહ્યું છે',
-  'Call Driver': 'ડ્રાઇવરને કૉલ કરો',
+  RUNNING: 'धावत आहे',
+  'Call Driver': 'ड्रायव्हरला कॉल करा',
   //setting
-  Settings: 'સેટિંગ્સ',
-  'Change Password': 'પાસવર્ડ બદલો',
-  'Renewal Details': 'નવીકરણ વિગતો',
-  ' Notification': 'સૂચના',
-  Logout: 'લૉગ આઉટ',
+  Settings: 'सेटिंग्ज',
+  'Change Password': 'पासवर्ड बदला',
+  'Renewal Details': 'नूतनीकरण तपशील',
+  Notification: 'सूचना',
+  Logout: 'बाहेर पडणे',
   //near by place
-  'Nearby Places': 'નજીકના સ્થળો',
+  'Nearby Places': 'जवळपासची ठिकाणे',
   //login
-  'WELCOME TO': 'સ્વાગત',
-  'VEHICLE TRACKING SYSTEM': 'વ્હીકલ ટ્રેકિંગ સિસ્ટમ',
-  'Forgot Password?': 'પાસવર્ડ ભૂલી ગયા છો?',
-  Login: 'પ્રવેશ કરો',
+  'WELCOME TO': 'आपले स्वागत आहे',
+  'VEHICLE TRACKING SYSTEM': 'व्हेईकल ट्रॅकिंग सिस्टीम',
+  'Forgot Password?': 'पासवर्ड विसरलात?',
+  Login: 'लॉगिन करा',
   //livemap tracking
   '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India':
-    '177 ન્યુ એપોલો ઈન્ડલ એસ્ટેટ મોગરા લેન અંધેરી મુંબઈ, ભરૂચ, 400069, ભારત',
-
-  'KM/H': 'કેએમ/એચ',
-  SPEED: 'સ્પીડ',
-
-  '16 KM/H': '16 કેએમ/એચ',
-  SPEED: 'સ્પીડ',
-  5790456: '5790456',
-
-  "TODAY'S ODO": 'આજે ODO',
-  'ADD DRIVER': 'ડ્રાઈવર ઉમેરો',
+    '177 न्यू अपोलो इंड्ल इस्टेट मोगरा लेन अंधेरी मुंबई, भरुच, 400069, भारत',
+  'KM/H': 'किमी/ता',
+  SPEED: 'वेग',
+  '16 KM/H': '१६ किमी/ता',
+  SPEED: 'वेग',
+  5790456: '५७९०४५६',
+  "TODAY'S ODO": 'आजचा ओडीओ',
+  'ADD DRIVER': 'ड्रायव्हर जोडा',
   //home index
   //URL
-  'URL Tracking': 'URL ટ્રેકિંગ',
-  'All Vehicle': 'તમામ વાહન',
-  'Select Date': 'તારીખ પસંદ કરો',
-  'Select Time': 'સમય પસંદ કરો',
-  Duration: 'અવધિ',
-  'Asset Description': 'સંપત્તિ વર્ણન',
-  'Share URL': 'URL શેર કરો',
+  'URL Tracking': 'यू.आरएल ट्रॅकिंग',
+  'All Vehicle': 'सर्व वाहन',
+  'Select Date': 'तारीख निवडा',
+  'Select Time': 'वेळ निवडा',
+  Duration: 'कालावधी',
+  'Asset Description': 'मालमत्तेचे वर्णन',
+  'Share URL': 'यू.आरएल सामायिक करा',
+  //Renewals
+  Renewals: 'नूतनीकरण',
+  Submit: 'प्रस्तुत करणे',
+  //Dashboard1
+  'TODAYS ODO': 'आज एकदिवसीय',
+  Call: 'कॉल करा',
+  //Dashboard2
+  'CHECK IN TIME': 'वेळेत तपासा',
+  'CHECK IN DATE & TIME': 'तारीख आणि वेळ तपासा',
+  //Home
+  'Dashboard 1': 'डॅशबोर्ड १',
+  All: 'सर्व',
+  // Forgot Password
+  'Reset Password': 'पासवर्ड रीसेट करा',
+  'enter account ID or number': 'खाते आयडी किंवा क्रमांक प्रविष्ट करा',
+  Running: 'धावत आहे',
+  //About us
+  'About Us': 'आमच्याबद्दल',
+  'SERVICE PARTNER': 'सेवा भागीदार',
+  'Fleet Projects PVT. Ltd.': 'फ्लीट प्रोजेक्ट्स प्रा. लि.',
+  'Version FP-v7.0.03': 'आवृत्ती FP-v7.0.03',
+  'Copyright 2022. All Rights Reserved': 'कॉपीराइट 2022. सर्व हक्क राखीव',
+  //Alerts
+  Alerts: 'इशारे',
+  'Select vehicle number': 'वाहन क्रमांक निवडा',
+  'Alert Setting': 'सूचना सेटिंग',
+  //AlertsSetting
+  'Ignition OFF': 'प्रज्वलन बंद',
+  Weekday: 'आठवड्याचा दिवस',
+  'Time Range': 'वेळ श्रेणी',
+  'Shift 1': 'शिफ्ट 1',
+  'Shift 2': 'शिफ्ट 2',
+  //changePassword
+  'Change Password': 'पासवर्ड बदला',
+  'Current Password': 'सध्याचा गुप्त शब्द',
+  'Enter current password': 'वर्तमान पासवर्ड प्रविष्ट करा',
+  'New Password': 'नवीन पासवर्ड',
+  'Enter password': 'पासवर्ड टाका',
+  'Confirm New Password': 'नवीन परवलीच्या शब्दाची खात्री करा',
+  Submit: 'प्रस्तुत करणे',
+  //ContactUs
+  'Contact Us': 'आमच्याशी संपर्क साधा',
+  'Email Address': 'ईमेल पत्ता',
+  Website: 'संकेतस्थळ',
+  'Technical support': 'तांत्रिक समर्थन',
+  Sales: 'विक्री',
+  //CustomerProfile
+  'My Account': 'माझे खाते',
+  Edit: 'सुधारणे',
+  'Account ID': 'खाते आयडी',
+  'Email ID': 'ई - मेल आयडी',
+  'Primary Mobile Number *': 'प्राथमिक मोबाईल क्रमांक*',
+  'Secondary Mobile Number *': 'दुय्यम मोबाईल क्रमांक*',
+  'Address *': 'पत्ता *',
+  Save: 'जतन करा',
+  // DriverBehaviour
+  'KM/H': 'KM/H',
+  'Ignition Off': 'प्रज्वलन बंद',
+  'Ignition On': 'इग्निशन चालू',
+  'Vehicle Speed': 'वाहनाचा वेग',
+  'Live Tracking': 'थेट ट्रॅकिंग',
+  //forgot password 1
+  'Forgot password Reset': 'पासवर्ड रीसेट विसरला',
+  'enter OTP': 'OTP प्रविष्ट करा',
+  'enter new password': 'नवीन पासवर्ड टाका',
+  'confirm new password': 'नवीन परवलीच्या शब्दाची खात्री करा',
+  //
+  KM: 'किमी',
+
+  //EngineStopPopup
+  'Do you want to Start vehicle?': 'तुम्हाला वाहन सुरू करायचे आहे का?',
+  No: 'नाही',
+  Yes: 'होय',
+
+  // Drawer
+  'Group Live Tracking': 'गट थेट ट्रॅकिंग',
 
   //Renewals
-  Renewals: 'નવીકરણ',
-  Submit: 'સબમિટ કરો',
+  Renewal: 'नूतनीकरण',
+  'Expiry Date': 'कालबाह्यता तारीख',
+  Amount: 'रक्कम',
 
-  //Dashboard1
-  'TODAYS ODO': 'આજે ઓડીઓ',
-  Call: 'કૉલ કરો',
-
-  //Dashboard2
-  'CHECK IN TIME': 'સમય તપાસો',
-
-  //Home
-  'Dashboard 1': 'ડેશબોર્ડ 1',
-  All: 'બધા',
-
-  // Forgot Password
-  'Reset Password': 'પાસવર્ડ રીસેટ કરો',
-  'enter account ID or number': 'એકાઉન્ટ ID અથવા નંબર દાખલ કરો',
-
-  Running: 'ચાલી રહી છે',
-  //About us
-  'About Us': 'અમારા વિશે',
-  'SERVICE PARTNER': 'સેવા ભાગીદાર',
-  'Fleet Projects PVT. Ltd.': 'ફ્લીટ પ્રોજેક્ટ્સ PVT. લિ.',
-  'Version FP-v7.0.03': 'સંસ્કરણ FP-v7.0.03',
-  'Copyright 2022. All Rights Reserved': 'કૉપિરાઇટ 2022. સર્વાધિકાર સુરક્ષિત',
-  //Alerts
-  Alerts: 'ચેતવણીઓ',
-  'Select vehicle number': 'વાહન નંબર પસંદ કરો',
-  'Alert Setting': 'ચેતવણી સેટિંગ',
-  //AlertsSetting
-  'Ignition OFF': 'ઇગ્નીશન બંધ',
-  Weekday: 'અઠવાડિયાનો દિવસ',
-  'Time Range': 'સમય શ્રેણી',
-  'Shift 1': 'શિફ્ટ 1',
-  'Shift 2': 'શિફ્ટ 2',
-  //changePassword
-  'Change Password': 'પાસવર્ડ બદલો',
-  'Current Password': 'અત્યારનો પાસવર્ડ',
-  'Enter current password': 'વર્તમાન પાસવર્ડ દાખલ કરો',
-  'New Password': 'નવો પાસવર્ડ',
-  'Enter password': 'પાસવર્ડ દાખલ કરો',
-  'Confirm New Password': 'નવાપાસવર્ડની પુષ્ટી કરો',
-  Submit: 'સબમિટ કરો',
-  //ContactUs
-  'Contact Us': 'અમારો સંપર્ક કરો',
-  'Email Address': 'ઈ - મેઈલ સરનામું',
-  Website: 'વેબસાઈટ',
-  'Technical support': 'ટેકનિકલ સપોર્ટ',
-  Sales: 'વેચાણ',
-  //CustomerProfile
-  'My Account': 'મારું ખાતું',
-  Edit: 'સંપાદિત કરો',
-  'Account ID': 'એકાઉન્ટ ID',
-  'Email ID': 'ઈમેલ આઈડી',
-  'Primary Mobile Number *': 'પ્રાથમિક મોબાઈલ નંબર*',
-  'Secondary Mobile Number *': 'ગૌણ મોબાઈલ નંબર*',
-  'Address *': 'સરનામું *',
-  Save: 'સાચવો',
-  // DriverBehaviour
-  'KM/H': 'કેએમ/એચ',
-  //forgot password 1
-  'Forgot password Reset': 'પાસવર્ડ રીસેટ ભૂલી ગયા છો',
-  'enter OTP': 'OTP દાખલ કરો',
-  'enter new password': 'નવો પાસવર્ડ દાખલ કરો',
-  'confirm new password': 'નવાપાસવર્ડની પુષ્ટી કરો',
-
-  //
-  KM: 'કેએમ',
+  Reports: 'अहवाल',
+  'Odometer Total km': 'ओडोमीटर एकूण किमी',
+  'Distance Reports': 'अंतर अहवाल',
 };

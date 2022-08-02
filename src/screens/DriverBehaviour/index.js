@@ -56,11 +56,9 @@ function DriverBehaviour(props) {
                       source={image.clock}
                       style={styles.driverCarDetailsImage}
                     />
-                    <Text style={styles.driverCarDetailsText}>
-                      {__('17:57:45')}
-                    </Text>
+                    <Text style={styles.driverCarDetailsText}>17:57:45</Text>
                     <Text style={styles.driverCarDetailsText1}>
-                      {__('CHECK-IN TIME')}
+                      {__('CHECK IN TIME')}
                     </Text>
                   </View>
                   <View style={styles.driverCarDetails}>
@@ -69,7 +67,7 @@ function DriverBehaviour(props) {
                       style={styles.driverCarDetailsImage}
                     />
                     <Text style={styles.driverCarDetailsText}>
-                      {__('16 KM/H')}
+                      16 {__('KM/H')}
                     </Text>
                     <Text style={styles.driverCarDetailsText1}>
                       {__('SPEED')}
@@ -80,9 +78,7 @@ function DriverBehaviour(props) {
                       source={image.distance}
                       style={styles.driverCarDetailsImage1}
                     />
-                    <Text style={styles.driverCarDetailsText}>
-                      {__('5790456')}
-                    </Text>
+                    <Text style={styles.driverCarDetailsText}>5790456</Text>
                     <Text style={styles.driverCarDetailsText1}>
                       {__("TODAY'S ODO")}
                     </Text>
@@ -115,7 +111,7 @@ function DriverBehaviour(props) {
                   style={{height: 20, width: 10}}
                 />
                 <Text style={{paddingLeft: 7, fontSize: 12, color: 'white'}}>
-                  Ignition Off : 15hr 8min
+                  {__('Ignition Off')} : 15hr 8min
                 </Text>
               </View>
             </LinearGradient>
@@ -141,13 +137,11 @@ function DriverBehaviour(props) {
                   style={{height: 20, width: 10}}
                 />
                 <Text style={{paddingLeft: 7, fontSize: 12, color: 'white'}}>
-                  Ignition On : 15hr 8min
+                  {__('Ignition On')} : 15hr 8min
                 </Text>
               </View>
             </LinearGradient>
           </LinearGradient>
-          {/*
-           */}
           <View>
             <VictoryLegend
               x={40}
@@ -210,7 +204,7 @@ function DriverBehaviour(props) {
               }}>
               <Text
                 style={{color: '#434343', fontSize: 14, fontWeight: 'bold'}}>
-                Vehicle Speed
+                {__('Vehicle Speed')}
               </Text>
               <Text
                 style={{color: '#434343', fontSize: 14, fontWeight: 'bold'}}>
@@ -235,7 +229,7 @@ function DriverBehaviour(props) {
             }}>
             <TouchableOpacity>
               <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-                Live Tracking
+                {__('Live Tracking')}
               </Text>
             </TouchableOpacity>
           </LinearGradient>
