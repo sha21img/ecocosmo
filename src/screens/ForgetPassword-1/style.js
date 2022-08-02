@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 7,
     paddingHorizontal: 15,
-    marginBottom: 20,
+    marginVertical: 10,
   },
   input: {
     backgroundColor: colors.white,
@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
     marginTop: 35,
   },
   loginButton: {
-    paddingVertical: 20,
+    marginVertical:20,
+    paddingVertical: 15,
     width: '88%',
     alignSelf: 'center',
     borderRadius: 10,

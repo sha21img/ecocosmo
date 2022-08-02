@@ -105,7 +105,7 @@ const VehicleMenu = props => {
         alert(error.message);
       }
     } else {
-      navigation.navigate(data, {imei: details.imei});
+      navigation.navigate(data, {details:details});
     }
   };
   return (

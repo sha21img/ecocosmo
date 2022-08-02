@@ -21,10 +21,11 @@ import Toast from 'react-native-simple-toast';
 import ModalSelector from 'react-native-modal-selector';
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CheckBox from 'react-native-check-box';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const ForgotPassword_1 = (props) => {
+const ForgotPassword_1 = props => {
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [newPassword, setnewPassword] = useState('');
@@ -32,6 +33,7 @@ const ForgotPassword_1 = (props) => {
   const [language, setLanguage] = useState('English');
   const [show, setShow] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -66,6 +68,8 @@ const ForgotPassword_1 = (props) => {
   const data = [
     {key: index++, label: 'English'},
     {key: index++, label: 'Hindi'},
+    {key: index++, label: 'Marathi'},
+    {key: index++, label: 'Gujarati'},
   ];
   const changeLanguage = language => {
     return __(language);
@@ -148,7 +152,7 @@ const ForgotPassword_1 = (props) => {
         <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
         {/* </ImageBackground> */}
         <Text style={styles.forgotPassword}>{__('Forgot password Reset')}</Text>
-        <View style={{marginTop: 23}}>
+        <View >
           <View style={[styles.inputBox]}>
             <TextInput
               placeholder={__('enter OTP')}
@@ -167,7 +171,7 @@ const ForgotPassword_1 = (props) => {
               secureTextEntry={!show ? true : false}
               onChangeText={data => setnewPassword(data)}
             />
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => setShow(!show)}
               style={{padding: 10}}>
               <FontAwesome
@@ -178,17 +182,20 @@ const ForgotPassword_1 = (props) => {
                 }}
                 name={show ? 'eye' : 'eye-slash'}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+            {/*  */}
           </View>
+          
           <View style={[styles.inputBox]}>
             <TextInput
               placeholder={__('confirm new password')}
               style={styles.input}
               defaultValue={confirmPassword}
-              secureTextEntry={!showConfirm ? true : false}
+              secureTextEntry={!show ? true : false}
               onChangeText={data => setConfirmPassword(data)}
             />
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{padding: 10}}
               onPress={() => setShowConfirm(!showConfirm)}>
               <FontAwesome
@@ -199,9 +206,27 @@ const ForgotPassword_1 = (props) => {
                 }}
                 name={showConfirm ? 'eye' : 'eye-slash'}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
+        <TouchableOpacity
+            // key={el.id}
+            style={{
+              justifyContent: 'flex-end',
+              marginLeft: 'auto',
+              flexDirection: 'row',
+              marginTop: 5,
+              // paddingHorizontal:
+            }}>
+            <CheckBox
+              isChecked={show}
+              checkBoxColor="skyblue"
+              onClick={e => setShow(!show)}
+            />
+            <Text style={{marginLeft: 5, color: colors.white}}>
+              Show password
+            </Text>
+          </TouchableOpacity>
         <TouchableOpacity onPress={handleSubmit}>
           <LinearGradient
             colors={[colors.largeBtn1, colors.largeBtn2]}
@@ -213,6 +238,8 @@ const ForgotPassword_1 = (props) => {
             )}
           </LinearGradient>
         </TouchableOpacity>
+
+      
       </LinearGradient>
     </ScrollView>
   );
