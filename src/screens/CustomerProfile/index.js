@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -18,6 +18,7 @@ import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 import Toast from 'react-native-simple-toast';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Storage from '../../../Utils/Storage';
 
 const CustomerProfile = props => {
   const [AcountId, SetaccountId] = useState('rrenterprises');
@@ -28,7 +29,24 @@ const CustomerProfile = props => {
     '177 New Apollo Indl Estate Mogra Lane Andheri,Mumbai,Bharuch, 400069,India',
   );
   const [loading, setLoading] = useState(false);
+  const [details, setDetails] = useState();
 
+  const contactUsDetails = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    console.log('0000', succcess);
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `account/${username}/${encodedPassWord}`,
+    );
+
+    setDetails(response.data);
+    console.log('>>>>>>>', details);
+  };
+
+  useEffect(() => {
+    contactUsDetails();
+  }, []);
   const handleSave = async () => {
     setLoading(true);
     const response = await axiosGetData(
@@ -75,7 +93,7 @@ const CustomerProfile = props => {
             style={styles.FormContainer}
             colors={[colors.Modalcolor1, colors.white]}>
             <Image source={image.taxtDriver} style={styles.userImage} />
-            <Text style={styles.subHead}>{__('Fleet Projects PVT. Ltd.')}</Text>
+            <Text style={styles.subHead}>{details?.brandName}</Text>
             <TouchableOpacity style={styles.subButton}>
               <Image source={image.callWhite} />
               <Text style={styles.subButtonText}>+91 - 123456789</Text>

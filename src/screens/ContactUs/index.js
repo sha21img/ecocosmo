@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 
@@ -13,8 +14,14 @@ const ContactUs = props => {
   const [details, setDetails] = useState();
 
   const contactUsDetails = async () => {
-    const response = await axiosGetData(`loginScreenCompanyDetails`);
-    setDetails(response.data);
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getContactDetails/${username}/${encodedPassWord}`,
+    );
+    setDetails(response.data.contactDetails);
+    // console.log('>>>>>>>', response.data);
     // if (response.data.apiResult === 'error') {
     //   // Toast.show(__(`${response.data.message}`));
     // }
@@ -23,7 +30,7 @@ const ContactUs = props => {
   useEffect(() => {
     contactUsDetails();
   }, []);
-
+  console.log('00000000000000', details);
   return (
     <>
       {/* <ActivityIndicator color={colors.white} /> */}
@@ -50,7 +57,7 @@ const ContactUs = props => {
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Email Address')}</Text>
               <Text style={styles.BodyContentSubText}>
-                sales@ecocosmogps.com
+                {details[0].contactEmail}
               </Text>
             </View>
           </View>
@@ -67,7 +74,9 @@ const ContactUs = props => {
             </View>
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Website')}</Text>
-              <Text style={styles.BodyContentSubText}>www.ecocosmogps.com</Text>
+              <Text style={styles.BodyContentSubText}>
+                {details[0].contactWebsite}
+              </Text>
             </View>
           </View>
         </View>
@@ -85,7 +94,9 @@ const ContactUs = props => {
               <Text style={styles.BodyContentText}>
                 {__('Technical support')}
               </Text>
-              <Text style={styles.BodyContentSubText}>(+91) 7719932222</Text>
+              <Text style={styles.BodyContentSubText}>
+                {details[0].contactSupportNumber}
+              </Text>
             </View>
           </View>
         </View>
@@ -104,7 +115,9 @@ const ContactUs = props => {
             </View>
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Sales')}</Text>
-              <Text style={styles.BodyContentSubText}>(+91) 9130062233</Text>
+              <Text style={styles.BodyContentSubText}>
+                {details[0].contactSalesNumber}
+              </Text>
             </View>
           </View>
         </View>
