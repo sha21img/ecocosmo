@@ -136,7 +136,6 @@ function LiveMapTracking(props) {
   useEffect(() => {
     getDetails();
   }, []);
-  // console.log('liveTrackDetail', liveTrackDetail);
   const [marginBottom, setMarginBottom] = useState(1);
   console.log('detail.markerIcon', detail.markerIcon);
   const data = [
@@ -151,12 +150,15 @@ function LiveMapTracking(props) {
     {imgUrl: image.alllocation},
   ];
   const data1 = [{imgUrl: image.mapPaper}, {imgUrl: image.mapPaper}];
+  console.log('statestate', state);
+
   return (
     <>
       {isShow ? (
         <View style={style.container}>
           <View style={style.map_container}>
             <MapView
+              tracksViewChanges={false}
               ref={mapRef}
               style={style.map}
               // style={StyleSheet.absoluteFill}
