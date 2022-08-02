@@ -39,8 +39,10 @@ function Dashboard2({details, isShow}) {
   const renderItem = ({item}) => {
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     const newDate = new Date(date);
-    const filterDate = newDate.toLocaleTimeString('en-US');
-
+    const filterTime = newDate.toLocaleTimeString('en-US');
+    const filterDate = `${newDate.getDate()}-${
+      newDate.getMonth() + 1
+    }-${newDate.getFullYear()}`;
     return (
       <TouchableOpacity
         onPress={() => {
@@ -67,13 +69,10 @@ function Dashboard2({details, isShow}) {
                     source={image.clock}
                     style={styles.driverCarDetailsImage}
                   />
-                  <Text style={styles.driverCarDetailsText}>
-                    {filterDate}
-                    {/* {} */}
-                    {/* 17:57:45 */}
-                  </Text>
+                  <Text style={styles.driverCarDetailsText}>{filterDate}</Text>
+                  <Text style={styles.driverCarDetailsText}>{filterTime}</Text>
                   <Text style={styles.driverCarDetailsText1}>
-                    {__('CHECK IN TIME')}
+                    {__('CHECK IN DATE & TIME')}
                   </Text>
                 </View>
                 <View style={styles.driverCarDetails}>
