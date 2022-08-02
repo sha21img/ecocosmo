@@ -77,13 +77,13 @@ function Home(props) {
     // });
     // setFilteredDetails(filteredData);
     // console.log('this is searched text', filteredData);
-    console.log("text",text)
+    console.log('text', text);
     if (text !== null && text !== undefined && text !== '') {
       var newArr = [];
       newArr = filteredDetails.filter(item => {
         return item.deviceId.includes(text);
       });
-      console.log("filteredDetails",filteredDetails)
+      console.log('filteredDetails', filteredDetails);
       newArr !== null && newArr !== undefined && newArr.length > 0
         ? setNewFilterDetails(newArr)
         : setNewFilterDetails([]);

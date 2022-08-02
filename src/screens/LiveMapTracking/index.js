@@ -72,7 +72,7 @@ function LiveMapTracking(props) {
     const locPermissionDenied = await locationPermission();
     if (locPermissionDenied) {
       const {latitude, longitude, heading} = await getCurrentLocation();
-      console.log('get live location after 4 second', heading);
+      // console.log('get live location after 4 second', heading);
       animate(latitude, longitude);
       updateState({
         heading: heading,
@@ -137,7 +137,7 @@ function LiveMapTracking(props) {
     getDetails();
   }, []);
   const [marginBottom, setMarginBottom] = useState(1);
-  console.log('detail.markerIcon', detail.markerIcon);
+  // console.log('detail.markerIcon', detail .markerIcon);
   const data = [
     {imgUrl: image.vehicleon},
     {imgUrl: image.parking2},

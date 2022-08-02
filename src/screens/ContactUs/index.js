@@ -50,7 +50,7 @@ const ContactUs = props => {
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Email Address')}</Text>
               <Text style={styles.BodyContentSubText}>
-                {__('sales@ecocosmogps.com')}
+                sales@ecocosmogps.com
               </Text>
             </View>
           </View>
@@ -67,9 +67,7 @@ const ContactUs = props => {
             </View>
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Website')}</Text>
-              <Text style={styles.BodyContentSubText}>
-                {__('www.ecocosmogps.com')}
-              </Text>
+              <Text style={styles.BodyContentSubText}>www.ecocosmogps.com</Text>
             </View>
           </View>
         </View>
@@ -87,9 +85,7 @@ const ContactUs = props => {
               <Text style={styles.BodyContentText}>
                 {__('Technical support')}
               </Text>
-              <Text style={styles.BodyContentSubText}>
-                {__('(+91) 7719932222')}
-              </Text>
+              <Text style={styles.BodyContentSubText}>(+91) 7719932222</Text>
             </View>
           </View>
         </View>
@@ -108,9 +104,7 @@ const ContactUs = props => {
             </View>
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Sales')}</Text>
-              <Text style={styles.BodyContentSubText}>
-                {__('(+91) 9130062233')}
-              </Text>
+              <Text style={styles.BodyContentSubText}>(+91) 9130062233</Text>
             </View>
           </View>
         </View>

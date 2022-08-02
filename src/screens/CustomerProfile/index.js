@@ -24,7 +24,9 @@ const CustomerProfile = props => {
   const [email, Setemail] = useState('sales@ecocosmogps.com');
   const [primaryMobile, SetprimaryMobile] = useState('7875551271');
   const [secMobile, SetsecMobile] = useState('9766918883');
-  const [Address, SetAddress] = useState('177 New Apollo Indl Estate Mogra Lane Andheri,Mumbai,Bharuch, 400069,India');
+  const [Address, SetAddress] = useState(
+    '177 New Apollo Indl Estate Mogra Lane Andheri,Mumbai,Bharuch, 400069,India',
+  );
   const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
@@ -35,7 +37,7 @@ const CustomerProfile = props => {
     if (response.data.apiResult === 'success') {
       setLoading(false);
     } else {
-      Toast.show(__(`${response.data.message}`));
+      Toast.show(response.data.message);
       setLoading(false);
     }
   };
@@ -57,12 +59,12 @@ const CustomerProfile = props => {
               <Text style={styles.headerText}>{__('My Account')}</Text>
             </View>
             <TouchableOpacity style={styles.editContainer}>
-            <Entypo
+              <Entypo
                 style={{
                   color: '#fff',
                   fontSize: 10,
-                  alignSelf:'center',
-                  marginHorizontal:2
+                  alignSelf: 'center',
+                  marginHorizontal: 2,
                 }}
                 name={'edit'}
               />
@@ -76,7 +78,7 @@ const CustomerProfile = props => {
             <Text style={styles.subHead}>{__('Fleet Projects PVT. Ltd.')}</Text>
             <TouchableOpacity style={styles.subButton}>
               <Image source={image.callWhite} />
-              <Text style={styles.subButtonText}>{__('+91 - 123456789')}</Text>
+              <Text style={styles.subButtonText}>+91 - 123456789</Text>
             </TouchableOpacity>
             <ScrollView style={{marginVertical: 16}}>
               <View style={styles.TextFieldContainer}>
@@ -134,7 +136,7 @@ const CustomerProfile = props => {
                 <View style={styles.TextFieldAddress}>
                   <Image
                     source={image.madalImage1}
-                    style={{width: 15, height: 15,}}
+                    style={{width: 15, height: 15}}
                   />
                   <TextInput
                     style={styles.textFieldAddress}

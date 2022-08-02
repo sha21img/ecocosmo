@@ -65,7 +65,7 @@ function Reports(props) {
           }}>
           <View style={{padding: 20}}>
             <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-              Odometer Total km
+              {__('Odometer Total km')}
             </Text>
             {/* <Text>{item.}</Text> */}
             <TouchableOpacity style={{paddingVertical: 10}}>
@@ -92,7 +92,7 @@ function Reports(props) {
                 <TextInput
                   style={styles.dashboardText}
                   editable={false}
-                  value="Distance Reports"
+                  value={__('Distance Reports')}
                 />
               </View>
               <View style={styles.alertContainer}>

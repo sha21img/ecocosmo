@@ -33,10 +33,10 @@ function Setting({navigation}) {
     } else {
       number = 1;
     }
-const succcess = await Storage.getLoginDetail('login_detail');
+    const succcess = await Storage.getLoginDetail('login_detail');
 
-let username = succcess.accountId;
-let encodedPassWord = succcess.password;
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
     const response = await axiosGetData(
       `stopOrStartAllNotications/${username}/${encodedPassWord}/${number}`,
     );
@@ -112,7 +112,7 @@ let encodedPassWord = succcess.password;
           offColor={colors.toggleColorOff}
           size="large"
           onToggle={value => {
-            sendNotification(value)
+            sendNotification(value);
           }}
         />
       </View>
