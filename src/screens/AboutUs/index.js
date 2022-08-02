@@ -1,15 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 import {image} from '../../../assets/images';
-import {baseUrl} from '../../../Utils/ApiController';
+import {axiosGetData, baseUrl} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 
 const AboutUs = props => {
+  const [details, setDetails] = useState();
+  const contactUsDetails = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    console.log('0000', succcess);
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `account/${username}/${encodedPassWord}`,
+    );
+
+    setDetails(response.data);
+    console.log('>>>>>>>', details);
+    // if (response.data.apiResult === 'error') {
+    //   // Toast.show(__(`${response.data.message}`));
+    // }
+  };
+
+  useEffect(() => {
+    contactUsDetails();
+  }, []);
+
   return (
     <>
       <LinearGradient
@@ -41,14 +63,12 @@ const AboutUs = props => {
               style={{width: '80%', height: 150, resizeMode: 'contain'}}
             />
             <Text style={styles.ContentBodyhead}>{__('SERVICE PARTNER')}</Text>
-            <Text style={styles.ContentBodyhead2}>
-              {__('Fleet Projects PVT. Ltd.')}
-            </Text>
+            <Text style={styles.ContentBodyhead2}>{details?.brandName}</Text>
             <Text style={styles.ContentBodyhead3}>
               {__('Version FP-v7.0.03')}
             </Text>
           </View>
-          <View style={{height: '5%', alignSelf: 'center'}}>
+          <View style={{alignSelf: 'center'}}>
             <Text style={styles.footer}>
               {__('Copyright 2022. All Rights Reserved')}
             </Text>

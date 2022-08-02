@@ -40,9 +40,11 @@ function Dashboard2({details, isShow}) {
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     const newDate = new Date(date);
     const filterTime = newDate.toLocaleTimeString('en-US');
-    const filterDate = `${newDate.getDate()}-${
-      newDate.getMonth() + 1
-    }-${newDate.getFullYear()}`;
+    let month = newDate.getMonth() + 1;
+    if (String(Math.abs(month)).length == 1) {
+      month = '0' + month;
+    }
+    const filterDate = `${newDate.getDate()}-${month}-${newDate.getFullYear()}`;
     return (
       <TouchableOpacity
         onPress={() => {
