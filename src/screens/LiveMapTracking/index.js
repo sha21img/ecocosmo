@@ -30,6 +30,8 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function LiveMapTracking(props) {
+  console.log('props', props.route.params.details);
+  const {details} = props.route.params;
   const [activeImg, setActiveImg] = useState(false);
   const [isActiveImg, setIsActiveImg] = useState(false);
   const [isShow, setIsShow] = useState(false);
@@ -104,6 +106,7 @@ function LiveMapTracking(props) {
       longitudeDelta: LONGITUDE_DELTA,
     });
   };
+  console.log('asssssssssssssssssssssssssssss',coordinate)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -116,16 +119,16 @@ function LiveMapTracking(props) {
     let username = loginDetail.accountName;
     let password = loginDetail.password;
     const response = await axiosGetData(
-      `livetrack/${username}/${password}/${props.route.params.imei}/0`,
+      `livetrack/${username}/${password}/${props.route.params.details.imei}/0`,
     );
-    console.log('res', response.data);
+    console.log('poiuytrew', response.data);
     setDetail(response.data.vehicle);
     setState({
       ...state,
-      curLoc: {
-        latitude: parseFloat(response.data.vehicle.lat),
-        longitude: parseFloat(response.data.vehicle.lng),
-      },
+      // curLoc: {
+      //   latitude: parseFloat(response.data.vehicle.lat),
+      //   longitude: parseFloat(response.data.vehicle.lng),
+      // },
       destinationCords: {
         latitude: parseFloat(response.data.vehicle.lastLat),
         longitude: parseFloat(response.data.vehicle.lastLng),
@@ -162,11 +165,17 @@ function LiveMapTracking(props) {
               ref={mapRef}
               style={style.map}
               // style={StyleSheet.absoluteFill}
+              region={{
+                ...curLoc,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+              }}
               initialRegion={{
                 ...curLoc,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
-              }}>
+              }}
+              >
               <Marker.Animated ref={markerRef} coordinate={coordinate}>
                 <Image
                   source={{uri: detail.markerIcon}}
@@ -191,8 +200,8 @@ function LiveMapTracking(props) {
                   origin={curLoc}
                   destination={destinationCords}
                   apikey={GOOGLE_MAP_KEY}
-                  strokeWidth={6}
-                  strokeColor="red"
+                  strokeWidth={3}
+                  strokeColor="black"
                   optimizeWaypoints={true}
                   onStart={params => {
                     console.log(
@@ -309,11 +318,12 @@ function LiveMapTracking(props) {
                   marginLeft: 15,
                   width: '90%',
                 }}>
-                <Text style={style.firstboxtext1}>MH12 RN 0790</Text>
+                <Text style={style.firstboxtext1}>{details.deviceId}</Text>
                 <Text style={style.firstboxtext2}>
-                  {__(
+                  {details.address}
+                  {/* {__(
                     '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India',
-                  )}
+                  )} */}
                 </Text>
               </View>
             </LinearGradient>
@@ -336,13 +346,15 @@ function LiveMapTracking(props) {
               style={style.secondbox}>
               <View style={style.secondboxtextbox1}>
                 <Image source={image.speed} style={style.speedimg} />
-                <Text style={style.secondboxtext1}>16 {__('KM/H')}</Text>
+                <Text style={style.secondboxtext1}>
+                  {Math.floor(details.speed)} {__('KM/H')}
+                </Text>
                 <Text style={style.secondboxtext11}>{__('SPEED')}</Text>
               </View>
               <View style={style.secondboxtextbox1}>
                 <Image source={image.distance} style={style.locimg} />
                 <Text style={{fontSize: 12, marginTop: 8, color: '#fff'}}>
-                  5790456
+                  {Math.floor(details.todaysODO)} {__('KM')}
                 </Text>
                 <Text style={style.secondboxtext11}>{__("TODAY'S ODO")}</Text>
               </View>

@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   driverCar: {
     width: 100,
     height: 100,
+    resizeMode:'contain'
   },
   driverAddressBox: {
     paddingVertical: 12,

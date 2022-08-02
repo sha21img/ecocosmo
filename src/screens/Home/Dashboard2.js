@@ -104,7 +104,9 @@ function Dashboard2({details, isShow}) {
               </View>
             </View>
             <View style={styles.driverCarBox}>
-              <Image source={image.carUp} style={styles.driverCar} />
+            {/* <Image source={image.carUp} style={styles.driverCar} /> */}
+
+              <Image source={{uri:item.equipmentIcon}} style={styles.driverCar} />
             </View>
           </View>
           <View
