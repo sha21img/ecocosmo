@@ -25,7 +25,7 @@ const EngineStopPopup = props => {
             colors={[colors.Modalcolor1, colors.white]}
             style={styles.modalBody}>
             <Text style={{color: colors.black, fontSize: Size.compact}}>
-              Do you want to Start vehicle ?
+              {__('Do you want to Start vehicle?')}
             </Text>
             <View
               style={{

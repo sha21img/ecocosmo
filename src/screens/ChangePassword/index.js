@@ -27,7 +27,7 @@ const ChangePassword = props => {
         setLoading(false);
       } else {
         console.warn(response.data.message);
-        Toast.show(__(`${response.data.message}`));
+        Toast.show(response.data.message);
         setLoading(false);
       }
     } else {
@@ -55,7 +55,7 @@ const ChangePassword = props => {
           <View style={[styles.inputBox, {marginBottom: 20}]}>
             <Image source={image.security} />
             <TextInput
-              placeholder="Enter current password"
+              placeholder={__('Enter current password')}
               placeholderTextColor={'#BBBBBB'}
               style={styles.input}
               defaultValue={Current}
@@ -66,7 +66,7 @@ const ChangePassword = props => {
           <View style={[styles.inputBox, {marginBottom: 20}]}>
             <Image source={image.security} />
             <TextInput
-              placeholder="Enter password"
+              placeholder={__('Enter password')}
               placeholderTextColor={'#BBBBBB'}
               style={styles.input}
               defaultValue={newPassword}
@@ -77,7 +77,7 @@ const ChangePassword = props => {
           <View style={[styles.inputBox, {marginBottom: 20}]}>
             <Image source={image.security} />
             <TextInput
-              placeholder="Enter password"
+              placeholder={__('Confirm New Password')}
               placeholderTextColor={'#BBBBBB'}
               style={styles.input}
               defaultValue={confirmPassword}

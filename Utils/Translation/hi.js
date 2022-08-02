@@ -10,7 +10,7 @@ export default {
   Settings: 'समायोजन',
   'Change Password': 'पासवर्ड बदलें',
   'Renewal Details': 'नवीकरण विवरण',
-  ' Notification': 'अधिसूचना',
+  Notification: 'अधिसूचना',
   Logout: 'लॉग आउट',
   //near by place
   'Nearby Places': 'निकटवर्ती स्थान',
@@ -22,7 +22,7 @@ export default {
   //livemap tracking
   '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India':
     '177 न्यू अपोलो इंडस्ट्रीयल एस्टेट मोगरा लेन अंधेरी मुंबई, भरूच, 400069, भारत',
-    "Forgot Password":"पासवर्ड भूल गए",
+  'Forgot Password': 'पासवर्ड भूल गए',
 
   'KM/H': 'किमी/घंटा',
   SPEED: 'रफ़्तार',
@@ -53,6 +53,7 @@ export default {
 
   //Dashboard2
   'CHECK IN TIME': 'समय पर जांचो',
+  'CHECK IN DATE & TIME': 'चेक इन दिनांक और समय',
 
   //Home
   'Dashboard 1': 'डैशबोर्ड 1',
@@ -104,6 +105,10 @@ export default {
   Save: 'सेव',
   // DriverBehaviour
   'KM/H': 'किमी/घंटा',
+  'Ignition OFF': 'इग्निशन ऑफ',
+  'Ignition On': 'इग्निशन ऑन',
+  'Vehicle Speed': 'वाहन की गति',
+  'Live Tracking': 'लाइव ट्रैकिंग',
   //forgot password 1
   'Forgot password Reset': 'पासवर्ड भूल गए रीसेट',
   'enter OTP': 'ओटीपी दर्ज करें',
@@ -113,9 +118,19 @@ export default {
   //
   KM: 'किमी',
   // Drawer
-  "Group Live Tracking":"ग्रुप लाइव ट्रैकिंग",
-  
-  "Renewal":"नवीकरण",
-  "Reports":"रिपोर्ट",
+  'Group Live Tracking': 'ग्रुप लाइव ट्रैकिंग',
+  //Renewal
+  Renewal: 'नवीकरण',
+  'Expiry Date': 'समाप्ति तिथि',
+  Amount: 'राशि',
 
+  //Reports
+  Reports: 'रिपोर्ट',
+  'Odometer Total km': 'ओडोमीटर कुल किमी',
+  'Distance Reports': 'दूरी रिपोर्ट',
+
+  //EngineStopPopup
+  'Do you want to Start vehicle?': 'क्या आप वाहन स्टार्ट करना चाहते हैं?',
+  No: 'नहीं',
+  Yes: 'हाँ',
 };

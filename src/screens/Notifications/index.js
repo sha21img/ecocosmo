@@ -138,7 +138,7 @@ function Notifications(props) {
         </View>
       </LinearGradient>
       <View style={styles.textinputbox}>
-        <TextInput placeholder="All Vehicle" style={styles.textinput} />
+        <TextInput placeholder={__('All Vehicle')} style={styles.textinput} />
         <MaterialIcons
           style={{
             color: '#3D3D3D',

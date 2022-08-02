@@ -86,7 +86,7 @@ const Renewal = props => {
                       color: colors.greym,
                       marginBottom: 3,
                     }}>
-                    Expiry Date: {el.expiryDate}
+                    {__('Expiry Date')}: {el.expiryDate}
                   </Text>
                   <Text
                     style={{
@@ -94,7 +94,7 @@ const Renewal = props => {
                       color: colors.grey,
                       marginBottom: 3,
                     }}>
-                    Amount:
+                    {__('Amount')}:
                     <Text style={{color: colors.black}}>${el.amount}</Text>
                   </Text>
                 </View>

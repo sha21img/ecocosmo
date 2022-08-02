@@ -10,7 +10,7 @@ export default {
   Settings: 'સેટિંગ્સ',
   'Change Password': 'પાસવર્ડ બદલો',
   'Renewal Details': 'નવીકરણ વિગતો',
-  ' Notification': 'સૂચના',
+  Notification: 'સૂચના',
   Logout: 'લૉગ આઉટ',
   //near by place
   'Nearby Places': 'નજીકના સ્થળો',
@@ -52,6 +52,7 @@ export default {
 
   //Dashboard2
   'CHECK IN TIME': 'સમય તપાસો',
+  'CHECK IN DATE & TIME': 'તારીખ અને સમય તપાસો',
 
   //Home
   'Dashboard 1': 'ડેશબોર્ડ 1',
@@ -103,6 +104,10 @@ export default {
   Save: 'સાચવો',
   // DriverBehaviour
   'KM/H': 'કેએમ/એચ',
+  'Ignition Off': 'ઇગ્નીશન બંધ',
+  'Ignition On': 'ઇગ્નીશન ચાલુ',
+  'Vehicle Speed': 'વાહનની ઝડપ',
+  'Live Tracking': 'લાઈવ ટ્રેકિંગ',
   //forgot password 1
   'Forgot password Reset': 'પાસવર્ડ રીસેટ ભૂલી ગયા છો',
   'enter OTP': 'OTP દાખલ કરો',
@@ -111,4 +116,21 @@ export default {
 
   //
   KM: 'કેએમ',
+
+  //EngineStopPopup
+  'Do you want to Start vehicle?': 'શું તમે વાહન શરૂ કરવા માંગો છો?',
+  No: 'ના',
+  Yes: 'હા',
+
+  // Drawer
+  'Group Live Tracking': 'ગ્રુપ લાઈવ ટ્રેકિંગ',
+
+  //Renewals
+  Renewal: 'નવીકરણ',
+  'Expiry Date': 'અંતિમ તારીખ',
+  Amount: 'રકમ',
+
+  Reports: 'અહેવાલો',
+  'Odometer Total km': 'ઓડોમીટર કુલ કિ.મી',
+  'Distance Reports': 'અંતર અહેવાલો',
 };

@@ -131,7 +131,7 @@ const Login = ({navigation}) => {
           <View style={[styles.inputBox, {marginBottom: 20}]}>
             <Image source={image.person} />
             <TextInput
-              placeholder={__('Enter your username')}
+              placeholder={__('enter your username')}
               value={username}
               style={styles.input}
               onChangeText={newText => setUsername(newText)}
@@ -141,7 +141,7 @@ const Login = ({navigation}) => {
           <View style={[styles.inputBox, {marginBottom: 13}]}>
             <Image source={image.security} />
             <TextInput
-              placeholder={__('Enter your password')}
+              placeholder={__('enter your password')}
               value={password}
               style={styles.input}
               secureTextEntry={!show ? true : false}
