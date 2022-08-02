@@ -24,7 +24,7 @@ const VehicleMenu = props => {
   const [modal, setModal] = useState(false);
 
   const {details, visible, calling} = props;
-  console.log('details', details.imei);
+  // console.log('details', details.imei);
   const data = [
     {
       id: 1,
