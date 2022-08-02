@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
   },
   driverDetailBox: {
     paddingHorizontal: 7,
+    flex: 1,
   },
   driverDetailText1: {
     fontSize: Size.tiny,
@@ -76,14 +77,14 @@ const styles = StyleSheet.create({
   buttonText: {fontSize: Size.medium, color: colors.white},
 
   button: {
-    width: '20%',
+    width: '22%',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
     backgroundColor: colors.callBtn,
     borderRadius: 5,
     marginVertical: 10,
-    paddingVertical: 10,
+    // paddingVertical: 10,
   },
 });
 export default styles;
