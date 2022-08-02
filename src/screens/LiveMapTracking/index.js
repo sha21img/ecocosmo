@@ -1,5 +1,5 @@
-import React, {useState, useEffect,useRef} from 'react';
-import {View, Text, Image, TouchableOpacity,Dimensions} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import style from './style';
 import MapView, {
   AnimatedRegion,
@@ -21,92 +21,102 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import PolylineDirection from '@react-native-maps/polyline-direction';
 import MapViewDirections from 'react-native-maps-directions';
 
-import { locationPermission, getCurrentLocation } from '../../../Utils/helper/helperFunction'
+import {
+  locationPermission,
+  getCurrentLocation,
+} from '../../../Utils/helper/helperFunction';
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-function LiveMapTracking({route}) {
+function LiveMapTracking(props) {
   const [activeImg, setActiveImg] = useState(false);
   const [isActiveImg, setIsActiveImg] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [detail, setDetail] = useState({});
-  
-  const mapRef = useRef()
-  const markerRef = useRef()
+
+  const mapRef = useRef();
+  const markerRef = useRef();
   const [state, setState] = useState({
     curLoc: {
-        latitude: 30.7046,
-        longitude: 77.1025,
+      latitude: 30.7046,
+      longitude: 77.1025,
     },
     destinationCords: {},
     isLoading: false,
     coordinate: new AnimatedRegion({
-        latitude: 30.7046,
-        longitude: 77.1025,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
+      latitude: 30.7046,
+      longitude: 77.1025,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
     }),
     time: 0,
     distance: 0,
-    heading: 0
-
-})
-const { curLoc, time, distance, destinationCords, isLoading, coordinate,heading } = state
-const updateState = (data) => setState((state) => ({ ...state, ...data }));
-const GOOGLE_MAP_KEY = "AIzaSyDuMZZzYTEBs7EONdnVfmZVXJluSzVbRkc"
-useEffect(() => {
-  getLiveLocation()
-}, [])
-const getLiveLocation = async () => {
-  const locPermissionDenied = await locationPermission()
-  if (locPermissionDenied) {
-      const { latitude, longitude, heading } = await getCurrentLocation()
-      console.log("get live location after 4 second",heading)
+    heading: 0,
+  });
+  const {
+    curLoc,
+    time,
+    distance,
+    destinationCords,
+    isLoading,
+    coordinate,
+    heading,
+  } = state;
+  const updateState = data => setState(state => ({...state, ...data}));
+  const GOOGLE_MAP_KEY = 'AIzaSyDuMZZzYTEBs7EONdnVfmZVXJluSzVbRkc';
+  useEffect(() => {
+    getLiveLocation();
+  }, []);
+  const getLiveLocation = async () => {
+    const locPermissionDenied = await locationPermission();
+    if (locPermissionDenied) {
+      const {latitude, longitude, heading} = await getCurrentLocation();
+      console.log('get live location after 4 second', heading);
       animate(latitude, longitude);
       updateState({
-          heading: heading,
-          curLoc: { latitude, longitude },
-          coordinate: new AnimatedRegion({
-              latitude: latitude,
-              longitude: longitude,
-              latitudeDelta: LATITUDE_DELTA,
-              longitudeDelta: LONGITUDE_DELTA
-          })
-      })
-  }
-}
-const animate = (latitude, longitude) => {
-  const newCoordinate = { latitude, longitude };
-  if (Platform.OS == 'android') {
+        heading: heading,
+        curLoc: {latitude, longitude},
+        coordinate: new AnimatedRegion({
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        }),
+      });
+    }
+  };
+  const animate = (latitude, longitude) => {
+    const newCoordinate = {latitude, longitude};
+    if (Platform.OS == 'android') {
       if (markerRef.current) {
-          markerRef.current.animateMarkerToCoordinate(newCoordinate, 7000);
+        markerRef.current.animateMarkerToCoordinate(newCoordinate, 7000);
       }
-  } else {
+    } else {
       coordinate.timing(newCoordinate).start();
-  }
-}
-const onCenter = () => {
-  mapRef.current.animateToRegion({
+    }
+  };
+  const onCenter = () => {
+    mapRef.current.animateToRegion({
       latitude: curLoc.latitude,
       longitude: curLoc.longitude,
       latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA
-  })
-}
+      longitudeDelta: LONGITUDE_DELTA,
+    });
+  };
 
-useEffect(() => {
-  const interval = setInterval(() => {
-      getLiveLocation()
-  }, 6000);
-  return () => clearInterval(interval)
-}, [])
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getLiveLocation();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
   const getDetails = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
     let password = loginDetail.password;
     const response = await axiosGetData(
-      `livetrack/${username}/${password}/${route.params.imei}/0`,
+      `livetrack/${username}/${password}/${props.route.params.imei}/0`,
     );
     console.log('res', response.data);
     setDetail(response.data.vehicle);
@@ -128,7 +138,7 @@ useEffect(() => {
   }, []);
   // console.log('liveTrackDetail', liveTrackDetail);
   const [marginBottom, setMarginBottom] = useState(1);
-  console.log("detail.markerIcon",detail.markerIcon)
+  console.log('detail.markerIcon', detail.markerIcon);
   const data = [
     {imgUrl: image.vehicleon},
     {imgUrl: image.parking2},
@@ -146,80 +156,76 @@ useEffect(() => {
       {isShow ? (
         <View style={style.container}>
           <View style={style.map_container}>
-                <MapView
-                    ref={mapRef}
-                    style={style.map}
-                    // style={StyleSheet.absoluteFill}
-                    initialRegion={{
-                        ...curLoc,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LONGITUDE_DELTA,
-                    }}
-                >
+            <MapView
+              ref={mapRef}
+              style={style.map}
+              // style={StyleSheet.absoluteFill}
+              initialRegion={{
+                ...curLoc,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+              }}>
+              <Marker.Animated ref={markerRef} coordinate={coordinate}>
+                <Image
+                  source={{uri: detail.markerIcon}}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    transform: [{rotate: `${heading}deg`}],
+                  }}
+                  resizeMode="contain"
+                />
+              </Marker.Animated>
 
-                    <Marker.Animated
-                        ref={markerRef}
-                        coordinate={coordinate}
-                    >
-                        <Image
-                            source={{uri: detail.markerIcon}}
-                            style={{
-                                width: 40,
-                                height: 40,
-                                transform: [{rotate: `${heading}deg`}]
-                            }}
-                            resizeMode="contain"
-                        />
-                    </Marker.Animated>
+              {Object.keys(destinationCords).length > 0 && (
+                <Marker
+                  coordinate={destinationCords}
+                  // image={{uri:detail.markerIcon}}
+                />
+              )}
 
-                    {Object.keys(destinationCords).length > 0 && (<Marker
-                        coordinate={destinationCords}
-                        // image={{uri:detail.markerIcon}}
-                    />)}
+              {Object.keys(destinationCords).length > 0 && (
+                <MapViewDirections
+                  origin={curLoc}
+                  destination={destinationCords}
+                  apikey={GOOGLE_MAP_KEY}
+                  strokeWidth={6}
+                  strokeColor="red"
+                  optimizeWaypoints={true}
+                  onStart={params => {
+                    console.log(
+                      `Started routing between "${params.origin}" and "${params.destination}"`,
+                    );
+                  }}
+                  onReady={result => {
+                    console.log(`Distance: ${result.distance} km`);
+                    console.log(`Duration: ${result.duration} min.`);
+                    // fetchTime(result.distance, result.duration),
+                    mapRef.current.fitToCoordinates(result.coordinates, {
+                      edgePadding: {
+                        // right: 30,
+                        // bottom: 300,
+                        // left: 30,
+                        // top: 100,
+                      },
+                    });
+                  }}
+                  onError={errorMessage => {
+                    // console.log('GOT AN ERROR');
+                  }}
+                />
+              )}
+            </MapView>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+              }}
+              onPress={onCenter}>
+              <Image source={{uri: detail.markerIcon}} />
+            </TouchableOpacity>
 
-                    {Object.keys(destinationCords).length > 0 && (<MapViewDirections
-                        origin={curLoc}
-                        destination={destinationCords}
-                        apikey={GOOGLE_MAP_KEY}
-                        strokeWidth={6}
-                        strokeColor="red"
-                        optimizeWaypoints={true}
-                        onStart={(params) => {
-                            console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
-                        }}
-                        onReady={result => {
-                            console.log(`Distance: ${result.distance} km`)
-                            console.log(`Duration: ${result.duration} min.`)
-                            // fetchTime(result.distance, result.duration),
-                                mapRef.current.fitToCoordinates(result.coordinates, {
-                                    edgePadding: {
-                                        // right: 30,
-                                        // bottom: 300,
-                                        // left: 30,
-                                        // top: 100,
-                                    },
-                                });
-                        }}
-                        onError={(errorMessage) => {
-                            // console.log('GOT AN ERROR');
-                        }}
-                    />)}
-                </MapView>
-                <TouchableOpacity
-                    style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        right: 0
-                    }}
-                    onPress={onCenter}
-                >
-                    <Image 
-                        
-                    source={{uri:detail.markerIcon}} 
-
-                    />
-                </TouchableOpacity>
-            
             {/*  */}
             {/* <MapView
             tracksViewChanges={false}
@@ -272,12 +278,14 @@ useEffect(() => {
           </View>
           {/* modal1 */}
           <View style={style.top_container}>
-            <View style={{width: '10%'}}>
+            <TouchableOpacity
+              onPress={() => props.navigation.goBack()}
+              style={{width: '10%', paddingVertical: 10}}>
               <Image
                 source={image.leftArrowblack}
                 style={{width: 30, height: 18}}
               />
-            </View>
+            </TouchableOpacity>
             <LinearGradient
               colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
               start={{x: 1.3, y: 0}}

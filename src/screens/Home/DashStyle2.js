@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
   },
   driverCarDetails: {
     paddingRight: 10,
+    // justifyContent: 'flex-end',
   },
   driverCarDetailsImage: {
     width: 17,
