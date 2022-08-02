@@ -5,7 +5,7 @@ export const image = {
   battery: require('./battery.png'),
   batteryWhite: require('./batteryWhite.png'),
   backArrow: require('./backArrow.png'),
-  cahrgeWhite: require('./cahrgeWhite.png'),
+  chargeWhite: require('./chargeWhite.png'),
   call: require('./call.png'),
   callWhite: require('./callWhite.png'),
   car: require('./car.png'),
@@ -103,4 +103,13 @@ export const image = {
   shareDark: require('./shareDark.png'),
   carGreenUp: require('./carGreenUp.png'),
   Close: require('./Close.png'),
+  chargeOff: require('./chargeOff.png'),
+  batteryOff: require('./batteryOff.png'),
+  shokkerOff: require('./shokkerOff.png'),
+  locationOff: require('./locationOff.png'),
+
+  locationWhiteOff: require('./locationWhiteOff.png'),
+  chargeWhiteOff: require('./chargeWhiteOff.png'),
+  chargePinOff: require('./chargePinOff.png'),
+  batteryWhiteOff: require('./batteryWhiteOff.png'),
 };

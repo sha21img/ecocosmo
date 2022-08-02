@@ -144,7 +144,24 @@ function Dashboard2({details, isShow}) {
                     colors={['#D4D4D4', 'transparent', 'transparent']}
                     style={{padding: 0.5}}></LinearGradient>
                 </>
-              ) : null}
+              ) : (
+                <>
+                  <View
+                    style={{
+                      paddingHorizontal: 18,
+                      paddingVertical: 6,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={image.batteryWhiteOff}
+                      style={{width: 20, height: 15}}
+                    />
+                  </View>
+                  <LinearGradient
+                    colors={['#D4D4D4', 'transparent', 'transparent']}
+                    style={{padding: 0.5}}></LinearGradient>
+                </>
+              )}
               {parseFloat(item.validPacketTimeStamp) -
                 parseFloat(item.lastLowBatteryTime) >
               21600 ? (
@@ -156,7 +173,7 @@ function Dashboard2({details, isShow}) {
                       justifyContent: 'center',
                     }}>
                     <Image
-                      source={image.cahrgeWhite}
+                      source={image.chargeWhite}
                       style={{width: 10, height: 20}}
                     />
                   </View>
@@ -164,7 +181,24 @@ function Dashboard2({details, isShow}) {
                     colors={['#D4D4D4', 'transparent', 'transparent']}
                     style={{padding: 0.5}}></LinearGradient>
                 </>
-              ) : null}
+              ) : (
+                <>
+                  <View
+                    style={{
+                      paddingHorizontal: 18,
+                      paddingVertical: 6,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={image.chargeWhiteOff}
+                      style={{width: 10, height: 20}}
+                    />
+                  </View>
+                  <LinearGradient
+                    colors={['#D4D4D4', 'transparent', 'transparent']}
+                    style={{padding: 0.5}}></LinearGradient>
+                </>
+              )}
               {parseFloat(item.lastNoGpsSignalTime) >
               parseFloat(item.validPacketTimeStamp) ? (
                 <>
@@ -183,7 +217,24 @@ function Dashboard2({details, isShow}) {
                     colors={['#D4D4D4', 'transparent', 'transparent']}
                     style={{padding: 0.5}}></LinearGradient>
                 </>
-              ) : null}
+              ) : (
+                <>
+                  <View
+                    style={{
+                      paddingHorizontal: 18,
+                      paddingVertical: 6,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={image.locationWhiteOff}
+                      style={{width: 13, height: 18}}
+                    />
+                  </View>
+                  <LinearGradient
+                    colors={['#D4D4D4', 'transparent', 'transparent']}
+                    style={{padding: 0.5}}></LinearGradient>
+                </>
+              )}
               {parseFloat(item.statusTermInfo & 2) == 2 ? (
                 <>
                   <View
@@ -198,7 +249,21 @@ function Dashboard2({details, isShow}) {
                     />
                   </View>
                 </>
-              ) : null}
+              ) : (
+                <>
+                  <View
+                    style={{
+                      paddingHorizontal: 18,
+                      paddingVertical: 6,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={image.chargePinOff}
+                      style={{width: 10, height: 18}}
+                    />
+                  </View>
+                </>
+              )}
             </LinearGradient>
             <View
               style={{
@@ -250,7 +315,6 @@ function Dashboard2({details, isShow}) {
           renderItem={renderItem}
         />
       )}
-
       <VehicleMenu
         visible={visible}
         calling={calling}
