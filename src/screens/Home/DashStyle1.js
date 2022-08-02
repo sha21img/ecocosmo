@@ -74,14 +74,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonText: {fontSize: Size.medium, color: colors.white},
+
   button: {
+    width: '20%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 10,
     backgroundColor: colors.callBtn,
     borderRadius: 5,
-    height: 40,
+    marginVertical: 10,
+    paddingVertical: 10,
   },
 });
 export default styles;

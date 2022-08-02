@@ -208,6 +208,7 @@ function Dashboard1({details, isShow}) {
                 height: '100%',
               }}
               zoomEnabled={true}
+              trackViewChanges={false}
               scrollEnabled={false}
               pointerEvents="none"
               minZoomLevel={15}
@@ -254,23 +255,36 @@ function Dashboard1({details, isShow}) {
             <View style={styles.imageContainer}>
               {parseFloat(item.validPacketTimeStamp) -
                 parseFloat(item.lastPowerCutTime) >
-                300 && <Image source={image.battery} style={styles.images} />}
+              300 ? (
+                <Image source={image.battery} style={styles.images} />
+              ) : (
+                <Image source={image.batteryOff} style={styles.images} />
+              )}
 
               {parseFloat(item.validPacketTimeStamp) -
                 parseFloat(item.lastLowBatteryTime) >
-                21600 && <Image source={image.charge} style={styles.images} />}
+              21600 ? (
+                <Image source={image.charge} style={styles.images} />
+              ) : (
+                <Image source={image.chargeOff} style={styles.images} />
+              )}
 
               {parseFloat(item.lastNoGpsSignalTime) >
-                parseFloat(item.validPacketTimeStamp) && (
+              parseFloat(item.validPacketTimeStamp) ? (
                 <Image source={image.location} style={styles.images} />
+              ) : (
+                <Image source={image.locationOff} style={styles.images} />
               )}
-              {parseFloat(item.statusTermInfo & 2) == 2 && (
+              {parseFloat(item.statusTermInfo & 2) == 2 ? (
                 <Image source={image.shokker} style={styles.images} />
+              ) : (
+                <Image source={image.shokkerOff} style={styles.images} />
               )}
             </View>
             <View
               style={{
                 flexDirection: 'row',
+                width: '70%',
               }}>
               <View style={styles.driverDetailBox}>
                 <Text style={styles.driverDetailText1}>
@@ -315,12 +329,7 @@ function Dashboard1({details, isShow}) {
             start={{x: 0, y: 0.5}}
             end={{x: 1, y: 0.5}}
             style={styles.driverAddressBox}>
-            <Text style={styles.driverAddressText}>
-              {/* {__(
-                  '177 New Apollo Mogra Lane Andheri,Mumbai, Bharuch,400069,India',
-                )} */}
-              {item.address}
-            </Text>
+            <Text style={styles.driverAddressText}>{item.address}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </>
