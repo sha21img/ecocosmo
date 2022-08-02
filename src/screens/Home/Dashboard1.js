@@ -99,10 +99,7 @@ function Dashboard1({details, isShow}) {
         showPermissionError('Something Went Wrong While Checking Permission');
       });
   };
-  const getLocations = () => {
-    // Geolocation.getCurrentPosition(position => {
-    // });
-
+  const getLocations = async () => {
     Geolocation.getCurrentPosition(position => {
       setCoordinate({
         latitude: position.coords.latitude,
@@ -285,6 +282,10 @@ function Dashboard1({details, isShow}) {
               style={{
                 flexDirection: 'row',
                 width: '70%',
+                justifyContent: 'flex-start',
+                // alignItems:'center'
+                // backgroundColor:'red',
+                // flexWrap:'nowrap'
               }}>
               <View style={styles.driverDetailBox}>
                 <Text style={styles.driverDetailText1}>
