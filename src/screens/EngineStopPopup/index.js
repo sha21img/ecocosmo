@@ -6,6 +6,8 @@ import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
 import {Size} from '../../../assets/fonts/Fonts';
+import Storage from '../../../Utils/Storage';
+import {axiosGetData} from '../../../Utils/ApiController';
 
 const EngineStopPopup = props => {
   return (
@@ -34,13 +36,14 @@ const EngineStopPopup = props => {
                 width: '77%',
                 marginTop: 25,
               }}>
-              <View
+              <TouchableOpacity
+                onPress={contactUsDetails}
                 style={[
                   styles.loginButton,
                   {backgroundColor: colors.subRedBtn},
                 ]}>
                 <Text style={styles.loginButtonText}>{__('No')}</Text>
-              </View>
+              </TouchableOpacity>
               <LinearGradient
                 colors={[colors.largeBtn1, colors.largeBtn2]}
                 style={styles.loginButton}>
