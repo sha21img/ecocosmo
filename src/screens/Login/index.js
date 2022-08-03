@@ -42,10 +42,11 @@ const Login = ({navigation}) => {
   const handleLogin = async () => {
     setLoading(true);
     var encodedPassWord = md5(password);
-
+console.log("asdf", encodedPassWord)
     const response = await axiosGetData(
       `account/${username}/${encodedPassWord}`,
     );
+    console.log("this is response from login scren")
     const succcess = await Storage.SetLogin(response.data.apiResult);
     const detail = await Storage.SetLoginDetail(response.data);
 
