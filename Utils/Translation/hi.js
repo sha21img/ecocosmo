@@ -36,6 +36,7 @@ export default {
   //home index
   //URL
   'URL Tracking': 'यूआरएल ट्रैकिंग',
+  'URL TRACKING': 'यूआरएल ट्रैकिंग',
   'All Vehicle': 'सभी वाहन',
   'Select Date': 'तारीख़ चुनें',
   'Select Time': 'समय चुनें',
@@ -109,6 +110,9 @@ export default {
   'Ignition On': 'इग्निशन ऑन',
   'Vehicle Speed': 'वाहन की गति',
   'Live Tracking': 'लाइव ट्रैकिंग',
+  'LIVE TRACKING': 'लाइव ट्रैकिंग',
+  'DRIVER DETAILS': 'चालक विवरण',
+  'MAP HISTORY': 'मानचित्र इतिहास',
   //forgot password 1
   'Forgot password Reset': 'पासवर्ड भूल गए रीसेट',
   'enter OTP': 'ओटीपी दर्ज करें',
@@ -126,9 +130,14 @@ export default {
 
   //Reports
   Reports: 'रिपोर्ट',
+  REPORTS: 'रिपोर्ट',
   'Odometer Total km': 'ओडोमीटर कुल किमी',
   'Distance Reports': 'दूरी रिपोर्ट',
-
+  'GRAPHICAL REPORTS': 'चित्रमय रिपोर्ट',
+  'GROUP REPORTS': 'समूह रिपोर्ट',
+  'PARKING MODE': 'पार्किंग मोड',
+  'DRIVER BEHAVIOR': 'चालक व्यवहार',
+  IMMOBILIZER: 'इमोबिलाइज़र',
   //EngineStopPopup
   'Do you want to Start vehicle?': 'क्या आप वाहन स्टार्ट करना चाहते हैं?',
   No: 'नहीं',

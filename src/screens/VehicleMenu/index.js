@@ -104,8 +104,10 @@ const VehicleMenu = props => {
       } catch (error) {
         alert(error.message);
       }
+    } else if (data === 'EngineStopPopup') {
+      setModal(!modal);
     } else {
-      navigation.navigate(data, {details:details});
+      navigation.navigate(data, {details: details});
     }
   };
   return (
@@ -146,7 +148,7 @@ const VehicleMenu = props => {
                           source={el.image}
                           style={styles.modalCardImage}
                         />
-                        <Text style={styles.modalCardText}>{el.data}</Text>
+                        <Text style={styles.modalCardText}>{__(el.data)}</Text>
                       </View>
                     </TouchableOpacity>
                   );

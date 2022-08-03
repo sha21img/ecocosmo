@@ -32,6 +32,7 @@ export default {
   //home index
   //URL
   'URL Tracking': 'यू.आरएल ट्रॅकिंग',
+  'URL TRACKING': 'यू.आरएल ट्रॅकिंग',
   'All Vehicle': 'सर्व वाहन',
   'Select Date': 'तारीख निवडा',
   'Select Time': 'वेळ निवडा',
@@ -99,6 +100,7 @@ export default {
   'Ignition On': 'इग्निशन चालू',
   'Vehicle Speed': 'वाहनाचा वेग',
   'Live Tracking': 'थेट ट्रॅकिंग',
+  'LIVE TRACKING': 'थेट ट्रॅकिंग',
   //forgot password 1
   'Forgot password Reset': 'पासवर्ड रीसेट विसरला',
   'enter OTP': 'OTP प्रविष्ट करा',
@@ -121,6 +123,15 @@ export default {
   Amount: 'रक्कम',
 
   Reports: 'अहवाल',
+  REPORTS: 'अहवाल',
   'Odometer Total km': 'ओडोमीटर एकूण किमी',
   'Distance Reports': 'अंतर अहवाल',
+
+  'GRAPHICAL REPORTS': 'ग्राफिकल अहवाल',
+  'GROUP REPORTS': 'गट अहवाल',
+  'PARKING MODE': 'पार्किंग मोड',
+  'DRIVER BEHAVIOR': 'ड्रायव्हरचे वर्तन',
+  IMMOBILIZER: 'इमोबिलायझर',
+  'DRIVER DETAILS': 'ड्रायव्हर तपशील',
+  'MAP HISTORY': 'नकाशा इतिहास',
 };
