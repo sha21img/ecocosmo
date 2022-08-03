@@ -123,6 +123,7 @@ export default {
 
   //EngineStopPopup
   'Do you want to Start vehicle?': 'શું તમે વાહન શરૂ કરવા માંગો છો?',
+  'Do you want to Stop vehicle?': 'શું તમે વાહન રોકવા માંગો છો?',
   No: 'ના',
   Yes: 'હા',
 

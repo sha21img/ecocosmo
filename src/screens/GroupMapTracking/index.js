@@ -24,6 +24,12 @@ import Storage from '../../../Utils/Storage';
 import {axiosGetData} from '../../../Utils/ApiController';
 import {useNetInfo} from '@react-native-community/netinfo';
 import Geolocation from 'react-native-geolocation-service';
+import colors from '../../../assets/Colors';
+import LinearGradient from 'react-native-linear-gradient';
+import {__} from '../../../Utils/Translation/translation';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {color} from 'react-native-reanimated';
+
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
@@ -82,7 +88,7 @@ function index(props) {
           flex: 1,
         }}
         // zoomEnabled={true}
-        trackViewChanges={false}
+        // trackViewChanges={false}
         // scrollEnabled={false}
         // pointerEvents="none"
         // minZoomLevel={15}
@@ -94,7 +100,7 @@ function index(props) {
         }}
         provider={PROVIDER_GOOGLE}>
         {details.map(item => {
-          console.log('item', item.lat);
+          console.log('item', item);
           return (
             <Marker
               // ref={markerRef}
@@ -111,29 +117,103 @@ function index(props) {
                   width: 70,
                 }}
               />
+              <Callout tooltip >
+                <LinearGradient
+                  colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
+                  start={{x: 1.3, y: 0}}
+                  end={{x: 0, y: 0}}
+                  locations={[0, 0.9]}
+                  style={style.firstbox}>
+                  <View>
+                    <Text style={style.firstboxtext1}>{item.deviceId}</Text>
+                    <Text style={style.driverCarSpeed}>
+                      {item.statusMessage}
+                    </Text>
+                    <Text style={style.firstboxtext2}>{item.address}</Text>
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      //   backgroundColor:'red'
+                    }}>
+                    <View style={style.secondboxtextbox1}>
+                      <Text style={{paddingVertical: 8}}>
+                        <Image
+                          resizeMode="contain"
+                          source={image.speed}
+                          style={style.speedimg}
+                        />
+                      </Text>
+                      <Text style={style.secondboxtext1}>
+                        {Math.floor(item.speed)} {__('KM/H')}
+                      </Text>
+                      <Text style={style.secondboxtext11}>{__('SPEED')}</Text>
+                    </View>
+                    <View style={style.secondboxtextbox1}>
+                      <Text style={{paddingVertical: 8}}>
+                        <Image
+                          resizeMode="contain"
+                          source={image.distance}
+                          style={style.locimg}
+                        />
+                      </Text>
+                      <Text style={{fontSize: 12, color: '#fff'}}>
+                        {Math.floor(item.todaysODO)} {__('KM')}
+                      </Text>
+                      <Text style={style.secondboxtext11}>
+                        {__("TODAY'S ODO")}
+                      </Text>
+                    </View>
+
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          backgroundColor: 'red',
+                          backgroundColor: '#24A520',
+                          padding: 9,
+                          borderRadius: 6,
+                          alignItems: 'center',
+                        }}>
+                        <Icon name="call" color="#fff" />
+                        <Text style={{color: '#fff', marginLeft: 5}}>
+                          Call Driver
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </LinearGradient>
+              </Callout>
             </Marker>
           );
         })}
       </MapView>
       <View style={style.top_container}>
-          <TouchableOpacity
-            onPress={() => props.navigation.goBack()}
-            style={{paddingVertical: 10}}>
-            <Image
-              source={image.leftArrowblack}
-              style={{width: 30, height: 18}}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={style.dashimgbox}
-            onPress={() => setActiveImg(!activeImg)}>
-            <Image
-              source={image.dashboardcolor}
-              style={{width: 44, height: 44}}
-            />
-          </TouchableOpacity>
-        </View>
-        {activeImg && <MapIconList />}
+        <TouchableOpacity
+          onPress={() => props.navigation.goBack()}
+          style={{paddingVertical: 10}}>
+          <Image
+            source={image.leftArrowblack}
+            style={{width: 30, height: 18}}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={style.dashimgbox}
+          onPress={() => setActiveImg(!activeImg)}>
+          <Image
+            source={image.dashboardcolor}
+            style={{width: 44, height: 44}}
+          />
+        </TouchableOpacity>
+      </View>
+      {activeImg && <MapIconList />}
     </View>
   );
 }

@@ -1,5 +1,12 @@
 import React from 'react';
-import {Image, Modal, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  Modal,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
@@ -8,8 +15,23 @@ import {__} from '../../../Utils/Translation/translation';
 import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
 import {axiosGetData} from '../../../Utils/ApiController';
+import Toast from 'react-native-simple-toast';
 
 const EngineStopPopup = props => {
+  const contactUsDetails = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    let tougle = (props.details?.statusLang & 1) == 1 ? 0 : 1;
+    const response = await axiosGetData(
+      `stopvehicle/${username}/${encodedPassWord}/${props.details.imei}/${tougle}/${props.details.deviceType}`,
+    );
+    if (response.data.apiResult != 'success') {
+      Toast.show(__(`${response.data.message}`));
+    } else {
+      props.setVisible(false);
+    }
+  };
   return (
     <>
       <Modal
@@ -27,7 +49,9 @@ const EngineStopPopup = props => {
             colors={[colors.Modalcolor1, colors.white]}
             style={styles.modalBody}>
             <Text style={{color: colors.black, fontSize: Size.compact}}>
-              {__('Do you want to Start vehicle?')}
+              {(props.details?.statusLang & 1) == 1
+                ? __('Do you want to Start vehicle?')
+                : __('Do you want to Stop vehicle?')}
             </Text>
             <View
               style={{
@@ -37,18 +61,40 @@ const EngineStopPopup = props => {
                 marginTop: 25,
               }}>
               <TouchableOpacity
-                // onPress={contactUsDetails}
+                onPress={() => props.setVisible(false)}
+                disabled={props.details?.features & (16 != 16) ? true : false}
                 style={[
                   styles.loginButton,
-                  {backgroundColor: colors.subRedBtn},
+                  {
+                    backgroundColor:
+                      props.details?.features & (16 != 16)
+                        ? 'grey'
+                        : colors.subRedBtn,
+                  },
                 ]}>
                 <Text style={styles.loginButtonText}>{__('No')}</Text>
               </TouchableOpacity>
-              <LinearGradient
-                colors={[colors.largeBtn1, colors.largeBtn2]}
+              <TouchableOpacity
+                onPress={() => contactUsDetails()}
+                disabled={props.details?.features & (16 != 16) ? true : false}
                 style={styles.loginButton}>
-                <Text style={styles.loginButtonText}>{__('Yes')}</Text>
-              </LinearGradient>
+                <LinearGradient
+                  style={{
+                    width: '100%',
+                    borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingVertical: 20,
+                  }}
+                  colors={[
+                    props.details?.features & (16 != 16)
+                      ? 'grey'
+                      : colors.largeBtn1,
+                    colors.largeBtn2,
+                  ]}>
+                  <Text style={styles.loginButtonText}>{__('Yes')}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
             </View>
           </LinearGradient>
         </View>

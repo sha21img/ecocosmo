@@ -1,8 +1,19 @@
-import React from 'react';
-import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  Share,
+} from 'react-native';
 import {image} from '../../assets/images';
+import EngineStopPopup from '../../src/screens/EngineStopPopup';
+import {axiosGetData} from '../ApiController';
+import Storage from '../Storage';
 
 function MapIconList({handlePress}) {
+  const [modal, setModal] = useState(false);
   const data = [
     {imgUrl: image.vehicleon, route: 'EngineStopPopup'},
     {imgUrl: image.parking2, route: ''},
@@ -14,6 +25,32 @@ function MapIconList({handlePress}) {
     {imgUrl: image.graph, route: 'GraphicalReports'},
     {imgUrl: image.earth, route: 'NearbyPlaces'},
   ];
+
+  const shrethis = async () => {
+    const loginDetail = await Storage.getLoginDetail('login_detail');
+    let username = loginDetail.accountName;
+    let password = loginDetail.password;
+    const response = await axiosGetData(
+      `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
+    );
+
+    if (response.data.gettrackurl == 'success') {
+      let msg = response.data.message;
+      Share.share(
+        {
+          message: msg,
+          title: 'hello',
+          subject: 'hello',
+        },
+        {
+          // Android only:
+          dialogTitle: 'hello',
+          // iOS only:
+          excludedActivityTypes: ['com.apple.UIKit.activity.PostToTwitter'],
+        },
+      );
+    }
+  };
   return data.map((item, index) => {
     return (
       <View
@@ -37,6 +74,11 @@ function MapIconList({handlePress}) {
           }}>
           <Image source={item.imgUrl} style={{width: 65, height: 65}} />
         </TouchableOpacity>
+        <EngineStopPopup
+          visible={modal}
+          setVisible={setModal}
+          details={details}
+        />
       </View>
     );
   });

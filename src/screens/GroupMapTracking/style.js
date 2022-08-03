@@ -1,5 +1,6 @@
 import {Size} from '../../../assets/fonts/Fonts';
 import {StyleSheet} from 'react-native';
+import colors from '../../../assets/Colors';
 
 const style = StyleSheet.create({
   container: {
@@ -25,17 +26,18 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width:'100%',
-    padding:10
+    width: '100%',
+    padding: 10,
   },
   firstbox: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     paddingHorizontal: 15,
-    paddingVertical: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: 15,
+    minWidth: 250,
+    // alignItems: 'center',
+    // justifyContent: 'center',
     borderRadius: 15,
-    width: '65%',
+    // width: '65%',
   },
   firstboxtext1: {
     color: '#fff',
@@ -56,6 +58,11 @@ const style = StyleSheet.create({
     bottom: 15,
     width: '100%',
   },
+  driverCarSpeed: {
+    fontSize: Size.small,
+    color: colors.white,
+    // paddingHorizontal: 5,
+  },
   secondbox: {
     flexDirection: 'row',
     paddingHorizontal: 20,
@@ -66,17 +73,17 @@ const style = StyleSheet.create({
     justifyContent: 'space-around',
   },
   secondboxtextbox1: {
-    justifyContent: 'center',
-    width: '20%',
+    // backgroundColor:'blue'
+    // justifyContent: 'space-around',
+    // width: '20%',
   },
   speedimg: {
-    width: 15,
+    width: 20,
     height: 15,
   },
   locimg: {width: 20, height: 15},
   secondboxtext1: {
     fontSize: Size.small,
-    marginTop: 8,
     color: '#fff',
   },
   secondboxtext11: {

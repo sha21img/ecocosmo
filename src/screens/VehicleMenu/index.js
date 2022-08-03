@@ -24,7 +24,7 @@ const VehicleMenu = props => {
   const [modal, setModal] = useState(false);
 
   const {details, visible, calling} = props;
-  // console.log('details', details.imei);
+  // console.log('details', details);
   const data = [
     {
       id: 1,
@@ -83,10 +83,13 @@ const VehicleMenu = props => {
     {id: 10, image: image.modalmap, data: 'MAP HISTORY', routeTo: ''},
   ];
   const navigatorFrom = async data => {
+    const loginDetail = await Storage.getLoginDetail('login_detail');
+    let username = loginDetail.accountName;
+    let password = loginDetail.password;
     props.setVisible(false);
     if (data === 'UrlTracking') {
       const response = await axiosGetData(
-        `gettrackurl/rrenterprises/25f9e794323b453885f5181f1b624d0b/351608080772390/ecvalidate/24`,
+        `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
       );
       try {
         const result = await Share.share({
