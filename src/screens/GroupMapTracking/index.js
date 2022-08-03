@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Platform, Image, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import MapView, {
   AnimatedRegion,
   Animated,
@@ -9,6 +16,10 @@ import MapView, {
   Marker,
   PROVIDER_GOOGLE,
 } from 'react-native-maps';
+import style from './style';
+
+import {image} from '../../../assets/images';
+import MapIconList from '../../../Utils/helper/MapIconList';
 import Storage from '../../../Utils/Storage';
 import {axiosGetData} from '../../../Utils/ApiController';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -17,13 +28,15 @@ const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-function index() {
+function index(props) {
   const [coordinate, setCoordinate] = useState({
     latitude: 26.9110637,
     longitude: 75.7376412,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   });
+  const [activeImg, setActiveImg] = useState(false);
+
   const [details, setDetails] = useState([]);
   const getDetails = async () => {
     // setIsShow(true);
@@ -102,6 +115,25 @@ function index() {
           );
         })}
       </MapView>
+      <View style={style.top_container}>
+          <TouchableOpacity
+            onPress={() => props.navigation.goBack()}
+            style={{paddingVertical: 10}}>
+            <Image
+              source={image.leftArrowblack}
+              style={{width: 30, height: 18}}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={style.dashimgbox}
+            onPress={() => setActiveImg(!activeImg)}>
+            <Image
+              source={image.dashboardcolor}
+              style={{width: 44, height: 44}}
+            />
+          </TouchableOpacity>
+        </View>
+        {activeImg && <MapIconList />}
     </View>
   );
 }
