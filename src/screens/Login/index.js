@@ -42,11 +42,11 @@ const Login = ({navigation}) => {
   const handleLogin = async () => {
     setLoading(true);
     var encodedPassWord = md5(password);
-console.log("asdf", encodedPassWord)
+    console.log('asdf', encodedPassWord);
     const response = await axiosGetData(
       `account/${username}/${encodedPassWord}`,
     );
-    console.log("this is response from login scren")
+    console.log('this is response from login scren');
     const succcess = await Storage.SetLogin(response.data.apiResult);
     const detail = await Storage.SetLoginDetail(response.data);
 
@@ -180,6 +180,12 @@ console.log("asdf", encodedPassWord)
             )}
           </LinearGradient>
         </TouchableOpacity>
+
+        <View style={styles.footerTab}>
+          <Image source={image.Mob} style={{height: 34, width: 34}} />
+          <Image source={image.whatsApp} style={{height: 34, width: 34}} />
+          <Image source={image.incomingCall} style={{height: 34, width: 34}} />
+        </View>
       </LinearGradient>
     </ScrollView>
   );

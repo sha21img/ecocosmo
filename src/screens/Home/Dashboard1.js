@@ -27,6 +27,11 @@ import MapView, {
 import Geolocation from 'react-native-geolocation-service';
 import colors from '../../../assets/Colors';
 import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
+import {
   check,
   PERMISSIONS,
   RESULTS,
@@ -283,7 +288,7 @@ function Dashboard1({details, isShow}) {
             <View
               style={{
                 flexDirection: 'row',
-                width: '70%',
+                // width: wp('65%'),
                 justifyContent: 'flex-start',
                 // alignItems:'center'
                 // backgroundColor:'red',

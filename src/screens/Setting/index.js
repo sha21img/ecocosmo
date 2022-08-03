@@ -17,8 +17,11 @@ function Setting({navigation}) {
   const {setToken} = React.useContext(AuthContext);
   const [notificationMessage, setNotificationMessage] = useState('');
   const getNotification = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
     const response = await axiosGetData(
-      `getNoticationsStatus/rrenterprises/25f9e794323b453885f5181f1b624d0b`,
+      `getNoticationsStatus/${username}/${encodedPassWord}`,
     );
     setNotificationMessage(response.data.message);
   };

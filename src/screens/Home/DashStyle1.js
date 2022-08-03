@@ -2,6 +2,11 @@ import {StyleSheet} from 'react-native';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
 const styles = StyleSheet.create({
   card1Container: {
     backgroundColor: colors.white,
@@ -49,8 +54,9 @@ const styles = StyleSheet.create({
     height: 45,
   },
   driverDetailBox: {
-    paddingHorizontal: 7,
-    flex: 1,
+    paddingRight: 7,
+    // width:'60%'
+    // flex: 1,
   },
   driverDetailText1: {
     fontSize: Size.tiny,
@@ -77,14 +83,12 @@ const styles = StyleSheet.create({
   buttonText: {fontSize: Size.medium, color: colors.white},
 
   button: {
-    width: '22%',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
     backgroundColor: colors.callBtn,
     borderRadius: 5,
-    marginVertical: 10,
-    // paddingVertical: 10,
+    height: hp('5%'),
   },
 });
 export default styles;

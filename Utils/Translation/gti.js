@@ -35,6 +35,7 @@ export default {
   //home index
   //URL
   'URL Tracking': 'URL ટ્રેકિંગ',
+  'URL TRACKING': 'URL ટ્રેકિંગ',
   'All Vehicle': 'તમામ વાહન',
   'Select Date': 'તારીખ પસંદ કરો',
   'Select Time': 'સમય પસંદ કરો',
@@ -108,6 +109,9 @@ export default {
   'Ignition On': 'ઇગ્નીશન ચાલુ',
   'Vehicle Speed': 'વાહનની ઝડપ',
   'Live Tracking': 'લાઈવ ટ્રેકિંગ',
+  'LIVE TRACKING': 'લાઈવ ટ્રેકિંગ',
+  'DRIVER DETAILS': 'ડ્રાઈવર વિગતો',
+  'MAP HISTORY': 'નકશો ઇતિહાસ',
   //forgot password 1
   'Forgot password Reset': 'પાસવર્ડ રીસેટ ભૂલી ગયા છો',
   'enter OTP': 'OTP દાખલ કરો',
@@ -122,6 +126,11 @@ export default {
   No: 'ના',
   Yes: 'હા',
 
+  'GRAPHICAL REPORTS': 'ગ્રાફિકલ રિપોર્ટ્સ',
+  'GROUP REPORTS': 'જૂથ અહેવાલો',
+  'PARKING MODE': 'પાર્કિંગ મોડ',
+  'DRIVER BEHAVIOR': 'ડ્રાઈવર વર્તન',
+  IMMOBILIZER: 'ઇમોબિલાઇઝર',
   // Drawer
   'Group Live Tracking': 'ગ્રુપ લાઈવ ટ્રેકિંગ',
 
@@ -131,6 +140,7 @@ export default {
   Amount: 'રકમ',
 
   Reports: 'અહેવાલો',
+  REPORTS: 'અહેવાલો',
   'Odometer Total km': 'ઓડોમીટર કુલ કિ.મી',
   'Distance Reports': 'અંતર અહેવાલો',
 };
