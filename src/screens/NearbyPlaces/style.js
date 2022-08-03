@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
-import { fontFamily } from '../../../assets/FontFamily';
+import {fontFamily} from '../../../assets/FontFamily';
 
 export const styles = StyleSheet.create({
   main: {
@@ -17,28 +17,30 @@ export const styles = StyleSheet.create({
   headerContent1: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: 165,
   },
   headerContentText: {
     color: colors.white,
     fontWeight: 'bold',
     fontSize: Size.large,
-    fontFamily:fontFamily.CircularStd_Bold
+    paddingHorizontal: 15,
+    fontFamily: fontFamily.CircularStd_Bold,
   },
   contentContainer: {
-    marginTop: 37,
+    marginVertical: 30,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   content: {
-    width: '31%',
+    width: '32%',
     height: 105,
     justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 10,
     borderRadius: 15,
+  },
+  placeItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   contentText: {
     fontSize: Size.tiny,

@@ -2,17 +2,17 @@ import React from 'react';
 import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import {image} from '../../assets/images';
 
-function MapIconList() {
+function MapIconList({handlePress}) {
   const data = [
-    {imgUrl: image.vehicleon},
-    {imgUrl: image.parking2},
-    {imgUrl: image.trafficlight},
-    {imgUrl: image.map},
-    {imgUrl: image.alllocation},
-    {imgUrl: image.share},
-    {imgUrl: image.keep},
-    {imgUrl: image.graph},
-    {imgUrl: image.earth},
+    {imgUrl: image.vehicleon, route: ''},
+    {imgUrl: image.parking2, route: ''},
+    {imgUrl: image.trafficlight, route: ''},
+    {imgUrl: image.map, route: 'MapHistory'},
+    {imgUrl: image.alllocation, route: 'GroupMapTracking'},
+    {imgUrl: image.share, route: ''},
+    {imgUrl: image.keep, route: 'Reports'},
+    {imgUrl: image.graph, route: 'GraphicalReports'},
+    {imgUrl: image.earth, route: 'NearbyPlaces'},
   ];
   return data.map((item, index) => {
     return (
@@ -29,11 +29,11 @@ function MapIconList() {
         <View style={{width: '10%'}}></View>
         <View style={{width: '65%'}}></View>
         <TouchableOpacity
+          onPress={() => handlePress(item.route)}
           style={{
             width: '15%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'red',
           }}>
           <Image source={item.imgUrl} style={{width: 65, height: 65}} />
         </TouchableOpacity>

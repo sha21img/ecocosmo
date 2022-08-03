@@ -265,8 +265,3 @@ function GraphicalReports(props) {
 }
 
 export default GraphicalReports;
-
-// <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
-// <Text>oiyhhlu</Text>
-// </TouchableOpacity>
-// <Picker data={data} isVisible={isVisible} onPress={onHandle} />

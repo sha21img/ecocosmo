@@ -1,13 +1,12 @@
 import React from 'react';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
-import { __ } from '../../../Utils/Translation/translation';
+import {__} from '../../../Utils/Translation/translation';
 
-
-const NearbyPlaces = () => {
+const NearbyPlaces = (props) => {
   const places = [
     {
       id: 1,
@@ -68,8 +67,12 @@ const NearbyPlaces = () => {
         style={styles.main}>
         <View style={styles.header}>
           <View style={styles.headerContent1}>
-            <Image source={image.backArrow} style={{height: 12, width: 23}} />
-            <Text style={styles.headerContentText}>{__("Nearby Places")}</Text>
+            <TouchableOpacity
+              onPress={() => props.navigation.goBack()}
+              style={{paddingVertical: 7}}>
+              <Image source={image.backArrow} style={{height: 12, width: 23}} />
+            </TouchableOpacity>
+            <Text style={styles.headerContentText}>{__('Nearby Places')}</Text>
           </View>
           <Image source={image.search} />
         </View>
@@ -80,8 +83,12 @@ const NearbyPlaces = () => {
                 colors={[colors.Modalcolor1, colors.white]}
                 key={element.id}
                 style={styles.content}>
-                <Image source={element.img} />
-                <Text style={styles.contentText}>{element.name}</Text>
+                <TouchableOpacity
+                  onPress={() => console.log(element)}
+                  style={styles.placeItem}>
+                  <Image source={element.img} />
+                  <Text style={styles.contentText}>{element.name}</Text>
+                </TouchableOpacity>
               </LinearGradient>
             );
           })}
