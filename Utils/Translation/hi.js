@@ -140,6 +140,7 @@ export default {
   IMMOBILIZER: 'इमोबिलाइज़र',
   //EngineStopPopup
   'Do you want to Start vehicle?': 'क्या आप वाहन स्टार्ट करना चाहते हैं?',
+  'Do you want to Stop vehicle?': 'क्या आप वाहन रोकना चाहते हैं?',
   No: 'नहीं',
   Yes: 'हाँ',
 };

@@ -24,9 +24,7 @@ function Reports(props) {
   const [items, setItems] = useState([]);
 
   const data1 = async () => {
-    const response = await axiosGetData(
-      'reportHistory?accountid=rrenterprises&password=25f9e794323b453885f5181f1b624d0b&imei=459710040353691&startdate=2016-09-01&enddate=2016-11-22&type=odo',
-    );
+    const response = await axiosGetData();
     setItems(response.data.DeviceHistory);
   };
 

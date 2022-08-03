@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(57, 93, 191, 0.8)',
     paddingVertical: 35,
     paddingHorizontal: 24,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   modalBody: {
     alignItems: 'center',
@@ -23,7 +23,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '47%',
-    paddingVertical: 20,
   },
   loginButtonText: {
     color: colors.white,
