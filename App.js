@@ -364,6 +364,11 @@ const App = () => {
                     options={{headerShown: false}}
                   />
                   <Stack.Screen
+                    name="GroupMapTracking"
+                    component={GroupMapTracking}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
                     name="Setting"
                     component={Setting}
                     options={{headerShown: false}}

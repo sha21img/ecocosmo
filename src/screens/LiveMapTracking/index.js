@@ -20,7 +20,7 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import {useNetInfo} from '@react-native-community/netinfo';
 import PolylineDirection from '@react-native-maps/polyline-direction';
 import MapViewDirections from 'react-native-maps-directions';
-import MapIconList from '../../../Utils/helper/mapIconList';
+import MapIconList from '../../../Utils/helper/MapIconList';
 
 import {
   locationPermission,
@@ -71,7 +71,7 @@ function LiveMapTracking(props) {
   useEffect(() => {
     getLiveLocation();
   }, []);
-  const getLiveLocation = async () => {
+  const getLiveLocation = async props => {
     const locPermissionDenied = await locationPermission();
     if (locPermissionDenied) {
       const {latitude, longitude, heading} = await getCurrentLocation();
@@ -142,9 +142,16 @@ function LiveMapTracking(props) {
   }, []);
   const [marginBottom, setMarginBottom] = useState(1);
   // console.log('detail.markerIcon', detail .markerIcon);
-  
+
   const data1 = [{imgUrl: image.mapPaper}, {imgUrl: image.mapPaper}];
   console.log('statestate', state);
+
+  const iconPress = data => {
+    if (data != '') {
+      console.log('data', data);
+      props.navigation.navigate(`${data}`);
+    }
+  };
 
   return (
     <>
@@ -367,9 +374,7 @@ function LiveMapTracking(props) {
             </LinearGradient>
           </View>
 
-          {activeImg
-            ? <MapIconList />
-            : null}
+          {activeImg ? <MapIconList handlePress={iconPress} /> : null}
 
           <TouchableOpacity
             style={{position: 'absolute', bottom: 200}}

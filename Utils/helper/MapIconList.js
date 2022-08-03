@@ -16,13 +16,14 @@ function MapIconList({details}) {
   // const [details, setDetails] = useState();
   const [modal, setModal] = useState(false);
 
+function MapIconList({handlePress}) {
   const data = [
-    {imgUrl: image.vehicleon, route: 'EngineStopPopup'},
+    {imgUrl: image.vehicleon, route: ''},
     {imgUrl: image.parking2, route: ''},
     {imgUrl: image.trafficlight, route: ''},
     {imgUrl: image.map, route: 'MapHistory'},
     {imgUrl: image.alllocation, route: 'GroupMapTracking'},
-    {imgUrl: image.share, route: 'share'},
+    {imgUrl: image.share, route: ''},
     {imgUrl: image.keep, route: 'Reports'},
     {imgUrl: image.graph, route: 'GraphicalReports'},
     {imgUrl: image.earth, route: 'NearbyPlaces'},
@@ -68,19 +69,11 @@ function MapIconList({details}) {
         <View style={{width: '10%'}}></View>
         <View style={{width: '65%'}}></View>
         <TouchableOpacity
-          onPress={() => {
-            console.log(item);
-            item.route == 'EngineStopPopup'
-              ? setModal(true)
-              : item.route == 'share'
-              ? shrethis()
-              : '';
-          }}
+          onPress={() => handlePress(item.route)}
           style={{
             width: '15%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'red',
           }}>
           <Image source={item.imgUrl} style={{width: 65, height: 65}} />
         </TouchableOpacity>
