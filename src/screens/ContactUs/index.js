@@ -57,7 +57,7 @@ const ContactUs = props => {
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Email Address')}</Text>
               <Text style={styles.BodyContentSubText}>
-                {details[0].contactEmail}
+                {details[0]?.contactEmail}
               </Text>
             </View>
           </View>
@@ -75,7 +75,7 @@ const ContactUs = props => {
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Website')}</Text>
               <Text style={styles.BodyContentSubText}>
-                {details[0].contactWebsite}
+                {details[0]?.contactWebsite}
               </Text>
             </View>
           </View>
@@ -95,7 +95,7 @@ const ContactUs = props => {
                 {__('Technical support')}
               </Text>
               <Text style={styles.BodyContentSubText}>
-                {details[0].contactSupportNumber}
+                {details[0]?.contactSupportNumber}
               </Text>
             </View>
           </View>
@@ -116,7 +116,7 @@ const ContactUs = props => {
             <View style={{marginLeft: 13}}>
               <Text style={styles.BodyContentText}>{__('Sales')}</Text>
               <Text style={styles.BodyContentSubText}>
-                {details[0].contactSalesNumber}
+                {details[0]?.contactSalesNumber}
               </Text>
             </View>
           </View>

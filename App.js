@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import GroupMapTracking from './src/screens/GroupMapTracking';
 import Login from './src/screens/Login';
 import Splash from './src/screens/Splash';
 import SplashNew from './src/screens/SplashNew';
@@ -9,6 +10,7 @@ import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
 import Alerts from './src/screens/Alerts';
+import MapHistory from './src/screens/MapHistory';
 import DriverBehaviour from './src/screens/DriverBehaviour';
 import GraphicalReports from './src/screens/GraphicalReports';
 import AlertSetting from './src/screens/AlertSetting';
@@ -67,7 +69,7 @@ const Routes = [
   {
     label: 'Group Live Tracking',
     icon: image.mapIcon,
-    route: '',
+    route: 'GroupMapTracking',
   },
   {
     label: 'Alerts',
@@ -196,7 +198,6 @@ const DrawerContent = props => {
 };
 
 const MainScreen = props => {
-  
   useEffect(() => {
     props.setSplashFalse;
   }, [props]);
@@ -221,6 +222,7 @@ const MainScreen = props => {
         <Drawer.Screen name="ContactUs" component={ContactUs} />
         <Drawer.Screen name="Reports" component={Reports} />
         <Drawer.Screen name="DriverBehaviour" component={DriverBehaviour} />
+        <Drawer.Screen name="GroupMapTracking" component={GroupMapTracking} />
       </Drawer.Navigator>
     </>
   );
@@ -302,8 +304,7 @@ const App = () => {
       <>
         <NavigationContainer>
           <AuthContext.Provider value={authContext}>
-            <Stack.Navigator
-             >
+            <Stack.Navigator>
               {state.authToken == 'success' ? (
                 <>
                   {state.splash ? (
@@ -312,17 +313,18 @@ const App = () => {
                       component={SplashNew}
                       options={{headerShown: false}}
                     />
-                  ) :  <Stack.Screen
-                    name="MainScreen"
-                    component={props => (
-                      <MainScreen
-                        {...props}
-                        setSplashFalse={setSplashFalse}
-                      />
-                    )}
-                    options={{headerShown: false}}
-                  />}
-                 
+                  ) : (
+                    <Stack.Screen
+                      name="MainScreen"
+                      component={props => (
+                        <MainScreen
+                          {...props}
+                          setSplashFalse={setSplashFalse}
+                        />
+                      )}
+                      options={{headerShown: false}}
+                    />
+                  )}
 
                   <Stack.Screen
                     name="CustomerProfile"
@@ -366,7 +368,11 @@ const App = () => {
                     component={Setting}
                     options={{headerShown: false}}
                   />
-
+                  <Stack.Screen
+                    name="MapHistory"
+                    component={MapHistory}
+                    options={{headerShown: false}}
+                  />
                   <Stack.Screen
                     name="VehicleMenu"
                     component={VehicleMenu}

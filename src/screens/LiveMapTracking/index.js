@@ -20,6 +20,7 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import {useNetInfo} from '@react-native-community/netinfo';
 import PolylineDirection from '@react-native-maps/polyline-direction';
 import MapViewDirections from 'react-native-maps-directions';
+import MapIconList from '../../../Utils/helper/mapIconList';
 
 import {
   locationPermission,
@@ -106,7 +107,7 @@ function LiveMapTracking(props) {
       longitudeDelta: LONGITUDE_DELTA,
     });
   };
-  console.log('asssssssssssssssssssssssssssss',coordinate)
+  console.log('asssssssssssssssssssssssssssss', coordinate);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -141,17 +142,7 @@ function LiveMapTracking(props) {
   }, []);
   const [marginBottom, setMarginBottom] = useState(1);
   // console.log('detail.markerIcon', detail .markerIcon);
-  const data = [
-    {imgUrl: image.vehicleon},
-    {imgUrl: image.parking2},
-    {imgUrl: image.trafficlight},
-    {imgUrl: image.map},
-    {imgUrl: image.share},
-    {imgUrl: image.earth},
-    {imgUrl: image.keep},
-    {imgUrl: image.graph},
-    {imgUrl: image.alllocation},
-  ];
+  
   const data1 = [{imgUrl: image.mapPaper}, {imgUrl: image.mapPaper}];
   console.log('statestate', state);
 
@@ -174,8 +165,7 @@ function LiveMapTracking(props) {
                 ...curLoc,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
-              }}
-              >
+              }}>
               <Marker.Animated ref={markerRef} coordinate={coordinate}>
                 <Image
                   source={{uri: detail.markerIcon}}
@@ -378,34 +368,7 @@ function LiveMapTracking(props) {
           </View>
 
           {activeImg
-            ? data.map((item, index) => {
-                return (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: 75 + 50 * index,
-                      right: 0,
-                      justifyContent: 'space-around',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      width: '100%',
-                    }}>
-                    <View style={{width: '10%'}}></View>
-                    <View style={{width: '65%'}}></View>
-                    <View
-                      style={{
-                        width: '15%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <Image
-                        source={item.imgUrl}
-                        style={{width: 65, height: 65}}
-                      />
-                    </View>
-                  </View>
-                );
-              })
+            ? <MapIconList />
             : null}
 
           <TouchableOpacity

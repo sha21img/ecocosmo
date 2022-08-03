@@ -58,6 +58,7 @@ function Home(props) {
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
     const detail = response.data.vehicles;
+    console.log(detail, "this is details")
     setDetails(detail);
     setFilteredDetails(detail);
     setNewFilterDetails(detail);
