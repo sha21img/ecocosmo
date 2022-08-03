@@ -37,7 +37,7 @@ const EngineStopPopup = props => {
                 marginTop: 25,
               }}>
               <TouchableOpacity
-                onPress={contactUsDetails}
+                // onPress={contactUsDetails}
                 style={[
                   styles.loginButton,
                   {backgroundColor: colors.subRedBtn},

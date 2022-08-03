@@ -21,6 +21,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import PolylineDirection from '@react-native-maps/polyline-direction';
 import MapViewDirections from 'react-native-maps-directions';
 import MapIconList from '../../../Utils/helper/MapIconList';
+import EngineStopPopup from '../EngineStopPopup';
 
 import {
   locationPermission,
@@ -141,6 +142,7 @@ function LiveMapTracking(props) {
     getDetails();
   }, []);
   const [marginBottom, setMarginBottom] = useState(1);
+  const [modal, setModal] = useState(false);
   // console.log('detail.markerIcon', detail .markerIcon);
 
   const data1 = [{imgUrl: image.mapPaper}, {imgUrl: image.mapPaper}];
@@ -148,8 +150,37 @@ function LiveMapTracking(props) {
 
   const iconPress = data => {
     if (data != '') {
-      console.log('data', data);
-      props.navigation.navigate(`${data}`);
+      props.navigation.navigate(data);
+    } else {
+      data == 'EngineStopPopup'
+        ? setModal(true)
+        : data == 'share'
+        ? shrethis()
+        : '';
+    }
+  };
+  const shrethis = async () => {
+    const loginDetail = await Storage.getLoginDetail('login_detail');
+    let username = loginDetail.accountName;
+    let password = loginDetail.password;
+    const response = await axiosGetData(
+      `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
+    );
+    if (response.data.gettrackurl == 'success') {
+      let msg = response.data.message;
+      Share.share(
+        {
+          message: msg,
+          title: 'hello',
+          subject: 'hello',
+        },
+        {
+          // Android only:
+          dialogTitle: 'hello',
+          // iOS only:
+          excludedActivityTypes: ['com.apple.UIKit.activity.PostToTwitter'],
+        },
+      );
     }
   };
 
@@ -495,6 +526,11 @@ function LiveMapTracking(props) {
           </View> */}
 
           {/*  */}
+          <EngineStopPopup
+            visible={modal}
+            setVisible={setModal}
+            details={details}
+          />
         </View>
       ) : (
         <Text>Loading...</Text>
