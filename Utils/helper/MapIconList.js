@@ -12,11 +12,8 @@ import EngineStopPopup from '../../src/screens/EngineStopPopup';
 import {axiosGetData} from '../ApiController';
 import Storage from '../Storage';
 
-function MapIconList({details}) {
-  // const [details, setDetails] = useState();
-  const [modal, setModal] = useState(false);
-
 function MapIconList({handlePress}) {
+  const [modal, setModal] = useState(false);
   const data = [
     {imgUrl: image.vehicleon, route: ''},
     {imgUrl: image.parking2, route: ''},
