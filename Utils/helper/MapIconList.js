@@ -15,12 +15,12 @@ import Storage from '../Storage';
 function MapIconList({handlePress}) {
   const [modal, setModal] = useState(false);
   const data = [
-    {imgUrl: image.vehicleon, route: ''},
+    {imgUrl: image.vehicleon, route: 'EngineStopPopup'},
     {imgUrl: image.parking2, route: ''},
     {imgUrl: image.trafficlight, route: ''},
     {imgUrl: image.map, route: 'MapHistory'},
     {imgUrl: image.alllocation, route: 'GroupMapTracking'},
-    {imgUrl: image.share, route: ''},
+    {imgUrl: image.share, route: 'share'},
     {imgUrl: image.keep, route: 'Reports'},
     {imgUrl: image.graph, route: 'GraphicalReports'},
     {imgUrl: image.earth, route: 'NearbyPlaces'},
