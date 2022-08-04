@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
+import {View, Text, Image, TouchableOpacity, Dimensions,Share} from 'react-native';
 import style from './style';
 import MapView, {
   AnimatedRegion,
@@ -149,7 +149,7 @@ function LiveMapTracking(props) {
   console.log('statestate', state);
 
   const iconPress = data => {
-    if (data != '') {
+    if (data != '' && data !== 'EngineStopPopup' && data !== 'share') {
       props.navigation.navigate(data);
     } else {
       data == 'EngineStopPopup'
@@ -160,6 +160,7 @@ function LiveMapTracking(props) {
     }
   };
   const shrethis = async () => {
+    console.log('share');
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
     let password = loginDetail.password;
@@ -405,7 +406,9 @@ function LiveMapTracking(props) {
             </LinearGradient>
           </View>
 
-          {activeImg ? <MapIconList handlePress={iconPress} /> : null}
+          {activeImg ? (
+            <MapIconList handlePress={iconPress} details={details} />
+          ) : null}
 
           <TouchableOpacity
             style={{position: 'absolute', bottom: 200}}

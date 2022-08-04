@@ -12,7 +12,7 @@ import EngineStopPopup from '../../src/screens/EngineStopPopup';
 import {axiosGetData} from '../ApiController';
 import Storage from '../Storage';
 
-function MapIconList({handlePress}) {
+function MapIconList({handlePress,details}) {
   const [modal, setModal] = useState(false);
   const data = [
     {imgUrl: image.vehicleon, route: 'EngineStopPopup'},
@@ -26,31 +26,6 @@ function MapIconList({handlePress}) {
     {imgUrl: image.earth, route: 'NearbyPlaces'},
   ];
 
-  const shrethis = async () => {
-    const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
-    let password = loginDetail.password;
-    const response = await axiosGetData(
-      `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
-    );
-
-    if (response.data.gettrackurl == 'success') {
-      let msg = response.data.message;
-      Share.share(
-        {
-          message: msg,
-          title: 'hello',
-          subject: 'hello',
-        },
-        {
-          // Android only:
-          dialogTitle: 'hello',
-          // iOS only:
-          excludedActivityTypes: ['com.apple.UIKit.activity.PostToTwitter'],
-        },
-      );
-    }
-  };
   return data.map((item, index) => {
     return (
       <View
