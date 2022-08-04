@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, Image, TouchableOpacity, Dimensions,Share} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  Share,
+} from 'react-native';
 import style from './style';
 import MapView, {
   AnimatedRegion,
@@ -27,6 +34,7 @@ import {
   locationPermission,
   getCurrentLocation,
 } from '../../../Utils/helper/helperFunction';
+import AddDriver from '../AddDriver';
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
@@ -37,6 +45,7 @@ function LiveMapTracking(props) {
   const [isActiveImg, setIsActiveImg] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [detail, setDetail] = useState({});
+  const [visible, setVisible] = useState(false);
 
   const mapRef = useRef();
   const markerRef = useRef();
@@ -387,7 +396,11 @@ function LiveMapTracking(props) {
                 <Text style={style.secondboxtext11}>{__("TODAY'S ODO")}</Text>
               </View>
 
-              <View style={{width: '50%'}}>
+              <TouchableOpacity
+                style={{width: '50%'}}
+                onPress={() => {
+                  setVisible(!visible);
+                }}>
                 <LinearGradient
                   colors={[colors.mainThemeColor4, colors.mainThemeColor3]}
                   start={{x: 0.9, y: 0}}
@@ -401,7 +414,7 @@ function LiveMapTracking(props) {
                     <Text style={style.text3}>{__('ADD DRIVER')}</Text>
                   </View>
                 </LinearGradient>
-              </View>
+              </TouchableOpacity>
             </LinearGradient>
           </View>
 
@@ -533,6 +546,7 @@ function LiveMapTracking(props) {
             setVisible={setModal}
             details={details}
           />
+          <AddDriver visible={visible} setVisible={setVisible} />
         </View>
       ) : (
         <Text>Loading...</Text>
