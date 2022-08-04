@@ -157,10 +157,12 @@ function MapHistory(props) {
               <> */}
           <Marker
             // ref={markerRef}
-            key={index.toString()}
+            // key={index.toString()}
             coordinate={{
-              latitude: parseFloat(item.lat),
-              longitude: parseFloat(item.lng),
+              // latitude: parseFloat(item.lat),
+              // longitude: parseFloat(item.lng),
+              latitude: 26.9124,
+              longitude: 75.7873,
             }}>
             <Image
               resizeMode="contain"
