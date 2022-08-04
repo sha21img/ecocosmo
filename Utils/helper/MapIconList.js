@@ -16,7 +16,7 @@ function MapIconList({handlePress,details}) {
   const [modal, setModal] = useState(false);
   const data = [
     {imgUrl: image.vehicleon, route: 'EngineStopPopup'},
-    {imgUrl: image.parking2, route: ''},
+    {imgUrl: image.parking2, route: 'Nearby'},
     {imgUrl: image.trafficlight, route: ''},
     {imgUrl: image.map, route: 'MapHistory'},
     {imgUrl: image.alllocation, route: 'GroupMapTracking'},
