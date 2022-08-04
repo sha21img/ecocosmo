@@ -1,5 +1,8 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {image} from '../../../assets/images';
+import colors from '../../../assets/Colors';
+import {__} from '../../../Utils/Translation/translation';
+import {View, Image, TouchableOpacity, Text} from 'react-native';
 import MapView, {
   AnimatedRegion,
   Animated,
@@ -10,14 +13,34 @@ import MapView, {
   PROVIDER_GOOGLE,
 } from 'react-native-maps';
 import GoogleMap from '../../../Utils/helper/GoogleMap';
-function index() {
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Size} from '../../../assets/fonts/Fonts';
+function Nearby(props) {
   return (
     <View style={{flex: 1}}>
-      <GoogleMap>
-        {/* <Marker></Marker> */}
-      </GoogleMap>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: 35,
+          paddingHorizontal: 20,
+          position: 'absolute',
+          zIndex: 10,
+          top: 0,
+        }}>
+        <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <MaterialCommunityIcons
+            style={{
+              color: '#3D3D3D',
+              fontSize: 30,
+            }}
+            name={'keyboard-backspace'}
+          />
+        </TouchableOpacity>
+      </View>
+      <GoogleMap>{/* <Marker></Marker> */}</GoogleMap>
     </View>
   );
 }
 
-export default index;
+export default Nearby;

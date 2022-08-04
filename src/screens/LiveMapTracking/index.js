@@ -40,7 +40,6 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function LiveMapTracking(props) {
-  console.log('props', props.route.params.details);
   const {details} = props.route.params;
   const [activeImg, setActiveImg] = useState(false);
   const [isActiveImg, setIsActiveImg] = useState(false);
@@ -159,7 +158,7 @@ function LiveMapTracking(props) {
 
   const iconPress = data => {
     if (data != '' && data !== 'EngineStopPopup' && data !== 'share') {
-      props.navigation.navigate(data);
+      props.navigation.navigate(data, details);
     } else {
       data == 'EngineStopPopup'
         ? setModal(true)

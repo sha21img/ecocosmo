@@ -18,14 +18,14 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Toast from 'react-native-simple-toast';
 
 const EngineStopPopup = props => {
-  console.log("props12",props)
+  // console.log('props12', props);
   const contactUsDetails = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     let tougle = (props.details?.statusLang & 1) == 1 ? 0 : 1;
     const response = await axiosGetData(
-      `stopvehicle/${username}/${encodedPassWord}/${props.details.imei}/${tougle}/${props.details.deviceType}`,
+      `stopvehicle/${username}/${encodedPassWord}/${props?.details?.imei}/${tougle}/${props?.details?.deviceType}`,
     );
     if (response.data.apiResult != 'success') {
       Toast.show(__(`${response.data.message}`));
