@@ -31,6 +31,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import UrlTracking from './src/screens/UrlTracking';
 import ForgotPassword_1 from './src/screens/ForgetPassword-1';
 import CustomerProfile from './src/screens/CustomerProfile';
+import Nearby from './src/screens/Nearby';
 import Storage from './Utils/Storage';
 import {LogBox} from 'react-native';
 import Reports from './src/screens/Reports';
@@ -394,6 +395,12 @@ const App = () => {
                     component={ChangePassword}
                     options={{headerShown: false}}
                   />
+                  <Stack.Screen
+                    name="Nearby"
+                    component={Nearby}
+                    options={{headerShown: false}}
+                  />
+                  
                 </>
               ) : (
                 <>
