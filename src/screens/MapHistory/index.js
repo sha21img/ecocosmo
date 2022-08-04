@@ -5,9 +5,13 @@ import colors from '../../../assets/Colors';
 import {axiosGetData} from '../../../Utils/ApiController';
 import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {__} from '../../../Utils/Translation/translation';
+import style from './style';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 import MapView, {
   AnimatedRegion,
   Animated,
@@ -17,43 +21,17 @@ import MapView, {
   Marker,
   PROVIDER_GOOGLE,
 } from 'react-native-maps';
-const screen = Dimensions.get('window');
-import {useNetInfo} from '@react-native-community/netinfo';
-import Geolocation from 'react-native-geolocation-service';
-const ASPECT_RATIO = screen.width / screen.height;
+import GoogleMap from '../../../Utils/helper/GoogleMap';
 const LATITUDE_DELTA = 0.04;
+const screen = Dimensions.get('window');
+const ASPECT_RATIO = screen.width / screen.height;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function MapHistory(props) {
-  const [data, setData] = useState();
-  const [coordinate, setCoordinate] = useState({
-    latitude: 26.9110637,
-    longitude: 75.7376412,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
-  });
+  const [data, setData] = useState([]);
+
   useEffect(() => {
     getMapHistory();
   }, []);
-  const getLocations = async () => {
-    Geolocation.getCurrentPosition(position => {
-      console.log('positio', position);
-      setCoordinate({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      });
-    });
-  };
-  const netInfo = useNetInfo();
-  useEffect(() => {
-    // getLocation();
-    if (netInfo.isConnected) {
-      if (Platform.OS == 'android') {
-        getLocations();
-      } else {
-        // checkPermissionIOS();
-      }
-    }
-  }, [netInfo.isConnected]);
   const getMapHistory = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
@@ -65,7 +43,7 @@ function MapHistory(props) {
       date: '2022-07-01',
     };
     const response = await axiosGetData('mapHistory', data);
-    const filter = response.data.EventHistory.slice(0, 2);
+    // const filter = response.data.EventHistory.slice(0,1);
     setData(filter);
   };
   return (
@@ -154,18 +132,13 @@ function MapHistory(props) {
         </TouchableOpacity>
       </View>
       <View style={{flex: 1}}>
-        <MapView
-          style={{
-            flex: 1,
-          }}
-          trackViewChanges={false}
-          initialRegion={{
-            latitude: coordinate.latitude,
-            longitude: coordinate.longitude,
+        <GoogleMap
+          region={{
+            latitude: 30.30,
+            longitude: 75.30,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
-          }}
-        >
+          }}>
           {data?.map((item, index) => {
             console.log('this is item of car', item);
             return (
@@ -181,15 +154,82 @@ function MapHistory(props) {
                     resizeMode="contain"
                     source={image.carGreenUp}
                     style={{
-                      height: 20,
-                      width: 70,
+                      width: 30,
+                      height: 70,
                     }}
                   />
+                  <Callout tooltip>
+                    <LinearGradient
+                      colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
+                      start={{x: 1.3, y: 0}}
+                      end={{x: 0, y: 0}}
+                      locations={[0, 0.9]}
+                      style={style.firstbox}>
+                      <View style={{paddingBottom: 5}}>
+                        <Text style={style.firstboxtext1}>
+                          {item.timeStamp}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        <AntDesign
+                          style={{
+                            color: '#17D180',
+                            fontSize: 16,
+                          }}
+                          name={'caretdown'}
+                        />
+                        <Text style={{paddingHorizontal: 10}}>
+                          Ignition: {item.ignition}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          paddingTop: 5,
+                        }}>
+                        <View style={style.secondboxtextbox1}>
+                          <Text style={{paddingVertical: 8}}>
+                            <Image
+                              resizeMode="contain"
+                              source={image.speed}
+                              style={style.speedimg}
+                            />
+                          </Text>
+                          <Text style={style.secondboxtext1}>
+                            {Math.floor(item?.speed)} {__('KM/H')}
+                          </Text>
+                          <Text style={style.secondboxtext11}>
+                            {__('SPEED')}
+                          </Text>
+                        </View>
+                        <View style={style.secondboxtextbox1}>
+                          <Text style={{paddingVertical: 8}}>
+                            <Image
+                              resizeMode="contain"
+                              source={image.distance}
+                              style={style.locimg}
+                            />
+                          </Text>
+                          <Text style={style.secondboxtext1}>
+                            {Math.floor(item.odometer)} {__('KM')}
+                          </Text>
+                          <Text style={style.secondboxtext11}>
+                            {__("TODAY'S ODO")}
+                          </Text>
+                        </View>
+                      </View>
+                    </LinearGradient>
+                  </Callout>
                 </Marker>
               </>
             );
           })}
-        </MapView>
+        </GoogleMap>
       </View>
     </>
   );
