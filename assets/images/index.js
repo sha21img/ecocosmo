@@ -64,6 +64,7 @@ export const image = {
   leftArrowblack: require('./leftArrowblack.png'),
   dashboardcolor: require('./dashboardcolor.png'),
   taxtDriver: require('./taxtDriver.png'),
+  bigtastdriver: require('./bigtastdriver.png'),
   colouredLock: require('./colouredLock.png'),
   fileRefresh: require('./fileRefresh.png'),
   Petrol: require('./Petrol.png'),
@@ -107,9 +108,9 @@ export const image = {
   batteryOff: require('./batteryOff.png'),
   shokkerOff: require('./shokkerOff.png'),
   locationOff: require('./locationOff.png'),
-
   locationWhiteOff: require('./locationWhiteOff.png'),
   chargeWhiteOff: require('./chargeWhiteOff.png'),
   chargePinOff: require('./chargePinOff.png'),
   batteryWhiteOff: require('./batteryWhiteOff.png'),
+  greyCall: require('./greyCall.png'),
 };
