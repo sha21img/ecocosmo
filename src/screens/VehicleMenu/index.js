@@ -161,7 +161,11 @@ const VehicleMenu = props => {
           </LinearGradient>
         </View>
       </Modal>
-      <EngineStopPopup visible={modal} setVisible={setModal} />
+      <EngineStopPopup
+        visible={modal}
+        details={details}
+        setVisible={setModal}
+      />
     </>
   );
 };

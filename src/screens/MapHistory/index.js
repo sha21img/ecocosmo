@@ -5,7 +5,9 @@ import colors from '../../../assets/Colors';
 import {axiosGetData} from '../../../Utils/ApiController';
 import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {__} from '../../../Utils/Translation/translation';
+import style from './style';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MapViewDirections from 'react-native-maps-directions';
@@ -13,7 +15,8 @@ import MapView from '../../../Utils/helper/GoogleMap';
 import style from './style';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import {
+
+import MapView, {
   AnimatedRegion,
   Animated,
   MarkerAnimated,
@@ -22,9 +25,10 @@ import {
   Marker,
   PROVIDER_GOOGLE,
 } from 'react-native-maps';
+import GoogleMap from '../../../Utils/helper/GoogleMap';
+const LATITUDE_DELTA = 0.04;
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
-const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function MapHistory(props) {
   const [data, setData] = useState([]);
@@ -68,6 +72,8 @@ function MapHistory(props) {
     });
     console.log('filterData', newCoordinate);
     setData(newCoordinate);
+    // const filter = response.data.EventHistory.slice(0,1);
+    // setData(filter);
   };
   return (
     <>
@@ -310,6 +316,104 @@ function MapHistory(props) {
         ) : (
           <Text>Loading...</Text>
         )}
+        {/* <GoogleMap
+          region={{
+            latitude: 30.30,
+            longitude: 75.30,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          }}>
+          {data?.map((item, index) => {
+            console.log('this is item of car', item);
+            return (
+              <>
+                <Marker
+                  // ref={markerRef}
+                  key={index.toString()}
+                  coordinate={{
+                    latitude: parseFloat(item.lat),
+                    longitude: parseFloat(item.lng),
+                  }}>
+                  <Image
+                    resizeMode="contain"
+                    source={image.carGreenUp}
+                    style={{
+                      width: 30,
+                      height: 70,
+                    }}
+                  />
+                  <Callout tooltip>
+                    <LinearGradient
+                      colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
+                      start={{x: 1.3, y: 0}}
+                      end={{x: 0, y: 0}}
+                      locations={[0, 0.9]}
+                      style={style.firstbox}>
+                      <View style={{paddingBottom: 5}}>
+                        <Text style={style.firstboxtext1}>
+                          {item.timeStamp}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        <AntDesign
+                          style={{
+                            color: '#17D180',
+                            fontSize: 16,
+                          }}
+                          name={'caretdown'}
+                        />
+                        <Text style={{paddingHorizontal: 10}}>
+                          Ignition: {item.ignition}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          paddingTop: 5,
+                        }}>
+                        <View style={style.secondboxtextbox1}>
+                          <Text style={{paddingVertical: 8}}>
+                            <Image
+                              resizeMode="contain"
+                              source={image.speed}
+                              style={style.speedimg}
+                            />
+                          </Text>
+                          <Text style={style.secondboxtext1}>
+                            {Math.floor(item?.speed)} {__('KM/H')}
+                          </Text>
+                          <Text style={style.secondboxtext11}>
+                            {__('SPEED')}
+                          </Text>
+                        </View>
+                        <View style={style.secondboxtextbox1}>
+                          <Text style={{paddingVertical: 8}}>
+                            <Image
+                              resizeMode="contain"
+                              source={image.distance}
+                              style={style.locimg}
+                            />
+                          </Text>
+                          <Text style={style.secondboxtext1}>
+                            {Math.floor(item.odometer)} {__('KM')}
+                          </Text>
+                          <Text style={style.secondboxtext11}>
+                            {__("TODAY'S ODO")}
+                          </Text>
+                        </View>
+                      </View>
+                    </LinearGradient>
+                  </Callout>
+                </Marker>
+              </>
+            );
+          })}
+        </GoogleMap> */}
       </View>
     </>
   );

@@ -34,17 +34,18 @@ import {
   locationPermission,
   getCurrentLocation,
 } from '../../../Utils/helper/helperFunction';
+import AddDriver from '../AddDriver';
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function LiveMapTracking(props) {
-  console.log('props', props.route.params.details);
   const {details} = props.route.params;
   const [activeImg, setActiveImg] = useState(false);
   const [isActiveImg, setIsActiveImg] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [detail, setDetail] = useState({});
+  const [visible, setVisible] = useState(false);
 
   const mapRef = useRef();
   const markerRef = useRef();
@@ -158,7 +159,7 @@ function LiveMapTracking(props) {
 
   const iconPress = data => {
     if (data != '' && data !== 'EngineStopPopup' && data !== 'share') {
-      props.navigation.navigate(data);
+      props.navigation.navigate(data, details);
     } else {
       data == 'EngineStopPopup'
         ? setModal(true)
@@ -396,7 +397,11 @@ function LiveMapTracking(props) {
                 <Text style={style.secondboxtext11}>{__("TODAY'S ODO")}</Text>
               </View>
 
-              <View style={{width: '50%'}}>
+              <TouchableOpacity
+                style={{width: '50%'}}
+                onPress={() => {
+                  setVisible(!visible);
+                }}>
                 <LinearGradient
                   colors={[colors.mainThemeColor4, colors.mainThemeColor3]}
                   start={{x: 0.9, y: 0}}
@@ -410,7 +415,7 @@ function LiveMapTracking(props) {
                     <Text style={style.text3}>{__('ADD DRIVER')}</Text>
                   </View>
                 </LinearGradient>
-              </View>
+              </TouchableOpacity>
             </LinearGradient>
           </View>
 
@@ -542,6 +547,7 @@ function LiveMapTracking(props) {
             setVisible={setModal}
             details={details}
           />
+          <AddDriver visible={visible} setVisible={setVisible} />
         </View>
       ) : (
         <Text>Loading...</Text>

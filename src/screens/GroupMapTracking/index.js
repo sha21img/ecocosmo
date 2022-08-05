@@ -100,7 +100,6 @@ function index(props) {
         }}
         provider={PROVIDER_GOOGLE}>
         {details.map(item => {
-          console.log('item', item);
           return (
             <Marker
               // ref={markerRef}
