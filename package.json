@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "github:react-native-async-storage/async-storage",
+    "@react-native-community/datetimepicker": "^6.3.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "^9.3.0",
     "@react-native-maps/polyline-direction": "^1.0.0",
