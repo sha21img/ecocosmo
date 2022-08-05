@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  Share,
 } from 'react-native';
 import MapView, {
   AnimatedRegion,
@@ -58,6 +59,12 @@ function index(props) {
     setDetails(detail);
     // setIsShow(false);
   };
+
+  const iconPress = data => {
+    props.navigation.navigate(data);
+  };
+
+  console.log('...................0', props);
   const getLocations = async () => {
     Geolocation.getCurrentPosition(position => {
       console.log('positio', position);
@@ -84,6 +91,7 @@ function index(props) {
   return (
     <View style={{flex: 1}}>
       <MapView
+        // isTrafficEnabled={true}
         style={{
           flex: 1,
         }}
@@ -116,7 +124,7 @@ function index(props) {
                   width: 70,
                 }}
               />
-              <Callout tooltip >
+              <Callout tooltip>
                 <LinearGradient
                   colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
                   start={{x: 1.3, y: 0}}
@@ -212,7 +220,7 @@ function index(props) {
           />
         </TouchableOpacity>
       </View>
-      {activeImg && <MapIconList />}
+      {activeImg && <MapIconList k={true} handlePress={iconPress} />}
     </View>
   );
 }
