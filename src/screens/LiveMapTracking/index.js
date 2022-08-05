@@ -128,8 +128,9 @@ function LiveMapTracking(props) {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
     let password = loginDetail.password;
+    let type = loginDetail.type;
     const response = await axiosGetData(
-      `livetrack/${username}/${password}/${props.route.params.details.imei}/0`,
+      `livetrack/${username}/${password}/${props.route.params.details.imei}/${type}`,
     );
     console.log('poiuytrew', response.data);
     setDetail(response.data.vehicle);

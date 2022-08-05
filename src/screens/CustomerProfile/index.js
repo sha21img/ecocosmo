@@ -39,18 +39,26 @@ const CustomerProfile = props => {
     const response = await axiosGetData(
       `account/${username}/${encodedPassWord}`,
     );
-
+    console.log('0987654321234567890-9876543', response.data);
+    Setemail(response.data.email);
+    SetaccountId(response.data.accountId);
+    SetprimaryMobile(response.data.mobile);
+    SetAddress(response.data.description);
     setDetails(response.data);
-    console.log('>>>>>>>', details);
+
+    // console.log('>>>>>>>', details);
   };
 
   useEffect(() => {
     contactUsDetails();
   }, []);
   const handleSave = async () => {
+    const loginDetail = await Storage.getLoginDetail('login_detail');
+    let username = loginDetail.accountName;
+    let password = loginDetail.password;
     setLoading(true);
     const response = await axiosGetData(
-      `updateprofile?accountid=${AcountId}&password=25f9e794323b453885f5181f1b624d0b&acname=rrenterprises&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
+      `updateprofile?accountid=${AcountId}&password=${password}&acname=${username}&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
     );
     if (response.data.apiResult === 'success') {
       setLoading(false);

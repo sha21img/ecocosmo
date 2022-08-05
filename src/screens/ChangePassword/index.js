@@ -9,6 +9,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {axiosGetData} from '../../../Utils/ApiController';
 import md5 from 'md5';
 import Toast from 'react-native-simple-toast';
+import Storage from '../../../Utils/Storage';
 
 const ChangePassword = props => {
   const [Current, setCurrent] = useState('');
@@ -17,11 +18,14 @@ const ChangePassword = props => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    const loginDetail = await Storage.getLoginDetail('login_detail');
+    let username = loginDetail.accountName;
+    let password = loginDetail.password;
     setLoading(true);
     const DecodedPassword = md5(Current);
     if (newPassword === confirmPassword) {
       const response = await axiosGetData(
-        `changepassword?accountid=rrenterprises&password=${DecodedPassword}&newpassword=${newPassword}`,
+        `changepassword?accountid=${username}&password=${DecodedPassword}&newpassword=${newPassword}`,
       );
       if (response.data.apiResult === 'success') {
         setLoading(false);

@@ -10,15 +10,7 @@ import {
 } from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
 
-import MapView, {
-  AnimatedRegion,
-  Animated,
-  MarkerAnimated,
-  Callout,
-  CalloutSubview,
-  Marker,
-  PROVIDER_GOOGLE,
-} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
