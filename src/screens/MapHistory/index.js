@@ -11,12 +11,10 @@ import style from './style';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MapViewDirections from 'react-native-maps-directions';
-import MapView from '../../../Utils/helper/GoogleMap';
-import style from './style';
+// import MapView from '../../../Utils/helper/GoogleMap';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-
-import MapView, {
+import {
   AnimatedRegion,
   Animated,
   MarkerAnimated,
@@ -66,7 +64,7 @@ function MapHistory(props) {
       date: '2022-07-01',
     };
     const response = await axiosGetData('mapHistory', data);
-    const newCoordinate = response.data.EventHistory
+    const newCoordinate = response.data.EventHistory;
     const filterData = newCoordinate.map(item => {
       return {latitude: parseFloat(item.lat), longitude: parseFloat(item.lng)};
     });
@@ -163,7 +161,7 @@ function MapHistory(props) {
       <View style={{flex: 1}}>
         {data.length > 0 ? (
           <View style={{flex: 1}}>
-            <MapView
+            <GoogleMap
               region={{
                 latitude: parseFloat(data[0].lat),
                 longitude: parseFloat(data[0].lng),
@@ -311,7 +309,7 @@ function MapHistory(props) {
                   </>
                 );
               })}
-            </MapView>
+            </GoogleMap>
           </View>
         ) : (
           <Text>Loading...</Text>
