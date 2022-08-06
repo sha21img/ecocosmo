@@ -21,13 +21,11 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Storage from '../../../Utils/Storage';
 
 const CustomerProfile = props => {
-  const [AcountId, SetaccountId] = useState('rrenterprises');
-  const [email, Setemail] = useState('sales@ecocosmogps.com');
-  const [primaryMobile, SetprimaryMobile] = useState('7875551271');
-  const [secMobile, SetsecMobile] = useState('9766918883');
-  const [Address, SetAddress] = useState(
-    '177 New Apollo Indl Estate Mogra Lane Andheri,Mumbai,Bharuch, 400069,India',
-  );
+  const [AcountId, SetaccountId] = useState('');
+  const [email, Setemail] = useState('');
+  const [primaryMobile, SetprimaryMobile] = useState('');
+  const [secMobile, SetsecMobile] = useState('');
+  const [Address, SetAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState();
 
@@ -37,28 +35,25 @@ const CustomerProfile = props => {
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const response = await axiosGetData(
-      `account/${username}/${encodedPassWord}`,
+      `getAccountDetails/${username}/${encodedPassWord}`,
     );
-    console.log('0987654321234567890-9876543', response.data);
-    Setemail(response.data.email);
-    SetaccountId(response.data.accountId);
-    SetprimaryMobile(response.data.mobile);
-    SetAddress(response.data.description);
-    setDetails(response.data);
-
-    // console.log('>>>>>>>', details);
+    SetaccountId(response.data.getAccountDetails.accountId);
+    Setemail(response.data.getAccountDetails.email);
+    SetprimaryMobile(response.data.getAccountDetails.mobile);
+    SetsecMobile(response.data.getAccountDetails.secondaryMobile);
+    SetAddress(response.data.getAccountDetails.address);
   };
-
   useEffect(() => {
     contactUsDetails();
   }, []);
+
   const handleSave = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
     let password = loginDetail.password;
     setLoading(true);
     const response = await axiosGetData(
-      `updateprofile?accountid=${AcountId}&password=${password}&acname=${username}&description=${Address}&mobile=${primaryMobile}&email=${email}&secondaryMobile=${secMobile}`,
+      `editAccountDetails/${username}/${password}/${AcountId}/${primaryMobile}/${secMobile}/${email}/${Address}`,
     );
     if (response.data.apiResult === 'success') {
       setLoading(false);
@@ -67,7 +62,6 @@ const CustomerProfile = props => {
       setLoading(false);
     }
   };
-
   return (
     <>
       <LinearGradient

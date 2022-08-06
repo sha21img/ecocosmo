@@ -113,4 +113,6 @@ export const image = {
   chargePinOff: require('./chargePinOff.png'),
   batteryWhiteOff: require('./batteryWhiteOff.png'),
   greyCall: require('./greyCall.png'),
+  Notification1: require('./Notification1.png'),
+  
 };
