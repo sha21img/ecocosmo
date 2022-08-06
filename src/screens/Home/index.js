@@ -58,7 +58,7 @@ function Home(props) {
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
     const detail = response.data.vehicles;
-    console.log(detail, "this is details")
+    console.log(detail, 'this is details');
     setDetails(detail);
     setFilteredDetails(detail);
     setNewFilterDetails(detail);
@@ -140,8 +140,11 @@ function Home(props) {
           </View>
           <View style={styles.alertContainer}>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate('Alerts')}>
-              <Image source={image.Alert} />
+              onPress={() => props.navigation.navigate('Notifications')}>
+              <Image
+                source={image.Notification1}
+                style={{height: 30, width: 30, resizeMode: 'contain'}}
+              />
             </TouchableOpacity>
             {search ? (
               <TouchableOpacity onPress={() => setSearch(false)}>
