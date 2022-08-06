@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Text,
@@ -17,53 +17,78 @@ import {__} from '../../../Utils/Translation/translation';
 import {ScrollView} from 'react-native-gesture-handler';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Toast from 'react-native-simple-toast';
+import Storage from '../../../Utils/Storage';
 
-const AlertSetting = () => {
+const AlertSetting = props => {
+  const {details} = props.route.params;
+  console.log('details', details);
   const [daysset, setDays] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const [shift, setShift] = useState({
+    shift1From: '',
+    shift1To: '',
+    shift2From: '',
+    shift2To: '',
+  });
+  const [newDetail, setNewDetail] = useState({
+    push: details['push'] == 'Off' ? 0 : 1,
+    sms: details.sms == 'Off' ? 0 : 1,
+    email: details.email == 'Off' ? 0 : 1,
+    call: details.email == 'Off' ? 0 : 1,
+    days: details.days,
+    isActive: details.isActive,
+    anc: details.anc,
+    data: details.data,
+    mobiles: details.mobiles,
+  });
 
   const handleDays = id => {
-    if (daysset.includes(id)) {
-      let a = daysset.filter(el => {
-        return el != id;
+    // console.log(newDetail.days.includes(id));
+    if (newDetail.days != '') {
+      if (newDetail.days.includes(id)) {
+        let a = newDetail.days.split(',').filter(el => {
+          return el != id;
+        });
+        // console.log('>', a.join(','));
+        setNewDetail({
+          ...newDetail,
+          days: a.join(','),
+        });
+      } else {
+        let a = newDetail.days.split(',');
+        a.push(id.toString());
+        // console.log(a.join(','));
+        setNewDetail({
+          ...newDetail,
+          days: a.join(','),
+        });
+      }
+    } else
+      setNewDetail({
+        ...newDetail,
+        days: id.toString(),
       });
-      setDays(a);
-    } else {
-      setDays([...daysset, id]);
-    }
   };
 
   let day = daysset.join(',');
 
-  const accountid = 'rrenterprises';
-  const password = '25f9e794323b453885f5181f1b624d0b';
-  const imei = '351608080774446';
-  const alertType = 'overspeed';
-  const data = 90;
-  const isactive = 'Yes';
-  const mobiles = '7719932222';
-  const isSms = 1;
-  const isCall = 0;
-  const isEmail = 0;
-  const isPush = 1;
-  const isAnnouncement = 0;
-  const days = day;
-  const d1_on = 1;
-  const d1_off = 0;
-  const shift1_timeRange1 = '07:00,18:00';
-  const shift2_timeRange1 = '19:00,20:00';
   const alertSetting = [
     {
       id: 1,
-      name: 'SMS',
+      name: 'sms',
     },
     {
       id: 2,
-      name: 'Email',
+      name: 'email',
     },
     {
       id: 3,
-      name: 'Push',
+      name: 'push',
+    },
+    {
+      id: 4,
+      name: 'call',
     },
   ];
   const WeekDays = [
@@ -96,12 +121,37 @@ const AlertSetting = () => {
       days: 'Saturday',
     },
   ];
+  console.log(
+    'props.routes.params.details',
+    `${shift.shift1From},${shift.shift1To}`,
+  );
 
   const postAlertResponse = async () => {
+    const loginDetail = await Storage.getLoginDetail('login_detail');
+    let username = loginDetail.accountName;
+    let password = loginDetail.password;
+    const params = {
+      accountid: username,
+      password: password,
+      imei: '351608080774446',
+      alertType: 'overspeed',
+      isactive: newDetail.isActive,
+      data: newDetail.data,
+      mobiles: newDetail.mobiles,
+      isSms: newDetail.sms,
+      isCall: newDetail.call,
+      isEmail: newDetail.email,
+      isPush: newDetail.push,
+      isAnnouncement: newDetail.anc,
+      days: newDetail.days,
+      d1_on: 1,
+      d1_off: 0,
+      shift1_timeRange1: `${shift.shift1From},${shift.shift1To}`,
+      shift2_timeRange1: `${shift.shift2From},${shift.shift2To}`,
+    };
     setLoading(true);
-    const response = await axiosGetData(
-      `saveVehicleAlert?accountid=${accountid}&password=${password}&imei=${imei}&alertType=${alertType}&isactive=${isactive}&data=${data}&mobiles=${mobiles}&isSms=${isSms}&isCall=${isCall}&isEmail=${isEmail}&isPush=${isPush}&isAnnouncement=${isAnnouncement}&days=${days}&d1_on=${d1_on}&d1_off=${d1_off}&shift1_timeRange1=${shift1_timeRange1}&shift2_timeRange1=${shift2_timeRange1}`,
-    );
+    const response = await axiosGetData(`saveVehicleAlert`, params);
+    console.log('0987654432', response.data);
     if (response.data.apiResult === 'success') {
       setLoading(false);
     } else {
@@ -149,9 +199,16 @@ const AlertSetting = () => {
                 style={styles.alertSettingContainer}>
                 <Text style={styles.FooterText}>{el.name}</Text>
                 <CheckBox
-                  isChecked={false}
+                  isChecked={newDetail[el.name] == 0 ? false : true}
                   checkBoxColor="skyblue"
-                  onClick={e => console.log(e)}
+                  onClick={() => {
+                    setNewDetail({
+                      ...newDetail,
+                      [el.name]: newDetail[el.name] == 0 ? 1 : 0,
+                    });
+                    // setIsActive(!isActive);
+                  }}
+                  // setState({ ...state, [event.target.name]: event.target.checked });
                 />
               </TouchableOpacity>
             );
@@ -161,7 +218,7 @@ const AlertSetting = () => {
           <Text style={styles.bodyHeadingText}>{__('Weekday')}</Text>
         </View>
         <View style={{marginTop: 5}}>
-          {WeekDays.map(el => {
+          {WeekDays.map((el, index) => {
             return (
               <TouchableOpacity
                 key={el.id}
@@ -170,8 +227,18 @@ const AlertSetting = () => {
                 <Text style={styles.FooterText}>{el.days}</Text>
                 <CheckBox
                   checkBoxColor="skyblue"
-                  isChecked={days.includes(el.id) ? true : false}
-                  onClick={e => console.log(e)}
+                  isChecked={
+                    newDetail['days'].split(',').join('').includes(index)
+                      ? true
+                      : false
+                  }
+                  onClick={
+                    () => handleDays(el.id)
+                    // setNewDetail({
+                    //   ...newDetail,
+                    //   ['days']: newDetail['days'].split(',').join("").includes(index) ? newDetail['days'].split(',').splice(index,1).join(',') : newDetail['days'].split(',').push(index).join(','),
+                    // })
+                  }
                 />
               </TouchableOpacity>
             );
@@ -184,11 +251,15 @@ const AlertSetting = () => {
           <View style={styles.FooterTextContainer}>
             <Text style={styles.FooterText}>{__('Shift 1')}</Text>
             <TextInput
+              value={shift.shift1From}
+              onChangeText={value => setShift({...shift, shift1From: value})}
               placeholder="From"
               placeholderTextColor={colors.toggleColorOff}
               style={styles.FooterInput}
             />
             <TextInput
+              value={shift.shift1To}
+              onChangeText={value => setShift({...shift, shift1To: value})}
               placeholder="To"
               placeholderTextColor={colors.toggleColorOff}
               style={styles.FooterInput}
@@ -197,12 +268,16 @@ const AlertSetting = () => {
           <View style={styles.FooterTextContainer}>
             <Text style={styles.FooterText}>{__('Shift 2')}</Text>
             <TextInput
+              value={shift.shift2From}
+              onChangeText={value => setShift({...shift, shift2From: value})}
               placeholder="From"
               placeholderTextColor={colors.toggleColorOff}
               style={styles.FooterInput}
             />
             <TextInput
               placeholder="To"
+              value={shift.shift2To}
+              onChangeText={value => setShift({...shift, shift2To: value})}
               placeholderTextColor={colors.toggleColorOff}
               style={styles.FooterInput}
             />
@@ -215,7 +290,7 @@ const AlertSetting = () => {
             {loading ? (
               <ActivityIndicator color={colors.white} />
             ) : (
-              <Text style={styles.loginButtonText}>{__('Login')}</Text>
+              <Text style={styles.loginButtonText}>{__('Save')}</Text>
             )}
           </LinearGradient>
         </TouchableOpacity>
@@ -224,3 +299,16 @@ const AlertSetting = () => {
   );
 };
 export default AlertSetting;
+// ?accountid=${accountid}
+// &password=${password}&imei=${imei}&alertType=${alertType}
+// &isactive=${newDetail.isActive}&data=${newDetail.data}&mobiles=${
+//   newDetail.mobiles
+// }
+// &isSms=${newDetail.sms}&isCall=${newDetail.call}&isEmail=${
+//   newDetail.email
+// }
+// &isPush=${newDetail.push}&isAnnouncement=${newDetail.anc}&days=${
+//   newDetail.days
+// }
+// &d1_on=${d1_on}&d1_off=${d1_off}&shift1_timeRange1=${`${shift.shift1From},${shift.shift1To}`}
+// &shift2_timeRange1=${`${shift.shift2From},${shift.shift2To}`}
