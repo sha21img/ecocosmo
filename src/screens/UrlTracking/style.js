@@ -6,13 +6,11 @@ export const styles = StyleSheet.create({
   header: {height: '10%', paddingHorizontal: 16, width: '100%'},
   headerContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 41,
-    width: 155,
+    marginTop: 'auto',
   },
   subHeading: {
-    height: 72,
+    // height: 72,
     backgroundColor: colors.white,
     elevation: 10,
     paddingHorizontal: 16,
@@ -34,23 +32,22 @@ export const styles = StyleSheet.create({
   bodyContent: {
     flexDirection: 'row',
     backgroundColor: colors.white,
-    height: 66,
-    paddingHorizontal: 20,
+    padding: 15,
+    marginVertical: 5,
     alignItems: 'center',
     borderRadius: 7,
     justifyContent: 'space-between',
-    marginBottom: 10,
   },
   footer: {
     flex: 1.3,
   },
   loginButton: {
-    height: 66,
-    width: '88%',
+    width: '90%',
     alignSelf: 'center',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 20,
   },
   loginButtonText: {
     color: colors.white,

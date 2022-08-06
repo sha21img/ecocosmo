@@ -64,7 +64,8 @@ function MapHistory(props) {
       date: '2022-07-01',
     };
     const response = await axiosGetData('mapHistory', data);
-    const newCoordinate = response.data.EventHistory;
+    const newCoordinate = response.data.EventHistory
+    console.log('newCoordinate', newCoordinate);
     const filterData = newCoordinate.map(item => {
       return {latitude: parseFloat(item.lat), longitude: parseFloat(item.lng)};
     });
