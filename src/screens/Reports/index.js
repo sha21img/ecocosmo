@@ -20,14 +20,22 @@ import Moment from 'moment';
 import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
 import {axiosGetData} from '../../../Utils/ApiController';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
 
 function Reports(props) {
+  const [show, setShow] = useState(false);
+  const [dtype, setDtype] = useState();
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [dateset, setDateset] = useState('From Date');
+  const [dateTo, setDateTO] = useState(new Date(1598051730000));
+  const [datasetTo, setDatasetTo] = useState('To Date');
   const [vehicleNumber, setVehicleNumber] = useState('Select vehicle number');
-  const [totalOdo, setTotalOdo] = useState('Select vehicle number');
-  const [sumIgnitionOn, setSumIgnitionOn] = useState('Select vehicle number');
+  const [totalOdo, setTotalOdo] = useState();
+  const [sumIgnitionOn, setSumIgnitionOn] = useState();
 
   useEffect(() => {
-    // console.log(' route -=-=   -= ', props.route.params);
+    // console.log(' route -=-=   -= ', props.route.params.deviceId);
     data1();
   }, []);
 
@@ -39,22 +47,41 @@ function Reports(props) {
       accountid: username,
       password: encodedPassWord,
       imei: '459710040353691',
-      startdate: '2016-09-01',
+      startdate: '2016-11-01',
       enddate: '2016-11-22',
       type: 'odo',
     };
     const response = await axiosGetData('reportHistory', data);
-    // console.log('response.data', response.data.DeviceHistory);
+    console.log('response.data', response.data.DeviceHistory);
     const resData = response.data.DeviceHistory;
     const sumOdo = resData.reduce((accumulator, object) => {
       return accumulator + object.todaysODO;
     }, 0);
     setTotalOdo(sumOdo);
     const sumIgnitionOn = resData.reduce((accumulator, object) => {
-      return accumulator + object.todaysIgnitionOnTimeSeconds;
+      return accumulator + parseFloat(object.todaysIgnitionOnTimeSeconds);
     }, 0);
-    console.log(sumIgnitionOn);
     setSumIgnitionOn(sumIgnitionOn);
+    const sumWaitingTime = resData.reduce((accumulator, object) => {
+      return accumulator + parseFloat(object.todaysWaitingIgnitionTime);
+    }, 0);
+  };
+
+  const showDatepicker = type => {
+    setDtype(type);
+    setShow(true);
+  };
+  const onChangeFrom = (event, selectedDate) => {
+    setDate(selectedDate);
+    let date = moment(selectedDate).format('DD-MM-YYYY');
+    setDateset(date);
+    setShow(false);
+  };
+  const onChangeTo = (event, selectedDate) => {
+    setDateTO(selectedDate);
+    let date = moment(selectedDate).format('DD-MM-YYYY');
+    setDatasetTo(date);
+    setShow(false);
   };
 
   let index = 0;
@@ -65,92 +92,65 @@ function Reports(props) {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-        <View>
-          <LinearGradient
-            colors={['#16BCD4', '#395DBF']}
-            style={styles.mainContainer}>
-            <View style={styles.headerContainer}>
-              <View style={styles.headerDashboard}>
-                <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                  <Image source={image.backArrow} />
-                </TouchableOpacity>
-                <TextInput
-                  style={styles.dashboardText}
-                  editable={false}
-                  value={__('Distance Reports')}
-                />
-              </View>
-              <View style={styles.alertContainer}>
-                <Image
-                  source={image.reportIcon}
-                  style={{height: 24, width: 24}}
-                />
-                <Image source={image.search} style={styles.searchIcon} />
-              </View>
+      <View>
+        <LinearGradient
+          colors={['#16BCD4', '#395DBF']}
+          style={styles.mainContainer}>
+          <View style={styles.headerContainer}>
+            <View style={styles.headerDashboard}>
+              <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                <Image source={image.backArrow} />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.dashboardText}
+                editable={false}
+                value={__('Distance Reports')}
+              />
             </View>
+            <View style={styles.alertContainer}>
+              <Image
+                source={image.reportIcon}
+                style={{height: 24, width: 24}}
+              />
+              <Image source={image.search} style={styles.searchIcon} />
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginBottom: 15,
+              paddingHorizontal: 20,
+              justifyContent: 'space-between',
+            }}>
             <View
               style={{
-                flexDirection: 'row',
-                marginBottom: 15,
-                paddingHorizontal: 20,
-                justifyContent: 'space-between',
+                width: '60%',
               }}>
-              <View
-                style={{
-                  width: '60%',
+              <ModalSelector
+                initValue="Select tickets"
+                accessible={true}
+                data={data}
+                scrollViewAccessibilityLabel={'Scrollable options'}
+                onChange={option => {
+                  setVehicleNumber(option.label);
                 }}>
-                <ModalSelector
-                  initValue="Select tickets"
-                  accessible={true}
-                  data={data}
-                  scrollViewAccessibilityLabel={'Scrollable options'}
-                  onChange={option => {
-                    setVehicleNumber(option.label);
-                  }}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: colors.white,
-                      flexDirection: 'row',
-                      paddingHorizontal: 15,
-                      borderRadius: 7,
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <TextInput
-                      style={{
-                        color: colors.black,
-                        fontSize: Size.medium,
-                      }}
-                      editable={false}
-                      value={vehicleNumber}
-                    />
-                    <MaterialIcons
-                      style={{
-                        color: '#3D3D3D',
-                        fontSize: 16,
-                      }}
-                      name={'keyboard-arrow-down'}
-                    />
-                  </TouchableOpacity>
-                </ModalSelector>
-              </View>
-
-              <TouchableOpacity style={{width: '35%'}}>
-                <LinearGradient
-                  colors={['#00D957', '#2ACBA1', '#5EB9FF']}
-                  start={{x: 0, y: 1}}
-                  end={{x: 1, y: 0}}
+                <TouchableOpacity
                   style={{
+                    backgroundColor: colors.white,
                     flexDirection: 'row',
                     paddingHorizontal: 15,
-                    paddingVertical: 12,
-                    // width: '35%',
                     borderRadius: 7,
                     alignItems: 'center',
                     justifyContent: 'space-between',
                   }}>
-                  <Text style={{fontSize: 14, color: 'white'}}>Yesterday</Text>
+                  <TextInput
+                    style={{
+                      color: colors.black,
+                      fontSize: Size.medium,
+                    }}
+                    editable={false}
+                    value={vehicleNumber}
+                  />
                   <MaterialIcons
                     style={{
                       color: '#3D3D3D',
@@ -158,69 +158,109 @@ function Reports(props) {
                     }}
                     name={'keyboard-arrow-down'}
                   />
-                </LinearGradient>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </ModalSelector>
             </View>
-          </LinearGradient>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: '100%',
-              paddingHorizontal: 20,
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-            }}>
-            {/* <View style={{flexDirection: 'row'}}> */}
-            <TouchableOpacity
-              style={{
-                borderWidth: 1,
-                borderColor: '#D9D9D9',
-                flexDirection: 'row',
-                paddingHorizontal: 15,
-                paddingVertical: 12,
-                width: '47%',
-                borderRadius: 7,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{fontSize: 14}}>From Date</Text>
-              <MaterialIcons
+
+            <TouchableOpacity style={{width: '35%'}}>
+              <LinearGradient
+                colors={['#00D957', '#2ACBA1', '#5EB9FF']}
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
                 style={{
-                  color: '#3D3D3D',
-                  fontSize: 16,
-                }}
-                name={'keyboard-arrow-down'}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                borderColor: '#D9D9D9',
-                borderWidth: 1,
-                flexDirection: 'row',
-                paddingHorizontal: 15,
-                paddingVertical: 12,
-                width: '47%',
-                borderRadius: 7,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{fontSize: 14}}>From Date</Text>
-              <MaterialIcons
-                style={{
-                  color: '#3D3D3D',
-                  fontSize: 16,
-                }}
-                name={'keyboard-arrow-down'}
-              />
+                  flexDirection: 'row',
+                  paddingHorizontal: 15,
+                  paddingVertical: 12,
+                  // width: '35%',
+                  borderRadius: 7,
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <Text style={{fontSize: 14, color: 'white'}}>Yesterday</Text>
+                <MaterialIcons
+                  style={{
+                    color: '#3D3D3D',
+                    fontSize: 16,
+                  }}
+                  name={'keyboard-arrow-down'}
+                />
+              </LinearGradient>
             </TouchableOpacity>
           </View>
+        </LinearGradient>
+        <View
+          style={{
+            flexDirection: 'row',
+            width: '100%',
+            paddingHorizontal: 20,
+            justifyContent: 'space-between',
+            paddingVertical: 10,
+          }}>
+          {/* <View style={{flexDirection: 'row'}}> */}
+          <TouchableOpacity
+            onPress={() => showDatepicker('from')}
+            style={{
+              borderWidth: 1,
+              borderColor: '#D9D9D9',
+              flexDirection: 'row',
+              paddingHorizontal: 15,
+              paddingVertical: 12,
+              width: '47%',
+              borderRadius: 7,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <Text style={{fontSize: 14}}>{dateset}</Text>
+            <MaterialIcons
+              style={{
+                color: '#3D3D3D',
+                fontSize: 16,
+              }}
+              name={'keyboard-arrow-down'}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => showDatepicker('to')}
+            style={{
+              borderColor: '#D9D9D9',
+              borderWidth: 1,
+              flexDirection: 'row',
+              paddingHorizontal: 15,
+              paddingVertical: 12,
+              width: '47%',
+              borderRadius: 7,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <Text style={{fontSize: 14}}>{datasetTo}</Text>
+            <MaterialIcons
+              style={{
+                color: '#3D3D3D',
+                fontSize: 16,
+              }}
+              name={'keyboard-arrow-down'}
+            />
+          </TouchableOpacity>
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={dtype == 'from' ? date : dateTo}
+              mode="date"
+              display="default"
+              onChange={dtype == 'from' ? onChangeFrom : onChangeTo}
+            />
+          )}
         </View>
-
+      </View>
+      <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
         <LinearGradient
           colors={['#BCE2FF', '#ffffff']}
           start={{x: 0, y: 0.5}}
           end={{x: 1, y: 0.5}}
-          style={{padding: 20}}>
+          style={{
+            padding: 20,
+            elevation: 20,
+          }}>
           <View
             style={{
               flexDirection: 'row',
@@ -282,15 +322,195 @@ function Reports(props) {
             </View>
             <View style={{paddingRight: 20}}>
               <Text>Ignition on</Text>
-              {/* <Text>{sumIgnitionOn}</Text> */}
+              <Text>{sumIgnitionOn}</Text>
             </View>
             <View style={{paddingRight: 20}}>
               <Text>Ignition off</Text>
-              {/* <Text>{sumIgnitionOn}</Text> */}
+              <Text>{sumIgnitionOn}</Text>
             </View>
           </ScrollView>
         </LinearGradient>
-      </View>
+
+        {/*
+         */}
+
+        <LinearGradient
+          colors={['#BCE2FF', '#ffffff']}
+          start={{x: 0, y: 0.5}}
+          end={{x: 1, y: 0.5}}
+          style={{padding: 20}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              {__('Vehicle Summary')}
+            </Text>
+            <TouchableOpacity>
+              <Image source={image.shareDark} style={{width: 24, height: 24}} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            style={{flexDirection: 'row', paddingTop: 10}}>
+            <View style={{paddingRight: 20}}>
+              <Text>Vehicle No.</Text>
+              <Text>MH12 RN 0790</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Start Location</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>End Time</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Travel Time</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Work/Idle hrs</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+
+        {/*
+         */}
+
+        <LinearGradient
+          colors={['#BCE2FF', '#ffffff']}
+          start={{x: 0, y: 0.5}}
+          end={{x: 1, y: 0.5}}
+          style={{padding: 20}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              {__('Drive Summary Report')}
+            </Text>
+            <TouchableOpacity>
+              <Image source={image.shareDark} style={{width: 24, height: 24}} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            style={{flexDirection: 'row', paddingTop: 10}}>
+            <View style={{paddingRight: 20}}>
+              <Text>Drive No.</Text>
+              <Text>MH12 RN 0790</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Start Location</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>End Time</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Duration with Location</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Work/Idle hrs</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+
+        {/*
+         */}
+
+        <LinearGradient
+          colors={['#BCE2FF', '#ffffff']}
+          start={{x: 0, y: 0.5}}
+          end={{x: 1, y: 0.5}}
+          style={{padding: 20}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              {__('Idle Report')}
+            </Text>
+            <TouchableOpacity>
+              <Image source={image.shareDark} style={{width: 24, height: 24}} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            style={{flexDirection: 'row', paddingTop: 10}}>
+            <View style={{paddingRight: 20}}>
+              <Text>Vehicle No.</Text>
+              <Text>20-07-2022</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Date</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Engine Idle Time</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+
+        {/*
+         */}
+
+        <LinearGradient
+          colors={['#BCE2FF', '#ffffff']}
+          start={{x: 0, y: 0.5}}
+          end={{x: 1, y: 0.5}}
+          style={{padding: 20}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+              {__('Daily Waiting Time Report')}
+            </Text>
+            <TouchableOpacity>
+              <Image source={image.shareDark} style={{width: 24, height: 24}} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            style={{flexDirection: 'row', paddingTop: 10}}>
+            <View style={{paddingRight: 20}}>
+              <Text>Vehicle No.</Text>
+              <Text>20-07-2022</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Date</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+            <View style={{paddingRight: 20}}>
+              <Text>Waiting Time</Text>
+              <Text>{sumIgnitionOn}</Text>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+      </ScrollView>
     </>
   );
 }
