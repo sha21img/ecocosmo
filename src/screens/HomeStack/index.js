@@ -8,13 +8,16 @@ import CustomerProfile from '../CustomerProfile';
 import Setting from '../Setting';
 import Tabs from './Tabs';
 import colors from '../../../assets/Colors';
+import Alerts from '../Alerts';
 
-function HomeStack() {
+function HomeStack(props) {
+  console.log('props0000000000000000000000000', props.route.routeNames);
   const Tab = createBottomTabNavigator();
   const [isSelected, setIsSelected] = useState('Home');
   const CustomTabBar = ({state, navigation}) => {
     const {routes} = state;
     const handlePress = (activeTab, index) => {
+      console.log('activeTab', activeTab);
       setIsSelected(activeTab);
       if (state.index !== index) {
         navigation.navigate(activeTab);
@@ -65,8 +68,8 @@ function HomeStack() {
       tabBar={props => <CustomTabBar {...props} />}>
       <Tab.Screen name="Home" component={Home} initialParams={{icon: 'home'}} />
       <Tab.Screen
-        name="Home2"
-        component={Home2}
+        name="Alerts"
+        component={Alerts}
         initialParams={{icon: 'home'}}
       />
       <Tab.Screen

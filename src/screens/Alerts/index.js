@@ -19,22 +19,25 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 
 const Alerts = props => {
   const [Ison, setIson] = useState(true);
   const [alertDataResponse, setalertResponse] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const AlertData = async () => {
+  const AlertData = async props => {
     setLoading(true);
-    // const succcess = await Storage.getLoginDetail('login_detail');
-
-    const accountid = 'rrenterprises';
-    const password = '25f9e794323b453885f5181f1b624d0b';
-    const imei = '459710040353691';
-    const response = await axiosGetData(
-      `getAlertDetails?accountid=${accountid}&password=${password}&imei=${imei}`,
-    );
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountName;
+    let password = succcess.password;
+    const params = {
+      accountid: username,
+      password: password,
+      imei: '459710040353691',
+    };
+    const response = await axiosGetData(`getAlertDetails`, params);
+    console.log('alertData', response.data.alert_details);
     if (response?.data) {
       setalertResponse(response?.data?.alert_details);
       setLoading(false);
@@ -121,7 +124,14 @@ const Alerts = props => {
                 ? alertDataResponse.map(el => {
                     return (
                       <>
-                        <View key={el.id} style={styles.box2}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            props.navigation.navigate('AlertSetting', {
+                              details: el,
+                            })
+                          }
+                          key={el.id}
+                          style={styles.box2}>
                           <Text
                             style={{
                               fontSize: Size.large,
@@ -137,7 +147,7 @@ const Alerts = props => {
                             }}
                             name={'checkcircle'}
                           />
-                        </View>
+                        </TouchableOpacity>
                       </>
                     );
                   })
