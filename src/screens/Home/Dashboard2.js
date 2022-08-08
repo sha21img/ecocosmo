@@ -50,6 +50,7 @@ function Dashboard2({details, isShow}) {
         onPress={() => {
           isSetData(item), setVisible(true);
         }}>
+      
         <LinearGradient
           colors={['#BCE2FF', '#FFFFFF']}
           style={styles.card2Container}>
