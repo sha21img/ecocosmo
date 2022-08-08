@@ -173,10 +173,10 @@ function Notifications(props) {
             Select(selectedItem.deviceId);
             console.log(selectedItem.deviceId, index);
           }}
-          buttonTextAfterSelection={(selectedItem, index) => {
+          buttonTextAfterSelection={selectedItem => {
             return selectedItem.deviceId;
           }}
-          rowTextForSelection={(item, index) => {
+          rowTextForSelection={item => {
             return item.deviceId;
           }}
         />
