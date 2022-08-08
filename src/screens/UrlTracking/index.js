@@ -1,5 +1,13 @@
 import React, {useState} from 'react';
-import {Image, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  Text,
+  View,
+  Share,
+  Linking,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
@@ -7,8 +15,12 @@ import {image} from '../../../assets/images';
 import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 
 const UrlTracking = props => {
+  const {details} = props.route.params;
+  console.log('props props', details);
   const [mydate, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
@@ -29,6 +41,30 @@ const UrlTracking = props => {
   };
   const displayDatepicker = value => {
     showMode(value);
+  };
+  const sendUrl = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let password = succcess.password;
+    const response = await axiosGetData(
+      `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
+    );
+    try {
+      const result = await Share.share({
+        message: response.data.message,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -77,6 +113,7 @@ const UrlTracking = props => {
             // onPress={() => displayDatepicker('date')}
             style={styles.bodyContent}>
             <Text style={{fontSize: Size.large, color: colors.textcolor}}>
+              {__('Select Date')}
               {/* {date} */}
             </Text>
             <Image source={image.Down} style={{width: 11, height: 6}} />
@@ -101,13 +138,13 @@ const UrlTracking = props => {
             </Text>
           </View>
         </View>
-        <View style={styles.footer}>
+        <TouchableOpacity onPress={() => sendUrl()} style={styles.footer}>
           <LinearGradient
             colors={[colors.largeBtn1, colors.largeBtn2]}
             style={styles.loginButton}>
             <Text style={styles.loginButtonText}>{__('Share URL')}</Text>
           </LinearGradient>
-        </View>
+        </TouchableOpacity>
 
         {/* {show && (
           <DateTimePicker
