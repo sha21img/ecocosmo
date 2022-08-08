@@ -17,6 +17,7 @@ import {styles} from './style';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const UrlTracking = props => {
   const {details} = props.route.params;
@@ -24,6 +25,7 @@ const UrlTracking = props => {
   const [mydate, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+  const [day, setday] = useState();
 
   const changeSelectedDate = (event, selectedDate) => {
     const currentDate = selectedDate || mydate;
@@ -47,7 +49,9 @@ const UrlTracking = props => {
     let username = succcess.accountId;
     let password = succcess.password;
     const response = await axiosGetData(
-      `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
+      `gettrackurl/${username}/${password}/${
+        details.imei
+      }/ecvalidate/${day.toString()}`,
     );
     try {
       const result = await Share.share({
@@ -66,7 +70,31 @@ const UrlTracking = props => {
       alert(error.message);
     }
   };
-
+  const daysData = [
+    '1 hour',
+    '2 hours',
+    '3 hours',
+    '5 hours',
+    '12 hours',
+    '1 day',
+    '2 days',
+    '3 days',
+    '5 days',
+    '7 days',
+    '15 days',
+  ];
+  const Select = data => {
+    if (data.includes('hour')) {
+      let a = data;
+      a = a.split(' ');
+      setday(a[0]);
+    } else {
+      let a = data;
+      a = a.split(' ');
+      a = Number(a[0]) * 24;
+      setday(a.toString());
+    }
+  };
   return (
     <>
       <LinearGradient
@@ -101,13 +129,6 @@ const UrlTracking = props => {
       <LinearGradient
         style={{height: '100%', paddingHorizontal: 16, paddingVertical: 10}}
         colors={[colors.Modalcolor1, colors.white]}>
-        {/*
-         */}
-
-        {/* 
-        
-         */}
-
         <View style={styles.body}>
           <TouchableOpacity
             // onPress={() => displayDatepicker('date')}
@@ -127,10 +148,24 @@ const UrlTracking = props => {
             <Image source={image.Down} style={{width: 11, height: 6}} />
           </TouchableOpacity>
           <View style={styles.bodyContent}>
-            <Text style={{fontSize: Size.large, color: colors.textcolor}}>
-              {__('Duration')}
-            </Text>
-            <Image source={image.Down} style={{width: 11, height: 6}} />
+            <SelectDropdown
+              buttonStyle={{
+                width: '100%',
+              }}
+              data={daysData}
+              defaultButtonText={'Duration'}
+              onSelect={(selectedItem, index) => {
+                // setSelected(selectedItem.deviceId);
+                Select(selectedItem);
+                console.log(selectedItem, index);
+              }}
+              buttonTextAfterSelection={selectedItem => {
+                return selectedItem;
+              }}
+              rowTextForSelection={item => {
+                return item;
+              }}
+            />
           </View>
           <View style={styles.bodyContent}>
             <Text style={{fontSize: Size.large, color: colors.grey}}>
