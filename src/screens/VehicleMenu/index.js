@@ -35,7 +35,7 @@ const VehicleMenu = props => {
       id: 2,
       image: image.singleBook,
       data: 'REPORTS',
-      routeTo: '',
+      routeTo: 'Reports',
     },
     {
       id: 3,
@@ -79,7 +79,7 @@ const VehicleMenu = props => {
       data: 'URL TRACKING',
       routeTo: 'UrlTracking',
     },
-    {id: 10, image: image.modalmap, data: 'MAP HISTORY', routeTo: ''},
+    {id: 10, image: image.modalmap, data: 'MAP HISTORY', routeTo: 'MapHistory'},
   ];
   const navigatorFrom = async data => {
     const loginDetail = await Storage.getLoginDetail('login_detail');

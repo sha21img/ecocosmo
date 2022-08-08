@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Share,
+  Linking,
 } from 'react-native';
 import MapView, {
   AnimatedRegion,
@@ -88,6 +89,24 @@ function index(props) {
   useEffect(() => {
     getDetails();
   }, []);
+  const [isData, isSetData] = useState({});
+
+  const calling = async data => {
+    console.log('hihih')
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    const filterData = driverDetails.filter(item => {
+      return item.deviceId === data.deviceId;
+    });
+    console.log("filterDathihihhihiha",filterData)
+    const phoneNumber = filterData[0].mobilenumber;
+    Linking.openURL(`tel:${phoneNumber}`);
+  };
   return (
     <View style={{flex: 1}}>
       <MapView
@@ -124,7 +143,7 @@ function index(props) {
                   width: 70,
                 }}
               />
-              <Callout tooltip>
+              <Callout tooltip onPress={() =>calling(item)}>
                 <LinearGradient
                   colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
                   start={{x: 1.3, y: 0}}
@@ -179,7 +198,11 @@ function index(props) {
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                       }}>
-                      <View
+                      <TouchableOpacity
+                        onPress={() => {
+                          console.log('llllllllllllllllllllllllllllllllllllllllllllllllllllll')
+                          // calling(item);
+                        }}
                         style={{
                           flexDirection: 'row',
                           justifyContent: 'space-between',
@@ -193,7 +216,7 @@ function index(props) {
                         <Text style={{color: '#fff', marginLeft: 5}}>
                           Call Driver
                         </Text>
-                      </View>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </LinearGradient>

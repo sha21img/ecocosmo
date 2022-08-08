@@ -16,6 +16,15 @@ import {VictoryPie, VictoryLegend} from 'victory-native';
 function DriverBehaviour(props) {
   const {details} = props.route.params;
   console.log('detaaaaaaaaails', details);
+  const date = parseFloat(details.validPacketTimeStamp) + 19800;
+  const newDate = new Date(date);
+  const filterTime = newDate.toLocaleTimeString('en-US');
+  let month = newDate.getMonth() + 1;
+  if (String(Math.abs(month)).length == 1) {
+    month = '0' + month;
+  }
+  const filterDate = `${newDate.getDate()}-${month}-${newDate.getFullYear()}`;
+
   return (
     <>
       <LinearGradient
@@ -49,44 +58,51 @@ function DriverBehaviour(props) {
                   </Text>
                   <Text style={styles.driverCarNumber}>{details.deviceId}</Text>
                 </View>
-
-                <View style={styles.driverCarDetailsBox}>
-                  <View style={styles.driverCarDetails}>
-                    <Image
-                      source={image.clock}
-                      style={styles.driverCarDetailsImage}
-                    />
-                    <Text style={styles.driverCarDetailsText}>17:57:45</Text>
-                    <Text style={styles.driverCarDetailsText1}>
-                      {__('CHECK IN TIME')}
-                    </Text>
-                  </View>
-                  <View style={styles.driverCarDetails}>
-                    <Image
-                      source={image.speed}
-                      style={styles.driverCarDetailsImage}
-                    />
-                    <Text style={styles.driverCarDetailsText}>
-                      16 {__('KM/H')}
-                    </Text>
-                    <Text style={styles.driverCarDetailsText1}>
-                      {__('SPEED')}
-                    </Text>
-                  </View>
-                  <View style={styles.driverCarDetails}>
-                    <Image
-                      source={image.distance}
-                      style={styles.driverCarDetailsImage1}
-                    />
-                    <Text style={styles.driverCarDetailsText}>5790456</Text>
-                    <Text style={styles.driverCarDetailsText1}>
-                      {__("TODAY'S ODO")}
-                    </Text>
-                  </View>
-                </View>
               </View>
-              <View style={styles.driverCarBox}>
-                <Image source={image.carUp} style={styles.driverCar} />
+              <View style={styles.driverCarDetailsBox}>
+                <View style={styles.driverCarDetails}>
+                  <Image
+                    source={image.clock}
+                    style={styles.driverCarDetailsImage}
+                  />
+                  <Text style={styles.driverCarDetailsText}>{filterDate}</Text>
+                  <Text style={styles.driverCarDetailsText}>{filterTime}</Text>
+                  <Text style={styles.driverCarDetailsText1}>
+                    {__('CHECK IN DATE & TIME')}
+                  </Text>
+                </View>
+                <View style={styles.driverCarDetails}>
+                  <Image
+                    source={image.speed}
+                    style={styles.driverCarDetailsImage}
+                  />
+                  <Text style={styles.driverCarDetailsText}>
+                    {Math.floor(details.speed)} {__('KM/H')}
+                  </Text>
+                  <Text style={styles.driverCarDetailsText1}>
+                    {__('SPEED')}
+                  </Text>
+                </View>
+                <View style={styles.driverCarDetails}>
+                  <Image
+                    source={image.distance}
+                    style={styles.driverCarDetailsImage1}
+                  />
+                  <Text style={styles.driverCarDetailsText}>
+                    {Math.floor(details.todaysODO)}
+                  </Text>
+                  <Text style={styles.driverCarDetailsText1}>
+                    {__("TODAY'S ODO")}
+                  </Text>
+                </View>
+                <View style={styles.driverCarBox}>
+                  <Image
+                    source={{uri: details.equipmentIcon}}
+                    style={styles.driverCar}
+                  />
+
+                  {/* <Image source={image.carUp} style={styles.driverCar} /> */}
+                </View>
               </View>
             </View>
             <LinearGradient

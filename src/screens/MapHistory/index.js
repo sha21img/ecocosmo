@@ -150,6 +150,8 @@ function MapHistory(props) {
       });
       setData(newFilterData);
       console.log('aaaaaaaaaaaa', aa);
+    } else {
+      setData(newCoordinate);
     }
     // console.log('filterererre', filterData);
 

@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   cardDetailBox: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     width: '100%',
   },
   driverDetails: {
@@ -77,10 +77,17 @@ const styles = StyleSheet.create({
   },
   driverCarDetailsBox: {
     flexDirection: 'row',
-    paddingVertical: 15,
+    justifyContent: 'space-around',
+    // paddingVertical: 15,
+    marginVertical:20,
+    // backgroundColor:'red',
+    width: '100%',
   },
   driverCarDetails: {
-    paddingRight: 15,
+    // flex:1
+    // paddingRight: 15,
+    // backgroundColor:'blue',
+    // flexWrap: 'wrap',
   },
   driverCarDetailsImage: {
     width: 17,
@@ -99,16 +106,17 @@ const styles = StyleSheet.create({
   },
   driverCarDetailsText1: {
     color: colors.subheading,
-    fontSize: Size.tiny,
+    fontSize: 8,
   },
   driverCarBox: {
-    width: '30%',
+    // width: '30%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   driverCar: {
-    width: 100,
-    height: 100,
+    width: 60,
+    height: 67,
+    resizeMode: 'contain'
   },
   driverAddressBox: {
     paddingVertical: 12,
