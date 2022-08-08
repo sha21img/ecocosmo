@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Image,
   Modal,
@@ -13,8 +13,28 @@ import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
 import {Size} from '../../../assets/fonts/Fonts';
+import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 
 const AddDriver = props => {
+  const {details} = props.details
+  console.log(details, "this is a heavy pr                           ops");
+  useEffect(() => {
+    getDriver();
+  });
+  const getDriver = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    const filterData = driverDetails.filter(item => {
+      return item.deviceId === details.deviceId;
+    });
+    console.log(filterData, 'this is driver filter data');
+  };
   return (
     <>
       <Modal
