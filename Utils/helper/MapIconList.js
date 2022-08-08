@@ -36,6 +36,10 @@ function MapIconList(props) {
           {imgUrl: image.graph, route: 'GraphicalReports'},
           {imgUrl: image.earth, route: 'NearbyPlaces'},
         ];
+<<<<<<< HEAD
+=======
+  // console.log('........', props);
+>>>>>>> e605c094e2c06364c6ab5b16095a99219c9bfbea
   return data.map((item, index) => {
     return (
       <View

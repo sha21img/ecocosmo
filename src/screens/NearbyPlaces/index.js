@@ -1,64 +1,76 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
+import axios from 'axios';
 
-const NearbyPlaces = (props) => {
+const NearbyPlaces = props => {
   const places = [
     {
       id: 1,
       img: image.petrolPump,
       name: 'PETROL PUMP',
+      data: 'petrolpump',
     },
     {
       id: 2,
       img: image.cng,
       name: 'CNG STATION',
+      data: 'cng',
     },
     {
       id: 3,
       img: image.charging,
       name: 'CHARGING STATION',
+      data: 'charge',
     },
     {
       id: 4,
       img: image.atm,
       name: 'ATM',
+      data: 'atm',
     },
     {
       id: 5,
       img: image.parking,
       name: 'PARKING',
+      data: 'parking',
     },
     {
       id: 6,
       img: image.policestation,
       name: 'POLICE STATION',
+      data: 'police',
     },
     {
       id: 7,
       img: image.Hospital,
       name: 'HOSPITAL',
+      data: 'hospital',
     },
     {
       id: 8,
       img: image.chemist,
       name: 'CHEMISTS',
+      data: 'chemist',
     },
     {
       id: 9,
       img: image.hotel,
       name: 'HOTEL',
+      data: 'hotel',
     },
     {
       id: 10,
       img: image.nightShelter,
       name: 'NIGHT SHELTERS',
+      data: 'night',
     },
   ];
+
   return (
     <>
       <LinearGradient
@@ -84,7 +96,9 @@ const NearbyPlaces = (props) => {
                 key={element.id}
                 style={styles.content}>
                 <TouchableOpacity
-                  onPress={() => console.log(element)}
+                  onPress={() =>
+                    props.navigation.navigate('Nearby', {data: element.data})
+                  }
                   style={styles.placeItem}>
                   <Image source={element.img} />
                   <Text style={styles.contentText}>{element.name}</Text>

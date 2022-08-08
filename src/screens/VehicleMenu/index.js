@@ -86,28 +86,27 @@ const VehicleMenu = props => {
     let username = loginDetail.accountName;
     let password = loginDetail.password;
     props.setVisible(false);
-    // if (data === 'UrlTracking') {
-    //   const response = await axiosGetData(
-    //     `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
-    //   );
-    //   try {
-    //     const result = await Share.share({
-    //       message: response.data.message,
-    //     });
-    //     if (result.action === Share.sharedAction) {
-    //       if (result.activityType) {
-    //         // shared with activity type of result.activityType
-    //       } else {
-    //         // shared
-    //       }
-    //     } else if (result.action === Share.dismissedAction) {
-    //       // dismissed
-    //     }
-    //   } catch (error) {
-    //     alert(error.message);
-    //   }
-    // } else 
-    if (data === 'EngineStopPopup') {
+    if (data === 'UrlTracking') {
+      const response = await axiosGetData(
+        `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
+      );
+      try {
+        const result = await Share.share({
+          message: response.data.message,
+        });
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    } else if (data === 'EngineStopPopup') {
       setModal(!modal);
     } else {
       navigation.navigate(data, {details: details});
