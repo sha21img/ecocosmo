@@ -19,15 +19,22 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SelectDropdown from 'react-native-select-dropdown';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 function Notifications(props) {
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState([]);
+  const [filter, setFilter] = useState([]);
+  const [data, setdata] = useState();
+  // const [open, setopen] = useState(false);
+  const [selected, setSelected] = useState('All Vehicle');
+
   const GetNotification = async () => {
     // let accountid = 'GlobalCars';
     const succcess = await Storage.getLoginDetail('login_detail');
-
+    const data = await Storage.getVehicleDetail('vehicle_detail');
+    setdata(data);
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     // let password = '62d959fc42e70781bd2a5bb242d4d7c6';
@@ -46,6 +53,23 @@ function Notifications(props) {
   useEffect(() => {
     GetNotification();
   }, []);
+
+  const getVehicle = async () => {
+    const succcess = await Storage.getVehicleDetail('vehicle_detail');
+    console.log('succcess', succcess[0]);
+    setdata(succcess);
+    setopen(true);
+  };
+  const Select = data => {
+    setSelected(data);
+    // setopen(false);
+    const noti = notification.filter(el => {
+      return el.deviceId == data;
+    });
+    console.log('00---', noti);
+    setFilter(noti);
+  };
+
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity
@@ -138,13 +162,23 @@ function Notifications(props) {
         </View>
       </LinearGradient>
       <View style={styles.textinputbox}>
-        <TextInput placeholder={__('All Vehicle')} style={styles.textinput} />
-        <MaterialIcons
-          style={{
-            color: '#3D3D3D',
-            fontSize: 22,
+        <SelectDropdown
+          buttonStyle={{
+            width: '100%',
           }}
-          name={'keyboard-arrow-down'}
+          data={data}
+          defaultButtonText={selected}
+          onSelect={(selectedItem, index) => {
+            setSelected(selectedItem.deviceId);
+            Select(selectedItem.deviceId);
+            console.log(selectedItem.deviceId, index);
+          }}
+          buttonTextAfterSelection={selectedItem => {
+            return selectedItem.deviceId;
+          }}
+          rowTextForSelection={item => {
+            return item.deviceId;
+          }}
         />
       </View>
 
@@ -162,7 +196,7 @@ function Notifications(props) {
           </View>
         ) : (
           <FlatList
-            data={notification}
+            data={selected === 'All Vehicle' ? notification : filter}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             contentContainerStyle={{paddingBottom: 100}}
