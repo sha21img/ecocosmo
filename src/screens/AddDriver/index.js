@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Modal,
@@ -12,16 +12,27 @@ import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
 import {__} from '../../../Utils/Translation/translation';
+import Toast from 'react-native-simple-toast';
 import {Size} from '../../../assets/fonts/Fonts';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
+import {useNavigation} from '@react-navigation/native';
 
 const AddDriver = props => {
-  const {details} = props.details
-  console.log(details, "this is a heavy pr                           ops");
+  const navigation = useNavigation();
+  console.log(props, 'this is a heavy props');
+  const [number, setNumber] = useState('');
+  const [name, setName] = useState('');
   useEffect(() => {
-    getDriver();
+    // getDriver();
   });
+  const saveNumber = () => {
+    if (number != '' && number.length == 10 && name.length > 2) {
+      getDriver();
+    } else { 
+      Toast.show('All field are mandatory and number should be 10 degit');
+    }
+  };
   const getDriver = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
@@ -31,9 +42,29 @@ const AddDriver = props => {
     );
     const driverDetails = response.data.driverDetails;
     const filterData = driverDetails.filter(item => {
-      return item.deviceId === details.deviceId;
+      return item.mobilenumber == number;
     });
+    if (filterData.length > 0) {
+      console.warn('number phale se h');
+      Toast.show('Number is already exist');
+    } else {
+      postNumber();
+      console.warn('phale se number nhi h');
+    }
     console.log(filterData, 'this is driver filter data');
+  };
+  const postNumber = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `setDriverDetails/${username}/${encodedPassWord}/000009112230477/${name}/${number}/adhar/10/12`,
+    );
+    console.log('response', response.data);
+    if (response.data.apiResult == 'success') {
+      Toast.show(response.data.msg);
+      navigation.navigate('HomeStack');
+    }
   };
   return (
     <>
@@ -65,6 +96,8 @@ const AddDriver = props => {
               <TextInput
                 placeholder="Driver name"
                 style={{height: 66, width: '90%', fontSize: Size.large}}
+                value={name}
+                onChangeText={newText => setName(newText)}
               />
             </View>
             <View
@@ -93,9 +126,15 @@ const AddDriver = props => {
                   fontSize: Size.large,
                   marginLeft: 10,
                 }}
+                placeholder={__('Mobile Number')}
+                keyboardType="numeric"
+                value={number}
+                onChangeText={newText => setNumber(newText)}
               />
             </View>
-            <TouchableOpacity style={{width: '100%'}}>
+            <TouchableOpacity
+              onPress={() => saveNumber()}
+              style={{width: '100%'}}>
               <LinearGradient
                 colors={[colors.largeBtn1, colors.largeBtn2]}
                 style={styles.loginButton}>

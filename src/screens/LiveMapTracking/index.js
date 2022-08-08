@@ -547,7 +547,7 @@ function LiveMapTracking(props) {
             setVisible={setModal}
             details={details}
           />
-          <AddDriver visible={visible} setVisible={setVisible} details={details} />
+          <AddDriver visible={visible} setVisible={setVisible}  />
         </View>
       ) : (
         <Text>Loading...</Text>
