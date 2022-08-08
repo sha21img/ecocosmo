@@ -143,7 +143,6 @@ function index(props) {
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-around',
-                      //   backgroundColor:'red'
                     }}>
                     <View style={style.secondboxtextbox1}>
                       <Text style={{paddingVertical: 8}}>
@@ -183,7 +182,6 @@ function index(props) {
                         style={{
                           flexDirection: 'row',
                           justifyContent: 'space-between',
-                          backgroundColor: 'red',
                           backgroundColor: '#24A520',
                           padding: 9,
                           borderRadius: 6,
