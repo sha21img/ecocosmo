@@ -41,11 +41,15 @@ const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function LiveMapTracking(props) {
   const {details} = props.route.params;
+  console.log('details live pae', details);
   const [activeImg, setActiveImg] = useState(false);
   const [isActiveImg, setIsActiveImg] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const [detail, setDetail] = useState({});
   const [visible, setVisible] = useState(false);
+  const [Id, setID] = useState(null);
+  const [mapType, setMapType] = useState(false);
+  const [traffic, setTraffic] = useState(false);
 
   const mapRef = useRef();
   const markerRef = useRef();
@@ -98,6 +102,14 @@ function LiveMapTracking(props) {
       });
     }
   };
+  const location = data => {
+    console.log('data', data);
+    if (data == 2) {
+      getLiveLocation();
+    } else if (data == 0) {
+      setMapType(!mapType);
+    }
+  };
   const animate = (latitude, longitude) => {
     const newCoordinate = {latitude, longitude};
     if (Platform.OS == 'android') {
@@ -116,12 +128,12 @@ function LiveMapTracking(props) {
       longitudeDelta: LONGITUDE_DELTA,
     });
   };
-  console.log('asssssssssssssssssssssssssssss', coordinate);
+  // console.log('asssssssssssssssssssssssssssss', coordinate);
 
   useEffect(() => {
     const interval = setInterval(() => {
       getLiveLocation();
-    }, 6000);
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
   const getDetails = async () => {
@@ -132,7 +144,7 @@ function LiveMapTracking(props) {
     const response = await axiosGetData(
       `livetrack/${username}/${password}/${props.route.params.details.imei}/${type}`,
     );
-    console.log('poiuytrew', response.data);
+    console.log('poiuytrew0-----------', response.data);
     setDetail(response.data.vehicle);
     setState({
       ...state,
@@ -154,22 +166,45 @@ function LiveMapTracking(props) {
   const [modal, setModal] = useState(false);
   // console.log('detail.markerIcon', detail .markerIcon);
 
-  const data1 = [{imgUrl: image.mapPaper}, {imgUrl: image.mapPaper}];
-  console.log('statestate', state);
+  const data1 = [
+    {id: 0, imgUrl: image.mapPaper},
+    {id: 1, imgUrl: image.goToLocation},
+    {id: 2, imgUrl: image.carLocation},
+  ];
+  // console.log('statestate', state);
 
   const iconPress = data => {
-    if (data != '' && data !== 'EngineStopPopup' && data !== 'share') {
-      props.navigation.navigate(data, details);
+    // if (
+    //   data != '' &&
+    //   data !== 'EngineStopPopup' &&
+    //   data !== 'share' &&
+    //   data !== 'Traffic'
+    // ) {
+    //   props.navigation.navigate(data, details);
+    // } else if (data == 'Traffic') {
+    //   setTraffic(!traffic);
+    //   console.log('this is in the traffic');
+    // } else {
+    //   data == 'EngineStopPopup'
+    //     ? setModal(true)
+    //     : data == 'share'
+    //     ? shrethis()
+    //     : '';
+    // }
+    if (data == 'Traffic') {
+      setTraffic(!traffic);
+    } else if (data == 'EngineStopPopup') {
+      setModal(true);
+      // } else if (data == 'share') {
+      //   shrethis();
+    } else if (data == 'Nearby') {
+      console.log('--No Idea--');
     } else {
-      data == 'EngineStopPopup'
-        ? setModal(true)
-        : data == 'share'
-        ? shrethis()
-        : '';
+      props.navigation.navigate(data, {details: details});
     }
   };
   const shrethis = async () => {
-    console.log('share');
+    // console.log('share');
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
     let password = loginDetail.password;
@@ -201,6 +236,8 @@ function LiveMapTracking(props) {
           <View style={style.map_container}>
             <MapView
               tracksViewChanges={false}
+              mapType={mapType ? 'satellite' : 'standard'}
+              showsTraffic={traffic}
               ref={mapRef}
               style={style.map}
               // style={StyleSheet.absoluteFill}
@@ -209,11 +246,12 @@ function LiveMapTracking(props) {
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
               }}
-              initialRegion={{
-                ...curLoc,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              }}>
+              // initialRegion={{
+              //   ...curLoc,
+              //   latitudeDelta: LATITUDE_DELTA,
+              //   longitudeDelta: LONGITUDE_DELTA,
+              // }}
+            >
               <Marker.Animated ref={markerRef} coordinate={coordinate}>
                 <Image
                   source={{uri: detail.markerIcon}}
@@ -242,13 +280,13 @@ function LiveMapTracking(props) {
                   strokeColor="black"
                   optimizeWaypoints={true}
                   onStart={params => {
-                    console.log(
-                      `Started routing between "${params.origin}" and "${params.destination}"`,
-                    );
+                    // console.log(
+                    //   `Started routing between "${params.origin}" and "${params.destination}"`,
+                    // );
                   }}
                   onReady={result => {
-                    console.log(`Distance: ${result.distance} km`);
-                    console.log(`Duration: ${result.duration} min.`);
+                    // console.log(`Distance: ${result.distance} km`);
+                    // console.log(`Duration: ${result.duration} min.`);
                     // fetchTime(result.distance, result.duration),
                     mapRef.current.fitToCoordinates(result.coordinates, {
                       edgePadding: {
@@ -423,22 +461,27 @@ function LiveMapTracking(props) {
             <MapIconList handlePress={iconPress} details={details} />
           ) : null}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{position: 'absolute', bottom: 200}}
             onPress={() => setIsActiveImg(!isActiveImg)}>
             <Image source={image.mapPaper} style={style.mapPaper} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          {isActiveImg
+          {activeImg
             ? data1.map((item, index) => {
                 return (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => {
+                      setID(item.id);
+                      location(item.id);
+                      // getLiveLocation();
+                    }}
                     style={{
                       position: 'absolute',
-                      bottom: 260 + 60 * index,
+                      bottom: 220 + 60 * index,
                     }}>
                     <Image source={item.imgUrl} style={style.mapPaper} />
-                  </View>
+                  </TouchableOpacity>
                 );
               })
             : null}
@@ -547,7 +590,7 @@ function LiveMapTracking(props) {
             setVisible={setModal}
             details={details}
           />
-          <AddDriver visible={visible} setVisible={setVisible}  />
+          <AddDriver visible={visible} setVisible={setVisible} />
         </View>
       ) : (
         <Text>Loading...</Text>

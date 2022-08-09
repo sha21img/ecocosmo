@@ -89,6 +89,7 @@ function MapHistory(props) {
       date: fdate,
     };
     const response = await axiosGetData('mapHistory', data);
+    // console.log(response.data.EventHistory, 'vvvv');
     const newCoordinate = response.data.EventHistory;
     // console.log('newCoordinate123', newCoordinate);
     // const filterData = newCoordinate.map(item => {
@@ -149,7 +150,10 @@ function MapHistory(props) {
         // }
       });
       setData(newFilterData);
-      console.log('aaaaaaaaaaaa', aa);
+      // console.log('aaaaaaaaaaaa', aa);
+    } else {
+      // console.log('eeeeee');
+      setData(newCoordinate);
     }
     // console.log('filterererre', filterData);
 
@@ -158,6 +162,7 @@ function MapHistory(props) {
     // const filter = response.data.EventHistory.slice(0,1);
     // setData(filter);
   };
+  // console.log(data, '098765432');
   function formatDate(date) {
     var d = new Date(date),
       month = '' + (d.getMonth() + 1),
@@ -177,7 +182,7 @@ function MapHistory(props) {
     setFdate(formatDate(fDateStart.toString()));
 
     let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
-    console.log('fTimeStart', fTimeStart);
+    // console.log('fTimeStart', fTimeStart);
     setFtime(fTimeStart);
   };
   const onChangeEnd = selectedDate => {
@@ -192,7 +197,7 @@ function MapHistory(props) {
 
     setFdateend(formatDate(fDateEnd.toString()));
     let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0, 8);
-    console.log('fTimeEnd', fTimeEnd);
+    // console.log('fTimeEnd', fTimeEnd);
 
     setFtimeend(fTimeEnd);
   };

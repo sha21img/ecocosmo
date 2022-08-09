@@ -19,7 +19,7 @@ function MapIconList(props) {
     props.k == true
       ? [
           {imgUrl: image.parking2, route: 'Nearby'},
-          {imgUrl: image.trafficlight, route: ''},
+          {imgUrl: image.trafficlight, route: 'Traffic'},
           {imgUrl: image.map, route: 'MapHistory'},
           {imgUrl: image.keep, route: 'Reports'},
           {imgUrl: image.graph, route: 'GraphicalReports'},
@@ -28,10 +28,10 @@ function MapIconList(props) {
       : [
           {imgUrl: image.vehicleon, route: 'EngineStopPopup'},
           {imgUrl: image.parking2, route: 'Nearby'},
-          {imgUrl: image.trafficlight, route: ''},
+          {imgUrl: image.trafficlight, route: 'Traffic'},
           {imgUrl: image.map, route: 'MapHistory'},
           {imgUrl: image.alllocation, route: 'GroupMapTracking'},
-          {imgUrl: image.share, route: 'share'},
+          {imgUrl: image.share, route: 'UrlTracking'},
           {imgUrl: image.keep, route: 'Reports'},
           {imgUrl: image.graph, route: 'GraphicalReports'},
           {imgUrl: image.earth, route: 'NearbyPlaces'},
