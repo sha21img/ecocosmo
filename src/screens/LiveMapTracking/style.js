@@ -101,8 +101,8 @@ const style = StyleSheet.create({
     color: '#fff',
   },
   mapPaper: {
-    width: 58,
-    height: 58,
+    width: 60,
+    height: 60,
   },
 });
 export default style;

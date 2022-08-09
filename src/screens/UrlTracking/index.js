@@ -20,54 +20,59 @@ import Storage from '../../../Utils/Storage';
 import SelectDropdown from 'react-native-select-dropdown';
 
 const UrlTracking = props => {
-  const {details} = props.route.params;
-  console.log('props props', details);
-  const [mydate, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
-  const [day, setday] = useState();
+  // const {details} = props.route.params;
+  // console.log('props props', details);
+  // const [mydate, setDate] = useState(new Date());
+  // const [mode, setMode] = useState('date');
+  // const [show, setShow] = useState(false);
+  const [day, setday] = useState(null);
 
-  const changeSelectedDate = (event, selectedDate) => {
-    const currentDate = selectedDate || mydate;
-    setDate(currentDate);
-    setShow(false);
-  };
-  const changeSelectedTime = (event, selectedDate) => {
-    const currentDate = selectedDate || mydate;
-    setDate(currentDate);
-    setShow(false);
-  };
-  const showMode = currentMode => {
-    setShow(true);
-    setMode(currentMode);
-  };
-  const displayDatepicker = value => {
-    showMode(value);
-  };
+  // const changeSelectedDate = (event, selectedDate) => {
+  //   const currentDate = selectedDate || mydate;
+  //   setDate(currentDate);
+  //   setShow(false);
+  // };
+  // const changeSelectedTime = (event, selectedDate) => {
+  //   const currentDate = selectedDate || mydate;
+  //   setDate(currentDate);
+  //   setShow(false);
+  // };
+  // const showMode = currentMode => {
+  //   setShow(true);
+  //   setMode(currentMode);
+  // };
+  // const displayDatepicker = value => {
+  //   showMode(value);
+  // };
   const sendUrl = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
     let password = succcess.password;
-    const response = await axiosGetData(
-      `gettrackurl/${username}/${password}/${
-        details.imei
-      }/ecvalidate/${day.toString()}`,
-    );
-    try {
-      const result = await Share.share({
-        message: response.data.message,
-      });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
+    if (day != null) {
+      const response = await axiosGetData(
+        `gettrackurl/${username}/${password}/${
+          details.imei
+        }/ecvalidate/${day.toString()}`,
+      );
+
+      try {
+        const result = await Share.share({
+          message: response.data.message,
+        });
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
         }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
+      } catch (error) {
+        alert(error.message);
       }
-    } catch (error) {
-      alert(error.message);
+    } else {
+      Toast.show('Please select day');
     }
   };
   const daysData = [
