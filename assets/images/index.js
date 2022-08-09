@@ -114,5 +114,7 @@ export const image = {
   batteryWhiteOff: require('./batteryWhiteOff.png'),
   greyCall: require('./greyCall.png'),
   Notification1: require('./Notification1.png'),
+  goToLocation: require('./goToLocation.png'),
+  carLocation: require('./carLocation.png'),
   
 };
