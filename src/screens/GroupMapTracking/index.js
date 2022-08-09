@@ -44,7 +44,7 @@ function index(props) {
     longitudeDelta: LONGITUDE_DELTA,
   });
   const [activeImg, setActiveImg] = useState(false);
-
+  const [traffic, setTraffic] = useState(false);
   const [details, setDetails] = useState([]);
   const getDetails = async () => {
     // setIsShow(true);
@@ -62,10 +62,15 @@ function index(props) {
   };
 
   const iconPress = data => {
-    props.navigation.navigate(data);
+    if (data == 'Traffic') {
+      setTraffic(!traffic);
+    } else if (data == 'Nearby') {
+      console.log('--No Idea--');
+    } else {
+      props.navigation.navigate(data);
+    }
   };
 
-  console.log('...................0', props);
   const getLocations = async () => {
     Geolocation.getCurrentPosition(position => {
       console.log('positio', position);
@@ -92,7 +97,7 @@ function index(props) {
   const [isData, isSetData] = useState({});
 
   const calling = async data => {
-    console.log('hihih')
+    console.log('hihih');
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
@@ -103,7 +108,7 @@ function index(props) {
     const filterData = driverDetails.filter(item => {
       return item.deviceId === data.deviceId;
     });
-    console.log("filterDathihihhihiha",filterData)
+    console.log('filterDathihihhihiha', filterData);
     const phoneNumber = filterData[0].mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
   };
@@ -119,6 +124,7 @@ function index(props) {
         // scrollEnabled={false}
         // pointerEvents="none"
         // minZoomLevel={15}
+        showsTraffic={traffic}
         initialRegion={{
           latitude: coordinate.latitude,
           longitude: coordinate.longitude,
@@ -143,7 +149,8 @@ function index(props) {
                   width: 70,
                 }}
               />
-              <Callout tooltip onPress={() =>calling(item)}>
+
+              <Callout tooltip onPress={() => calling(item)}>
                 <LinearGradient
                   colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
                   start={{x: 1.3, y: 0}}
@@ -199,7 +206,9 @@ function index(props) {
                       }}>
                       <TouchableOpacity
                         onPress={() => {
-                          console.log('llllllllllllllllllllllllllllllllllllllllllllllllllllll')
+                          console.log(
+                            'llllllllllllllllllllllllllllllllllllllllllllllllllllll',
+                          );
                           // calling(item);
                         }}
                         style={{
