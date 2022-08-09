@@ -41,7 +41,6 @@ const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function LiveMapTracking(props) {
   const {details} = props.route.params;
-  console.log('details live pae', details);
   const [activeImg, setActiveImg] = useState(false);
   const [isActiveImg, setIsActiveImg] = useState(false);
   const [isShow, setIsShow] = useState(false);
@@ -171,26 +170,7 @@ function LiveMapTracking(props) {
     {id: 1, imgUrl: image.goToLocation},
     {id: 2, imgUrl: image.carLocation},
   ];
-  // console.log('statestate', state);
-
   const iconPress = data => {
-    // if (
-    //   data != '' &&
-    //   data !== 'EngineStopPopup' &&
-    //   data !== 'share' &&
-    //   data !== 'Traffic'
-    // ) {
-    //   props.navigation.navigate(data, details);
-    // } else if (data == 'Traffic') {
-    //   setTraffic(!traffic);
-    //   console.log('this is in the traffic');
-    // } else {
-    //   data == 'EngineStopPopup'
-    //     ? setModal(true)
-    //     : data == 'share'
-    //     ? shrethis()
-    //     : '';
-    // }
     if (data == 'Traffic') {
       setTraffic(!traffic);
     } else if (data == 'EngineStopPopup') {

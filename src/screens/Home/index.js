@@ -59,7 +59,6 @@ function Home(props) {
     );
     const detail = response.data.vehicles;
     await Storage.setVehicleDetail(detail);
-    console.log(detail, 'this is details');
     setDetails(detail);
     setFilteredDetails(detail);
     setNewFilterDetails(detail);
@@ -67,7 +66,7 @@ function Home(props) {
       setCountObj(prev => {
         return {...prev, [element.status]: prev[element.status] + 1};
       });
-    });
+    }); 
     setIsShow(false);
   };
   useEffect(() => {
