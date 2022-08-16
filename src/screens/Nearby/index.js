@@ -21,12 +21,11 @@ function Nearby(props) {
   const [marker, setmarker] = useState();
   const [data, setdata] = useState();
   const data1 = () => {
-    console.log(props.route.params.data);
     Geolocation.getCurrentPosition(position => {
       console.log('positio', position);
       axios
         .get(
-          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=${props.route.params.data}&location=${position.coords.latitude},${position.coords.longitude}&radius=1500&type=restaurant&key=AIzaSyAQDxD_FpUHSM-HGCGrs20T4oZTNRc4Sq0`,
+          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=${props.route.params.data}&location=${position.coords.latitude},${position.coords.longitude}&radius=1500&type=${props.route.params.data}&key=AIzaSyAQDxD_FpUHSM-HGCGrs20T4oZTNRc4Sq0`,
         )
         .then(response => {
           console.log('response.data', response.data.results[0].geometry);

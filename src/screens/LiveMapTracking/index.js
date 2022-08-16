@@ -183,31 +183,31 @@ function LiveMapTracking(props) {
       props.navigation.navigate(data, {details: details});
     }
   };
-  const shrethis = async () => {
-    // console.log('share');
-    const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
-    let password = loginDetail.password;
-    const response = await axiosGetData(
-      `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
-    );
-    if (response.data.gettrackurl == 'success') {
-      let msg = response.data.message;
-      Share.share(
-        {
-          message: msg,
-          title: 'hello',
-          subject: 'hello',
-        },
-        {
-          // Android only:
-          dialogTitle: 'hello',
-          // iOS only:
-          excludedActivityTypes: ['com.apple.UIKit.activity.PostToTwitter'],
-        },
-      );
-    }
-  };
+  // const shrethis = async () => {
+  //   // console.log('share');
+  //   const loginDetail = await Storage.getLoginDetail('login_detail');
+  //   let username = loginDetail.accountName;
+  //   let password = loginDetail.password;
+  //   const response = await axiosGetData(
+  //     `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
+  //   );
+  //   if (response.data.gettrackurl == 'success') {
+  //     let msg = response.data.message;
+  //     Share.share(
+  //       {
+  //         message: msg,
+  //         title: 'hello',
+  //         subject: 'hello',
+  //       },
+  //       {
+  //         // Android only:
+  //         dialogTitle: 'hello',
+  //         // iOS only:
+  //         excludedActivityTypes: ['com.apple.UIKit.activity.PostToTwitter'],
+  //       },
+  //     );
+  //   }
+  // };
 
   return (
     <>

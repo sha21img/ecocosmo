@@ -180,12 +180,12 @@ const Login = ({navigation}) => {
             )}
           </LinearGradient>
         </TouchableOpacity>
-
+{/* 
         <View style={styles.footerTab}>
           <Image source={image.Mob} style={{height: 34, width: 34}} />
           <Image source={image.whatsApp} style={{height: 34, width: 34}} />
           <Image source={image.incomingCall} style={{height: 34, width: 34}} />
-        </View>
+        </View> */}
       </LinearGradient>
     </ScrollView>
   );

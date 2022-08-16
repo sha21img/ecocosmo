@@ -19,17 +19,14 @@ import Storage from '../../../Utils/Storage';
 import {useNavigation} from '@react-navigation/native';
 
 const AddDriver = props => {
+  console.log('props', props.setVisible);
   const navigation = useNavigation();
-  console.log(props, 'this is a heavy props');
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
-  useEffect(() => {
-    // getDriver();
-  });
   const saveNumber = () => {
     if (number != '' && number.length == 10 && name.length > 2) {
       getDriver();
-    } else { 
+    } else {
       Toast.show('All field are mandatory and number should be 10 degit');
     }
   };
@@ -45,13 +42,10 @@ const AddDriver = props => {
       return item.mobilenumber == number;
     });
     if (filterData.length > 0) {
-      console.warn('number phale se h');
       Toast.show('Number is already exist');
     } else {
       postNumber();
-      console.warn('phale se number nhi h');
     }
-    console.log(filterData, 'this is driver filter data');
   };
   const postNumber = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -64,6 +58,10 @@ const AddDriver = props => {
     if (response.data.apiResult == 'success') {
       Toast.show(response.data.msg);
       navigation.navigate('HomeStack');
+      props.setVisible(false);
+      setNumber('');
+      setName('');
+      console.log(navigation, 'navigation');
     }
   };
   return (
