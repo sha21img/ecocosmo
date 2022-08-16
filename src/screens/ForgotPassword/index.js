@@ -26,7 +26,6 @@ const ForgotPassword = props => {
   const [loading, setLoading] = useState(false);
   const [email, setemail] = useState('');
   const [language, setLanguage] = useState('English');
-  console.log(props);
   const getOtp = async () => {
     setLoading(true);
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);

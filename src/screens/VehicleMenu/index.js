@@ -18,9 +18,11 @@ import {useNavigation} from '@react-navigation/native';
 import {axiosGetData} from '../../../Utils/ApiController';
 
 import Storage from '../../../Utils/Storage';
+import AddDriver from '../AddDriver';
 
 const VehicleMenu = props => {
   const navigation = useNavigation();
+  const [visibles, setVisibles] = useState(false);
   const [modal, setModal] = useState(false);
 
   const {details, visible, calling} = props;
@@ -71,7 +73,7 @@ const VehicleMenu = props => {
       id: 8,
       image: image.modalImage7,
       data: 'DRIVER DETAILS',
-      routeTo: '',
+      routeTo: 'DRIVERDETAILS',
     },
     {
       id: 9,
@@ -88,7 +90,10 @@ const VehicleMenu = props => {
     props.setVisible(false);
      if (data === 'EngineStopPopup') {
       setModal(!modal);
-    } else {
+    }else if(data === 'DRIVERDETAILS'){
+        setVisibles(!visibles);
+
+  }else {
       navigation.navigate(data, {details: details});
     }
   };
@@ -144,6 +149,7 @@ const VehicleMenu = props => {
         details={details}
         setVisible={setModal}
       />
+       <AddDriver visible={visibles} setVisible={setVisibles} />
     </>
   );
 };

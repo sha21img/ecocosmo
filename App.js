@@ -34,6 +34,7 @@ import CustomerProfile from './src/screens/CustomerProfile';
 import Nearby from './src/screens/Nearby';
 import Storage from './Utils/Storage';
 import {LogBox} from 'react-native';
+import {axiosGetData} from './Utils/ApiController';
 import Reports from './src/screens/Reports';
 import {baseUrl} from './Utils/ApiController';
 const Drawer = createDrawerNavigator();
@@ -80,7 +81,22 @@ const Routes = [
 ];
 
 const DrawerContent = props => {
+  const [name, setName] = useState('');
   const {setToken} = React.useContext(AuthContext);
+  useEffect(() => {
+    getName();
+  });
+  const getName = async () => {
+    const loginDetail = await Storage.getLoginDetail('login_detail');
+    let username = loginDetail.accountName;
+    let password = loginDetail.password;
+    const response = await axiosGetData(
+      `getAccountDetails/${username}/${password}`,
+    );
+    if (response.data.apiResult == 'success') {
+      setName(response.data.getAccountDetails);
+    }
+  };
   return (
     <>
       <LinearGradient
@@ -102,11 +118,10 @@ const DrawerContent = props => {
             style={{
               fontSize: Size.compact,
               textAlign: 'center',
-              width: 220,
               marginTop: 18,
               color: colors.white,
             }}>
-            {__('ADAM VEHICLE AGENCY DAVID THOMAS')}
+            {name.accountName}
           </Text>
         </View>
         <View
@@ -400,7 +415,6 @@ const App = () => {
                     component={Nearby}
                     options={{headerShown: false}}
                   />
-                  
                 </>
               ) : (
                 <>
