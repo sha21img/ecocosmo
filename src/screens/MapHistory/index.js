@@ -70,7 +70,7 @@ function MapHistory(props) {
       longitude: 77.4053,
     },
   ]);
-  const GOOGLE_MAP_KEY = 'AIzaSyDuMZZzYTEBs7EONdnVfmZVXJluSzVbRkc';
+  const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
 
   useEffect(() => {
     if (fdate !== '') {

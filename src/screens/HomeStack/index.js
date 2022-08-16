@@ -11,17 +11,26 @@ import colors from '../../../assets/Colors';
 import Alerts from '../Alerts';
 
 function HomeStack(props) {
-  console.log('props0000000000000000000000000', props.route.routeNames);
+  console.log('props0000000000000000000000000', props.route.params?.screen);
   const Tab = createBottomTabNavigator();
   const [isSelected, setIsSelected] = useState('Home');
+
   const CustomTabBar = ({state, navigation}) => {
+    console.log('props', props.route.params?.screen);
+    React.useEffect(() => {
+      if (props.route.params?.screen) {
+        console.log('useEffecteeetetceectect');
+        setIsSelected(props.route.params?.screen);
+      }
+    }, []);
+    console.log('isSelected abhi wala', isSelected);
     const {routes} = state;
     const handlePress = (activeTab, index) => {
       console.log('activeTab', activeTab);
       setIsSelected(activeTab);
-      if (state.index !== index) {
-        navigation.navigate(activeTab);
-      }
+      // if (state.index !== index) {
+      navigation.navigate(activeTab);
+      // }
     };
     return (
       <View

@@ -11,7 +11,7 @@ import {styles} from './style';
 
 const ContactUs = props => {
   const [loading, setLoading] = useState(false);
-  const [details, setDetails] = useState();
+  const [details, setDetails] = useState([]);
 
   const contactUsDetails = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -40,7 +40,7 @@ const ContactUs = props => {
         locations={[0, 0.9]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
-            <Image source={image.drawer} style={{height: 23, width: 23}} />
+            <Image source={image.drawer} style={{height: 20, width: 23}} />
           </TouchableOpacity>
           <Text style={styles.headerContentText}>{__('Contact Us')}</Text>
         </View>

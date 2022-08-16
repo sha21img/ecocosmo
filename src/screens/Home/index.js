@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,6 +22,7 @@ import Storage from '../../../Utils/Storage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 function Home(props) {
+  console.log('jijijijijijjijijiijijijiijiji',props.route.params)
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
@@ -29,6 +31,7 @@ function Home(props) {
   const [isShow, setIsShow] = useState(true);
   const [search, setSearch] = useState(true);
   const [type, setType] = useState('All');
+  const [refreshing, setRefreshing] = useState(false);
 
   let index = 0;
 
@@ -66,7 +69,7 @@ function Home(props) {
       setCountObj(prev => {
         return {...prev, [element.status]: prev[element.status] + 1};
       });
-    }); 
+    });
     setIsShow(false);
   };
   useEffect(() => {
@@ -93,6 +96,7 @@ function Home(props) {
     }
   };
   const getRunningData = data => {
+    console.log('data', data);
     setType(data);
     const filterDetails = details.filter(item => {
       return item.status == data;
@@ -100,7 +104,19 @@ function Home(props) {
     setNewFilterDetails(filterDetails);
     setIsShow(false);
   };
-  0;
+  console.log('shahshshahah', type);
+
+  const onRefresh = React.useCallback(data => {
+    setIsShow(true);
+    console.log('typeptprprp', data);
+    if (data === 'All') {
+      getDetails();
+    } else {
+      getRunningData(data);
+    }
+
+    setTimeout(() => setIsShow(false), 2000);
+  }, []);
   return (
     <>
       <LinearGradient
@@ -280,14 +296,21 @@ function Home(props) {
           </ScrollView>
         </View>
       ) : null}
-      <View style={styles.carDetailCard}>
+      <ScrollView
+        style={styles.carDetailCard}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => onRefresh(type)}
+          />
+        }>
         {dashBoardType === 'Dashboard 1' && (
           <Dashboard1 details={newFilterDetails} isShow={isShow} />
         )}
         {dashBoardType === 'Dashboard 2' && (
           <Dashboard2 details={newFilterDetails} isShow={isShow} />
         )}
-      </View>
+      </ScrollView>
     </>
   );
 }

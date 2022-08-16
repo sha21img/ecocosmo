@@ -3,7 +3,8 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 
 import {image} from '../../../assets/images';
 
-function Tabs({color, tab, onPress, icon, isSelected, index}) {
+function Tabs({tab, onPress, icon, isSelected, index}) {
+  console.log("isSelected",isSelected)
   return (
     <TouchableOpacity
       onPress={() => {
