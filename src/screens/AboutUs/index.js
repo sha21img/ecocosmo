@@ -47,7 +47,7 @@ const AboutUs = props => {
             <Image
               source={image.drawer}
               style={{
-                height: 23,
+                height: 20,
                 width: 23,
               }}
             />

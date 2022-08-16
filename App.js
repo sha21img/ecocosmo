@@ -65,7 +65,7 @@ const Routes = [
   {
     label: 'Home',
     icon: image.HomeIcon,
-    route: 'HomeStack',
+    route: 'Home',
   },
   {
     label: 'Group Live Tracking',
@@ -126,7 +126,9 @@ const DrawerContent = props => {
                   paddingVertical: 5,
                   alignItems: 'center',
                 }}
-                onPress={() => props.navigation.navigate(el.route)}>
+                onPress={() =>
+                  props.navigation.navigate('HomeStack', {screen: el.route})
+                }>
                 <Image source={el.icon} style={{height: 40, width: 40}} />
                 <Text
                   style={{
@@ -150,7 +152,9 @@ const DrawerContent = props => {
                   paddingVertical: 5,
                   alignItems: 'center',
                 }}
-                onPress={() => props.navigation.navigate(el.route)}>
+                onPress={() =>
+                  props.navigation.navigate(el.route)
+                }>
                 <Image source={el.icon} style={{height: 40, width: 40}} />
                 <Text
                   style={{
@@ -400,7 +404,6 @@ const App = () => {
                     component={Nearby}
                     options={{headerShown: false}}
                   />
-                  
                 </>
               ) : (
                 <>
