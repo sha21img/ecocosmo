@@ -11,3 +11,16 @@ export const Size = {
   big: 30,
   higantic: 56,
 };
+// export const Size = {
+//   extraTiny: '0.5rem',
+//   tiny: '0.6rem',
+//   small: '0.75rem',
+//   medium: '0.87rem',
+//   compact: '1rem',
+//   large: '1.1rem',
+//   extraLarge: '1.25rem',
+//   huge: '1.5rem',
+//   extraHuge: '1.75rem',
+//   big: '1.87rem',
+//   higantic: '3.5rem',
+// };

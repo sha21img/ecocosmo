@@ -49,8 +49,14 @@ export default {
   'CHECK IN TIME': 'वेळेत तपासा',
   'CHECK IN DATE & TIME': 'तारीख आणि वेळ तपासा',
   //Home
-  'Dashboard 1': 'डॅशबोर्ड १',
+  'Dashboard 1': 'डॅशबोर्ड 1',
+  'Dashboard 2': 'डॅशबोर्ड 2',
   All: 'सर्व',
+  'In-Active': 'सक्रिय',
+  Stop: 'थांबलेली',
+  'No GPS': 'जीपीएस नाही',
+  Waiting: 'वाट पाहत आहे',
+
   // Forgot Password
   'Reset Password': 'पासवर्ड रीसेट करा',
   'enter account ID or number': 'खाते आयडी किंवा क्रमांक प्रविष्ट करा',

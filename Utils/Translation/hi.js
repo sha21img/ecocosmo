@@ -58,7 +58,12 @@ export default {
 
   //Home
   'Dashboard 1': 'डैशबोर्ड 1',
+  'Dashboard 2': 'डैशबोर्ड 2',
   All: 'सभी',
+  Stop: 'रुके हुए',
+  'In-Active': 'इन-एक्टिव',
+  'No GPS': 'कोई जीपीएस नहीं',
+  Waiting: 'प्रतीक्षा करना',
 
   // Forgot Password
   'Reset Password': 'पासवर्ड रीसेट',
@@ -139,6 +144,7 @@ export default {
   'DRIVER BEHAVIOR': 'चालक व्यवहार',
   IMMOBILIZER: 'इमोबिलाइज़र',
   //EngineStopPopup
+
   'Do you want to Start vehicle?': 'क्या आप वाहन स्टार्ट करना चाहते हैं?',
   'Do you want to Stop vehicle?': 'क्या आप वाहन रोकना चाहते हैं?',
   No: 'नहीं',
