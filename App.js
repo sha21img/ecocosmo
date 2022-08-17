@@ -83,9 +83,9 @@ const Routes = [
 const DrawerContent = props => {
   const [name, setName] = useState('');
   const {setToken} = React.useContext(AuthContext);
-  useEffect(() => {
-    getName();
-  });
+  // useEffect(() => {
+  //   getName();
+  // });
   const getName = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
@@ -121,7 +121,7 @@ const DrawerContent = props => {
               marginTop: 18,
               color: colors.white,
             }}>
-            {name.accountName}
+            {/* {name.accountName} */}
           </Text>
         </View>
         <View
@@ -142,7 +142,7 @@ const DrawerContent = props => {
                   alignItems: 'center',
                 }}
                 onPress={() =>
-                  props.navigation.navigate('HomeStack', {screen: el.route})
+                  props.navigation.navigate('HomeStack', {screen: "Home"})
                 }>
                 <Image source={el.icon} style={{height: 40, width: 40}} />
                 <Text
