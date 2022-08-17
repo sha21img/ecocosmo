@@ -16,6 +16,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  crossIcon: {
+    color: colors.white,
+    fontSize: 24,
+    marginLeft: 10,
+    paddingVertical: 5,
+  },
   dashimg: {height: 20, width: 23},
   textinputbox: {
     paddingHorizontal: 10,

@@ -31,8 +31,10 @@ function Notifications(props) {
   const [notification, setNotification] = useState([]);
   const [filter, setFilter] = useState([]);
   const [data, setdata] = useState();
+  const [search, setSearch] = useState(false);
   // const [open, setopen] = useState(false);
   const [selected, setSelected] = useState('All Vehicle');
+  const [searched, setSearched] = useState('1');
 
   const GetNotification = async () => {
     // let accountid = 'GlobalCars';
@@ -72,6 +74,21 @@ function Notifications(props) {
     });
     console.log('00---', noti);
     setFilter(noti);
+  };
+
+  const searchFunction = text => {
+    setSelected('All Vehicle');
+    setSearch(true);
+    console.log('text', text);
+    if (!!text) {
+      setSearched('');
+      var newArr = notification.filter(item => {
+        return item.deviceId.toLowerCase().includes(text.toLowerCase());
+      });
+      !!newArr && newArr.length > 0 ? setFilter(newArr) : setFilter([]);
+    } else {
+      setSearched('1');
+    }
   };
 
   const renderItem = ({item}) => {
@@ -183,12 +200,45 @@ function Notifications(props) {
                 }}
                 name={'share'}
               />
-              <Image
-                source={image.search}
-                style={{height: 18, width: 18, marginLeft: 15}}
-              />
+              {!search ? (
+                <TouchableOpacity onPress={() => setSearch(true)}>
+                  <Image
+                    source={image.search}
+                    style={{height: 18, width: 18, marginLeft: 15}}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSearch(false);
+                    setSearched('1');
+                  }}>
+                  <Entypo style={styles.crossIcon} name={'cross'} />
+                </TouchableOpacity>
+              )}
             </TouchableOpacity>
           </View>
+          {search ? (
+            <View
+              style={{
+                width: '100%',
+                marginBottom: 20,
+                marginTop: 10,
+                borderRadius: 7,
+                alignItems: 'center',
+              }}>
+              <TextInput
+                placeholder="Select vehicle number"
+                style={{
+                  backgroundColor: colors.white,
+                  borderRadius: 7,
+                  width: '90%',
+                  paddingHorizontal: 10,
+                }}
+                onChangeText={searchFunction}
+              />
+            </View>
+          ) : null}
         </LinearGradient>
         <View style={styles.textinputbox}>
           <SelectDropdown
@@ -225,7 +275,9 @@ function Notifications(props) {
             </View>
           ) : (
             <FlatList
-              data={selected === 'All Vehicle' ? notification : filter}
+              data={
+                selected === 'All Vehicle' && !!searched ? notification : filter
+              }
               showsVerticalScrollIndicator={false}
               renderItem={renderItem}
               contentContainerStyle={{paddingBottom: 100}}
