@@ -90,12 +90,9 @@ const DrawerContent = props => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
     let password = loginDetail.password;
-    const response = await axiosGetData(
-      `getAccountDetails/${username}/${password}`,
-    );
-    if (response.data.apiResult == 'success') {
-      setName(response.data.getAccountDetails);
-    }
+    const response = await axiosGetData(`account/${username}/${password}`);
+    console.log(response.data, '/////////////////////');
+    setName(response.data.brandName);
   };
   return (
     <>
@@ -121,7 +118,7 @@ const DrawerContent = props => {
               marginTop: 18,
               color: colors.white,
             }}>
-            {/* {name.accountName} */}
+            {name}
           </Text>
         </View>
         <View
@@ -167,9 +164,7 @@ const DrawerContent = props => {
                   paddingVertical: 5,
                   alignItems: 'center',
                 }}
-                onPress={() =>
-                  props.navigation.navigate(el.route)
-                }>
+                onPress={() => props.navigation.navigate(el.route)}>
                 <Image source={el.icon} style={{height: 40, width: 40}} />
                 <Text
                   style={{

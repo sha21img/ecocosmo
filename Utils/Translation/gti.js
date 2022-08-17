@@ -57,7 +57,12 @@ export default {
 
   //Home
   'Dashboard 1': 'ડેશબોર્ડ 1',
+  'Dashboard 2': 'ડેશબોર્ડ 2',
   All: 'બધા',
+  Stop: 'રોકાયેલા',
+  'In-Active': 'ઇન-એક્ટિવ',
+  'No GPS': 'જીપીએસ નથી',
+  Waiting: 'રાહ જોઈ રહ્યા છે',
 
   // Forgot Password
   'Reset Password': 'પાસવર્ડ રીસેટ કરો',

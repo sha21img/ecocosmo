@@ -22,7 +22,7 @@ import Storage from '../../../Utils/Storage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 function Home(props) {
-  console.log('jijijijijijjijijiijijijiijiji',props.route.params)
+  console.log('jijijijijijjijijiijijijiijiji', props.route.params);
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
@@ -85,9 +85,9 @@ function Home(props) {
     if (text !== null && text !== undefined && text !== '') {
       var newArr = [];
       newArr = filteredDetails.filter(item => {
-        return item.deviceId.includes(text);
+        return item.deviceId.toLowerCase().includes(text.toLowerCase());
       });
-      console.log('filteredDetails', filteredDetails);
+      // console.log('filteredDetails', filteredDetails);
       newArr !== null && newArr !== undefined && newArr.length > 0
         ? setNewFilterDetails(newArr)
         : setNewFilterDetails([]);
@@ -171,7 +171,15 @@ function Home(props) {
                 onPress={() => {
                   setSearch(true), setNewFilterDetails(filteredDetails);
                 }}>
-                <Entypo style={styles.crossIcon} name={'cross'} />
+                <Entypo
+                  style={{
+                    color: colors.white,
+                    fontSize: 24,
+                    marginLeft: 10,
+                    paddingVertical: 5,
+                  }}
+                  name={'cross'}
+                />
               </TouchableOpacity>
             )}
           </View>
