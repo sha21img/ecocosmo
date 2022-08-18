@@ -33,9 +33,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchIcon: {
-    height: 18,
-    width: 18,
-    marginLeft: 15,
+    height: 20,
+    width: 20,
+    marginLeft: 10,
   },
   catagoryBox: {
     flexDirection: 'row',

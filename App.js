@@ -83,16 +83,16 @@ const Routes = [
 const DrawerContent = props => {
   const [name, setName] = useState('');
   const {setToken} = React.useContext(AuthContext);
-  // useEffect(() => {
-  //   getName();
-  // });
+  useEffect(() => {
+    getName();
+  });
   const getName = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountName;
     let password = loginDetail.password;
     const response = await axiosGetData(`account/${username}/${password}`);
     console.log(response.data, '/////////////////////');
-    setName(response.data.brandName);
+    setName(response.data.accountName);
   };
   return (
     <>
