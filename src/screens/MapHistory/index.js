@@ -6,6 +6,7 @@ import {
   View,
   Dimensions,
   TextInput,
+  StyleSheet,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import colors from '../../../assets/Colors';
@@ -23,7 +24,7 @@ import moment from 'moment';
 // import MapView from '../../../Utils/helper/GoogleMap';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import {
+import MapView, {
   AnimatedRegion,
   Animated,
   MarkerAnimated,
@@ -52,6 +53,8 @@ function MapHistory(props) {
   const [ftime, setFtime] = useState('');
   const [ftimeend, setFtimeend] = useState('');
   const [dtype, setDtype] = useState();
+  const [myMarker, setMyMarker] = useState(null);
+
   const [coordinates, setCoordinates] = useState([
     {
       latitude: 26.9124,
@@ -205,6 +208,8 @@ function MapHistory(props) {
     setShow(true);
     setMode(currentMode);
   };
+  const mapRef = React.useRef(null);
+
   const showDatepicker = type => {
     // console.log('type', type);
     setDtype(type);
@@ -214,6 +219,32 @@ function MapHistory(props) {
     setDtype(type);
     showMode('time');
   };
+  function animateMarkerAndCamera() {
+    console.log('kjhgfg;op', data);
+    // for (let i = 1; i < data.length; i++) {
+    let newCoordinate = {
+      latitude: parseFloat(data[80].lat),
+      longitude: parseFloat(data[80].lng),
+      latitudeDelta: 0.012,
+      longitudeDelta: 0.012,
+    };
+    const newCamera = {
+      center: {
+        latitude: parseFloat(data[80].lat),
+        longitude: parseFloat(data[80].lng),
+      },
+      pitch: 0,
+      heading: 0,
+      //zoom: 17  --Use it when required
+    };
+    if (myMarker) {
+      myMarker.animateMarkerToCoordinate(newCoordinate, 10000);
+      //camera type, `newCamera`, used inside animateCamera
+      mapRef.current.animateCamera(newCamera, {duration: 10000});
+    }
+    // }
+  }
+
   return (
     <>
       <LinearGradient
@@ -406,165 +437,160 @@ function MapHistory(props) {
           />
         </TouchableOpacity>
       </View>
-      <View style={{flex: 1}}>
-        {data.length > 0 ? (
-          <View style={{flex: 1}}>
-            <GoogleMap
-              region={{
-                latitude: parseFloat(data[0].lat),
-                longitude: parseFloat(data[0].lng),
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              }}>
-              {data?.map((coordinate, index) => {
-                {
-                  /* console.log('index.length', coordinate); */
-                }
-                return (
-                  <>
-                    <Marker
-                      pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
-                      tracksViewChanges={
-                        data[data.length - 1] == coordinate ? true : false
-                      }
-                      // ref={markerRef}
-                      key={index.toString()}
-                      coordinate={{
-                        latitude: parseFloat(coordinate.lat),
-                        longitude: parseFloat(coordinate.lng),
-                      }}>
-                      {data[data.length - 1] == coordinate ? (
-                        <Image
-                          resizeMode="contain"
-                          source={image.carGreenUp}
-                          style={{
-                            height: 50,
-                            width: 50,
-                          }}
-                        />
-                      ) : null}
-
-                      <Callout tooltip>
-                        <LinearGradient
-                          colors={[
-                            colors.mainThemeColor3,
-                            colors.mainThemeColor4,
-                          ]}
-                          start={{x: 1.3, y: 0}}
-                          end={{x: 0, y: 0}}
-                          locations={[0, 0.9]}
-                          style={style.firstbox}>
-                          <View style={{paddingBottom: 5}}>
-                            <Text style={style.firstboxtext1}>
-                              {coordinate.timeStamp}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                            }}>
-                            <AntDesign
-                              style={{
-                                color: '#17D180',
-                                fontSize: 16,
-                              }}
-                              name={'caretdown'}
-                            />
-                            <Text
-                              style={{
-                                paddingHorizontal: 10,
-                                color: colors.white,
-                              }}>
-                              Ignition: {coordinate.ignition}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              paddingTop: 5,
-                            }}>
-                            <View style={style.secondboxtextbox1}>
-                              <Text style={{paddingVertical: 8}}>
-                                <Image
-                                  resizeMode="contain"
-                                  source={image.speed}
-                                  style={style.speedimg}
-                                />
-                              </Text>
-                              <Text style={style.secondboxtext1}>
-                                {Math.floor(coordinate?.speed)} {__('KM/H')}
-                              </Text>
-                              <Text style={style.secondboxtext11}>
-                                {__('SPEED')}
-                              </Text>
-                            </View>
-                            <View style={style.secondboxtextbox1}>
-                              <Text style={{paddingVertical: 8}}>
-                                <Image
-                                  resizeMode="contain"
-                                  source={image.distance}
-                                  style={style.locimg}
-                                />
-                              </Text>
-                              <Text style={style.secondboxtext1}>
-                                {Math.floor(coordinate.odometer)} {__('KM')}
-                              </Text>
-                              <Text style={style.secondboxtext11}>
-                                {__("TODAY'S ODO")}
-                              </Text>
-                            </View>
-                          </View>
-                        </LinearGradient>
-                      </Callout>
-                    </Marker>
-                    {data.length >= 2 && (
-                      <MapViewDirections
-                        origin={{
-                          latitude: parseFloat(data[0].lat),
-                          longitude: parseFloat(data[0].lng),
-                        }}
-                        // waypoints={data.length > 2 ? data.slice(1, -1) : undefined}
-                        destination={{
-                          latitude: parseFloat(data[data.length - 1].lat),
-                          longitude: parseFloat(data[data.length - 1].lng),
-                        }}
-                        apikey={GOOGLE_MAP_KEY}
-                        strokeWidth={3}
-                        strokeColor="hotpink"
-                        optimizeWaypoints={true}
-                        onStart={params => {
-                          // console.log(
-                          //   `Started routing between "${params.origin}" and "${params.destination}"`,
-                          // );
-                        }}
-                        onReady={result => {
-                          // console.log(`Distance: ${result.distance} km`);
-                          // console.log(`Duration: ${result.duration} min.`);
-                          // this.mapView.fitToCoordinates(result.coordinates, {
-                          //   edgePadding: {
-                          //     right: width / 20,
-                          //     bottom: height / 20,
-                          //     left: width / 20,
-                          //     top: height / 20,
-                          //   },
-                          // });
-                        }}
-                        onError={errorMessage => {
-                          // console.log('GOT AN ERROR');
+      {/* <View style={{flex: 1}}> */}
+      {data.length > 0 ? (
+        <View style={{flex: 1}}>
+          <MapView
+            pitchEnabled={false}
+            // zoomEnabled={false}
+            style={{flex: 1}}
+            ref={mapRef}
+            caheEnabled
+            region={{
+              latitude: parseFloat(data[0].lat),
+              longitude: parseFloat(data[0].lng),
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            }}>
+            {data?.map((coordinate, index) => {
+              return (
+                <>
+                  <MarkerAnimated
+                    ref={marker => {
+                      setMyMarker(marker);
+                    }}
+                    pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
+                    tracksViewChanges={
+                      data[data.length - 1] == coordinate ? true : false
+                    }
+                    key={index.toString()}
+                    coordinate={{
+                      latitude: parseFloat(coordinate.lat),
+                      longitude: parseFloat(coordinate.lng),
+                    }}>
+                    {data[data.length - 1] == coordinate ? (
+                      <Image
+                        resizeMode="contain"
+                        source={image.carGreenUp}
+                        style={{
+                          height: 50,
+                          width: 50,
                         }}
                       />
-                    )}
-                  </>
-                );
-              })}
-            </GoogleMap>
-          </View>
-        ) : (
-          <Text>Loading...</Text>
-        )}
-        {/* <GoogleMap
+                    ) : null}
+
+                    <Callout tooltip>
+                      <LinearGradient
+                        colors={[
+                          colors.mainThemeColor3,
+                          colors.mainThemeColor4,
+                        ]}
+                        start={{x: 1.3, y: 0}}
+                        end={{x: 0, y: 0}}
+                        locations={[0, 0.9]}
+                        style={style.firstbox}>
+                        <View style={{paddingBottom: 5}}>
+                          <Text style={style.firstboxtext1}>
+                            {coordinate.timeStamp}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}>
+                          <AntDesign
+                            style={{
+                              color: '#17D180',
+                              fontSize: 16,
+                            }}
+                            name={'caretdown'}
+                          />
+                          <Text
+                            style={{
+                              paddingHorizontal: 10,
+                              color: colors.white,
+                            }}>
+                            Ignition: {coordinate.ignition}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingTop: 5,
+                          }}>
+                          <View style={style.secondboxtextbox1}>
+                            <Text style={{paddingVertical: 8}}>
+                              <Image
+                                resizeMode="contain"
+                                source={image.speed}
+                                style={style.speedimg}
+                              />
+                            </Text>
+                            <Text style={style.secondboxtext1}>
+                              {Math.floor(coordinate?.speed)} {__('KM/H')}
+                            </Text>
+                            <Text style={style.secondboxtext11}>
+                              {__('SPEED')}
+                            </Text>
+                          </View>
+                          <View style={style.secondboxtextbox1}>
+                            <Text style={{paddingVertical: 8}}>
+                              <Image
+                                resizeMode="contain"
+                                source={image.distance}
+                                style={style.locimg}
+                              />
+                            </Text>
+                            <Text style={style.secondboxtext1}>
+                              {Math.floor(coordinate.odometer)} {__('KM')}
+                            </Text>
+                            <Text style={style.secondboxtext11}>
+                              {__("TODAY'S ODO")}
+                            </Text>
+                          </View>
+                        </View>
+                      </LinearGradient>
+                    </Callout>
+                  </MarkerAnimated>
+                  {data.length >= 2 && (
+                    <MapViewDirections
+                      optimizeWaypoints={true}
+                      waypoints={[
+                        {latitude: data[0].lat, longitude: data[0].lng},
+                        {
+                          latitude: data[data.length - 1].lat,
+                          longitude: data[data.length - 1].lng,
+                        },
+                      ]}
+                      precision="high"
+                      origin={{
+                        latitude: parseFloat(data[0].lat),
+                        longitude: parseFloat(data[0].lng),
+                      }}
+                      destination={{
+                        latitude: parseFloat(data[data.length - 1].lat),
+                        longitude: parseFloat(data[data.length - 1].lng),
+                      }}
+                      apikey={GOOGLE_MAP_KEY}
+                      strokeWidth={3}
+                      strokeColor="hotpink"
+                      // optimizeWaypoints={true}
+                      onStart={params => {}}
+                      onReady={result => {}}
+                      onError={errorMessage => {}}
+                    />
+                  )}
+                </>
+              );
+            })}
+          </MapView>
+        </View>
+      ) : (
+        <Text>Loading...</Text>
+      )}
+      {/* <GoogleMap
           region={{
             latitude: 30.30,
             longitude: 75.30,
@@ -662,9 +688,160 @@ function MapHistory(props) {
             );
           })}
         </GoogleMap> */}
-      </View>
+      {/* </View> */}
+      <TouchableOpacity
+        onPress={() => animateMarkerAndCamera()}
+        style={[styles.bubble, styles.button]}>
+        <Text>Animate</Text>
+      </TouchableOpacity>
     </>
   );
 }
 // export default CarMarker = React.memo(MapHistory);
 export default MapHistory;
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  bubble: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 20,
+    position: 'absolute',
+    top: '90%',
+    right: '40%',
+  },
+  latlng: {
+    width: 200,
+    alignItems: 'stretch',
+  },
+  button: {
+    width: 80,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginVertical: 20,
+    backgroundColor: 'transparent',
+  },
+});
+// import React, {useState, useRef} from 'react';
+// import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+// import MapView, {AnimatedRegion, MarkerAnimated} from 'react-native-maps';
+// import {image} from '../../../assets/images';
+
+// const MapHistory = props => {
+//   const markerLatitude = 32.5983;
+//   const markerLongitude = 44.0175;
+//   //changed from useState to useRef
+//   const mapRef = useRef(null);
+//   const [myMarker, setMyMarker] = useState(null);
+//   const [coordinate, setCoordinate] = useState(
+//     new AnimatedRegion({
+//       latitude: markerLatitude,
+//       longitude: markerLongitude,
+//       latitudeDelta: 0.012,
+//       longitudeDelta: 0.012,
+//     }),
+//   );
+
+//   function animateMarkerAndCamera() {
+//     let newCoordinate = {
+//       latitude: 32.601,
+//       longitude: 44.0172,
+//       latitudeDelta: 0.012,
+//       longitudeDelta: 0.012,
+//     };
+//     //camera will position itself to these coordinates.
+//     const newCamera = {
+//       center: {
+//         latitude: 32.601,
+//         longitude: 44.0172,
+//       },
+//       pitch: 0,
+//       heading: 0,
+//       //zoom: 17  --Use it when required
+//     };
+
+//     if (myMarker) {
+//       myMarker.animateMarkerToCoordinate(newCoordinate, 4000);
+//       //camera type, `newCamera`, used inside animateCamera
+//       mapRef.current.animateCamera(newCamera, {duration: 4000});
+//     }
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       <MapView
+//         ref={mapRef} //There is also change here
+//         style={styles.map}
+//         initialRegion={{
+//           latitude: 32.5983,
+//           longitude: 44.0175,
+//           latitudeDelta: 0.012,
+//           longitudeDelta: 0.012,
+//         }}
+//         //These are newly added
+//         pitchEnabled={false}
+//         zoomEnabled={false}>
+//         <MarkerAnimated
+//           ref={marker => {
+//             setMyMarker(marker);
+//           }}
+//           /*any kind of image can be replaced here */
+//           image={image.carGreenUp}
+//           coordinate={coordinate}
+//         />
+//       </MapView>
+//       <View style={styles.buttonContainer}>
+//         <TouchableOpacity
+//           onPress={() => animateMarkerAndCamera()}
+//           style={[styles.bubble, styles.button]}>
+//           <Text>Animate</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+// };
+// export default MapHistory;
+// const styles = StyleSheet.create({
+//   container: {
+//     ...StyleSheet.absoluteFillObject,
+//     justifyContent: 'flex-end',
+//     alignItems: 'center',
+//   },
+//   map: {
+//     ...StyleSheet.absoluteFillObject,
+//   },
+//   bubble: {
+//     flex: 1,
+//     backgroundColor: 'rgba(255,255,255,0.7)',
+//     paddingHorizontal: 18,
+//     paddingVertical: 12,
+//     borderRadius: 20,
+//   },
+//   latlng: {
+//     width: 200,
+//     alignItems: 'stretch',
+//   },
+//   button: {
+//     width: 80,
+//     paddingHorizontal: 12,
+//     alignItems: 'center',
+//     marginHorizontal: 10,
+//   },
+//   buttonContainer: {
+//     flexDirection: 'row',
+//     marginVertical: 20,
+//     backgroundColor: 'transparent',
+//   },
+// });
