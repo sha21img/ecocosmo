@@ -50,7 +50,7 @@ function Home(props) {
     'In-Active': 0,
     'No GPS': 0,
   });
-  const getDetails = async () => {
+  const getDetails = async data => {
     setIsShow(true);
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
@@ -65,15 +65,29 @@ function Home(props) {
     setDetails(detail);
     setFilteredDetails(detail);
     setNewFilterDetails(detail);
-    const detailsLength = detail.forEach(element => {
-      setCountObj(prev => {
-        return {...prev, [element.status]: prev[element.status] + 1};
+    if (data === 'first') {
+      detail.forEach(element => {
+        setCountObj(prev => {
+          return {...prev, [element.status]: prev[element.status] + 1};
+        });
       });
-    });
+    }
+
     setIsShow(false);
   };
   useEffect(() => {
-    getDetails();
+    getDetails('first');
+    // if (newDetail.length > 0) {
+    // console.log(
+    //   'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv',
+    //   newDetail,
+    // );
+    // newDetail.forEach(element => {
+    //   setCountObj(prev => {
+    //     return {...prev, [element.status]: prev[element.status] + 1};
+    //   });
+    // });
+    // }
   }, []);
   const searchFunction = text => {
     // let filteredData = filterDetails.filter(item => {
@@ -110,7 +124,7 @@ function Home(props) {
     setIsShow(true);
     console.log('typeptprprp', data);
     if (data === 'All') {
-      getDetails();
+      getDetails('refresh');
     } else {
       getRunningData(data);
     }

@@ -45,10 +45,10 @@ function GraphicalReports(props) {
               />
             </View>
             <View style={styles.alertContainer}>
-              <Image
-                source={image.reportIcon}
-                style={{height: 24, width: 24}}
-              />
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('Reports')}>
+                <Image source={image.keep} style={{height: 35, width: 35}} />
+              </TouchableOpacity>
               <Image source={image.search} style={styles.searchIcon} />
             </View>
           </View>

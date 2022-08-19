@@ -51,12 +51,12 @@ const VehicleMenu = props => {
       data: 'GROUP REPORTS',
       routeTo: 'Reports',
     },
-    {
-      id: 5,
-      image: image.P,
-      data: 'PARKING MODE',
-      routeTo: '',
-    },
+    // {
+    //   id: 5,
+    //   image: image.P,
+    //   data: 'PARKING MODE',
+    //   routeTo: '',
+    // },
     {
       id: 6,
       image: image.modalImage5,

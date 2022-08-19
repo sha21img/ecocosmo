@@ -92,7 +92,7 @@ const DrawerContent = props => {
     let password = loginDetail.password;
     const response = await axiosGetData(`account/${username}/${password}`);
     console.log(response.data, '/////////////////////');
-    setName(response.data.brandName);
+    setName(response.data.accountName);
   };
   return (
     <>
@@ -139,7 +139,7 @@ const DrawerContent = props => {
                   alignItems: 'center',
                 }}
                 onPress={() =>
-                  props.navigation.navigate('HomeStack', {screen: el.route})
+                  props.navigation.navigate('HomeStack', {screen: "Home"})
                 }>
                 <Image source={el.icon} style={{height: 40, width: 40}} />
                 <Text
