@@ -55,25 +55,16 @@ function MapHistory(props) {
   const [ftimeend, setFtimeend] = useState('');
   const [dtype, setDtype] = useState();
   const [myMarker, setMyMarker] = useState(null);
+  const [animate, setAnimate] = useState(false);
 
-  const [coordinates, setCoordinates] = useState([
-    {
-      latitude: 26.9124,
-      longitude: 75.7873,
-    },
-    {
-      latitude: 27.7717,
-      longitude: 76.4053,
-    },
-    {
-      latitude: 27.9087,
-      longitude: 77.4053,
-    },
-    {
-      latitude: 28.7717,
-      longitude: 77.4053,
-    },
-  ]);
+  const [coordinates, setCoordinates] = useState({
+    coordinate: new AnimatedRegion({
+      latitude: 30.7046,
+      longitude: 77.1025,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
+    }),
+  });
   const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
 
   useEffect(() => {
@@ -93,7 +84,14 @@ function MapHistory(props) {
       date: fdate,
     };
     const response = await axiosGetData('mapHistory', data);
-    const newCoordinate = response.data.EventHistory.slice(0, 10);
+    const newCoordinate = response.data.EventHistory.slice(0,9);
+    newCoordinate.forEach(el => {
+      setCoordinates(prev => ({
+        ...prev,
+        coordinate: {latitude: el.lat, longitude: el.lng},
+      }));
+    });
+
     const filterDataa = newCoordinate.map(item => {
       const date = parseFloat(item.packetTimeStamp) + 19800;
       const newDate = new Date(date);
@@ -165,33 +163,34 @@ function MapHistory(props) {
       animateMarkerAndCamera();
     }, 5000);
   };
+  // console.log('coordinates.coordinate', coordinates.coordinate);
 
   function animateMarkerAndCamera() {
-    console.log('animateMarkerAndCamera');
-    console.log('i', i);
+    // console.log('datafdf', data);
+    // console.log('animateMarkerAndCamera');
+    // console.log('i', i);
     if (i < data.length) {
       let newCoordinate = {
-        latitude: parseFloat(data[i].lat),
-        longitude: parseFloat(data[i].lng),
+        latitude: parseFloat(data[i]?.lat),
+        longitude: parseFloat(data[i]?.lng),
         latitudeDelta: 0.012,
         longitudeDelta: 0.012,
       };
       const newCamera = {
         center: {
-          latitude: parseFloat(data[i].lat),
-          longitude: parseFloat(data[i].lng),
+          latitude: parseFloat(data[i]?.lat),
+          longitude: parseFloat(data[i]?.lng),
         },
         pitch: 0,
         heading: 0,
       };
-      if (myMarker) {
+      if (myMarker && mapRef.current) {
         myMarker.animateMarkerToCoordinate(newCoordinate, 5000);
         mapRef.current.animateCamera(newCamera, {duration: 5000});
       }
       i++;
     } else {
       clearInterval(interval);
-      i = 0;
     }
   }
 
@@ -395,6 +394,7 @@ function MapHistory(props) {
                 <>
                   <MarkerAnimated
                     ref={marker => {
+                      // console.log('marker', marker);
                       setMyMarker(marker);
                     }}
                     pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
@@ -403,7 +403,18 @@ function MapHistory(props) {
                       latitude: parseFloat(coordinate.lat),
                       longitude: parseFloat(coordinate.lng),
                     }}>
-                    {data[0] == coordinate ? (
+                    {/* {data[data.length - 1] == coordinate ? (
+                      <Image
+                        resizeMode="contain"
+                        source={image.carGreenUp}
+                        style={{
+                          height: 50,
+                          width: 50,
+                        }}
+                      />
+                    ) : null} */}
+
+                    {animate && data[data.length - 1] == coordinate ? (
                       <Image
                         resizeMode="contain"
                         source={image.carGreenUp}
@@ -510,10 +521,35 @@ function MapHistory(props) {
       ) : (
         <Text>Loading...</Text>
       )}
-      <TouchableOpacity
-        onPress={() => start()}
+      {/* <TouchableOpacity
+        onPress={() => {
+          setAnimate(true), start();
+        }}
         style={[styles.bubble, styles.button]}>
         <Text>Animate</Text>
+      </TouchableOpacity> */}
+      <TouchableOpacity
+        style={{position: 'absolute', bottom: 20, width: '100%'}}
+        onPress={() => {
+          setAnimate(true), start();
+        }}>
+        <LinearGradient
+          colors={['#0065B3', '#083273']}
+          start={{x: 0, y: 1}}
+          end={{x: 1, y: 0}}
+          style={{
+            width: '80%',
+            backgroundColor: 'red',
+            alignSelf: 'center',
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 20,
+            borderRadius: 10,
+          }}>
+          <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
+            Replay
+          </Text>
+        </LinearGradient>
       </TouchableOpacity>
     </>
   );
