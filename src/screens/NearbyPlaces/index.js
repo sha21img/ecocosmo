@@ -1,65 +1,76 @@
-import React from 'react';
-import {Image, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import {styles} from './style';
-import { __ } from '../../../Utils/Translation/translation';
+import {__} from '../../../Utils/Translation/translation';
+import axios from 'axios';
 
-
-const NearbyPlaces = () => {
+const NearbyPlaces = props => {
   const places = [
     {
       id: 1,
       img: image.petrolPump,
       name: 'PETROL PUMP',
+      data: 'petrolpump',
     },
     {
       id: 2,
       img: image.cng,
       name: 'CNG STATION',
+      data: 'cng',
     },
     {
       id: 3,
       img: image.charging,
       name: 'CHARGING STATION',
+      data: 'charge',
     },
     {
       id: 4,
       img: image.atm,
       name: 'ATM',
+      data: 'atm',
     },
     {
       id: 5,
       img: image.parking,
       name: 'PARKING',
+      data: 'parking',
     },
     {
       id: 6,
       img: image.policestation,
       name: 'POLICE STATION',
+      data: 'police',
     },
     {
       id: 7,
       img: image.Hospital,
       name: 'HOSPITAL',
+      data: 'hospital',
     },
     {
       id: 8,
       img: image.chemist,
       name: 'CHEMISTS',
+      data: 'chemist',
     },
     {
       id: 9,
       img: image.hotel,
       name: 'HOTEL',
+      data: 'hotel',
     },
     {
       id: 10,
       img: image.nightShelter,
       name: 'NIGHT SHELTERS',
+      data: 'night',
     },
   ];
+
   return (
     <>
       <LinearGradient
@@ -68,8 +79,12 @@ const NearbyPlaces = () => {
         style={styles.main}>
         <View style={styles.header}>
           <View style={styles.headerContent1}>
-            <Image source={image.backArrow} style={{height: 12, width: 23}} />
-            <Text style={styles.headerContentText}>{__("Nearby Places")}</Text>
+            <TouchableOpacity
+              onPress={() => props.navigation.goBack()}
+              style={{paddingVertical: 7}}>
+              <Image source={image.backArrow} style={{height: 12, width: 23}} />
+            </TouchableOpacity>
+            <Text style={styles.headerContentText}>{__('Nearby Places')}</Text>
           </View>
           <Image source={image.search} />
         </View>
@@ -80,8 +95,14 @@ const NearbyPlaces = () => {
                 colors={[colors.Modalcolor1, colors.white]}
                 key={element.id}
                 style={styles.content}>
-                <Image source={element.img} />
-                <Text style={styles.contentText}>{element.name}</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    props.navigation.navigate('Nearby', {data: element.data})
+                  }
+                  style={styles.placeItem}>
+                  <Image source={element.img} />
+                  <Text style={styles.contentText}>{element.name}</Text>
+                </TouchableOpacity>
               </LinearGradient>
             );
           })}

@@ -1,3 +1,4 @@
-export const  fontFamily={
-    CircularStd_Bold:"CircularStd-Bold"
-}
+export const fontFamily = {
+  CircularStd_Bold: 'CircularStd-Bold',
+  CircularStd_Book: 'CircularStd-Book',
+};

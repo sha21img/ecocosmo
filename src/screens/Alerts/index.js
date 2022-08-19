@@ -1,67 +1,54 @@
 import React, {useState} from 'react';
-import {Image, ScrollView, Text, TextInput, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  ActivityIndicator,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 import {image} from '../../../assets/images';
 import ToggleSwitch from 'toggle-switch-react-native';
+import {__} from '../../../Utils/Translation/translation';
+import {styles} from './style';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
 
-const Alerts = () => {
-  const [Ison, setIson] = useState(false);
-  const alertsData = [
-    {
-      id: 1,
-      name: 'AC Misuse',
-    },
-    {
-      id: 2,
-      name: 'Daily Report',
-    },
-    {
-      id: 3,
-      name: 'Fuel Tank Full',
-    },
-    {
-      id: 4,
-      name: 'Help me',
-    },
-    {
-      id: 5,
-      name: 'Hourly Location Update',
-    },
-    {
-      id: 6,
-      name: 'Idle Time',
-    },
-    {
-      id: 7,
-      name: 'Ignition OFF',
-    },
-    {
-      id: 8,
-      name: 'Ignition On',
-    },
-    {
-      id: 9,
-      name: 'Last Drive',
-    },
-    {
-      id: 10,
-      name: 'Lock Vehicle',
-    },
-    {
-      id: 11,
-      name: 'Over Speed',
-    },
-    {
-      id: 12,
-      name: 'Power Cut',
-    },
-    {
-      id: 13,
-      name: 'Waiting Time',
-    },
-  ];
+const Alerts = props => {
+  const [Ison, setIson] = useState(true);
+  const [alertDataResponse, setalertResponse] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const AlertData = async props => {
+    setLoading(true);
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountName;
+    let password = succcess.password;
+    const params = {
+      accountid: username,
+      password: password,
+      imei: '459710040353691',
+    };
+    const response = await axiosGetData(`getAlertDetails`, params);
+    console.log('alertData', response.data.alert_details);
+    if (response?.data) {
+      setalertResponse(response?.data?.alert_details);
+      setLoading(false);
+    }
+    setLoading(false);
+  };
+
+  React.useEffect(() => {
+    AlertData();
+  }, []);
+
   return (
     <>
       <View style={{height: '100%'}}>
@@ -69,79 +56,57 @@ const Alerts = () => {
           colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
           start={{x: 0, y: 0.5}}
           end={{x: 1, y: 0.5}}
-          style={{height: 161, paddingHorizontal: 16}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginTop: 43,
-              height: 22,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: 88,
-                height: 32,
-                alignItems: 'center',
-              }}>
-              <Image source={image.drawer} style={{height: 20, width: 23}} />
+          style={{paddingHorizontal: 16}}>
+          <View style={styles.navcontainer}>
+            <View style={styles.navbox}>
+              <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+                <Image source={image.drawer} style={styles.dashimg} />
+              </TouchableOpacity>
               <Text
                 style={{
                   fontSize: Size.large,
                   color: colors.white,
+                  paddingHorizontal: 10,
                 }}>
-                Alerts
+                {__('Alerts')}
               </Text>
             </View>
-            <View style={{flexDirection: 'row'}}>
-              <Image source={image.search} />
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '50%',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}>
+              <Entypo
+                style={{
+                  color: colors.white,
+                  fontSize: 20,
+                }}
+                name={'share'}
+              />
+              <Image
+                source={image.search}
+                style={{height: 18, width: 18, marginLeft: 15}}
+              />
             </View>
           </View>
-          <View
-            style={{
-              height: 46,
-              width: '92%',
-              backgroundColor: colors.white,
-              alignSelf: 'center',
-              marginTop: 30,
-              borderRadius: 7,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
+          <View style={styles.textinputbox}>
             <TextInput
-              placeholder="Select vehicle number"
-              style={{
-                height: 46,
-                width: '93%',
-                backgroundColor: colors.white,
-                borderRadius: 7,
-                paddingLeft: 20,
-              }}
+              placeholder={__('Select vehicle number')}
+              style={styles.textinput}
             />
-            <Text>‸</Text>
+            <MaterialIcons
+              style={{
+                color: '#3D3D3D',
+                fontSize: 18,
+              }}
+              name={'keyboard-arrow-down'}
+            />
           </View>
         </LinearGradient>
-        <View
-          style={{
-            height: 68,
-            width: '100%',
-            backgroundColor: colors.white,
-            elevation: 24,
-            paddingHorizontal: 16,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: Size.large,
-              color: colors.textcolor,
-              fontWeight: '700',
-            }}>
-            Alert Setting
-          </Text>
+        <View style={styles.box1}>
+          <Text style={styles.box1text}>{__('Alert Setting')}</Text>
           <ToggleSwitch
             isOn={Ison}
             onColor={colors.toggleColoron}
@@ -150,26 +115,45 @@ const Alerts = () => {
             onToggle={() => setIson(!Ison)}
           />
         </View>
-        <ScrollView style={{marginTop: 26}}>
-          {alertsData.map(el => {
-            console.log(el);
-            return (
-              <View
-                key={el.id}
-                style={{
-                  height: 54,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingHorizontal: 16,
-                }}>
-                <Text style={{fontSize: Size.large, color: colors.textcolor}}>
-                  {el.name}
-                </Text>
-                <Image source={image.selected} />
-              </View>
-            );
-          })}
+        <ScrollView style={{}}>
+          {loading ? (
+            <ActivityIndicator color={colors.white} />
+          ) : (
+            <>
+              {Ison
+                ? alertDataResponse.map(el => {
+                    return (
+                      <>
+                        <TouchableOpacity
+                          onPress={() =>
+                            props.navigation.navigate('AlertSetting', {
+                              details: el,
+                            })
+                          }
+                          key={el.id}
+                          style={styles.box2}>
+                          <Text
+                            style={{
+                              fontSize: Size.large,
+                              color: colors.textcolor,
+                            }}>
+                            {el?.displayName}
+                          </Text>
+                          <AntDesign
+                            style={{
+                              color:
+                                el.isActive === 'Yes' ? '#395dbf' : '#d9d9d9',
+                              fontSize: 26,
+                            }}
+                            name={'checkcircle'}
+                          />
+                        </TouchableOpacity>
+                      </>
+                    );
+                  })
+                : null}
+            </>
+          )}
         </ScrollView>
       </View>
     </>

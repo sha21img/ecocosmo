@@ -12,6 +12,10 @@ target 'demo' do
     :hermes_enabled => false
   )
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'demoTests' do
     inherit! :complete
     # Pods for testing

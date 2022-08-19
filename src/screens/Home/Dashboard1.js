@@ -1,115 +1,379 @@
-import React from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  Platform,
+  Linking,
+} from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
-import { __ } from '../../../Utils/Translation/translation';
+import {__} from '../../../Utils/Translation/translation';
+import styles from './DashStyle1';
+import {useNetInfo} from '@react-native-community/netinfo';
 
+import MapView, {
+  AnimatedRegion,
+  Animated,
+  MarkerAnimated,
+  Callout,
+  CalloutSubview,
+  Marker,
+  PROVIDER_GOOGLE,
+} from 'react-native-maps';
+import Geolocation from 'react-native-geolocation-service';
+import colors from '../../../assets/Colors';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
-function Dashboard1() {
+import {
+  check,
+  PERMISSIONS,
+  RESULTS,
+  request,
+  requestMultiple,
+} from 'react-native-permissions';
+import Moment from 'moment';
+import VehicleMenu from '../VehicleMenu';
+import {axiosGetData} from '../../../Utils/ApiController';
+import Storage from '../../../Utils/Storage';
+
+function Dashboard1({details, isShow}) {
+  const [coordinate, setCoordinate] = useState({
+    latitude: 26.9110637,
+    longitude: 75.7376412,
+  });
+  const [locationPermission, setLocationPermission] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [visible, setVisible] = useState(false);
+
+  const [alertMsg, setAlertMsg] = useState('');
+
+  const netInfo = useNetInfo();
+  const showPermissionError = (alertMsg = 'Please Enable Location Service') => {
+    setLocationPermission(true);
+    setAlertMsg(alertMsg);
+    setIsLoading(false);
+  };
+  const checkPermissionAndroid = () => {
+    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+      .then(result => {
+        switch (result) {
+          case RESULTS.UNAVAILABLE:
+            showPermissionError();
+            break;
+          case RESULTS.BLOCKED:
+            showPermissionError();
+            break;
+          case RESULTS.DENIED:
+            request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+              .then(result => {
+                if (result == RESULTS.GRANTED || result == RESULTS.LIMITED) {
+                  setIsLoading(false);
+                  setLocationPermission(false);
+                  getLocations();
+                } else {
+                  showPermissionError();
+                }
+              })
+              .catch(err => {
+                showPermissionError(
+                  'Something Went Wrong While Checking Permission',
+                );
+              });
+            break;
+          case RESULTS.LIMITED:
+            setIsLoading(false);
+            setLocationPermission(false);
+            getLocations();
+            break;
+          case RESULTS.GRANTED:
+            setIsLoading(false);
+            setLocationPermission(false);
+            getLocations();
+            break;
+        }
+      })
+      .catch(error => {
+        showPermissionError('Something Went Wrong While Checking Permission');
+      });
+  };
+  const getLocations = async () => {
+    Geolocation.getCurrentPosition(position => {
+      setCoordinate({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    });
+  };
+  useEffect(() => {
+    // getLocation();
+    if (netInfo.isConnected) {
+      if (Platform.OS == 'android') {
+        checkPermissionAndroid();
+      } else {
+        // checkPermissionIOS();
+      }
+    }
+  }, [netInfo.isConnected]);
+  const markerRef = useRef([]);
+  const onRegionalChange = useCallback(
+    region => {
+      setCoordinate(region);
+      // setCurrentLoc(region);
+      // if (markerRef&& markerRef.current && markerRef.current.showCallout) {
+      //   markerRef.current.showCallout();
+      // }
+    },
+    [markerRef.current],
+  );
+
+  const [marginBottom, setMarginBottom] = useState(1);
+  const data = [
+    {
+      latlng: {latitude: 26.9111158, longitude: 75.737648},
+    },
+    {latlng: {latitude: 26.8111158, longitude: 75.537648}},
+    {latlng: {latitude: 26.2111158, longitude: 75.437648}},
+    {latlng: {latitude: 26.1111158, longitude: 75.137648}},
+  ];
+  const [isData, isSetData] = useState({});
+  // const getVehicleDetail = item => {
+  //   return <VehicleMenu item={item} visible={visible} />;
+  // };
+  const calling = async data => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    const filterData = driverDetails.filter(item => {
+      return item.deviceId === data.deviceId;
+    });
+    const phoneNumber = filterData[0].mobilenumber;
+    Linking.openURL(`tel:${phoneNumber}`);
+  };
+
+  const renderItem = ({item, index}) => {
+    const date = parseFloat(item.validPacketTimeStamp) + 19800;
+    const newDate = new Date(date);
+    let month = newDate.getMonth() + 1;
+    if (String(Math.abs(month)).length == 1) {
+      month = '0' + month;
+    }
+
+    const filterTime = newDate.toLocaleTimeString('en-US');
+    const filterDate = `${newDate.getDate()}-${month}-${newDate.getFullYear()}`;
+    return (
+      <>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => {
+            isSetData(item), setVisible(true);
+            // return <VehicleMenu item={item} visible={visible} />;
+            // setVisible(true), getVehicleDetail(item);
+          }}>
+          <View style={styles.card1Container}>
+            <Image
+              resizeMode="contain"
+              source={{uri: item.equipmentIcon}}
+              style={{
+                height: 30,
+                width: 70,
+              }}
+            />
+            {/* <Image source={image.car} /> */}
+            <View style={{paddingHorizontal: 10}}>
+              <Text style={styles.driverCarNumber}>{item.deviceId}</Text>
+              <View style={styles.driverCarSpeedBox}>
+                <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>
+                <Text style={styles.driverCarSpeed}>
+                  {/* {__('Running')} 14m 38km/h */}
+                  {item.statusMessage}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={{backgroundColor: 'lightgreen', height: 150}}>
+            <MapView
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+              }}
+              zoomEnabled={true}
+              trackViewChanges={false}
+              scrollEnabled={false}
+              pointerEvents="none"
+              minZoomLevel={15}
+              initialRegion={{
+                latitude: parseFloat(item.lat),
+                longitude: parseFloat(item.lng),
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+              provider={PROVIDER_GOOGLE}
+              // followsUserLocation={true}
+              // showsMyLocationButton={true}
+              // showsUserLocation={true}
+              // onPress={e => {
+              //   setCoordinate(e.nativeEvent.coordinate);
+              // }}
+              // onRegionChangeComplete={region => onRegionalChange(region)}
+              // onRegionChangeComplete={region => setCoordinate(region)}
+              // onRegionChange={region => setCoordinate(region)}
+              // onMapReady={() => setMarginBottom(0)}
+            >
+              <Marker
+                // ref={markerRef}
+                key={index.toString()}
+                coordinate={{
+                  latitude: parseFloat(item.lat),
+                  longitude: parseFloat(item.lng),
+                }}>
+                <Image
+                  resizeMode="contain"
+                  source={{uri: item.equipmentIcon}}
+                  style={{
+                    height: 20,
+                    width: 70,
+                  }}
+                />
+              </Marker>
+            </MapView>
+          </View>
+
+          <LinearGradient
+            colors={['#45E384', '#02D958']}
+            style={styles.driverCarDetailBox}>
+            <View style={styles.imageContainer}>
+              {parseFloat(item.validPacketTimeStamp) -
+                parseFloat(item.lastPowerCutTime) >
+              300 ? (
+                <Image source={image.battery} style={styles.images} />
+              ) : (
+                <Image source={image.batteryOff} style={styles.images} />
+              )}
+
+              {parseFloat(item.validPacketTimeStamp) -
+                parseFloat(item.lastLowBatteryTime) >
+              21600 ? (
+                <Image source={image.charge} style={styles.images} />
+              ) : (
+                <Image source={image.chargeOff} style={styles.images} />
+              )}
+
+              {parseFloat(item.lastNoGpsSignalTime) >
+              parseFloat(item.validPacketTimeStamp) ? (
+                <Image source={image.location} style={styles.images} />
+              ) : (
+                <Image source={image.locationOff} style={styles.images} />
+              )}
+              {parseFloat(item.statusTermInfo & 2) == 2 ? (
+                <Image source={image.shokker} style={styles.images} />
+              ) : (
+                <Image source={image.shokkerOff} style={styles.images} />
+              )}
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                // width: wp('65%'),
+                justifyContent: 'flex-start',
+                // alignItems:'center'
+                // backgroundColor:'red',
+                // flexWrap:'nowrap'
+              }}>
+              <View style={styles.driverDetailBox}>
+                <Text style={styles.driverDetailText1}>
+                  {__('CHECK IN DATE & TIME')}
+                </Text>
+                <Text style={styles.driverDetailText2}>{filterDate}</Text>
+                <Text style={styles.driverDetailText2}>{filterTime}</Text>
+
+                {/* {Moment(new Object(item.validPacketTimeStamp)).format('HH')} */}
+                {/* 17:57:45 */}
+              </View>
+              <View style={styles.driverDetailBox}>
+                <Text style={styles.driverDetailText1}>{__('TODAYS ODO')}</Text>
+                <Text style={styles.driverDetailText2}>
+                  {/* 5790456 {__('KM')} */}
+                  {Math.floor(item.todaysODO)} {__('KM')}
+                  {/* {Number(item.todaysODO).toFixed()} {__('KM')} */}
+                </Text>
+              </View>
+              <View style={styles.driverDetailBox}>
+                <Text style={styles.driverDetailText1}>{__('SPEED')}</Text>
+                <Text style={styles.driverDetailText2}>
+                  {/* {item.speed} */}
+                  {Math.floor(item.speed)} {__('KM/H')}
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                isSetData(item), calling(item);
+              }}
+              style={styles.button}>
+              <Image
+                source={image.callimg}
+                style={{height: 15, width: 15, marginRight: 7}}
+              />
+              <Text style={styles.buttonText}> {__('Call')}</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+          <LinearGradient
+            colors={['#395DBF', '#16BCD4']}
+            start={{x: 0, y: 0.5}}
+            end={{x: 1, y: 0.5}}
+            style={styles.driverAddressBox}>
+            <Text style={styles.driverAddressText}>{item.address}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </>
+    );
+  };
+
   return (
     <>
-      <View style={{paddingVertical: 10}}>
+      {isShow ? (
         <View
           style={{
-            backgroundColor: 'white',
-            flexDirection: 'row',
+            flex: 1,
             alignItems: 'center',
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            elevation: 1,
+            justifyContent: 'center',
           }}>
-          <Image source={image.car} />
-
-          <View style={{paddingHorizontal: 10}}>
-            <Text style={{fontSize: 20, color: '#474747'}}>MH12 RN 0790</Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: '#46BE30',
-                  paddingHorizontal: 5,
-                }}>
-                {__("Running 14m 38km/h")}
-              </Text>
-            </View>
-          </View>
+          <ActivityIndicator />
         </View>
-        {/*  */}
-        <View style={{backgroundColor: 'lightgreen', height: 150}}></View>
-        {/*  */}
-        <LinearGradient
-          colors={['#45E384', '#02D958']}
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingBottom: 15,
-            paddingTop: 20,
-            paddingHorizontal: 10,
-            borderBottomLeftRadius: 16,
-            borderBottomRightRadius: 16,
-            position:'relative'
-          }}>
-          <View
-          style={{
-            position: 'absolute',
-            top:-20,
-            right: 0,
-            zIndex: 100,
-            flexDirection: 'row',
-          }}>
-          <Image source={image.location} style={{width: 45, height: 45}} />
-          <Image source={image.battery} style={{width: 45, height: 45}} />
-          <Image source={image.charge} style={{width: 45, height: 45}} />
-          <Image source={image.shokker} style={{width: 45, height: 45}} />
+      ) : !isShow && details === [] ? (
+        <View style={{height: 200, backgroundColor: 'red'}}>
+          <Text style={{color: 'black'}}>kljjhjgh</Text>
         </View>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            <View style={{paddingHorizontal: 7}}>
-              <Text style={{fontSize: 10, color: '#616161'}}>
-              {__("CHECK IN TIME")}
-              </Text>
-              <Text style={{fontSize: 12, color: '#313131'}}>{__("17:57:45")}</Text>
-            </View>
-            <View style={{paddingHorizontal: 7}}>
-              <Text style={{fontSize: 10, color: '#616161'}}>{__("TODAYS ODO")}</Text>
-              <Text style={{fontSize: 12, color: '#313131'}}>{__("5790456 KM")}</Text>
-            </View>
-            <View style={{paddingHorizontal: 7}}>
-              <Text style={{fontSize: 10, color: '#616161'}}>{__("SPEED")}</Text>
-              <Text style={{fontSize: 12, color: '#313131'}}>{__("16KM./H")}</Text>
-            </View>
-          </View>
-          <TouchableOpacity>
-            <Image source={image.call} />
-          </TouchableOpacity>
-        </LinearGradient>
-        <LinearGradient
-          colors={['#395DBF', '#16BCD4']}
-          start={{x: 0, y: 0.5}}
-          end={{x: 1, y: 0.5}}
-          style={{
-            marginHorizontal: 16,
-            paddingVertical: 5,
-            paddingHorizontal: 10,
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
-          }}>
-          <Text
-            style={{
-              fontSize: 10,
-              color: 'white',
-              paddingHorizontal: 5,
-              textAlign: 'center',
-            }}>
-            {__("177 New Apollo Mogra Lane Andheri,Mumbai, Bharuch,400069,India")}
-            
-          </Text>
-        </LinearGradient>
-        
-      </View>
+      ) : (
+        <FlatList
+          data={details}
+          contentContainerStyle={{paddingBottom: 100}}
+          keyExtractor={({item, index}) => index}
+          showsVerticalScrollIndicator={false}
+          renderItem={(item, index) => renderItem(item, index)}
+        />
+      )}
+      <VehicleMenu
+        visible={visible}
+        setVisible={setVisible}
+        details={isData}
+        calling={calling}
+      />
     </>
   );
 }

@@ -1,33 +1,49 @@
 import {StyleSheet} from 'react-native';
 import colors from '../../../assets/Colors';
-
 import {Size} from '../../../assets/fonts/Fonts';
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    padding: 24,
+    height: '100%',
+    width: '100%',
+    paddingBottom: 100,
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    paddingHorizontal: 18,
+    justifyContent: 'space-around',
+  },
+  pickerText: {
+    color: colors.black,
+    fontSize: Size.medium,
+    marginRight: 5,
+    height: 40,
+  },
   head: {
     width: '100%',
-  },
-  lang: {
-    backgroundColor: 'white',
-    alignSelf: 'flex-end',
-    height: 33,
-    width: 104,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
-    marginBottom: 48,
-    marginTop: 21,
-    flexDirection:'row'
+    marginTop: 30,
   },
   logo: {
-    width: 102,
-    height: 102,
+    width: '100%',
+    height: 100,
     alignSelf: 'center',
     marginBottom: 27,
+    resizeMode: 'contain',
+  },
+  companyText:{
+    textAlign: 'center',
+    color: colors.white,
+    fontFamily: 'CircularStd-Bold.eot',
+    fontSize: Size.huge,
+    paddingVertical: 10,
   },
   headText: {
     textAlign: 'center',
-    color: colors.mainTextColor,
+    color: colors.white,
     fontFamily: 'CircularStd-Bold.eot',
     fontSize: Size.compact,
   },
@@ -51,14 +67,12 @@ const styles = StyleSheet.create({
     fontSize: Size.large,
   },
   loginButton: {
-    marginTop: 22,
-    height: 66,
-    width: '88%',
+    width: '100%',
     alignSelf: 'center',
     borderRadius: 10,
+    paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 160,
   },
   loginButtonText: {
     color: colors.white,
@@ -66,8 +80,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footerTab: {
-    height: 57,
-    width: 200,
+    width: '60%',
+    position: 'absolute',
+    bottom: 0,
+    marginVertical: 25,
+    paddingVertical: 10,
     backgroundColor: colors.white,
     borderRadius: 30,
     alignSelf: 'center',

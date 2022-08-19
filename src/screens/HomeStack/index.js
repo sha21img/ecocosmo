@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Image,TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../Home';
 import Home2 from '../Home2';
@@ -7,20 +7,30 @@ import Notifications from '../Notifications';
 import CustomerProfile from '../CustomerProfile';
 import Setting from '../Setting';
 import Tabs from './Tabs';
-// import {AntDesign} from 'react-native-vector-icons/AntDesign'
+import colors from '../../../assets/Colors';
+import Alerts from '../Alerts';
 
-function HomeStack() {
+function HomeStack(props) {
+  console.log('props0000000000000000000000000', props.route.params?.screen);
   const Tab = createBottomTabNavigator();
+  const [isSelected, setIsSelected] = useState('Home');
+
   const CustomTabBar = ({state, navigation}) => {
-    const [selected, setSelected] = useState('Home');
-    const {routes} = state;
-    const renderColor = currentTab =>
-      currentTab === selected ? 'red' : 'black';
-    const handlePress = (activeTab, index) => {
-      if (state.index !== index) {
-        setSelected(activeTab);
-        navigation.navigate(activeTab);
+    console.log('props', props.route.params?.screen);
+    React.useEffect(() => {
+      if (props.route.params?.screen) {
+        console.log('useEffecteeetetceectect');
+        setIsSelected(props.route.params?.screen);
       }
+    }, []);
+    console.log('isSelected abhi wala', isSelected);
+    const {routes} = state;
+    const handlePress = (activeTab, index) => {
+      console.log('activeTab', activeTab);
+      setIsSelected(activeTab);
+      // if (state.index !== index) {
+      navigation.navigate(activeTab);
+      // }
     };
     return (
       <View
@@ -35,12 +45,12 @@ function HomeStack() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            backgroundColor: '#fff',
+            backgroundColor: colors.white,
             width: '90%',
             borderRadius: 100,
-            height: 52,
             paddingHorizontal: 20,
             paddingVertical: 6,
+            elevation: 2,
           }}>
           {routes.map((route, index) => (
             <Tabs
@@ -48,9 +58,8 @@ function HomeStack() {
               icon={route.params.icon}
               key={route.key}
               index={index}
-              color={renderColor(route.name)}
-              selected={selected}
-              onPress={() => handlePress()}
+              isSelected={isSelected}
+              onPress={handlePress}
             />
           ))}
         </View>
@@ -66,25 +75,21 @@ function HomeStack() {
         activeTintColor: '#438EFA',
       }}
       tabBar={props => <CustomTabBar {...props} />}>
+      <Tab.Screen name="Home" component={Home} initialParams={{icon: 'home'}} />
       <Tab.Screen
-        name="Home"
-        component={Home}
-        initialParams={{icon: 'home'}}
-      />
-      <Tab.Screen
-        name="Home2"
-        component={Home2}
+        name="Alerts"
+        component={Alerts}
         initialParams={{icon: 'home'}}
       />
       <Tab.Screen
         name="Notifications"
         component={Notifications}
-        initialParams={{icon: 'customerprofile'}}
+        initialParams={{icon: 'notification'}}
       />
       <Tab.Screen
         name="CustomerProfile"
         component={CustomerProfile}
-        initialParams={{icon: 'notification'}}
+        initialParams={{icon: 'customerprofile'}}
       />
       <Tab.Screen
         name="Setting"
