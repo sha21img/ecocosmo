@@ -35,7 +35,7 @@ import MapView, {
   PROVIDER_GOOGLE,
 } from 'react-native-maps';
 import GoogleMap from '../../../Utils/helper/GoogleMap';
-const LATITUDE_DELTA = 0.04;
+const LATITUDE_DELTA = 0.08;
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -56,6 +56,7 @@ function MapHistory(props) {
   const [dtype, setDtype] = useState();
   const [myMarker, setMyMarker] = useState(null);
   const [animate, setAnimate] = useState(false);
+  const [degree, setDegree] = useState(null);
 
   const [coordinates, setCoordinates] = useState({
     coordinate: new AnimatedRegion({
@@ -84,7 +85,7 @@ function MapHistory(props) {
       date: fdate,
     };
     const response = await axiosGetData('mapHistory', data);
-    const newCoordinate = response.data.EventHistory.slice(0,9);
+    const newCoordinate = response.data.EventHistory.slice(0, 9);
     newCoordinate.forEach(el => {
       setCoordinates(prev => ({
         ...prev,
@@ -156,9 +157,13 @@ function MapHistory(props) {
     setDtype(type);
     showMode('time');
   };
-  let i = 0;
+  let i = 1;
   var interval;
   const start = () => {
+    mapRef?.current?.getCamera().then(cam => {
+      cam.zoom += 4;
+      mapRef?.current?.animateCamera(cam);
+    });
     interval = setInterval(() => {
       animateMarkerAndCamera();
     }, 5000);
@@ -169,7 +174,33 @@ function MapHistory(props) {
     // console.log('datafdf', data);
     // console.log('animateMarkerAndCamera');
     // console.log('i', i);
+
     if (i < data.length) {
+      if (i < data.length - 1) {
+        const cord1 = {
+          latitude: parseFloat(data[i].lat),
+          longitude: data[i].lng,
+        };
+        const cord2 = {
+          latitude: parseFloat(data[i + 1].lat),
+          longitude: parseFloat(data[i + 1].lng),
+        };
+        const y =
+          Math.sin(cord2.longitude - cord1.longitude) *
+          Math.cos(cord2.latitude);
+        const x =
+          Math.cos(cord1.latitude) * Math.sin(cord2.latitude) -
+          Math.sin(cord1.latitude) *
+            Math.cos(cord2.latitude) *
+            Math.cos(cord2.longitude - cord1.longitude);
+        const θ = Math.atan2(y, x);
+        console.log('θ', θ);
+        const brng = ((θ * 180) / Math.PI + 360) % 360;
+        console.log('brng', brng);
+
+        setDegree(brng);
+      }
+
       let newCoordinate = {
         latitude: parseFloat(data[i]?.lat),
         longitude: parseFloat(data[i]?.lng),
@@ -187,12 +218,35 @@ function MapHistory(props) {
       if (myMarker && mapRef.current) {
         myMarker.animateMarkerToCoordinate(newCoordinate, 5000);
         mapRef.current.animateCamera(newCamera, {duration: 5000});
+
+        // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
+
+        // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
       }
       i++;
     } else {
       clearInterval(interval);
     }
   }
+
+  const animated = () => {
+    console.log('myMarker.myMarker', mapRef.current.animateToRegion);
+
+    const aaa = {
+      latitude: parseFloat(data[0].lat),
+      longitude: parseFloat(data[0].lng),
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: (screen.width / screen.height) * 0.8822,
+    };
+    let r = {
+      latitude: parseFloat(data[0].lat),
+      longitude: parseFloat(data[0].lng),
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: (screen.width / screen.height) * 0.00522,
+    };
+    // mapRef.current.animateToRegion(r, 1000);
+    mapRef.current.animateToRegion(aaa);
+  };
 
   return (
     <>
@@ -379,10 +433,13 @@ function MapHistory(props) {
       {data.length > 0 ? (
         <View style={{flex: 1}}>
           <MapView
+            minZoomLevel={15}
             pitchEnabled={false}
             style={{flex: 1}}
             ref={mapRef}
             caheEnabled
+            // onMapReady={() => animated()}
+
             region={{
               latitude: parseFloat(data[0].lat),
               longitude: parseFloat(data[0].lng),
@@ -413,17 +470,6 @@ function MapHistory(props) {
                         }}
                       />
                     ) : null} */}
-
-                    {animate && data[data.length - 1] == coordinate ? (
-                      <Image
-                        resizeMode="contain"
-                        source={image.carGreenUp}
-                        style={{
-                          height: 50,
-                          width: 50,
-                        }}
-                      />
-                    ) : null}
 
                     <Callout tooltip>
                       <LinearGradient
@@ -503,6 +549,35 @@ function MapHistory(props) {
                 </>
               );
             })}
+
+            <MarkerAnimated
+              ref={marker => {
+                // console.log('marker', marker);
+                setMyMarker(marker);
+              }}
+              style={{
+                transform: [
+                  {
+                    rotate: degree === null ? '0deg' : `${degree}deg`,
+                  },
+                ],
+              }}
+              // key={index.toString()}
+              coordinate={{
+                latitude: parseFloat(data[0].lat),
+                longitude: parseFloat(data[0].lng),
+              }}>
+              {animate && data[0] ? (
+                <Image
+                  resizeMode="contain"
+                  source={image.carGreenUp}
+                  style={{
+                    height: 50,
+                    width: 50,
+                  }}
+                />
+              ) : null}
+            </MarkerAnimated>
 
             <Polyline
               strokeWidth={2}

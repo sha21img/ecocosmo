@@ -37,15 +37,41 @@ function Reports(props) {
   const [ftime, setFtime] = useState('');
   const [ftimeend, setFtimeend] = useState('');
   const [dtype, setDtype] = useState();
+  const [newVehicleNumber, setNewVehicleNumber] = useState();
 
+  const setDate = () => {
+    var d = new Date();
+    const startDate = moment(d).format('YYYY-MM-DD');
+    console.log('startDate', startDate);
+    setFdate(startDate);
+    console.log(d.toLocaleDateString());
+    d.setMonth(d.getMonth() - 1);
+    console.log('11111', d.toLocaleDateString());
+    const aa = moment(d).format('YYYY-MM-DD');
+    setFdateend(aa);
+    console.log('endDate', aa);
+  };
   useEffect(() => {
-    data1();
+    setDate();
   }, []);
+  useEffect(() => {
+    if (fdate !== '' && fdateend !== '') {
+      data1();
+    }
+  }, [fdate, fdateend]);
 
   const data1 = async () => {
+    console.log('chal rha h /////////');
+    console.log('fffffff1f1f2f3f3f', fdate);
+    console.log('poirrtyuiop', fdateend);
     const succcess = await Storage.getLoginDetail('login_detail');
-    // const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
-    // setdata(vehicleNum);
+    const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
+    // console.log('vehicleNum', vehicleNum);
+    const filterVehicleNumber = vehicleNum.map((item, index) => {
+      return {key: index++, label: item.deviceId};
+    });
+    console.log('filterVehicleNumberfilterVehicleNumber', filterVehicleNumber);
+    setNewVehicleNumber(filterVehicleNumber);
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const data = {
@@ -54,10 +80,12 @@ function Reports(props) {
       imei: '459710040353691',
       startdate: '2016-11-01',
       enddate: '2016-11-22',
+      // startdate: fdate.toString(),
+      // enddate: fdateend.toString(),
       type: 'odo',
     };
     const response = await axiosGetData('reportHistory', data);
-    console.log('response.data', response.data.DeviceHistory);
+    // console.log('response.data', response.data.DeviceHistory);
     const resData = response.data.DeviceHistory;
     const sumOdo = resData.reduce((accumulator, object) => {
       return accumulator + object.todaysODO;
@@ -118,6 +146,17 @@ function Reports(props) {
     setDtype(type);
     showMode('time');
   };
+  const getFilterVehicle = async data => {
+    setVehicleNumber(data);
+    const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
+    const includedArray = vehicleNum
+      .filter(item => {
+        return item.deviceId == data;
+      })
+      .map(item => item.imei);
+    console.log('includedArray', includedArray[0]);
+    setImei(includedArray[0]);
+  };
 
   return (
     <>
@@ -160,10 +199,11 @@ function Reports(props) {
               <ModalSelector
                 initValue="Select tickets"
                 accessible={true}
-                data={data}
+                data={newVehicleNumber}
                 scrollViewAccessibilityLabel={'Scrollable options'}
                 onChange={option => {
-                  setVehicleNumber(option.label);
+                  getFilterVehicle(option.label);
+                  // setVehicleNumber(option.label);
                 }}>
                 <TouchableOpacity
                   style={{
