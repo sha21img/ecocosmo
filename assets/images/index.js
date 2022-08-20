@@ -116,5 +116,6 @@ export const image = {
   Notification1: require('./Notification1.png'),
   goToLocation: require('./goToLocation.png'),
   carLocation: require('./carLocation.png'),
+  testcar: require('./testcar.png'),
   
 };

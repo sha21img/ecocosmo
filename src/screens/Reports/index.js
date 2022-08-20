@@ -20,27 +20,58 @@ import Moment from 'moment';
 import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
 import {axiosGetData} from '../../../Utils/ApiController';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 
 function Reports(props) {
-  const [show, setShow] = useState(false);
-  const [dtype, setDtype] = useState();
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [dateset, setDateset] = useState('From Date');
-  const [dateTo, setDateTO] = useState(new Date(1598051730000));
-  const [datasetTo, setDatasetTo] = useState('To Date');
   const [vehicleNumber, setVehicleNumber] = useState('Select vehicle number');
   const [totalOdo, setTotalOdo] = useState();
   const [sumIgnitionOn, setSumIgnitionOn] = useState();
+  const [open, setOpen] = useState(false);
+  const [dateStart, setDateStart] = useState(new Date());
+  const [dateEnd, setDateEnd] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  const [fdate, setFdate] = useState('');
+  const [fdateend, setFdateend] = useState('');
+  const [ftime, setFtime] = useState('');
+  const [ftimeend, setFtimeend] = useState('');
+  const [dtype, setDtype] = useState();
+  const [newVehicleNumber, setNewVehicleNumber] = useState();
 
+  const setDate = () => {
+    var d = new Date();
+    const startDate = moment(d).format('YYYY-MM-DD');
+    console.log('startDate', startDate);
+    setFdate(startDate);
+    console.log(d.toLocaleDateString());
+    d.setMonth(d.getMonth() - 1);
+    console.log('11111', d.toLocaleDateString());
+    const aa = moment(d).format('YYYY-MM-DD');
+    setFdateend(aa);
+    console.log('endDate', aa);
+  };
   useEffect(() => {
-    // console.log(' route -=-=   -= ', props.route.params.deviceId);
-    data1();
+    setDate();
   }, []);
+  useEffect(() => {
+    if (fdate !== '' && fdateend !== '') {
+      data1();
+    }
+  }, [fdate, fdateend]);
 
   const data1 = async () => {
+    console.log('chal rha h /////////');
+    console.log('fffffff1f1f2f3f3f', fdate);
+    console.log('poirrtyuiop', fdateend);
     const succcess = await Storage.getLoginDetail('login_detail');
+    const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
+    // console.log('vehicleNum', vehicleNum);
+    const filterVehicleNumber = vehicleNum.map((item, index) => {
+      return {key: index++, label: item.deviceId};
+    });
+    console.log('filterVehicleNumberfilterVehicleNumber', filterVehicleNumber);
+    setNewVehicleNumber(filterVehicleNumber);
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const data = {
@@ -49,10 +80,12 @@ function Reports(props) {
       imei: '459710040353691',
       startdate: '2016-11-01',
       enddate: '2016-11-22',
+      // startdate: fdate.toString(),
+      // enddate: fdateend.toString(),
       type: 'odo',
     };
     const response = await axiosGetData('reportHistory', data);
-    console.log('response.data', response.data.DeviceHistory);
+    // console.log('response.data', response.data.DeviceHistory);
     const resData = response.data.DeviceHistory;
     const sumOdo = resData.reduce((accumulator, object) => {
       return accumulator + object.todaysODO;
@@ -67,28 +100,63 @@ function Reports(props) {
     }, 0);
   };
 
-  const showDatepicker = type => {
-    setDtype(type);
-    setShow(true);
-  };
-  const onChangeFrom = (event, selectedDate) => {
-    setDate(selectedDate);
-    let date = moment(selectedDate).format('DD-MM-YYYY');
-    setDateset(date);
-    setShow(false);
-  };
-  const onChangeTo = (event, selectedDate) => {
-    setDateTO(selectedDate);
-    let date = moment(selectedDate).format('DD-MM-YYYY');
-    setDatasetTo(date);
-    setShow(false);
-  };
-
   let index = 0;
   const data = [
     {key: index++, label: '87768'},
     {key: index++, label: '8785875'},
   ];
+  function formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
+  }
+  const onChangeStart = selectedDate => {
+    const currentDate = selectedDate || dateStart;
+    setShow(Platform.OS === 'ios');
+    setDateStart(currentDate);
+    let fDateStart = new Date(currentDate);
+    setFdate(formatDate(fDateStart.toString()));
+
+    let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
+    setFtime(fTimeStart);
+  };
+  const onChangeEnd = selectedDate => {
+    const currentDate = selectedDate || dateEnd;
+    setShow(Platform.OS === 'ios');
+    setDateEnd(currentDate);
+    let fDateEnd = new Date(currentDate);
+
+    setFdateend(formatDate(fDateEnd.toString()));
+    let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0, 8);
+    setFtimeend(fTimeEnd);
+  };
+  const showMode = currentMode => {
+    setShow(true);
+    setMode(currentMode);
+  };
+  const showDatepicker = type => {
+    setDtype(type);
+    showMode('date');
+  };
+  const showTimepicker = type => {
+    setDtype(type);
+    showMode('time');
+  };
+  const getFilterVehicle = async data => {
+    setVehicleNumber(data);
+    const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
+    const includedArray = vehicleNum
+      .filter(item => {
+        return item.deviceId == data;
+      })
+      .map(item => item.imei);
+    console.log('includedArray', includedArray[0]);
+    setImei(includedArray[0]);
+  };
 
   return (
     <>
@@ -108,11 +176,13 @@ function Reports(props) {
               />
             </View>
             <View style={styles.alertContainer}>
-              <Image
-                source={image.reportIcon}
-                style={{height: 24, width: 24}}
-              />
-              <Image source={image.search} style={styles.searchIcon} />
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('GraphicalReports')}>
+                <Image source={image.graph} style={{height: 35, width: 35}} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={image.search} style={styles.searchIcon} />
+              </TouchableOpacity>
             </View>
           </View>
           <View
@@ -129,10 +199,11 @@ function Reports(props) {
               <ModalSelector
                 initValue="Select tickets"
                 accessible={true}
-                data={data}
+                data={newVehicleNumber}
                 scrollViewAccessibilityLabel={'Scrollable options'}
                 onChange={option => {
-                  setVehicleNumber(option.label);
+                  getFilterVehicle(option.label);
+                  // setVehicleNumber(option.label);
                 }}>
                 <TouchableOpacity
                   style={{
@@ -195,22 +266,29 @@ function Reports(props) {
             paddingHorizontal: 20,
             justifyContent: 'space-between',
             paddingVertical: 10,
+            padding: 0,
           }}>
-          {/* <View style={{flexDirection: 'row'}}> */}
           <TouchableOpacity
-            onPress={() => showDatepicker('from')}
+            onPress={() => {
+              showDatepicker('start'), setOpen(true);
+            }}
             style={{
               borderWidth: 1,
               borderColor: '#D9D9D9',
               flexDirection: 'row',
               paddingHorizontal: 15,
-              paddingVertical: 12,
               width: '47%',
+              height: 50,
               borderRadius: 7,
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <Text style={{fontSize: 14}}>{dateset}</Text>
+            <TextInput
+              editable={false}
+              placeholder={'From Date'}
+              style={{fontSize: 14}}
+              value={fdate}
+            />
             <MaterialIcons
               style={{
                 color: '#3D3D3D',
@@ -220,19 +298,26 @@ function Reports(props) {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => showDatepicker('to')}
+            onPress={() => {
+              showDatepicker('end'), setOpen(true);
+            }}
             style={{
               borderColor: '#D9D9D9',
               borderWidth: 1,
               flexDirection: 'row',
               paddingHorizontal: 15,
-              paddingVertical: 12,
+              height: 50,
               width: '47%',
               borderRadius: 7,
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <Text style={{fontSize: 14}}>{datasetTo}</Text>
+            <TextInput
+              editable={false}
+              style={{fontSize: 14}}
+              value={fdateend}
+              placeholder={'To Date'}
+            />
             <MaterialIcons
               style={{
                 color: '#3D3D3D',
@@ -241,16 +326,23 @@ function Reports(props) {
               name={'keyboard-arrow-down'}
             />
           </TouchableOpacity>
-          {show && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={dtype == 'from' ? date : dateTo}
-              mode="date"
-              display="default"
-              onChange={dtype == 'from' ? onChangeFrom : onChangeTo}
-            />
-          )}
         </View>
+        {show && (
+          <DatePicker
+            modal
+            // is24hourSource="device"
+            open={open}
+            date={dtype == 'start' ? dateStart : dateEnd}
+            onConfirm={date => {
+              dtype == 'start' ? onChangeStart(date) : onChangeEnd(date);
+              setOpen(false);
+            }}
+            mode={mode}
+            onCancel={() => {
+              setOpen(false);
+            }}
+          />
+        )}
       </View>
       <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
         <LinearGradient
