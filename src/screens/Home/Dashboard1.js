@@ -169,7 +169,7 @@ function Dashboard1({details, isShow}) {
     // console.log('datatatta',date)
     const filterDate=moment.unix(date).format('DD-MM-YYYY')
     // console.log("newDate/////////",filterDate)
-    const filterTime = moment.unix(date).format('HH:MM:SS')
+    const filterTime = moment.unix(date).format('hh:mm:ss')
     // console.log("filterTime",filterTime)
 
 
