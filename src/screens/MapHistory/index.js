@@ -176,14 +176,14 @@ function MapHistory(props) {
     // console.log('i', i);
 
     if (i < data.length) {
-      if (i < data.length - 1) {
+        
         const cord1 = {
-          latitude: parseFloat(data[i].lat),
-          longitude: data[i].lng,
+          latitude: parseFloat(data[i-1].lat),
+          longitude: data[i-1].lng,
         };
         const cord2 = {
-          latitude: parseFloat(data[i + 1].lat),
-          longitude: parseFloat(data[i + 1].lng),
+          latitude: parseFloat(data[i].lat),
+          longitude: parseFloat(data[i].lng),
         };
         const y =
           Math.sin(cord2.longitude - cord1.longitude) *
@@ -199,7 +199,6 @@ function MapHistory(props) {
         console.log('brng', brng);
 
         setDegree(brng);
-      }
 
       let newCoordinate = {
         latitude: parseFloat(data[i]?.lat),
@@ -626,6 +625,7 @@ function MapHistory(props) {
           </Text>
         </LinearGradient>
       </TouchableOpacity>
+      
     </>
   );
 }
