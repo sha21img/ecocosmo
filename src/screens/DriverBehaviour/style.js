@@ -4,13 +4,13 @@ import {Size} from '../../../assets/fonts/Fonts';
 
 const styles = StyleSheet.create({
   mainContainer: {
-    flex:1,
-    
+    flex: 1,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',padding: 20,
+    alignItems: 'center',
+    padding: 20,
   },
   headerDashboard: {
     flex: 1,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   searchIcon: {
     height: 18,
     width: 18,
-    marginLeft: 15,
+    marginLeft: 20,
   },
   catagoryBox: {
     flexDirection: 'row',
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     // paddingVertical: 15,
-    marginVertical:20,
+    marginVertical: 20,
     // backgroundColor:'red',
     width: '100%',
   },
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   driverCar: {
     width: 60,
     height: 67,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   driverAddressBox: {
     paddingVertical: 12,
