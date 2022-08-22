@@ -176,29 +176,27 @@ function MapHistory(props) {
     // console.log('i', i);
 
     if (i < data.length) {
-        
-        const cord1 = {
-          latitude: parseFloat(data[i-1].lat),
-          longitude: data[i-1].lng,
-        };
-        const cord2 = {
-          latitude: parseFloat(data[i].lat),
-          longitude: parseFloat(data[i].lng),
-        };
-        const y =
-          Math.sin(cord2.longitude - cord1.longitude) *
-          Math.cos(cord2.latitude);
-        const x =
-          Math.cos(cord1.latitude) * Math.sin(cord2.latitude) -
-          Math.sin(cord1.latitude) *
-            Math.cos(cord2.latitude) *
-            Math.cos(cord2.longitude - cord1.longitude);
-        const θ = Math.atan2(y, x);
-        console.log('θ', θ);
-        const brng = ((θ * 180) / Math.PI + 360) % 360;
-        console.log('brng', brng);
+      const cord1 = {
+        latitude: parseFloat(data[i - 1].lat),
+        longitude: data[i - 1].lng,
+      };
+      const cord2 = {
+        latitude: parseFloat(data[i].lat),
+        longitude: parseFloat(data[i].lng),
+      };
+      const y =
+        Math.sin(cord2.longitude - cord1.longitude) * Math.cos(cord2.latitude);
+      const x =
+        Math.cos(cord1.latitude) * Math.sin(cord2.latitude) -
+        Math.sin(cord1.latitude) *
+          Math.cos(cord2.latitude) *
+          Math.cos(cord2.longitude - cord1.longitude);
+      const θ = Math.atan2(y, x);
+      console.log('θ', θ);
+      const brng = ((θ * 180) / Math.PI + 360) % 360;
+      console.log('brng', brng);
 
-        setDegree(brng);
+      setDegree(brng);
 
       let newCoordinate = {
         latitude: parseFloat(data[i]?.lat),
@@ -571,8 +569,8 @@ function MapHistory(props) {
                   resizeMode="contain"
                   source={image.carGreenUp}
                   style={{
-                    height: 50,
-                    width: 50,
+                    height: 30,
+                    width: 30,
                   }}
                 />
               ) : null}
@@ -625,7 +623,6 @@ function MapHistory(props) {
           </Text>
         </LinearGradient>
       </TouchableOpacity>
-      
     </>
   );
 }

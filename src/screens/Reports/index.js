@@ -45,7 +45,6 @@ function Reports(props) {
   const [isActive1, setIsActive1] = useState(false);
   const [isActive3, setIsActive3] = useState(false);
   const [isActive4, setIsActive4] = useState(false);
-  
 
   const setDate = () => {
     var d = new Date();
@@ -177,13 +176,10 @@ function Reports(props) {
     secs = secs % 60;
     var hours = Math.floor(minutes / 60);
     minutes = minutes % 60;
-    let ashish = `${hours.toString().length == 1 ? '0' + hours : hours}:${
+    let time = `${hours.toString().length == 1 ? '0' + hours : hours}:${
       minutes.toString().length == 1 ? '0' + minutes : minutes
     }:${secs.toString().length == 1 ? '0' + secs : secs}`;
-    // console.log('ashishhhhhhhhhh987654', typeof ashish);
-    // let mod = moment(ashish).format('HH:MM:SS')
-    // console.log("mod",mod)
-    return ashish;
+    return time;
   };
   const getNewDate = data => {
     const d = moment(data, 'Do MMM YYYY').toDate();
@@ -877,133 +873,3 @@ function Reports(props) {
 }
 
 export default Reports;
-
-// {"DeviceHistory":
-// const data = [
-//   {
-//     deviceId: 'Petrol zeep',
-//     0: 'Petrol zeep',
-//     todaysODO: 33.34,
-//     1: '33.3442',
-//     todaysIgnitionOnTimeSeconds: '5216',
-//     2: '5216',
-//     todaysIdleTimeSeconds: '81184',
-//     3: '81184',
-//     todaysWaitingIgnitionTime: '1306',
-//     4: '1306',
-//     cumulativeIgnitionOnTimeSeconds: '993412',
-//     5: '993412',
-//     timeStamp1: 'Tue 22nd Nov 2016',
-//     6: 'Tue 22nd Nov 2016',
-//     eventTime: '1479816000',
-//     7: '1479816000',
-//   },
-//   {
-//     deviceId: 'Petrol zeep',
-//     0: 'Petrol zeep',
-//     // todaysODO: 3.85,
-//     // 1: '3.84679',
-//     // todaysIgnitionOnTimeSeconds: '488',
-//     // 2: '488',
-//     // todaysIdleTimeSeconds: '85912',
-//     // 3: '85912',
-//     // todaysWaitingIgnitionTime: '125',
-//     // 4: '125',
-//     cumulativeIgnitionOnTimeSeconds: '988196',
-//     5: '988196',
-//     timeStamp1: 'Mon 21st Nov 2016',
-//     6: 'Mon 21st Nov 2016',
-//     eventTime: '1479729600',
-//     7: '1479729600',
-//   },
-//   {
-//     deviceId: 'Petrol zeep',
-//     0: 'Petrol zeep',
-//     todaysODO: 23.97,
-//     1: '23.9698',
-//     todaysIgnitionOnTimeSeconds: '3210',
-//     2: '3210',
-//     todaysIdleTimeSeconds: '83190',
-//     3: '83190',
-//     todaysWaitingIgnitionTime: '825',
-//     4: '825',
-//     cumulativeIgnitionOnTimeSeconds: '987708',
-//     5: '987708',
-//     timeStamp1: 'Wed 9th Nov 2016',
-//     6: 'Wed 9th Nov 2016',
-//     eventTime: '1478692800',
-//     7: '1478692800',
-//   },
-//   {
-//     deviceId: 'Petrol zeep',
-//     0: 'Petrol zeep',
-//     todaysODO: 73.46,
-//     1: '73.4575',
-//     todaysIgnitionOnTimeSeconds: '10969',
-//     2: '10969',
-//     todaysIdleTimeSeconds: '75431',
-//     3: '75431',
-//     todaysWaitingIgnitionTime: '2305',
-//     4: '2305',
-//     cumulativeIgnitionOnTimeSeconds: '984498',
-//     5: '984498',
-//     timeStamp1: 'Tue 8th Nov 2016',
-//     6: 'Tue 8th Nov 2016',
-//     eventTime: '1478606400',
-//     7: '1478606400',
-//   },
-//   {
-//     deviceId: 'Petrol zeep',
-//     0: 'Petrol zeep',
-//     todaysODO: 30.62,
-//     1: '30.6189',
-//     todaysIgnitionOnTimeSeconds: '5162',
-//     2: '5162',
-//     todaysIdleTimeSeconds: '81238',
-//     3: '81238',
-//     todaysWaitingIgnitionTime: '1718',
-//     4: '1718',
-//     cumulativeIgnitionOnTimeSeconds: '973529',
-//     5: '973529',
-//     timeStamp1: 'Mon 7th Nov 2016',
-//     6: 'Mon 7th Nov 2016',
-//     eventTime: '1478520000',
-//     7: '1478520000',
-//   },
-//   {
-//     deviceId: 'Petrol zeep',
-//     0: 'Petrol zeep',
-//     todaysODO: 19.37,
-//     1: '19.3699',
-//     todaysIgnitionOnTimeSeconds: '2901',
-//     2: '2901',
-//     todaysIdleTimeSeconds: '83499',
-//     3: '83499',
-//     todaysWaitingIgnitionTime: '334',
-//     4: '334',
-//     cumulativeIgnitionOnTimeSeconds: '968367',
-//     5: '968367',
-//     timeStamp1: 'Sun 6th Nov 2016',
-//     6: 'Sun 6th Nov 2016',
-//     eventTime: '1478433600',
-//     7: '1478433600',
-//   },
-//   {
-//     deviceId: 'Petrol zeep',
-//     0: 'Petrol zeep',
-//     todaysODO: 8.98,
-//     1: '8.98227',
-//     todaysIgnitionOnTimeSeconds: '4763',
-//     2: '4763',
-//     todaysIdleTimeSeconds: '81637',
-//     3: '81637',
-//     todaysWaitingIgnitionTime: '2631',
-//     4: '2631',
-//     cumulativeIgnitionOnTimeSeconds: '965466',
-//     5: '965466',
-//     timeStamp1: 'Sat 5th Nov 2016',
-//     6: 'Sat 5th Nov 2016',
-//     eventTime: '1478347200',
-//     7: '1478347200',
-//   },
-// ];
