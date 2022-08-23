@@ -79,7 +79,7 @@ function LiveMapTracking(props) {
     heading,
   } = state;
   const updateState = data => setState(state => ({...state, ...data}));
-  const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
+  const GOOGLE_MAP_KEY = 'AIzaSyAQDxD_FpUHSM-HGCGrs20T4oZTNRc4Sq0';
   useEffect(() => {
     getLiveLocation();
   }, []);
