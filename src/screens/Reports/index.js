@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -25,6 +25,7 @@ import DatePicker from 'react-native-date-picker';
 import axios from 'axios';
 import moment from 'moment';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import style from '../MapHistory/style';
 
 function Reports(props) {
   const [vehicleNumber, setVehicleNumber] = useState('Select vehicle number');
@@ -97,7 +98,7 @@ function Reports(props) {
       // enddate: `${fdateend}{" "}${ftimeend}`,
     };
     const response = await axiosGetData('getDriveDetails', data);
-    const summarReport =  response.data.Drives.forEach(item => {
+    const summarReport = response.data.Drives.forEach(item => {
       // console.log('item', item);
 
       getAddress(item.startPoint, username, encodedPassWord);
@@ -132,7 +133,7 @@ function Reports(props) {
       Promise.all([data1(), getSummaryReport()])
         .then(values => {
           if (values) {
-            console.log("values",values)
+            console.log('values', values);
             setLoading(true);
           }
         })
@@ -245,18 +246,17 @@ function Reports(props) {
     return newDate;
   };
 
-
-  const createPDF = async()=> {
+  const createPDF = async () => {
     let options = {
       html: '<h1>PDF TEST</h1>',
       fileName: 'test',
       directory: 'Documents',
     };
 
-    let file = await RNHTMLtoPDF.convert(options)
+    let file = await RNHTMLtoPDF.convert(options);
     // console.log(file.filePath);
     alert(file.filePath);
-  }
+  };
   return (
     <>
       <View>
@@ -279,9 +279,7 @@ function Reports(props) {
                 onPress={() => props.navigation.navigate('GraphicalReports')}>
                 <Image source={image.graph} style={{height: 35, width: 35}} />
               </TouchableOpacity>
-              <TouchableOpacity>
-                <Image source={image.search} style={styles.searchIcon} />
-              </TouchableOpacity>
+         
             </View>
           </View>
           <View
@@ -513,7 +511,7 @@ function Reports(props) {
                 horizontal={true}
                 style={{flexDirection: 'row', paddingTop: 10}}>
                 <View style={{paddingRight: 20}}>
-                  <Text>Vehicle No.</Text>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
 
                   {isActive === 'odometer' && isActive2.odometer === 1 ? (
                     newVehicleNumber?.map(item => {
@@ -524,7 +522,7 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Date</Text>
+                  <Text style={styles.textHead}>Date</Text>
 
                   {isActive == 'odometer' && isActive2.odometer === 1 ? (
                     mapHistory.map(item => {
@@ -545,7 +543,7 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Kms</Text>
+                  <Text style={styles.textHead}>Kms</Text>
 
                   {isActive === 'odometer' && isActive2.odometer === 1 ? (
                     mapHistory.map(item => {
@@ -622,9 +620,9 @@ function Reports(props) {
                 horizontal={true}
                 style={{flexDirection: 'row', paddingTop: 10}}>
                 <View style={{paddingRight: 20}}>
-                  <Text>Vehicle No.</Text>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
                   {/* <Text>20-07-2022</Text> */}
-                  {isActive === 'ignition'&& isActive2.ignition === 1 ? (
+                  {isActive === 'ignition' && isActive2.ignition === 1 ? (
                     newVehicleNumber?.map(item => {
                       return <Text>{item.label.slice(0, 13)}</Text>;
                     })
@@ -633,7 +631,7 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Date</Text>
+                  <Text style={styles.textHead}>Date</Text>
                   {isActive === 'ignition' && isActive2.ignition === 1 ? (
                     mapHistory.map(item => {
                       return <Text>{getNewDate(item.timeStamp1)}</Text>;
@@ -647,8 +645,8 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Ignition on</Text>
-                  {isActive === 'ignition' && isActive2.ignition === 1  ? (
+                  <Text style={styles.textHead}>Ignition on</Text>
+                  {isActive === 'ignition' && isActive2.ignition === 1 ? (
                     mapHistory.map(item => {
                       return (
                         <Text>
@@ -667,7 +665,7 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Ignition off</Text>
+                  <Text style={styles.textHead}>Ignition off</Text>
                   {isActive === 'ignition' && isActive2.ignition === 1 ? (
                     mapHistory.map(item => {
                       return (
@@ -719,12 +717,15 @@ function Reports(props) {
                         backgroundColor: colors.mainThemeColor1,
                         borderRadius: 50,
                       }}
-                      onPress={() => {setIsActive('vehicle'),setIsActive2(prev => {
-                        return {
-                          ...prev,
-                          vehicle: prev['vehicle'] == 0 ? 1 : 0,
-                        };
-                      });}}>
+                      onPress={() => {
+                        setIsActive('vehicle'),
+                          setIsActive2(prev => {
+                            return {
+                              ...prev,
+                              vehicle: prev['vehicle'] == 0 ? 1 : 0,
+                            };
+                          });
+                      }}>
                       <MaterialIcons
                         style={{
                           color: colors.white,
@@ -746,9 +747,9 @@ function Reports(props) {
                   horizontal={true}
                   style={{flexDirection: 'row', paddingTop: 10}}>
                   <View style={{paddingRight: 20}}>
-                    <Text>Vehicle No.</Text>
+                    <Text style={styles.textHead}>Vehicle No.</Text>
 
-                    {isActive === 'vehicle' && isActive2.vehicle === 1  ? (
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       newVehicleNumber?.map(item => {
                         return <Text>{item.label.slice(0, 13)}</Text>;
                       })
@@ -757,9 +758,9 @@ function Reports(props) {
                     )}
                   </View>
                   <View style={{paddingRight: 20}}>
-                    <Text>Start Location</Text>
+                    <Text style={styles.textHead}>Start Location</Text>
                     {/* <Text>{sumIgnitionOn}</Text> */}
-                    {isActive === 'vehicle' && isActive2.vehicle === 1  ? (
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         {
                           /* console.log('aaassshihihishishishi', item); */
@@ -771,8 +772,8 @@ function Reports(props) {
                     )}
                   </View>
                   <View style={{paddingRight: 20}}>
-                    <Text>Start Time</Text>
-                    {isActive === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    <Text style={styles.textHead}>Start Time</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         {
                           /* console.log("item.endTime",item) */
@@ -785,8 +786,8 @@ function Reports(props) {
                     {/* <Text>{sumIgnitionOn}</Text> */}
                   </View>
                   <View style={{paddingRight: 20}}>
-                    <Text>Travel Time</Text>
-                    {isActive === 'vehicle' && isActive2.vehicle === 1  ? (
+                    <Text style={styles.textHead}>Travel Time</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         {
                           /* console.log("item.endTime",item) */
@@ -799,8 +800,8 @@ function Reports(props) {
                     {/* <Text>{sumIgnitionOn}</Text> */}
                   </View>
                   <View style={{paddingRight: 20}}>
-                    <Text>Work/Idle hrs</Text>
-                    {isActive === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    <Text style={styles.textHead}>Work/Idle hrs</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         return (
                           <Text>
@@ -822,8 +823,8 @@ function Reports(props) {
 
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>Work/Idle hrs</Text>
-                    {isActive  === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    <Text style={styles.textHead}>Work/Idle hrs</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         return (
                           <Text>
@@ -844,8 +845,8 @@ function Reports(props) {
                   </View>
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>Stopped Time</Text>
-                    {isActive  === 'vehicle'&& isActive2.vehicle === 1 ? (
+                    <Text style={styles.textHead}>Stopped Time</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         return (
                           <Text>
@@ -867,8 +868,8 @@ function Reports(props) {
                   {/*  */}
 
                   <View style={{paddingRight: 20}}>
-                    <Text>Max Speed(Km/h)</Text>
-                    {isActive  === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    <Text style={styles.textHead}>Max Speed(Km/h)</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         return (
                           <Text>
@@ -889,8 +890,8 @@ function Reports(props) {
                   </View>
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>Avg Speed(Km/h)</Text>
-                    {isActive === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    <Text style={styles.textHead}>Avg Speed(Km/h)</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         return (
                           <Text>
@@ -911,8 +912,8 @@ function Reports(props) {
                   </View>
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>Engine Hours</Text>
-                    {isActive === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    <Text style={styles.textHead}>Engine Hours</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory.map(item => {
                         return (
                           <Text>
@@ -933,8 +934,8 @@ function Reports(props) {
                   {/*  */}
 
                   <View style={{paddingRight: 20}}>
-                    <Text>Distance Travelled(kms)</Text>
-                    {isActive  === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    <Text style={styles.textHead}>Distance Travelled(kms)</Text>
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory.map(item => {
                         return <Text>{item.todaysODO}</Text>;
                       })
@@ -948,9 +949,9 @@ function Reports(props) {
                   </View>
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>End Location</Text>
+                    <Text style={styles.textHead}>End Location</Text>
                     {/* <Text>{sumIgnitionOn}</Text> */}
-                    {isActive === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         {
                           /* console.log('aaassshihihishishishi', item); */
@@ -963,9 +964,9 @@ function Reports(props) {
                   </View>
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>End Time (HH:MM)</Text>
+                    <Text style={styles.textHead}>End Time (HH:MM)</Text>
                     {/* <Text>{sumIgnitionOn}</Text> */}
-                    {isActive  === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         {
                           /* console.log('aaassshihihishishishi', item); */
@@ -978,9 +979,9 @@ function Reports(props) {
                   </View>
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>#OverSpeed</Text>
+                    <Text style={styles.textHead}>#OverSpeed</Text>
                     {/* <Text>{sumIgnitionOn}</Text> */}
-                    {isActive  === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         {
                           /* console.log('aaassshihihishishishi', item); */
@@ -993,9 +994,9 @@ function Reports(props) {
                   </View>
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>#Alerts</Text>
+                    <Text style={styles.textHead}>#Alerts</Text>
                     {/* <Text>{sumIgnitionOn}</Text> */}
-                    {isActive  === 'vehicle'&& isActive2.vehicle === 1 ? (
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         {
                           /* console.log('aaassshihihishishishi', item); */
@@ -1008,9 +1009,9 @@ function Reports(props) {
                   </View>
                   {/*  */}
                   <View style={{paddingRight: 20}}>
-                    <Text>Report Date</Text>
+                    <Text style={styles.textHead}>Report Date</Text>
                     {/* <Text>{sumIgnitionOn}</Text> */}
-                    {isActive === 'vehicle'&& isActive2.vehicle === 1  ? (
+                    {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                       mapHistory?.map(item => {
                         {
                           /* console.log('aaassshihihishishishi', item); */
@@ -1049,12 +1050,15 @@ function Reports(props) {
                       backgroundColor: colors.mainThemeColor1,
                       borderRadius: 50,
                     }}
-                    onPress={() => {setIsActive('drive'),setIsActive2(prev => {
-                        return {
-                          ...prev,
-                          drive: prev['drive'] == 0 ? 1 : 0,
-                        };
-                      })}}>
+                    onPress={() => {
+                      setIsActive('drive'),
+                        setIsActive2(prev => {
+                          return {
+                            ...prev,
+                            drive: prev['drive'] == 0 ? 1 : 0,
+                          };
+                        });
+                    }}>
                     <MaterialIcons
                       style={{
                         color: colors.white,
@@ -1074,9 +1078,8 @@ function Reports(props) {
                   showsHorizontalScrollIndicator={false}
                   horizontal={true}
                   style={{flexDirection: 'row', paddingTop: 10}}>
-                  
                   <View style={{paddingRight: 20}}>
-                    <Text>Vehicle No.</Text>
+                    <Text style={styles.textHead}>Vehicle No.</Text>
 
                     {isActive === 'drive' && isActive2.drive === 1 ? (
                       newVehicleNumber?.map(item => {
@@ -1090,7 +1093,7 @@ function Reports(props) {
                     style={{
                       paddingRight: 20,
                     }}>
-                    <Text>Start Location</Text>
+                    <Text style={styles.textHead}>Start Location</Text>
                     {isActive === 'drive' && isActive2.drive === 1 ? (
                       data2?.map(item => {
                         {
@@ -1104,7 +1107,7 @@ function Reports(props) {
                     {/* <Text>{sumIgnitionOn}</Text> */}
                   </View>
                   <View style={{paddingRight: 20}}>
-                    <Text>End Time</Text>
+                    <Text style={styles.textHead}>End Time</Text>
                     {isActive === 'drive' && isActive2.drive === 1 ? (
                       summaryReport?.map(item => {
                         {
@@ -1118,7 +1121,7 @@ function Reports(props) {
                     {/* <Text>{sumIgnitionOn}</Text> */}
                   </View>
                   <View style={{paddingRight: 20}}>
-                    <Text>Duration</Text>
+                    <Text style={styles.textHead}>Duration</Text>
                     {isActive === 'drive' && isActive2.drive === 1 ? (
                       summaryReport?.map(item => {
                         {
@@ -1132,7 +1135,7 @@ function Reports(props) {
                     {/* <Text>{sumIgnitionOn}</Text> */}
                   </View>
                   <View style={{paddingRight: 20}}>
-                    <Text>Work/Idle hrs</Text>
+                    <Text style={styles.textHead}>Work/Idle hrs</Text>
                     {isActive === 'drive' && isActive2.drive === 1 ? (
                       summaryReport?.map(item => {
                         {
@@ -1179,12 +1182,15 @@ function Reports(props) {
                       backgroundColor: colors.mainThemeColor1,
                       borderRadius: 50,
                     }}
-                    onPress={() => {setIsActive('idle'),setIsActive2(prev => {
-                        return {
-                          ...prev,
-                          idle: prev['idle'] == 0 ? 1 : 0,
-                        };
-                      })}}>
+                    onPress={() => {
+                      setIsActive('idle'),
+                        setIsActive2(prev => {
+                          return {
+                            ...prev,
+                            idle: prev['idle'] == 0 ? 1 : 0,
+                          };
+                        });
+                    }}>
                     <MaterialIcons
                       style={{
                         color: colors.white,
@@ -1206,9 +1212,9 @@ function Reports(props) {
                 horizontal={true}
                 style={{flexDirection: 'row', paddingTop: 10}}>
                 <View style={{paddingRight: 20}}>
-                  <Text>Vehicle No.</Text>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
                   {/* <Text>20-07-2022</Text> */}
-                  {isActive == 'idle'  && isActive2.idle === 1 ? (
+                  {isActive == 'idle' && isActive2.idle === 1 ? (
                     newVehicleNumber?.map(item => {
                       return <Text>{item.label.slice(0, 13)}</Text>;
                     })
@@ -1217,9 +1223,9 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Date</Text>
+                  <Text style={styles.textHead}>Date</Text>
                   {/* <Text>{sumIgnitionOn}</Text> */}
-                  {isActive == 'idle'&& isActive2.idle === 1 ? (
+                  {isActive == 'idle' && isActive2.idle === 1 ? (
                     mapHistory?.map(item => {
                       return (
                         <Text>
@@ -1236,7 +1242,7 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Engine Idle Time</Text>
+                  <Text style={styles.textHead}>Engine Idle Time</Text>
                   {isActive == 'idle' && isActive2.idle === 1 ? (
                     mapHistory?.map(item => {
                       return (
@@ -1288,12 +1294,15 @@ function Reports(props) {
                       backgroundColor: colors.mainThemeColor1,
                       borderRadius: 50,
                     }}
-                    onPress={() => {setIsActive('daily'),setIsActive2(prev => {
-                        return {
-                          ...prev,
-                          daily: prev['daily'] == 0 ? 1 : 0,
-                        };
-                      })}}>
+                    onPress={() => {
+                      setIsActive('daily'),
+                        setIsActive2(prev => {
+                          return {
+                            ...prev,
+                            daily: prev['daily'] == 0 ? 1 : 0,
+                          };
+                        });
+                    }}>
                     <MaterialIcons
                       style={{
                         color: colors.white,
@@ -1315,7 +1324,7 @@ function Reports(props) {
                 horizontal={true}
                 style={{flexDirection: 'row', paddingTop: 10}}>
                 <View style={{paddingRight: 20}}>
-                  <Text>Vehicle No.</Text>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
                   {isActive === 'daily' && isActive2.daily === 1 ? (
                     newVehicleNumber?.map(item => {
                       return <Text>{item.label.slice(0, 13)}</Text>;
@@ -1325,7 +1334,7 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Date</Text>
+                  <Text style={styles.textHead}>Date</Text>
                   {isActive === 'daily' && isActive2.daily === 1 ? (
                     mapHistory?.map(item => {
                       return <Text>{item.timeStamp1.slice(4)}</Text>;
@@ -1335,7 +1344,7 @@ function Reports(props) {
                   )}
                 </View>
                 <View style={{paddingRight: 20}}>
-                  <Text>Waiting Time</Text>
+                  <Text style={styles.textHead}>Waiting Time</Text>
                   {isActive === 'daily' && isActive2.daily === 1 ? (
                     mapHistory?.map(item => {
                       return (
