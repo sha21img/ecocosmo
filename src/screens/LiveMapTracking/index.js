@@ -137,7 +137,7 @@ function LiveMapTracking(props) {
   }, []);
   const getDetails = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     let type = loginDetail.type;
     const response = await axiosGetData(
@@ -152,8 +152,8 @@ function LiveMapTracking(props) {
       //   longitude: parseFloat(response.data.vehicle.lng),
       // },
       destinationCords: {
-        latitude: parseFloat(response.data.vehicle.lastLat),
-        longitude: parseFloat(response.data.vehicle.lastLng),
+        latitude: parseFloat(response.data?.vehicle?.lastLat),
+        longitude: parseFloat(response.data?.vehicle?.lastLng),
       },
     });
     setIsShow(true);
@@ -186,7 +186,7 @@ function LiveMapTracking(props) {
   // const shrethis = async () => {
   //   // console.log('share');
   //   const loginDetail = await Storage.getLoginDetail('login_detail');
-  //   let username = loginDetail.accountName;
+  //   let username = loginDetail.accountId;
   //   let password = loginDetail.password;
   //   const response = await axiosGetData(
   //     `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,

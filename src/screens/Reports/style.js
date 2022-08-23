@@ -117,5 +117,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     textAlign: 'center',
   },
+  textHead: {fontWeight: 'bold', color: '#B9B9B9'},
 });
 export default styles;

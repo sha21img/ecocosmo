@@ -55,7 +55,7 @@ function MapHistory(props) {
   const [ftimeend, setFtimeend] = useState('');
   const [dtype, setDtype] = useState();
   const [myMarker, setMyMarker] = useState(null);
-  const [animate, setAnimate] = useState(false);
+  const [animate, setAnimate] = useState('');
   const [degree, setDegree] = useState(null);
 
   const [coordinates, setCoordinates] = useState({
@@ -72,6 +72,9 @@ function MapHistory(props) {
     if (fdate !== '') {
       getMapHistory();
     }
+    return () => {
+      clearInterval(interval);
+    };
   }, [open]);
 
   const getMapHistory = async () => {
@@ -147,7 +150,7 @@ function MapHistory(props) {
     setShow(true);
     setMode(currentMode);
   };
-  const mapRef = React.useRef(null);
+  var mapRef = React.useRef(null);
 
   const showDatepicker = type => {
     setDtype(type);
@@ -158,92 +161,148 @@ function MapHistory(props) {
     showMode('time');
   };
   let i = 1;
-  var interval;
-  const start = () => {
+  const [interval, setT] = useState(null);
+  const start = data => {
     mapRef?.current?.getCamera().then(cam => {
-      cam.zoom += 4;
+      cam.zoom += 3;
       mapRef?.current?.animateCamera(cam);
     });
-    interval = setInterval(() => {
-      animateMarkerAndCamera();
-    }, 5000);
+    setT(
+      setInterval(() => {
+        animateMarkerAndCamera(data);
+      }, 5000),
+    );
   };
-  // console.log('coordinates.coordinate', coordinates.coordinate);
-
-  function animateMarkerAndCamera() {
-    // console.log('datafdf', data);
-    // console.log('animateMarkerAndCamera');
-    // console.log('i', i);
-
+  // console.log('dayaatatatatattatta', data[0]);
+  console.log('i', i);
+  function animateMarkerAndCamera(datas) {
+    console.log('poiuytrew ', datas);
     if (i < data.length) {
-      const cord1 = {
-        latitude: parseFloat(data[i - 1].lat),
-        longitude: data[i - 1].lng,
-      };
-      const cord2 = {
-        latitude: parseFloat(data[i].lat),
-        longitude: parseFloat(data[i].lng),
-      };
-      const y =
-        Math.sin(cord2.longitude - cord1.longitude) * Math.cos(cord2.latitude);
-      const x =
-        Math.cos(cord1.latitude) * Math.sin(cord2.latitude) -
-        Math.sin(cord1.latitude) *
-          Math.cos(cord2.latitude) *
-          Math.cos(cord2.longitude - cord1.longitude);
-      const θ = Math.atan2(y, x);
-      console.log('θ', θ);
-      const brng = ((θ * 180) / Math.PI + 360) % 360;
-      console.log('brng', brng);
+      if (datas === 'start') {
+        console.log('dtattatatiifiifif fif fif ', datas);
 
-      setDegree(brng);
+        const cord1 = {
+          latitude: parseFloat(data[i - 1].lat),
+          longitude: parseFloat(data[i - 1].lng),
+        };
+        const cord2 = {
+          latitude: parseFloat(data[i].lat),
+          longitude: parseFloat(data[i].lng),
+        };
 
-      let newCoordinate = {
-        latitude: parseFloat(data[i]?.lat),
-        longitude: parseFloat(data[i]?.lng),
-        latitudeDelta: 0.012,
-        longitudeDelta: 0.012,
-      };
-      const newCamera = {
-        center: {
+        const y =
+          Math.sin(cord2.longitude - cord1.longitude) *
+          Math.cos(cord2.latitude);
+        const x =
+          Math.cos(cord1.latitude) * Math.sin(cord2.latitude) -
+          Math.sin(cord1.latitude) *
+            Math.cos(cord2.latitude) *
+            Math.cos(cord2.longitude - cord1.longitude);
+        const θ = Math.atan2(y, x);
+        console.log('θ', θ);
+        const brng = ((θ * 180) / Math.PI + 360) % 360;
+        console.log('brng', brng);
+
+        setDegree(brng);
+
+        let newCoordinate = {
           latitude: parseFloat(data[i]?.lat),
           longitude: parseFloat(data[i]?.lng),
-        },
-        pitch: 0,
-        heading: 0,
-      };
-      if (myMarker && mapRef.current) {
-        myMarker.animateMarkerToCoordinate(newCoordinate, 5000);
-        mapRef.current.animateCamera(newCamera, {duration: 5000});
+          latitudeDelta: 0.012,
+          longitudeDelta: 0.012,
+        };
+        const newCamera = {
+          center: {
+            latitude: parseFloat(data[i]?.lat),
+            longitude: parseFloat(data[i]?.lng),
+          },
+          pitch: 0,
+          heading: 0,
+        };
+        if (myMarker && mapRef.current) {
+          myMarker.animateMarkerToCoordinate(newCoordinate, 5000);
+          mapRef.current.animateCamera(newCamera, {duration: 5000});
 
-        // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
+          // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
 
-        // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
+          // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
+        }
+        i++;
+      } else {
+        console.log('elseseseelelelsrseese');
+        const cord1 = {
+          latitude: parseFloat(data[i].lat),
+          longitude: parseFloat(data[i].lng),
+        };
+        const cord2 = {
+          latitude: parseFloat(data[i + 1].lat),
+          longitude: parseFloat(data[i + 1].lng),
+        };
+
+        const y =
+          Math.sin(cord2.longitude - cord1.longitude) *
+          Math.cos(cord2.latitude);
+        const x =
+          Math.cos(cord1.latitude) * Math.sin(cord2.latitude) -
+          Math.sin(cord1.latitude) *
+            Math.cos(cord2.latitude) *
+            Math.cos(cord2.longitude - cord1.longitude);
+        const θ = Math.atan2(y, x);
+        console.log('θ', θ);
+        const brng = ((θ * 180) / Math.PI + 360) % 360;
+        console.log('brng', brng);
+
+        setDegree(brng);
+
+        let newCoordinate = {
+          latitude: parseFloat(data[0]?.lat),
+          longitude: parseFloat(data[0]?.lng),
+          latitudeDelta: 0.012,
+          longitudeDelta: 0.012,
+        };
+        const newCamera = {
+          center: {
+            latitude: parseFloat(data[0]?.lat),
+            longitude: parseFloat(data[0]?.lng),
+          },
+          pitch: 0,
+          heading: 0,
+        };
+        if (myMarker && mapRef.current) {
+          myMarker.animateMarkerToCoordinate(newCoordinate, 5000);
+          // mapRef == null;
+          mapRef.current.animateCamera(newCamera, {duration: 5000});
+
+          // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
+
+          // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
+        }
       }
-      i++;
     } else {
+      setAnimate(false);
       clearInterval(interval);
+      i = 0;
     }
   }
 
-  const animated = () => {
-    console.log('myMarker.myMarker', mapRef.current.animateToRegion);
+  // const animated = () => {
+  //   console.log('myMarker.myMarker', mapRef.current.animateToRegion);
 
-    const aaa = {
-      latitude: parseFloat(data[0].lat),
-      longitude: parseFloat(data[0].lng),
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: (screen.width / screen.height) * 0.8822,
-    };
-    let r = {
-      latitude: parseFloat(data[0].lat),
-      longitude: parseFloat(data[0].lng),
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: (screen.width / screen.height) * 0.00522,
-    };
-    // mapRef.current.animateToRegion(r, 1000);
-    mapRef.current.animateToRegion(aaa);
-  };
+  //   const aaa = {
+  //     latitude: parseFloat(data[0].lat),
+  //     longitude: parseFloat(data[0].lng),
+  //     latitudeDelta: LATITUDE_DELTA,
+  //     longitudeDelta: (screen.width / screen.height) * 0.8822,
+  //   };
+  //   let r = {
+  //     latitude: parseFloat(data[0].lat),
+  //     longitude: parseFloat(data[0].lng),
+  //     latitudeDelta: LATITUDE_DELTA,
+  //     longitudeDelta: (screen.width / screen.height) * 0.00522,
+  //   };
+  //   // mapRef.current.animateToRegion(r, 1000);
+  //   mapRef.current.animateToRegion(aaa);
+  // };
 
   return (
     <>
@@ -447,10 +506,10 @@ function MapHistory(props) {
               return (
                 <>
                   <MarkerAnimated
-                    ref={marker => {
-                      // console.log('marker', marker);
-                      setMyMarker(marker);
-                    }}
+                    // ref={marker => {
+                    //   // console.log('marker', marker);
+                    //   setMyMarker(marker);
+                    // }}
                     pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
                     key={index.toString()}
                     coordinate={{
@@ -546,7 +605,6 @@ function MapHistory(props) {
                 </>
               );
             })}
-
             <MarkerAnimated
               ref={marker => {
                 // console.log('marker', marker);
@@ -564,13 +622,22 @@ function MapHistory(props) {
                 latitude: parseFloat(data[0].lat),
                 longitude: parseFloat(data[0].lng),
               }}>
-              {animate && data[0] ? (
+              {animate == 'start' ? (
                 <Image
                   resizeMode="contain"
                   source={image.carGreenUp}
                   style={{
                     height: 30,
                     width: 30,
+                  }}
+                />
+              ) : animate == 'stop' ? (
+                <Image
+                  resizeMode="contain"
+                  source={image.carGreenUp}
+                  style={{
+                    height: 0,
+                    width: 0,
                   }}
                 />
               ) : null}
@@ -600,11 +667,11 @@ function MapHistory(props) {
         style={[styles.bubble, styles.button]}>
         <Text>Animate</Text>
       </TouchableOpacity> */}
-      {!animate ? (
+      {animate == 'stop' ? (
         <TouchableOpacity
           style={{position: 'absolute', bottom: 20, width: '100%'}}
           onPress={() => {
-            setAnimate(true), start();
+            setAnimate('start'), start('start');
           }}>
           <LinearGradient
             colors={['#0065B3', '#083273']}
@@ -628,7 +695,10 @@ function MapHistory(props) {
         <TouchableOpacity
           style={{position: 'absolute', bottom: 20, width: '100%'}}
           onPress={() => {
-            setAnimate(false), clearInterval(interval);
+            setAnimate('stop'),
+              clearInterval(interval),
+              (i = 0),
+              animateMarkerAndCamera('stop');
           }}>
           <LinearGradient
             colors={['#0065B3', '#083273']}
