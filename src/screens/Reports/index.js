@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import DatePicker from 'react-native-date-picker';
 import axios from 'axios';
 import moment from 'moment';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
 function Reports(props) {
   const [vehicleNumber, setVehicleNumber] = useState('Select vehicle number');
@@ -73,7 +74,7 @@ function Reports(props) {
     setDate();
   }, []);
 
-  const getSummaryReport = new Promise(async (resolve, reject) => {
+  const getSummaryReport = async () => {
     const success = await Storage.getLoginDetail('login_detail');
     let username = success.accountId;
     let encodedPassWord = success.password;
@@ -96,8 +97,8 @@ function Reports(props) {
     });
     // console.log('response.data.Drives', response.data.Drives);
     setSummaryReport(response.data.Drives);
-    resolve(response.data.Drives);
-  });
+    return response.data.Drives;
+  };
   // startPoint":"19.268671,72.869516",
   var filterAddress = [];
   const getAddress = async (address, username, password) => {
@@ -121,9 +122,10 @@ function Reports(props) {
     console.log('uusususuususuusuu');
     if (fdate !== '' && fdateend !== '') {
       console.log('proprorprprorp');
-      Promise.all([data1, getSummaryReport])
+      Promise.all([data1(), getSummaryReport()])
         .then(values => {
           if (values) {
+            console.log("values",values)
             setLoading(true);
           }
         })
@@ -134,7 +136,7 @@ function Reports(props) {
   }, [fdate, fdateend]);
 
   // console.log('filterAddress', filterAddress);
-  const data1 = new Promise(async (resolve, reject) => {
+  const data1 = async () => {
     // console.log('chal rha h /////////');
     // console.log('fffffff1f1f2f3f3f', fdate);
     // console.log('poirrtyuiop', fdateend);
@@ -162,8 +164,8 @@ function Reports(props) {
     const aa = response.data.DeviceHistory.reverse();
     // console.log('098765432345678987654345678', aa);
     setMapHistory(aa);
-    resolve(aa);
-  });
+    return aa;
+  };
 
   let index = 0;
   function formatDate(date) {
@@ -235,6 +237,19 @@ function Reports(props) {
     const newDate = moment(d).format('YYYY-MM-DD');
     return newDate;
   };
+
+
+  const createPDF = async()=> {
+    let options = {
+      html: '<h1>PDF TEST</h1>',
+      fileName: 'test',
+      directory: 'Documents',
+    };
+
+    let file = await RNHTMLtoPDF.convert(options)
+    // console.log(file.filePath);
+    alert(file.filePath);
+  }
   return (
     <>
       <View>
@@ -468,7 +483,7 @@ function Reports(props) {
                       name={'keyboard-arrow-down'}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={createPDF}>
                     <Image
                       source={image.shareDark}
                       style={{width: 24, height: 24}}

@@ -4,6 +4,7 @@ import {
   Text,
   Image,
   TextInput,
+  ActivityIndicator,
   ScrollView,
   TouchableOpacity,
   FlatList,
@@ -40,6 +41,7 @@ function GraphicalReports(props) {
   const [imei, setImei] = useState(null);
   const [mapHistory, setMapHistory] = useState([]);
   const [toggle, setToggle] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const setDate = () => {
     var d = new Date();
@@ -82,6 +84,9 @@ function GraphicalReports(props) {
     };
     const response = await axiosGetData('reportHistory', data);
     const aa = response.data.DeviceHistory.reverse();
+    if (aa) {
+      setLoading(true);
+    }
     setMapHistory(aa);
   };
 
@@ -138,14 +143,16 @@ function GraphicalReports(props) {
   };
 
   const getTime = secs => {
+    console.log(secs, "this is seconds")
     var minutes = Math.floor(secs / 60);
-    secs = secs % 60;
+    // secs = secs % 60;
     var hours = Math.floor(minutes / 60);
-    minutes = minutes % 60;
-    let time = `${hours.toString().length == 1 ? '0' + hours : hours}:${
-      minutes.toString().length == 1 ? '0' + minutes : minutes
-    }:${secs.toString().length == 1 ? '0' + secs : secs}`;
-    return minutes;
+    console.log(hours,"this is hours")
+    // minutes = minutes % 60;
+    // let time = `${hours.toString().length == 1 ? '0' + hours : hours}:${
+    //   minutes.toString().length == 1 ? '0' + minutes : minutes
+    // }:${secs.toString().length == 1 ? '0' + secs : secs}`;
+    return hours;
   };
   const getNewDate = data => {
     const d = moment(data, 'Do MMM YYYY').toDate();
@@ -169,15 +176,11 @@ function GraphicalReports(props) {
                 value={__('Distance Reports')}
               />
             </View>
-            <View style={styles.alertContainer}>
-              <TouchableOpacity
-                onPress={() => props.navigation.navigate('Reports')}>
-                <Image source={image.keep} style={{height: 35, width: 35}} />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image source={image.search} style={styles.searchIcon} />
-              </TouchableOpacity>
-            </View>
+
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate('Reports')}>
+              <Image source={image.keep} style={{height: 35, width: 35}} />
+            </TouchableOpacity>
           </View>
           <View
             style={{
@@ -227,7 +230,7 @@ function GraphicalReports(props) {
             </View>
           </View>
         </LinearGradient>
-        <View
+        {/* <View
           style={{
             flexDirection: 'row',
             width: '100%',
@@ -310,64 +313,93 @@ function GraphicalReports(props) {
               setOpen(false);
             }}
           />
-        )}
+        )} */}
       </View>
       <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
-        {/* 
+        {loading ? (
+          <>
+            {/* 
           Odometer
            */}
-        <LinearGradient
-          colors={['#BCE2FF', '#FFFFFF']}
-          start={{x: 0, y: 1}}
-          end={{x: 1, y: 0}}
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'space-between',
-            elevation: 20,
-          }}>
-          <View style={{width: '50%', padding: 20}}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-              Odometer Total km
-            </Text>
-            <View
+            <LinearGradient
+              colors={['#BCE2FF', '#FFFFFF']}
+              start={{x: 0, y: 1}}
+              end={{x: 1, y: 0}}
               style={{
-                justifyContent: 'space-between',
                 flexDirection: 'row',
-                alignItems: 'center',
+                width: '100%',
+                justifyContent: 'space-between',
+                elevation: 20,
               }}>
-              <TouchableOpacity style={{paddingVertical: 10}}>
-                <Image
-                  source={image.shareDark}
-                  style={{width: 25, height: 25}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: colors.mainThemeColor1,
-                  borderRadius: 50,
-                  width: 25,
-                  height: 25,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() => {
-                  setToggle('odo');
-                }}>
-                <MaterialIcons
+              <View style={{width: '50%', padding: 20}}>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                  Odometer Total km
+                </Text>
+                <View
                   style={{
-                    color: colors.white,
-                    fontSize: 25,
-                  }}
-                  name={'keyboard-arrow-down'}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            {toggle == 'odo' ? (
-              mapHistory.map(item => {
-                return (
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity style={{paddingVertical: 10}}>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 25, height: 25}}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                      width: 25,
+                      height: 25,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                      setToggle('odo');
+                    }}>
+                    <MaterialIcons
+                      style={{
+                        color: colors.white,
+                        fontSize: 25,
+                      }}
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View>
+                {toggle == 'odo' ? (
+                  mapHistory.map(item => {
+                    return (
+                      <VictoryChart
+                        width={230}
+                        height={200}
+                        domainPadding={{x: 10}}>
+                        <VictoryBar
+                          style={{
+                            data: {fill: '#5EB9FF'},
+                          }}
+                          alignment="end"
+                          data={[
+                            {x: '5', y: 0},
+                            {x: '10', y: 0},
+                            {x: '15', y: 0},
+                            {x: '20', y: 0},
+                            {x: '25', y: 0},
+                            {x: '30', y: item.todaysODO},
+                          ]}
+                          animate={{
+                            duration: 2000,
+                            onLoad: {duration: 1000},
+                          }}
+                          barRatio={0.7}
+                        />
+                      </VictoryChart>
+                    );
+                  })
+                ) : (
                   <VictoryChart
                     width={230}
                     height={200}
@@ -378,13 +410,18 @@ function GraphicalReports(props) {
                       }}
                       alignment="end"
                       data={[
-                        {x: '0', y: 0},
                         {x: '5', y: 0},
                         {x: '10', y: 0},
                         {x: '15', y: 0},
                         {x: '20', y: 0},
                         {x: '25', y: 0},
-                        {x: '30', y: item.todaysODO},
+                        {
+                          x: '30',
+                          y:
+                            mapHistory[0]?.todaysODO == undefined
+                              ? 0
+                              : mapHistory[0]?.todaysODO,
+                        },
                       ]}
                       animate={{
                         duration: 2000,
@@ -393,97 +430,96 @@ function GraphicalReports(props) {
                       barRatio={0.7}
                     />
                   </VictoryChart>
-                );
-              })
-            ) : (
-              <VictoryChart width={230} height={200} domainPadding={{x: 10}}>
-                <VictoryBar
-                  style={{
-                    data: {fill: '#5EB9FF'},
-                  }}
-                  alignment="end"
-                  data={[
-                    {x: '0', y: 0},
-                    {x: '5', y: 0},
-                    {x: '10', y: 0},
-                    {x: '15', y: 0},
-                    {x: '20', y: 0},
-                    {x: '25', y: 0},
-                    {
-                      x: '30',
-                      y:
-                        mapHistory[0]?.todaysODO == undefined
-                          ? 0
-                          : mapHistory[0]?.todaysODO,
-                    },
-                  ]}
-                  animate={{
-                    duration: 2000,
-                    onLoad: {duration: 1000},
-                  }}
-                  barRatio={0.7}
-                />
-              </VictoryChart>
-            )}
-          </View>
-        </LinearGradient>
+                )}
+              </View>
+            </LinearGradient>
 
-        {/* 
+            {/* 
           ignition
            */}
 
-        <LinearGradient
-          colors={['#BCE2FF', '#FFFFFF']}
-          start={{x: 0, y: 1}}
-          end={{x: 1, y: 0}}
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'space-between',
-            elevation: 20,
-          }}>
-          <View style={{width: '50%', padding: 20}}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-              Ignition Location On
-            </Text>
-            <View
+            <LinearGradient
+              colors={['#BCE2FF', '#FFFFFF']}
+              start={{x: 0, y: 1}}
+              end={{x: 1, y: 0}}
               style={{
-                justifyContent: 'space-between',
                 flexDirection: 'row',
-                alignItems: 'center',
+                width: '100%',
+                justifyContent: 'space-between',
+                elevation: 20,
               }}>
-              <TouchableOpacity style={{paddingVertical: 10}}>
-                <Image
-                  source={image.shareDark}
-                  style={{width: 25, height: 25}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: colors.mainThemeColor1,
-                  borderRadius: 50,
-                  width: 25,
-                  height: 25,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() => {
-                  setToggle('ignition');
-                }}>
-                <MaterialIcons
+              <View style={{width: '50%', padding: 20}}>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                  Ignition Location On
+                </Text>
+                <View
                   style={{
-                    color: colors.white,
-                    fontSize: 25,
-                  }}
-                  name={'keyboard-arrow-down'}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            {toggle == 'ignition' ? (
-              mapHistory.map(item => {
-                return (
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity style={{paddingVertical: 10}}>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 25, height: 25}}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                      width: 25,
+                      height: 25,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                      setToggle('ignition');
+                    }}>
+                    <MaterialIcons
+                      style={{
+                        color: colors.white,
+                        fontSize: 25,
+                      }}
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View>
+                {toggle == 'ignition' ? (
+                  mapHistory.map(item => {
+                    return (
+                      <VictoryChart
+                        width={230}
+                        height={200}
+                        domainPadding={{x: 10}}>
+                        <VictoryBar
+                          style={{
+                            data: {fill: '#5EB9FF'},
+                          }}
+                          alignment="end"
+                          data={[
+                            {x: '5', y: 0},
+                            {x: '10', y: 0},
+                            {x: '15', y: 0},
+                            {x: '20', y: 0},
+                            {x: '25', y: 0},
+                            {
+                              x: '30',
+                              y: getTime(item.todaysIgnitionOnTimeSeconds),
+                            },
+                          ]}
+                          animate={{
+                            duration: 2000,
+                            onLoad: {duration: 1000},
+                          }}
+                          barRatio={0.7}
+                        />
+                      </VictoryChart>
+                    );
+                  })
+                ) : (
                   <VictoryChart
                     width={230}
                     height={200}
@@ -494,13 +530,21 @@ function GraphicalReports(props) {
                       }}
                       alignment="end"
                       data={[
-                        {x: '0', y: 0},
                         {x: '5', y: 0},
                         {x: '10', y: 0},
                         {x: '15', y: 0},
                         {x: '20', y: 0},
                         {x: '25', y: 0},
-                        {x: '30', y: getTime(item.todaysIgnitionOnTimeSeconds)},
+                        {
+                          x: '30',
+                          y:
+                            mapHistory[0]?.todaysIgnitionOnTimeSeconds ==
+                            undefined
+                              ? 0
+                              : getTime(
+                                  mapHistory[0]?.todaysIgnitionOnTimeSeconds,
+                                ),
+                        },
                       ]}
                       animate={{
                         duration: 2000,
@@ -509,97 +553,93 @@ function GraphicalReports(props) {
                       barRatio={0.7}
                     />
                   </VictoryChart>
-                );
-              })
-            ) : (
-              <VictoryChart width={230} height={200} domainPadding={{x: 10}}>
-                <VictoryBar
-                  style={{
-                    data: {fill: '#5EB9FF'},
-                  }}
-                  alignment="end"
-                  data={[
-                    {x: '0', y: 0},
-                    {x: '5', y: 0},
-                    {x: '10', y: 0},
-                    {x: '15', y: 0},
-                    {x: '20', y: 0},
-                    {x: '25', y: 0},
-                    {
-                      x: '30',
-                      y:
-                        mapHistory[0]?.todaysIgnitionOnTimeSeconds == undefined
-                          ? 0
-                          : getTime(mapHistory[0]?.todaysIgnitionOnTimeSeconds),
-                    },
-                  ]}
-                  animate={{
-                    duration: 2000,
-                    onLoad: {duration: 1000},
-                  }}
-                  barRatio={0.7}
-                />
-              </VictoryChart>
-            )}
-          </View>
-        </LinearGradient>
+                )}
+              </View>
+            </LinearGradient>
 
-        {/*
+            {/*
         Out Of Coverage
         */}
 
-        <LinearGradient
-          colors={['#BCE2FF', '#FFFFFF']}
-          start={{x: 0, y: 1}}
-          end={{x: 1, y: 0}}
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'space-between',
-            elevation: 20,
-          }}>
-          <View style={{width: '50%', padding: 20}}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-              Out Of Coverage
-            </Text>
-            <View
+            <LinearGradient
+              colors={['#BCE2FF', '#FFFFFF']}
+              start={{x: 0, y: 1}}
+              end={{x: 1, y: 0}}
               style={{
-                justifyContent: 'space-between',
                 flexDirection: 'row',
-                alignItems: 'center',
+                width: '100%',
+                justifyContent: 'space-between',
+                elevation: 20,
               }}>
-              <TouchableOpacity style={{paddingVertical: 10}}>
-                <Image
-                  source={image.shareDark}
-                  style={{width: 25, height: 25}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: colors.mainThemeColor1,
-                  borderRadius: 50,
-                  width: 25,
-                  height: 25,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() => {
-                  setToggle('coverage');
-                }}>
-                <MaterialIcons
+              <View style={{width: '50%', padding: 20}}>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                  Out Of Coverage
+                </Text>
+                <View
                   style={{
-                    color: colors.white,
-                    fontSize: 25,
-                  }}
-                  name={'keyboard-arrow-down'}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            {toggle == 'coverage' ? (
-              mapHistory.map(item => {
-                return (
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity style={{paddingVertical: 10}}>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 25, height: 25}}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                      width: 25,
+                      height: 25,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                      setToggle('coverage');
+                    }}>
+                    <MaterialIcons
+                      style={{
+                        color: colors.white,
+                        fontSize: 25,
+                      }}
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View>
+                {toggle == 'coverage' ? (
+                  mapHistory.map(item => {
+                    return (
+                      <VictoryChart
+                        width={230}
+                        height={200}
+                        domainPadding={{x: 10}}>
+                        <VictoryBar
+                          style={{
+                            data: {fill: '#5EB9FF'},
+                          }}
+                          alignment="end"
+                          data={[
+                            {x: '5', y: 0},
+                            {x: '10', y: 0},
+                            {x: '15', y: 0},
+                            {x: '20', y: 0},
+                            {x: '25', y: 0},
+                            {x: '30', y: getTime(item.todaysOutOfCoverage)},
+                          ]}
+                          animate={{
+                            duration: 2000,
+                            onLoad: {duration: 1000},
+                          }}
+                          barRatio={0.7}
+                        />
+                      </VictoryChart>
+                    );
+                  })
+                ) : (
                   <VictoryChart
                     width={230}
                     height={200}
@@ -610,13 +650,18 @@ function GraphicalReports(props) {
                       }}
                       alignment="end"
                       data={[
-                        {x: '0', y: 0},
                         {x: '5', y: 0},
                         {x: '10', y: 0},
                         {x: '15', y: 0},
                         {x: '20', y: 0},
                         {x: '25', y: 0},
-                        {x: '30', y: getTime(item.todaysOutOfCoverage)},
+                        {
+                          x: '30',
+                          y:
+                            mapHistory[0]?.todaysOutOfCoverage == undefined
+                              ? 0
+                              : getTime(mapHistory[0]?.todaysOutOfCoverage),
+                        },
                       ]}
                       animate={{
                         duration: 2000,
@@ -625,97 +670,96 @@ function GraphicalReports(props) {
                       barRatio={0.7}
                     />
                   </VictoryChart>
-                );
-              })
-            ) : (
-              <VictoryChart width={230} height={200} domainPadding={{x: 10}}>
-                <VictoryBar
-                  style={{
-                    data: {fill: '#5EB9FF'},
-                  }}
-                  alignment="end"
-                  data={[
-                    {x: '0', y: 0},
-                    {x: '5', y: 0},
-                    {x: '10', y: 0},
-                    {x: '15', y: 0},
-                    {x: '20', y: 0},
-                    {x: '25', y: 0},
-                    {
-                      x: '30',
-                      y:
-                        mapHistory[0]?.todaysOutOfCoverage == undefined
-                          ? 0
-                          : getTime(mapHistory[0]?.todaysOutOfCoverage),
-                    },
-                  ]}
-                  animate={{
-                    duration: 2000,
-                    onLoad: {duration: 1000},
-                  }}
-                  barRatio={0.7}
-                />
-              </VictoryChart>
-            )}
-          </View>
-        </LinearGradient>
+                )}
+              </View>
+            </LinearGradient>
 
-        {/*
+            {/*
         Daily Waiting
         */}
 
-        <LinearGradient
-          colors={['#BCE2FF', '#FFFFFF']}
-          start={{x: 0, y: 1}}
-          end={{x: 1, y: 0}}
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'space-between',
-            elevation: 20,
-          }}>
-          <View style={{width: '50%', padding: 20}}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-              Daily Waiting
-            </Text>
-            <View
+            <LinearGradient
+              colors={['#BCE2FF', '#FFFFFF']}
+              start={{x: 0, y: 1}}
+              end={{x: 1, y: 0}}
               style={{
-                justifyContent: 'space-between',
                 flexDirection: 'row',
-                alignItems: 'center',
+                width: '100%',
+                justifyContent: 'space-between',
+                elevation: 20,
               }}>
-              <TouchableOpacity style={{paddingVertical: 10}}>
-                <Image
-                  source={image.shareDark}
-                  style={{width: 25, height: 25}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: colors.mainThemeColor1,
-                  borderRadius: 50,
-                  width: 25,
-                  height: 25,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() => {
-                  setToggle('waiting');
-                }}>
-                <MaterialIcons
+              <View style={{width: '50%', padding: 20}}>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                  Daily Waiting
+                </Text>
+                <View
                   style={{
-                    color: colors.white,
-                    fontSize: 25,
-                  }}
-                  name={'keyboard-arrow-down'}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            {toggle == 'waiting' ? (
-              mapHistory.map(item => {
-                return (
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity style={{paddingVertical: 10}}>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 25, height: 25}}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                      width: 25,
+                      height: 25,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                      setToggle('waiting');
+                    }}>
+                    <MaterialIcons
+                      style={{
+                        color: colors.white,
+                        fontSize: 25,
+                      }}
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View>
+                {toggle == 'waiting' ? (
+                  mapHistory.map(item => {
+                    return (
+                      <VictoryChart
+                        width={230}
+                        height={200}
+                        domainPadding={{x: 10}}>
+                        <VictoryBar
+                          style={{
+                            data: {fill: '#5EB9FF'},
+                          }}
+                          alignment="end"
+                          data={[
+                            {x: '5', y: 0},
+                            {x: '10', y: 0},
+                            {x: '15', y: 0},
+                            {x: '20', y: 0},
+                            {x: '25', y: 0},
+                            {
+                              x: '30',
+                              y: getTime(item.todaysWaitingIgnitionTime),
+                            },
+                          ]}
+                          animate={{
+                            duration: 2000,
+                            onLoad: {duration: 1000},
+                          }}
+                          barRatio={0.7}
+                        />
+                      </VictoryChart>
+                    );
+                  })
+                ) : (
                   <VictoryChart
                     width={230}
                     height={200}
@@ -726,13 +770,21 @@ function GraphicalReports(props) {
                       }}
                       alignment="end"
                       data={[
-                        {x: '0', y: 0},
                         {x: '5', y: 0},
                         {x: '10', y: 0},
                         {x: '15', y: 0},
                         {x: '20', y: 0},
                         {x: '25', y: 0},
-                        {x: '30', y: getTime(item.todaysWaitingIgnitionTime)},
+                        {
+                          x: '30',
+                          y:
+                            mapHistory[0]?.todaysWaitingIgnitionTime ==
+                            undefined
+                              ? 0
+                              : getTime(
+                                  mapHistory[0]?.todaysWaitingIgnitionTime,
+                                ),
+                        },
                       ]}
                       animate={{
                         duration: 2000,
@@ -741,40 +793,13 @@ function GraphicalReports(props) {
                       barRatio={0.7}
                     />
                   </VictoryChart>
-                );
-              })
-            ) : (
-              <VictoryChart width={230} height={200} domainPadding={{x: 10}}>
-                <VictoryBar
-                  style={{
-                    data: {fill: '#5EB9FF'},
-                  }}
-                  alignment="end"
-                  data={[
-                    {x: '0', y: 0},
-                    {x: '5', y: 0},
-                    {x: '10', y: 0},
-                    {x: '15', y: 0},
-                    {x: '20', y: 0},
-                    {x: '25', y: 0},
-                    {
-                      x: '30',
-                      y:
-                        mapHistory[0]?.todaysWaitingIgnitionTime == undefined
-                          ? 0
-                          : getTime(mapHistory[0]?.todaysWaitingIgnitionTime),
-                    },
-                  ]}
-                  animate={{
-                    duration: 2000,
-                    onLoad: {duration: 1000},
-                  }}
-                  barRatio={0.7}
-                />
-              </VictoryChart>
-            )}
-          </View>
-        </LinearGradient>
+                )}
+              </View>
+            </LinearGradient>
+          </>
+        ) : (
+          <ActivityIndicator color={colors.black} />
+        )}
       </ScrollView>
     </>
   );
