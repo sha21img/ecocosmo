@@ -600,29 +600,55 @@ function MapHistory(props) {
         style={[styles.bubble, styles.button]}>
         <Text>Animate</Text>
       </TouchableOpacity> */}
-      <TouchableOpacity
-        style={{position: 'absolute', bottom: 20, width: '100%'}}
-        onPress={() => {
-          setAnimate(true), start();
-        }}>
-        <LinearGradient
-          colors={['#0065B3', '#083273']}
-          start={{x: 0, y: 1}}
-          end={{x: 1, y: 0}}
-          style={{
-            width: '80%',
-            backgroundColor: 'red',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingVertical: 20,
-            borderRadius: 10,
+      {!animate ? (
+        <TouchableOpacity
+          style={{position: 'absolute', bottom: 20, width: '100%'}}
+          onPress={() => {
+            setAnimate(true), start();
           }}>
-          <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-            Replay
-          </Text>
-        </LinearGradient>
-      </TouchableOpacity>
+          <LinearGradient
+            colors={['#0065B3', '#083273']}
+            start={{x: 0, y: 1}}
+            end={{x: 1, y: 0}}
+            style={{
+              width: '80%',
+              backgroundColor: 'red',
+              alignSelf: 'center',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 20,
+              borderRadius: 10,
+            }}>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
+              Replay
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={{position: 'absolute', bottom: 20, width: '100%'}}
+          onPress={() => {
+            setAnimate(false), clearInterval(interval);
+          }}>
+          <LinearGradient
+            colors={['#0065B3', '#083273']}
+            start={{x: 0, y: 1}}
+            end={{x: 1, y: 0}}
+            style={{
+              width: '80%',
+              backgroundColor: 'red',
+              alignSelf: 'center',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 20,
+              borderRadius: 10,
+            }}>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
+              stop
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      )}
     </>
   );
 }
