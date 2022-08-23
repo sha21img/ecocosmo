@@ -29,7 +29,7 @@ const Alerts = props => {
   const AlertData = async props => {
     setLoading(true);
     const succcess = await Storage.getLoginDetail('login_detail');
-    let username = succcess.accountName;
+    let username = succcess.accountId;
     let password = succcess.password;
     const params = {
       accountid: username,

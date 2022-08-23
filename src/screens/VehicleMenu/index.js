@@ -85,7 +85,7 @@ const VehicleMenu = props => {
   ];
   const navigatorFrom = async data => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     props.setVisible(false);
      if (data === 'EngineStopPopup') {
