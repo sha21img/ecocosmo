@@ -40,9 +40,12 @@ const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function MapHistory(props) {
+  // console.log("props mapHist", props.route.params.details.imei)
+  const {imei} = props.route.params.details;
   const [data, setData] = useState([]);
 
   //
+  const [parkMode, setParkMode] = useState(true);
 
   const [open, setOpen] = useState(false);
   const [dateStart, setDateStart] = useState(new Date());
@@ -69,6 +72,16 @@ function MapHistory(props) {
   const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
 
   useEffect(() => {
+    // {data?.filter((item) => {
+    //   console.log(item.stoppage, "item.stoppage")
+    //   return (
+    //     <>
+    //       <View>
+    //         <Text>d</Text>
+    //       </View>
+    //     </>
+    //   );
+    // })}
     if (fdate !== '') {
       getMapHistory();
     }
@@ -79,24 +92,26 @@ function MapHistory(props) {
 
   const getMapHistory = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     let data = {
       accountid: username,
       password: password,
-      imei: '351608080772390',
+      // imei: imei,
+      imei: '358735075824622',
       date: fdate,
     };
     const response = await axiosGetData('mapHistory', data);
-    const newCoordinate = response.data.EventHistory.slice(0, 9);
-    newCoordinate.forEach(el => {
+    const newCoordinate = response?.data?.EventHistory?.slice(0, 9);
+    console.log('==--=-newCoordinate', newCoordinate);
+    newCoordinate?.forEach(el => {
       setCoordinates(prev => ({
         ...prev,
         coordinate: {latitude: el.lat, longitude: el.lng},
       }));
     });
 
-    const filterDataa = newCoordinate.map(item => {
+    const filterDataa = newCoordinate?.map(item => {
       const date = parseFloat(item.packetTimeStamp) + 19800;
       const newDate = new Date(date);
       let month = newDate.getMonth() + 1;
@@ -132,7 +147,7 @@ function MapHistory(props) {
     let fDateStart = new Date(currentDate);
     setFdate(formatDate(fDateStart.toString()));
 
-    let fTimeStart = fDateStart.toLocaleTimeString();
+    let fTimeStart = fDateStart.toLocaleTimeString().slice(0,8);
     setFtime(fTimeStart);
   };
   const onChangeEnd = selectedDate => {
@@ -142,7 +157,7 @@ function MapHistory(props) {
     let fDateEnd = new Date(currentDate);
 
     setFdateend(formatDate(fDateEnd.toString()));
-    let fTimeEnd = fDateEnd.toLocaleTimeString();
+    let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0,8)
 
     setFtimeend(fTimeEnd);
   };
@@ -177,7 +192,7 @@ function MapHistory(props) {
   console.log('i', i);
   function animateMarkerAndCamera(datas) {
     console.log('poiuytrew ', datas);
-    if (i < data.length) {
+    if (i <= data?.length - 1) {
       if (datas === 'start') {
         console.log('dtattatatiifiifif fif fif ', datas);
 
@@ -269,19 +284,35 @@ function MapHistory(props) {
           heading: 0,
         };
         if (myMarker && mapRef.current) {
-          myMarker.animateMarkerToCoordinate(newCoordinate, 5000);
+          myMarker.animateMarkerToCoordinate(newCoordinate, 1000);
           // mapRef == null;
-          mapRef.current.animateCamera(newCamera, {duration: 5000});
+          mapRef.current.animateCamera(newCamera, {duration: 1000});
 
+          //
+
+          mapRef?.current?.getCamera().then(cam => {
+            cam.zoom -= 3;
+            mapRef?.current?.animateCamera(cam);
+          });
+
+          //
           // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
 
           // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
         }
       }
     } else {
+      console.log('jijijijiij');
       setAnimate(false);
       clearInterval(interval);
-      i = 0;
+      setAnimate('stop');
+      // i = 1;
+
+      //
+      mapRef?.current?.getCamera().then(cam => {
+        cam.zoom -= 3;
+        mapRef?.current?.animateCamera(cam);
+      });
     }
   }
 
@@ -486,37 +517,48 @@ function MapHistory(props) {
           />
         </TouchableOpacity>
       </View>
-      {data.length > 0 ? (
+      {data?.length > 0 ? (
         <View style={{flex: 1}}>
-          <MapView
-            minZoomLevel={15}
-            pitchEnabled={false}
-            style={{flex: 1}}
-            ref={mapRef}
-            caheEnabled
-            // onMapReady={() => animated()}
-
-            region={{
-              latitude: parseFloat(data[0].lat),
-              longitude: parseFloat(data[0].lng),
-              latitudeDelta: LATITUDE_DELTA,
-              longitudeDelta: LONGITUDE_DELTA,
+          <TouchableOpacity
+            onPress={() => setParkMode(!parkMode)}
+            style={{
+              position: 'absolute',
+              zIndex: 10,
+              right: 0,
+              top: 20,
             }}>
-            {data?.map((coordinate, index) => {
-              return (
-                <>
-                  <MarkerAnimated
-                    // ref={marker => {
-                    //   // console.log('marker', marker);
-                    //   setMyMarker(marker);
-                    // }}
-                    pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
-                    key={index.toString()}
-                    coordinate={{
-                      latitude: parseFloat(coordinate.lat),
-                      longitude: parseFloat(coordinate.lng),
-                    }}>
-                    {/* {data[data.length - 1] == coordinate ? (
+            <Image source={image.parking2} style={{width: 65, height: 65}} />
+          </TouchableOpacity>
+          {parkMode ? (
+            <MapView
+              minZoomLevel={15}
+              pitchEnabled={false}
+              style={{flex: 1}}
+              ref={mapRef}
+              caheEnabled
+              // onMapReady={() => animated()}
+
+              region={{
+                latitude: parseFloat(data[0].lat),
+                longitude: parseFloat(data[0].lng),
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+              }}>
+              {data?.map((coordinate, index) => {
+                return (
+                  <>
+                    <MarkerAnimated
+                      // ref={marker => {
+                      //   // console.log('marker', marker);
+                      //   setMyMarker(marker);
+                      // }}
+                      pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
+                      key={index.toString()}
+                      coordinate={{
+                        latitude: parseFloat(coordinate.lat),
+                        longitude: parseFloat(coordinate.lng),
+                      }}>
+                      {/* {data[data.length - 1] == coordinate ? (
                       <Image
                         resizeMode="contain"
                         source={image.carGreenUp}
@@ -527,135 +569,252 @@ function MapHistory(props) {
                       />
                     ) : null} */}
 
-                    <Callout tooltip>
-                      <LinearGradient
-                        colors={[
-                          colors.mainThemeColor3,
-                          colors.mainThemeColor4,
-                        ]}
-                        start={{x: 1.3, y: 0}}
-                        end={{x: 0, y: 0}}
-                        locations={[0, 0.9]}
-                        style={style.firstbox}>
-                        <View style={{paddingBottom: 5}}>
-                          <Text style={style.firstboxtext1}>
-                            {coordinate.timeStamp}
-                          </Text>
-                        </View>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                          }}>
-                          <AntDesign
+                      <Callout tooltip>
+                        <LinearGradient
+                          colors={[
+                            colors.mainThemeColor3,
+                            colors.mainThemeColor4,
+                          ]}
+                          start={{x: 1.3, y: 0}}
+                          end={{x: 0, y: 0}}
+                          locations={[0, 0.9]}
+                          style={style.firstbox}>
+                          <View style={{paddingBottom: 5}}>
+                            <Text style={style.firstboxtext1}>
+                              {coordinate.timeStamp}
+                            </Text>
+                          </View>
+                          <View
                             style={{
-                              color: '#17D180',
-                              fontSize: 16,
-                            }}
-                            name={'caretdown'}
-                          />
-                          <Text
-                            style={{
-                              paddingHorizontal: 10,
-                              color: colors.white,
+                              flexDirection: 'row',
+                              alignItems: 'center',
                             }}>
-                            Ignition: {coordinate.ignition}
-                          </Text>
-                        </View>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-start',
-                            paddingTop: 5,
-                          }}>
-                          <View style={style.secondboxtextbox1}>
-                            <Text style={{paddingVertical: 8}}>
-                              <Image
-                                resizeMode="contain"
-                                source={image.speed}
-                                style={style.speedimg}
-                              />
-                            </Text>
-                            <Text style={style.secondboxtext1}>
-                              {Math.floor(coordinate?.speed)} {__('KM/H')}
-                            </Text>
-                            <Text style={style.secondboxtext11}>
-                              {__('SPEED')}
+                            <AntDesign
+                              style={{
+                                color: '#17D180',
+                                fontSize: 16,
+                              }}
+                              name={'caretdown'}
+                            />
+                            <Text
+                              style={{
+                                paddingHorizontal: 10,
+                                color: colors.white,
+                              }}>
+                              Ignition: {coordinate.ignition}
                             </Text>
                           </View>
-                          <View style={style.secondboxtextbox1}>
-                            <Text style={{paddingVertical: 8}}>
-                              <Image
-                                resizeMode="contain"
-                                source={image.distance}
-                                style={style.locimg}
-                              />
-                            </Text>
-                            <Text style={style.secondboxtext1}>
-                              {Math.floor(coordinate.odometer)} {__('KM')}
-                            </Text>
-                            <Text style={style.secondboxtext11}>
-                              {__("TODAY'S ODO")}
-                            </Text>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'flex-start',
+                              paddingTop: 5,
+                            }}>
+                            <View style={style.secondboxtextbox1}>
+                              <Text style={{paddingVertical: 8}}>
+                                <Image
+                                  resizeMode="contain"
+                                  source={image.speed}
+                                  style={style.speedimg}
+                                />
+                              </Text>
+                              <Text style={style.secondboxtext1}>
+                                {Math.floor(coordinate?.speed)} {__('KM/H')}
+                              </Text>
+                              <Text style={style.secondboxtext11}>
+                                {__('SPEED')}
+                              </Text>
+                            </View>
+                            <View style={style.secondboxtextbox1}>
+                              <Text style={{paddingVertical: 8}}>
+                                <Image
+                                  resizeMode="contain"
+                                  source={image.distance}
+                                  style={style.locimg}
+                                />
+                              </Text>
+                              <Text style={style.secondboxtext1}>
+                                {Math.floor(coordinate.odometer)} {__('KM')}
+                              </Text>
+                              <Text style={style.secondboxtext11}>
+                                {__("TODAY'S ODO")}
+                              </Text>
+                            </View>
                           </View>
-                        </View>
-                      </LinearGradient>
-                    </Callout>
-                  </MarkerAnimated>
-                </>
-              );
-            })}
-            <MarkerAnimated
-              ref={marker => {
-                // console.log('marker', marker);
-                setMyMarker(marker);
-              }}
-              style={{
-                transform: [
-                  {
-                    rotate: degree === null ? '0deg' : `${degree}deg`,
-                  },
-                ],
-              }}
-              // key={index.toString()}
-              coordinate={{
-                latitude: parseFloat(data[0].lat),
-                longitude: parseFloat(data[0].lng),
-              }}>
-              {animate == 'start' ? (
-                <Image
-                  resizeMode="contain"
-                  source={image.carGreenUp}
-                  style={{
-                    height: 30,
-                    width: 30,
-                  }}
-                />
-              ) : animate == 'stop' ? (
-                <Image
-                  resizeMode="contain"
-                  source={image.carGreenUp}
-                  style={{
-                    height: 0,
-                    width: 0,
-                  }}
-                />
-              ) : null}
-            </MarkerAnimated>
+                        </LinearGradient>
+                      </Callout>
+                    </MarkerAnimated>
+                  </>
+                );
+              })}
+              <MarkerAnimated
+                ref={marker => {
+                  // console.log('marker', marker);
+                  setMyMarker(marker);
+                }}
+                style={{
+                  transform: [
+                    {
+                      rotate: degree === null ? '0deg' : `${degree}deg`,
+                    },
+                  ],
+                }}
+                // key={index.toString()}
+                coordinate={{
+                  latitude: parseFloat(data[0].lat),
+                  longitude: parseFloat(data[0].lng),
+                }}>
+                {animate == 'stop' ? (
+                  <Image
+                    resizeMode="contain"
+                    source={image.carGreenUp}
+                    style={{
+                      height: 30,
+                      width: 30,
+                    }}
+                  />
+                ) : animate == 'start' ? (
+                  <Image
+                    resizeMode="contain"
+                    source={image.carGreenUp}
+                    style={{
+                      height: 0,
+                      width: 0,
+                    }}
+                  />
+                ) : null}
+              </MarkerAnimated>
 
-            <Polyline
-              strokeWidth={2}
-              strokeColor="red"
-              coordinates={[
-                ...data.map((value, index) => {
-                  return {
-                    latitude: parseFloat(value.lat),
-                    longitude: parseFloat(value.lng),
-                  };
-                }),
-              ]}
-            />
-          </MapView>
+              <Polyline
+                strokeWidth={2}
+                strokeColor="red"
+                coordinates={[
+                  ...data.map((value, index) => {
+                    return {
+                      latitude: parseFloat(value.lat),
+                      longitude: parseFloat(value.lng),
+                    };
+                  }),
+                ]}
+              />
+            </MapView>
+          ) : (
+            <>
+              <MapView
+                minZoomLevel={15}
+                pitchEnabled={false}
+                style={{flex: 1}}
+                ref={mapRef}
+                caheEnabled
+                region={{
+                  latitude: parseFloat(data[0].lat),
+                  longitude: parseFloat(data[0].lng),
+                  latitudeDelta: LATITUDE_DELTA,
+                  longitudeDelta: LONGITUDE_DELTA,
+                }}>
+                {data
+                  ?.filter(item => item.stoppage)
+                  .map((coordinate, index) => {
+                    return (
+                      <>
+                        <MarkerAnimated
+                          key={Math.random()}
+                          coordinate={{
+                            latitude: parseFloat(coordinate.lat),
+                            longitude: parseFloat(coordinate.lng),
+                          }}>
+                          <Image
+                            resizeMode="contain"
+                            source={image.parkingPoint}
+                            style={{
+                              height: 50,
+                              width: 50,
+                            }}
+                          />
+                          <Callout tooltip>
+                            <LinearGradient
+                              colors={[
+                                colors.mainThemeColor3,
+                                colors.mainThemeColor4,
+                              ]}
+                              start={{x: 1.3, y: 0}}
+                              end={{x: 0, y: 0}}
+                              locations={[0, 0.9]}
+                              style={style.firstbox}>
+                              <View style={{paddingBottom: 5}}>
+                                <Text style={style.firstboxtext1}>
+                                  Address : {coordinate.stoppage.address}
+                                </Text>
+                                <Text style={style.firstboxtext1}>
+                                  Stop Duration :{' '}
+                                  {coordinate.stoppage.stopDuration}
+                                </Text>
+                                <Text style={style.firstboxtext1}>
+                                  From : {coordinate.stoppage.stopTime1}
+                                </Text>
+                                <Text style={style.firstboxtext1}>
+                                  To : {coordinate.stoppage.stopTime2}
+                                </Text>
+                              </View>
+                            </LinearGradient>
+                          </Callout>
+                        </MarkerAnimated>
+                      </>
+                    );
+                  })}
+
+                <MarkerAnimated
+                  ref={marker => {
+                    // console.log('marker', marker);
+                    setMyMarker(marker);
+                  }}
+                  style={{
+                    transform: [
+                      {
+                        rotate: degree === null ? '0deg' : `${degree}deg`,
+                      },
+                    ],
+                  }}
+                  // key={index.toString()}
+                  coordinate={{
+                    latitude: parseFloat(data[0].lat),
+                    longitude: parseFloat(data[0].lng),
+                  }}>
+                  {animate == 'stop' ? (
+                    <Image
+                      resizeMode="contain"
+                      source={image.carGreenUp}
+                      style={{
+                        height: 30,
+                        width: 30,
+                      }}
+                    />
+                  ) : animate == 'start' ? (
+                    <Image
+                      resizeMode="contain"
+                      source={image.carGreenUp}
+                      style={{
+                        height: 0,
+                        width: 0,
+                      }}
+                    />
+                  ) : null}
+                </MarkerAnimated>
+                <Polyline
+                  strokeWidth={2}
+                  strokeColor="red"
+                  coordinates={[
+                    ...data.map((value, index) => {
+                      return {
+                        latitude: parseFloat(value.lat),
+                        longitude: parseFloat(value.lng),
+                      };
+                    }),
+                  ]}
+                />
+              </MapView>
+            </>
+          )}
         </View>
       ) : (
         <Text>Loading...</Text>
@@ -667,11 +826,11 @@ function MapHistory(props) {
         style={[styles.bubble, styles.button]}>
         <Text>Animate</Text>
       </TouchableOpacity> */}
-      {animate == 'stop' ? (
+      {animate == 'start' || animate == '' ? (
         <TouchableOpacity
           style={{position: 'absolute', bottom: 20, width: '100%'}}
           onPress={() => {
-            setAnimate('start'), start('start');
+            setAnimate('stop'), start('start');
           }}>
           <LinearGradient
             colors={['#0065B3', '#083273']}
@@ -695,7 +854,7 @@ function MapHistory(props) {
         <TouchableOpacity
           style={{position: 'absolute', bottom: 20, width: '100%'}}
           onPress={() => {
-            setAnimate('stop'),
+            setAnimate('start'),
               clearInterval(interval),
               (i = 0),
               animateMarkerAndCamera('stop');

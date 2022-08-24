@@ -139,7 +139,7 @@ const DrawerContent = props => {
                   alignItems: 'center',
                 }}
                 onPress={() =>
-                  props.navigation.navigate('HomeStack', {screen: "Home"})
+                  props.navigation.navigate('HomeStack', {screen:el.route})
                 }>
                 <Image source={el.icon} style={{height: 40, width: 40}} />
                 <Text
