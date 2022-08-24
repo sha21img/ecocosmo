@@ -16,17 +16,34 @@ import moment from 'moment';
 
 function DriverBehaviour(props) {
   const {details} = props.route.params;
-  console.log('detaaaaaaaaails', details.speed0_to_20Counter);
+  console.log('detaaaaaaaaails', details);
   const date = parseFloat(details.validPacketTimeStamp) + 19800;
-  const ignitionOff = parseFloat(details.lastIgnitionOffTime) + 19800;
-  const filterIgnitionOff = moment.unix(ignitionOff).format('hh:mm');
-  const ignitionOn = parseFloat(details.lastIgnitionOnTime) + 19800;
-  const filterIgnitionOn = moment.unix(ignitionOn).format('hh:mm');
   const filterDate = moment.unix(date).format('DD-MM-YYYY');
   const filterTime = moment.unix(date).format('hh:mm:ss');
-  // console.log('this is a ignition', filterIgnition);
 
-  // 1623311223
+  const calcu = perc => {
+    let TotalSpeed =
+      Number(details.speed0_to_20Counter) +
+      Number(details.speed20_to_40Counter) +
+      Number(details.speed40_to_60Counter) +
+      Number(details.speed60_to_80Counter);
+    if (perc == 0) {
+      return 0;
+    } else {
+      let percentage = (perc / TotalSpeed) * 100;
+      return percentage.toFixed(1);
+    }
+  };
+
+  const getTime = secs => {
+    var minutes = Math.floor(secs / 60);
+    var hours = Math.floor(minutes / 60);
+    minutes = minutes % 60;
+    let time = `${hours.toString().length == 1 ? '0' + hours : hours}hr ${
+      minutes.toString().length == 1 ? '0' + minutes : minutes
+    }min`;
+    return time;
+  };
   return (
     <>
       <LinearGradient
@@ -138,8 +155,7 @@ function DriverBehaviour(props) {
                   style={{height: 20, width: 10}}
                 />
                 <Text style={{paddingLeft: 7, fontSize: 12, color: 'white'}}>
-                  {__('Ignition Off')} : {filterIgnitionOff.slice(0, 2)}hr{' '}
-                  {filterIgnitionOff.slice(3, 5)}min
+                  {__('Ignition Off')}: {getTime(details.todaysIdleTimeSeconds)}
                 </Text>
               </View>
             </LinearGradient>
@@ -168,8 +184,8 @@ function DriverBehaviour(props) {
                   style={{height: 20, width: 10}}
                 />
                 <Text style={{paddingLeft: 7, fontSize: 12, color: 'white'}}>
-                  {__('Ignition On')} : {filterIgnitionOn.slice(0, 2)}hr{' '}
-                  {filterIgnitionOn.slice(3, 5)}min
+                  {__('Ignition On')}:{' '}
+                  {getTime(details.todaysIgnitionOnTimeSeconds)}
                 </Text>
               </View>
             </LinearGradient>
@@ -269,56 +285,56 @@ function DriverBehaviour(props) {
                 easing: 'bounce',
               }}
               // data={[
-              //   {y: 100, x: '20%'},
-              //   {y: 60, x: '40%'},
-              //   {y: 100, x: '20%'},
-              //   {y: 50, x: '20%'},
+              //   {y: 53, x: `${calcu(53)}%`},
+              //   {y: 23, x: `${calcu(23)}%`},
+              //   {y: 5, x: `${calcu(5)}%`},
+              //   {y: 3, x: `${calcu(3)}%`},
               // ]}
               data={[
                 {
                   y: Number(details?.speed0_to_20Counter),
-                  x: `${details?.speed0_to_20Counter}%`,
+                  x: `${calcu(details?.speed0_to_20Counter)}`,
                 },
                 {
                   y: Number(details?.speed20_to_40Counter),
-                  x: `${details?.speed20_to_40Counter}%`,
+                  x: `${calcu(details?.speed20_to_40Counter)}`,
                 },
                 {
                   y: Number(details?.speed40_to_60Counter),
-                  x: `${details?.speed40_to_60Counter}%`,
+                  x: `${calcu(details?.speed40_to_60Counter)}`,
                 },
                 {
                   y: Number(details?.speed60_to_80Counter),
-                  x: `${details?.speed60_to_80Counter}%`,
+                  x: `${calcu(details?.speed60_to_80Counter)}`,
                 },
               ]}
               colorScale={['#16BCD4', '#E6BB0D', '#FF5050', '#E653DD']}
               labelRadius={({innerRadius}) => innerRadius + 20}
-              radius={({datum}) => 80 + datum.y}
-              innerRadius={70}
-              height={400}
+              radius={({datum}) => 80 + datum.y / 3}
+              innerRadius={65}
+              height={450}
               style={{
                 labels: {
                   fill: 'white',
                   fontSize: 20,
                   fontWeight: 'bold',
-                  backgroundColor: 'red',
                 },
               }}
             />
             <View
               style={{
                 position: 'absolute',
-                height: 140,
-                width: 140,
-                top: 130,
-                left: 135.5,
+                height: 130,
+                width: 130,
+                top: 160,
+                left: 140,
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: 5,
                 backgroundColor: 'white',
                 borderRadius: 100,
                 elevation: 5,
+                zIndex: 10,
               }}>
               <Text
                 style={{color: '#434343', fontSize: 14, fontWeight: 'bold'}}>
@@ -337,7 +353,7 @@ function DriverBehaviour(props) {
             style={{
               paddingHorizontal: 20,
               marginHorizontal: 40,
-              marginBottom: 20,
+              marginVertical: 20,
               paddingVertical: 20,
               alignItems: 'center',
               justifyContent: 'center',

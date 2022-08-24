@@ -21,6 +21,7 @@ import Storage from '../../../Utils/Storage';
 import AddDriver from '../AddDriver';
 
 const VehicleMenu = props => {
+  console.log('props.details.imei',props.details.imei)
   const navigation = useNavigation();
   const [visibles, setVisibles] = useState(false);
   const [modal, setModal] = useState(false);
@@ -85,15 +86,14 @@ const VehicleMenu = props => {
   ];
   const navigatorFrom = async data => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     props.setVisible(false);
-     if (data === 'EngineStopPopup') {
+    if (data === 'EngineStopPopup') {
       setModal(!modal);
-    }else if(data === 'DRIVERDETAILS'){
-        setVisibles(!visibles);
-
-  }else {
+    } else if (data === 'DRIVERDETAILS') {
+      setVisibles(!visibles);
+    } else {
       navigation.navigate(data, {details: details});
     }
   };
@@ -127,7 +127,9 @@ const VehicleMenu = props => {
                   return (
                     <TouchableOpacity
                       onPress={() => {
-                        navigatorFrom(el.routeTo);
+                        navigatorFrom(el.routeTo, {
+                          imei: props.details.imei,
+                        });
                       }}>
                       <View key={el.id} style={styles.modalCardBody}>
                         <Image
@@ -149,7 +151,7 @@ const VehicleMenu = props => {
         details={details}
         setVisible={setModal}
       />
-       <AddDriver visible={visibles} setVisible={setVisibles} />
+      <AddDriver visible={visibles} setVisible={setVisibles} />
     </>
   );
 };

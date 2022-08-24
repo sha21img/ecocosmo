@@ -1,6 +1,7 @@
 export const image = {
   Alert: require('./Alert.png'),
   arrowDown: require('./arrowDown.png'),
+  parkingPoint: require('./parkingPoint.png'),
   atm: require('./atm.png'),
   battery: require('./battery.png'),
   batteryWhite: require('./batteryWhite.png'),

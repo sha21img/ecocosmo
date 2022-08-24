@@ -49,7 +49,7 @@ const CustomerProfile = props => {
 
   const handleSave = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     setLoading(true);
     const response = await axiosGetData(

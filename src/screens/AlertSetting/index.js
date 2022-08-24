@@ -128,7 +128,7 @@ const AlertSetting = props => {
 
   const postAlertResponse = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     const params = {
       accountid: username,

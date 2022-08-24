@@ -33,6 +33,8 @@ const style = StyleSheet.create({
     padding: 15,
     minWidth: 200,
     borderRadius: 15,
+    flexWrap: 'wrap',
+    flex: 1,
   },
   firstboxtext1: {
     color: '#fff',

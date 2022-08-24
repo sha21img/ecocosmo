@@ -88,7 +88,7 @@ const DrawerContent = props => {
   });
   const getName = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     const response = await axiosGetData(`account/${username}/${password}`);
     console.log(response.data, '/////////////////////');
@@ -139,7 +139,7 @@ const DrawerContent = props => {
                   alignItems: 'center',
                 }}
                 onPress={() =>
-                  props.navigation.navigate('HomeStack', {screen: "Home"})
+                  props.navigation.navigate('HomeStack', {screen:el.route})
                 }>
                 <Image source={el.icon} style={{height: 40, width: 40}} />
                 <Text

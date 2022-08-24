@@ -20,21 +20,34 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
-
+import SelectDropdown from 'react-native-select-dropdown';
 const Alerts = props => {
+  const [selected, setSelected] = useState('All Vehicle');
+
   const [Ison, setIson] = useState(true);
   const [alertDataResponse, setalertResponse] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [data, setdata] = useState([]);
+  const [filter, setFilter] = useState([]);
+  React.useEffect(() => {
+    getImei();
+  }, []);
 
-  const AlertData = async props => {
+  const getImei = async () => {
+    const data = await Storage.getVehicleDetail('vehicle_detail');
+    setdata(data);
+  };
+  const Select = async (data, imei) => {
+    console.log('datadatadatadata', imei);
+    setSelected(data);
     setLoading(true);
     const succcess = await Storage.getLoginDetail('login_detail');
-    let username = succcess.accountName;
+    let username = succcess.accountId;
     let password = succcess.password;
     const params = {
       accountid: username,
       password: password,
-      imei: '459710040353691',
+      imei: imei,
     };
     const response = await axiosGetData(`getAlertDetails`, params);
     console.log('alertData', response.data.alert_details);
@@ -44,11 +57,6 @@ const Alerts = props => {
     }
     setLoading(false);
   };
-
-  React.useEffect(() => {
-    AlertData();
-  }, []);
-
   return (
     <>
       <View style={{height: '100%'}}>
@@ -91,19 +99,39 @@ const Alerts = props => {
               />
             </View>
           </View>
-          <View style={styles.textinputbox}>
-            <TextInput
-              placeholder={__('Select vehicle number')}
-              style={styles.textinput}
-            />
-            <MaterialIcons
-              style={{
-                color: '#3D3D3D',
-                fontSize: 18,
+          <TouchableOpacity style={styles.textinputbox}>
+            <SelectDropdown
+              buttonStyle={{
+                width: '100%',
+                borderRadius: 7,
               }}
-              name={'keyboard-arrow-down'}
+              data={data}
+              defaultButtonText={selected}
+              onSelect={(selectedItem, index) => {
+                setSelected(selectedItem.deviceId);
+                Select(selectedItem.deviceId, selectedItem.imei);
+                console.log(selectedItem.deviceId, index);
+              }}
+              buttonTextAfterSelection={selectedItem => {
+                return selectedItem.deviceId;
+              }}
+              rowTextForSelection={item => {
+                return item.deviceId;
+              }}
+              renderDropdownIcon={() => {
+                return (
+                  <MaterialIcons
+                    style={{
+                      color: '#3D3D3D',
+                      fontSize: 20,
+                    }}
+                    name={'keyboard-arrow-down'}
+                  />
+                );
+              }}
             />
-          </View>
+            <Text>sdf</Text>
+          </TouchableOpacity>
         </LinearGradient>
         <View style={styles.box1}>
           <Text style={styles.box1text}>{__('Alert Setting')}</Text>
@@ -115,48 +143,66 @@ const Alerts = props => {
             onToggle={() => setIson(!Ison)}
           />
         </View>
-        <ScrollView style={{}}>
-          {loading ? (
-            <ActivityIndicator color={colors.white} />
-          ) : (
-            <>
-              {Ison
-                ? alertDataResponse.map(el => {
-                    return (
-                      <>
-                        <TouchableOpacity
-                          onPress={() =>
-                            props.navigation.navigate('AlertSetting', {
-                              details: el,
-                            })
-                          }
-                          key={el.id}
-                          style={styles.box2}>
-                          <Text
-                            style={{
-                              fontSize: Size.large,
-                              color: colors.textcolor,
-                            }}>
-                            {el?.displayName}
-                          </Text>
-                          <AntDesign
-                            style={{
-                              color:
-                                el.isActive === 'Yes' ? '#395dbf' : '#d9d9d9',
-                              fontSize: 26,
-                            }}
-                            name={'checkcircle'}
-                          />
-                        </TouchableOpacity>
-                      </>
-                    );
-                  })
-                : null}
-            </>
-          )}
-        </ScrollView>
+        {alertDataResponse.length > 0 ? (
+          <ScrollView>
+            {loading ? (
+              <ActivityIndicator color={colors.black} />
+            ) : (
+              <>
+                {Ison
+                  ? alertDataResponse.map(el => {
+                      return (
+                        <>
+                          <TouchableOpacity
+                            onPress={() =>
+                              props.navigation.navigate('AlertSetting', {
+                                details: el,
+                              })
+                            }
+                            key={el.id}
+                            style={styles.box2}>
+                            <Text
+                              style={{
+                                fontSize: Size.large,
+                                color: colors.textcolor,
+                              }}>
+                              {el?.displayName}
+                            </Text>
+                            <AntDesign
+                              style={{
+                                color:
+                                  el.isActive === 'Yes' ? '#395dbf' : '#d9d9d9',
+                                fontSize: 26,
+                              }}
+                              name={'checkcircle'}
+                            />
+                          </TouchableOpacity>
+                        </>
+                      );
+                    })
+                  : null}
+              </>
+            )}
+          </ScrollView>
+        ) : (
+          <View
+            style={{
+              height: '100%',
+              backgroundColor: colors.white,
+            }}>
+            <View
+              style={{
+                height: '70%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text>Please select Vehicle</Text>
+            </View>
+          </View>
+        )}
       </View>
     </>
   );
 };
 export default Alerts;
+
