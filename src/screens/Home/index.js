@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ import Storage from '../../../Utils/Storage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 function Home(props) {
-  console.log('jijijijijijjijijiijijijiijiji', props.route.params);
+  // console.log('jijijijijijjijijiijijijiijiji', props.route.params);
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
@@ -31,6 +31,7 @@ function Home(props) {
   const [isShow, setIsShow] = useState(true);
   const [search, setSearch] = useState(true);
   const [type, setType] = useState('All');
+  const [driverDetails, setDriverDetails] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   let index = 0;
@@ -75,8 +76,22 @@ function Home(props) {
 
     setIsShow(false);
   };
+  const getVehicle = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    setDriverDetails(driverDetails);
+  };
   useEffect(() => {
+    console.log(
+      '=============================================================================',
+    );
     getDetails('first');
+    getVehicle();
     // if (newDetail.length > 0) {
     // console.log(
     //   'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv',
@@ -89,13 +104,14 @@ function Home(props) {
     // });
     // }
   }, []);
+
   const searchFunction = text => {
     // let filteredData = filterDetails.filter(item => {
     //   return item.deviceId.includes(text);
     // });
     // setFilteredDetails(filteredData);
     // console.log('this is searched text', filteredData);
-    console.log('text', text);
+    // console.log('text', text);
     if (text !== null && text !== undefined && text !== '') {
       var newArr = [];
       newArr = filteredDetails.filter(item => {
@@ -109,8 +125,8 @@ function Home(props) {
       setNewFilterDetails(filteredDetails);
     }
   };
-  const getRunningData = data => {
-    console.log('data', data);
+  const getRunningData = (data, details) => {
+    // console.log('data', data);
     setType(data);
     const filterDetails = details.filter(item => {
       return item.status == data;
@@ -118,15 +134,15 @@ function Home(props) {
     setNewFilterDetails(filterDetails);
     setIsShow(false);
   };
-  console.log('shahshshahah', type);
+  // console.log('shahshshahah', type);
 
-  const onRefresh = React.useCallback(data => {
+  const onRefresh = React.useCallback((data, details) => {
     setIsShow(true);
-    console.log('typeptprprp', data);
+    // console.log('typeptprprp', data);
     if (data === 'All') {
       getDetails('refresh');
     } else {
-      getRunningData(data);
+      getRunningData(data, details);
     }
 
     setTimeout(() => setIsShow(false), 2000);
@@ -242,7 +258,7 @@ function Home(props) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                setIsShow(true), getRunningData('Running');
+                setIsShow(true), getRunningData('Running', details);
               }}>
               <Text
                 style={[
@@ -257,7 +273,7 @@ function Home(props) {
                 {__('Running')}({countObj.Running})
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => getRunningData('Idle')}>
+            <TouchableOpacity onPress={() => getRunningData('Idle', details)}>
               <Text
                 style={[
                   styles.catagoryTextActive,
@@ -271,7 +287,8 @@ function Home(props) {
                 {__('Stop')}({countObj.Idle})
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => getRunningData('In-Active')}>
+            <TouchableOpacity
+              onPress={() => getRunningData('In-Active', details)}>
               <Text
                 style={[
                   styles.catagoryTextActive,
@@ -287,7 +304,7 @@ function Home(props) {
                 {__('In-Active')}({countObj['In-Active']})
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => getRunningData('No GPS')}>
+            <TouchableOpacity onPress={() => getRunningData('No GPS', details)}>
               <Text
                 style={[
                   styles.catagoryTextActive,
@@ -301,7 +318,8 @@ function Home(props) {
                 {__('No GPS')}({countObj['No GPS']})
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => getRunningData('Waiting')}>
+            <TouchableOpacity
+              onPress={() => getRunningData('Waiting', details)}>
               <Text
                 style={[
                   styles.catagoryTextActive,
@@ -319,18 +337,27 @@ function Home(props) {
         </View>
       ) : null}
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={styles.carDetailCard}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={() => onRefresh(type)}
+            onRefresh={() => onRefresh(type, details)}
           />
         }>
         {dashBoardType === 'Dashboard 1' && (
-          <Dashboard1 details={newFilterDetails} isShow={isShow} />
+          <Dashboard1
+            details={newFilterDetails}
+            isShow={isShow}
+            driverDetails={driverDetails}
+          />
         )}
         {dashBoardType === 'Dashboard 2' && (
-          <Dashboard2 details={newFilterDetails} isShow={isShow} />
+          <Dashboard2
+            details={newFilterDetails}
+            isShow={isShow}
+            driverDetails={driverDetails}
+          />
         )}
       </ScrollView>
     </>
