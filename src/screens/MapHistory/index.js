@@ -21,6 +21,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MapViewDirections from 'react-native-maps-directions';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
+import Toast from 'react-native-simple-toast';
 // import MapView from '../../../Utils/helper/GoogleMap';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
@@ -35,12 +36,13 @@ import MapView, {
   PROVIDER_GOOGLE,
 } from 'react-native-maps';
 import GoogleMap from '../../../Utils/helper/GoogleMap';
+import SimpleToast from 'react-native-simple-toast';
 const LATITUDE_DELTA = 0.08;
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function MapHistory(props) {
-  // console.log("props mapHist", props.route.params.details.imei)
+  console.log('props mapHist', props.route.params.details.imei);
   const {imei} = props.route.params.details;
   const [data, setData] = useState([]);
 
@@ -88,7 +90,7 @@ function MapHistory(props) {
     return () => {
       clearInterval(interval);
     };
-  }, [open]);
+  }, [fdate, fdateend, ftime, ftimeend]);
 
   const getMapHistory = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
@@ -98,12 +100,15 @@ function MapHistory(props) {
       accountid: username,
       password: password,
       // imei: imei,
-      imei: '358735075824622',
+      imei: imei,
       date: fdate,
     };
     const response = await axiosGetData('mapHistory', data);
-    const newCoordinate = response?.data?.EventHistory?.slice(0, 9);
+    let newCoordinate = response?.data?.EventHistory?.slice(0, 9);
     console.log('==--=-newCoordinate', newCoordinate);
+    if ((newCoordinate = [])) {
+      Toast.show('There is no data for this vehicle');
+    }
     newCoordinate?.forEach(el => {
       setCoordinates(prev => ({
         ...prev,
@@ -147,7 +152,7 @@ function MapHistory(props) {
     let fDateStart = new Date(currentDate);
     setFdate(formatDate(fDateStart.toString()));
 
-    let fTimeStart = fDateStart.toLocaleTimeString().slice(0,8);
+    let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
     setFtime(fTimeStart);
   };
   const onChangeEnd = selectedDate => {
@@ -157,7 +162,7 @@ function MapHistory(props) {
     let fDateEnd = new Date(currentDate);
 
     setFdateend(formatDate(fDateEnd.toString()));
-    let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0,8)
+    let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0, 8);
 
     setFtimeend(fTimeEnd);
   };

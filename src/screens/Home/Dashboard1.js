@@ -44,15 +44,17 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import moment from 'moment';
 
-function Dashboard1({details, isShow}) {
+function Dashboard1({details, isShow, driverDetails}) {
   const [coordinate, setCoordinate] = useState({
     latitude: 26.9110637,
     longitude: 75.7376412,
   });
+  const [mobileNumber, setMobileNumber] = useState([]);
   const [locationPermission, setLocationPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const [visible, setVisible] = useState(false);
+  const [number, setNumber] = useState(false);
 
   const [alertMsg, setAlertMsg] = useState('');
 
@@ -162,16 +164,26 @@ function Dashboard1({details, isShow}) {
     const phoneNumber = filterData[0].mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
   };
+  const getMobileNumber = async number => {
+    // console.log('numbernumbernumber', number);
+
+    // console.log('driverDetailsdriverDetails', driverDetails);
+    const filterData = driverDetails.filter(item => {
+      return item.deviceId === number.deviceId;
+    });
+    console.log('filterDatafilterDatafilterDatafilterData', filterData);
+    setMobileNumber(filterData[0]);
+    setVisible(true);
+  };
 
   const renderItem = ({item, index}) => {
     // console.log('096322890',item.validPacketTimeStamp)
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     // console.log('datatatta',date)
-    const filterDate=moment.unix(date).format('DD-MM-YYYY')
+    const filterDate = moment.unix(date).format('DD-MM-YYYY');
     // console.log("newDate/////////",filterDate)
-    const filterTime = moment.unix(date).format('hh:mm:ss')
+    const filterTime = moment.unix(date).format('hh:mm:ss');
     // console.log("filterTime",filterTime)
-
 
     // const newDate = new Date(date);
     // let month = newDate.getMonth() + 1;
@@ -186,7 +198,9 @@ function Dashboard1({details, isShow}) {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            isSetData(item), setVisible(true);
+            getMobileNumber(item);
+            isSetData(item);
+
             // return <VehicleMenu item={item} visible={visible} />;
             // setVisible(true), getVehicleDetail(item);
           }}>
@@ -378,6 +392,7 @@ function Dashboard1({details, isShow}) {
         />
       )}
       <VehicleMenu
+        mobileNumber={mobileNumber}
         visible={visible}
         setVisible={setVisible}
         details={isData}

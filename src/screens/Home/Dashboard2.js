@@ -18,10 +18,10 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import moment from 'moment';
 
-
-function Dashboard2({details, isShow}) {
+function Dashboard2({details, isShow, driverDetails}) {
   const [isData, isSetData] = useState({});
   const [visible, setVisible] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState([]);
 
   const calling = async data => {
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -38,12 +38,23 @@ function Dashboard2({details, isShow}) {
     console.log(filterData[0]);
     Linking.openURL(`tel:${phoneNumber}`);
   };
+  const getMobileNumber = async number => {
+    // console.log('numbernumbernumber', number);
+
+    // console.log('driverDetailsdriverDetails', driverDetails);
+    const filterData = driverDetails.filter(item => {
+      return item.deviceId === number.deviceId;
+    });
+    console.log('filterDatafilterDatafilterDatafilterData', filterData);
+    setMobileNumber(filterData[0]);
+    setVisible(true);
+  };
   const renderItem = ({item}) => {
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
     // const newDate = new Date(date);
-    const filterDate=moment.unix(date).format('DD-MM-YYYY')
+    const filterDate = moment.unix(date).format('DD-MM-YYYY');
     // console.log("newDate/////////",filterDate)
-    const filterTime = moment.unix(date).format('hh:mm:ss')
+    const filterTime = moment.unix(date).format('hh:mm:ss');
     // console.log("filterTime",filterTime)
     // const filterTime = newDate.toLocaleTimeString('en-US');
     // let month = newDate.getMonth() + 1;
@@ -54,9 +65,10 @@ function Dashboard2({details, isShow}) {
     return (
       <TouchableOpacity
         onPress={() => {
-          isSetData(item), setVisible(true);
+          getMobileNumber(item);
+
+          isSetData(item);
         }}>
-      
         <LinearGradient
           colors={['#BCE2FF', '#FFFFFF']}
           style={styles.card2Container}>
@@ -113,9 +125,12 @@ function Dashboard2({details, isShow}) {
               </View>
             </View>
             <View style={styles.driverCarBox}>
-            {/* <Image source={image.carUp} style={styles.driverCar} /> */}
+              {/* <Image source={image.carUp} style={styles.driverCar} /> */}
 
-              <Image source={{uri:item.equipmentIcon}} style={styles.driverCar} />
+              <Image
+                source={{uri: item.equipmentIcon}}
+                style={styles.driverCar}
+              />
             </View>
           </View>
           <View
@@ -327,6 +342,7 @@ function Dashboard2({details, isShow}) {
         />
       )}
       <VehicleMenu
+        mobileNumber={mobileNumber}
         visible={visible}
         calling={calling}
         setVisible={setVisible}
