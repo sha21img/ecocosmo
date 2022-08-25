@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Image,
   ImageBackground,
@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TextInput,
   View,
+  Linking,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
@@ -27,6 +28,8 @@ const CustomerProfile = props => {
   const [secMobile, SetsecMobile] = useState('');
   const [Address, SetAddress] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
+
   const [details, setDetails] = useState();
 
   const contactUsDetails = async () => {
@@ -37,6 +40,10 @@ const CustomerProfile = props => {
     const response = await axiosGetData(
       `getAccountDetails/${username}/${encodedPassWord}`,
     );
+    console.log(
+      'response.data.getAccountDetails',
+      response.data.getAccountDetails,
+    );
     SetaccountId(response.data.getAccountDetails.accountId);
     Setemail(response.data.getAccountDetails.email);
     SetprimaryMobile(response.data.getAccountDetails.mobile);
@@ -46,7 +53,7 @@ const CustomerProfile = props => {
   useEffect(() => {
     contactUsDetails();
   }, []);
-
+  const input1 = useRef(null);
   const handleSave = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
@@ -62,6 +69,15 @@ const CustomerProfile = props => {
       setLoading(false);
     }
   };
+  const calling = () => {
+    Linking.openURL(`tel:${primaryMobile}`);
+  };
+
+  const focusOn = ref => {
+    console.log('balle ballle');
+    setTimeout(() => ref?.current?.focus(), 1000);
+  };
+
   return (
     <>
       <LinearGradient
@@ -78,7 +94,12 @@ const CustomerProfile = props => {
               </TouchableOpacity>
               <Text style={styles.headerText}>{__('My Account')}</Text>
             </View>
-            <TouchableOpacity style={styles.editContainer}>
+            <TouchableOpacity
+              style={styles.editContainer}
+              onPress={() => {
+                setIsEditable(true);
+                focusOn(input1);
+              }}>
               <Entypo
                 style={{
                   color: '#fff',
@@ -96,9 +117,11 @@ const CustomerProfile = props => {
             colors={[colors.Modalcolor1, colors.white]}>
             <Image source={image.taxtDriver} style={styles.userImage} />
             <Text style={styles.subHead}>{details?.brandName}</Text>
-            <TouchableOpacity style={styles.subButton}>
+            <TouchableOpacity
+              style={styles.subButton}
+              onPress={() => calling()}>
               <Image source={image.callWhite} />
-              <Text style={styles.subButtonText}>+91 - 123456789</Text>
+              <Text style={styles.subButtonText}>+91 - {primaryMobile}</Text>
             </TouchableOpacity>
             <ScrollView style={{marginVertical: 16}}>
               <View style={styles.TextFieldContainer}>
@@ -109,6 +132,8 @@ const CustomerProfile = props => {
                     style={{width: 15, height: 14}}
                   />
                   <TextInput
+                    ref={input1}
+                    editable={isEditable}
                     style={styles.textField}
                     placeholder={__('Account ID')}
                     defaultValue={AcountId}
@@ -122,6 +147,7 @@ const CustomerProfile = props => {
                     style={{width: 15, height: 14}}
                   />
                   <TextInput
+                    // editable={isEditable}
                     style={styles.textField}
                     placeholder={__('Email ID')}
                     defaultValue={email}
@@ -134,6 +160,7 @@ const CustomerProfile = props => {
                 <View style={styles.TextFieldSubContainer}>
                   <Image source={image.Phone} style={{width: 15, height: 14}} />
                   <TextInput
+                    // editable={isEditable}
                     style={styles.textField}
                     placeholder={__('Primary Mobile Number *')}
                     defaultValue={primaryMobile}
@@ -146,6 +173,7 @@ const CustomerProfile = props => {
                 <View style={styles.TextFieldSubContainer}>
                   <Image source={image.Phone} style={{width: 15, height: 14}} />
                   <TextInput
+                    // editable={isEditable}
                     style={styles.textField}
                     placeholder={__('Secondary Mobile Number *')}
                     defaultValue={secMobile}
@@ -159,6 +187,7 @@ const CustomerProfile = props => {
                     style={{width: 15, height: 15}}
                   />
                   <TextInput
+                    // editable={isEditable}
                     style={styles.textFieldAddress}
                     placeholder={__('Address *')}
                     numberOfLines={3}

@@ -107,9 +107,10 @@ function Reports(props) {
       // startdate: '2022-06-08 20:41:32',
       // enddate: '2022-08-10 20:42:31',
 
-      startdate: `${fdate}{" "}${ftime}`,
-      enddate: `${fdateend}{" "}${ftimeend}`,
+      startdate: `${fdate} ${ftime}`,
+      enddate: `${fdateend} ${ftimeend}`,
     };
+    console.log('datadatadata', data);
     const response = await axiosGetData('getDriveDetails', data);
     console.log('ppppppppppppppppppppppppppppppppppppppp', response?.data);
     const summarReport = response?.data?.Drives?.forEach(item => {
@@ -117,7 +118,7 @@ function Reports(props) {
 
       getAddress(item.startPoint, username, encodedPassWord);
     });
-    // console.log('response.data.Drives', response.data.Drives);
+    console.log('response.data.Drives', response.data.Drives);
     setSummaryReport(response?.data?.Drives);
     return response?.data?.Drives;
   };
@@ -147,7 +148,7 @@ function Reports(props) {
       Promise.all([data1(), getSummaryReport()])
         .then(values => {
           if (values) {
-            // console.log('values', values);
+            console.log('values', values);
             setLoading(true);
           }
         })
@@ -234,6 +235,7 @@ function Reports(props) {
     showMode('time');
   };
   const getFilterVehicle = async data => {
+    setLoading(true);
     setVehicleNumber(data);
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     const includedArray = vehicleNum
@@ -244,6 +246,7 @@ function Reports(props) {
     console.log('includedArray', includedArray[0]);
     setNewImei(includedArray[0]);
     setIsSelected(true);
+    setLoading(false);
   };
 
   const getTime = secs => {
@@ -284,11 +287,8 @@ function Reports(props) {
               <TouchableOpacity onPress={() => props.navigation.goBack()}>
                 <Image source={image.backArrow} />
               </TouchableOpacity>
-              <TextInput
-                style={styles.dashboardText}
-                editable={false}
-                value={__('Distance Reports')}
-              />
+              <Text style={styles.dashboardText}> Numerical Report</Text>
+              {/* <TextInput editable={false} value={__('Distance Reports')} /> */}
             </View>
             <View style={styles.alertContainer}>
               <TouchableOpacity
