@@ -19,7 +19,7 @@ import Storage from '../../../Utils/Storage';
 import {useNavigation} from '@react-navigation/native';
 
 const AddDriver = props => {
-  console.log('props', props.setVisible);
+  const IMEI = props?.details?.imei;
   const navigation = useNavigation();
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
@@ -52,7 +52,7 @@ const AddDriver = props => {
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const response = await axiosGetData(
-      `setDriverDetails/${username}/${encodedPassWord}/000009112230477/${name}/${number}/adhar/10/12`,
+      `setDriverDetails/${username}/${encodedPassWord}/${IMEI}/${name}/${number}/adhar/10/12`,
     );
     console.log('response', response.data);
     if (response.data.apiResult == 'success') {

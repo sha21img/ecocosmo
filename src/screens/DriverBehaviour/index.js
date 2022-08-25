@@ -16,7 +16,7 @@ import moment from 'moment';
 
 function DriverBehaviour(props) {
   const {details} = props.route.params;
-  console.log('detaaaaaaaaails', details);
+  console.log('detaaaaaaaaails', details.validPacketTimeStamp);
   const date = parseFloat(details.validPacketTimeStamp) + 19800;
   const filterDate = moment.unix(date).format('DD-MM-YYYY');
   const filterTime = moment.unix(date).format('hh:mm:ss');

@@ -23,7 +23,6 @@ import Storage from '../../../Utils/Storage';
 import SelectDropdown from 'react-native-select-dropdown';
 const Alerts = props => {
   const [selected, setSelected] = useState('All Vehicle');
-
   const [Ison, setIson] = useState(true);
   const [alertDataResponse, setalertResponse] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -130,7 +129,6 @@ const Alerts = props => {
                 );
               }}
             />
-            <Text>sdf</Text>
           </TouchableOpacity>
         </LinearGradient>
         <View style={styles.box1}>
@@ -205,4 +203,3 @@ const Alerts = props => {
   );
 };
 export default Alerts;
-
