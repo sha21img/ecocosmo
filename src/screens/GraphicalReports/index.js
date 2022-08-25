@@ -91,12 +91,13 @@ function GraphicalReports(props) {
       password: encodedPassWord,
       imei: imei,
       // imei: "459710040353691",
-      startdate: '2016-11-01',
-      enddate: '2016-11-22',
-      // startdate: fdate.toString(),
-      // enddate: fdateend.toString(),
+      // startdate: '2016-11-01',
+      // enddate: '2016-11-22',
+      startdate: fdate.toString(),
+      enddate: fdateend.toString(),
       type: 'odo',
     };
+    console.log('data', data);
     const response = await axiosGetData('reportHistory', data);
     const aa = response.data.DeviceHistory.reverse();
     if (aa) {
@@ -148,6 +149,7 @@ function GraphicalReports(props) {
     showMode('time');
   };
   const getFilterVehicle = async data => {
+    setLoading(true);
     setVehicleNumber(data);
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     const includedArray = vehicleNum
@@ -157,6 +159,7 @@ function GraphicalReports(props) {
       .map(item => item.imei);
     setImei(includedArray[0]);
     setIsSelected(true);
+    setLoading(false);
   };
 
   const getTime = secs => {
@@ -187,11 +190,7 @@ function GraphicalReports(props) {
               <TouchableOpacity onPress={() => props.navigation.goBack()}>
                 <Image source={image.backArrow} />
               </TouchableOpacity>
-              <TextInput
-                style={styles.dashboardText}
-                editable={false}
-                value={__('Distance Reports')}
-              />
+              <Text style={styles.dashboardText}>Graphical Reports</Text>
             </View>
 
             <TouchableOpacity
@@ -332,6 +331,37 @@ function GraphicalReports(props) {
           />
         )} */}
       </View>
+      {/* <VictoryBar
+        style={{
+          data: {fill: '#c43a31'},
+        }}
+        events={[
+          {
+            target: 'data',
+            eventHandlers: {
+              onPress: item => {
+                return [
+                  {
+                    target: 'data',
+                    mutation: props => {
+                      console.log('clicked', props);
+                      const fill = props.style && props.style.fill;
+                      return fill === 'black' ? null : {style: {fill: 'black'}};
+                    },
+                  },
+                ];
+              },
+            },
+          },
+        ]}
+        data={[
+          {x: 'Year 1', y: 150000},
+          {x: 'Year 2', y: 250000},
+          {x: 'Year 3', y: 500020},
+          {x: 'Year 4', y: 750000},
+          {x: 'Year 5', y: 250000},
+        ]}
+      /> */}
       {isSelected ? (
         <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
           {loading ? (
@@ -398,6 +428,7 @@ function GraphicalReports(props) {
                     mapHistory.map(item => {
                       return (
                         <VictoryChart
+                          key={Math.random()}
                           width={230}
                           height={200}
                           domainPadding={{x: 10}}>
@@ -648,6 +679,10 @@ function GraphicalReports(props) {
                 <View>
                   {toggle == 'coverage' && isActive2.coverage === 1 ? (
                     mapHistory.map(item => {
+                      console.log(
+                        'todaysOutOfCoverage',
+                        item.todaysOutOfCoverage,
+                      );
                       return (
                         <VictoryChart
                           width={230}

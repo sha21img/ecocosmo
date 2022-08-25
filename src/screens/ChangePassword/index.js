@@ -20,22 +20,29 @@ const ChangePassword = props => {
   const handleSubmit = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
-    let password = loginDetail.password;
-    setLoading(true);
     const DecodedPassword = md5(Current);
+    let password = loginDetail.password;
+    let data = {
+      accountid: username,
+      password: DecodedPassword,
+      newpassword: newPassword,
+    };
+    console.log(data, 'data-=-=-=');
+    setLoading(true);
     if (newPassword === confirmPassword) {
-      const response = await axiosGetData(
-        `changepassword?accountid=${username}&password=${DecodedPassword}&newpassword=${newPassword}`,
-      );
-      if (response.data.apiResult === 'success') {
+      const response = await axiosGetData(`changepassword`, data);
+      console.log('response', response.data);
+      if (response?.data?.apiResult === 'Successfully changed password') {
+        Toast.show(response?.data?.apiResult);
         setLoading(false);
+        props.navigation.goBack();
       } else {
-        console.warn(response.data.message);
-        Toast.show(response.data.message);
+        console.warn(response?.data?.message);
+        Toast.show(response?.data?.message);
         setLoading(false);
       }
     } else {
-      console.warn('Didnot Match confirm password');
+      console.warn('Did not Match confirm password');
       setLoading(false);
     }
   };
@@ -88,7 +95,7 @@ const ChangePassword = props => {
               onChangeText={data => setConfirmPassword(data)}
             />
           </View>
-          <TouchableOpacity onPress={handleSubmit}>
+          <TouchableOpacity onPress={() => handleSubmit()}>
             <LinearGradient
               colors={[colors.largeBtn1, colors.largeBtn2]}
               style={styles.loginButton}>

@@ -79,7 +79,7 @@ function HomeStack(props) {
       <Tab.Screen
         name="Alerts"
         component={Alerts}
-        initialParams={{icon: 'home'}}
+        initialParams={{icon: 'chat'}}
       />
       <Tab.Screen
         name="Notifications"

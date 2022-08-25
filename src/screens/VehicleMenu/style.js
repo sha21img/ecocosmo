@@ -38,6 +38,15 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.callBtn,
     borderRadius: 5,
   },
+  disablebutton: {
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 12,
+    backgroundColor: 'grey',
+    borderRadius: 5,
+  },
   buttonText: {fontSize: Size.small, color: colors.white},
   modalContentContainer: {
     marginVertical: 30,

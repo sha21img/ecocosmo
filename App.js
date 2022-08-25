@@ -91,7 +91,6 @@ const DrawerContent = props => {
     let username = loginDetail.accountId;
     let password = loginDetail.password;
     const response = await axiosGetData(`account/${username}/${password}`);
-    console.log(response.data, '/////////////////////');
     setName(response.data.accountName);
   };
   return (
@@ -138,9 +137,13 @@ const DrawerContent = props => {
                   paddingVertical: 5,
                   alignItems: 'center',
                 }}
-                onPress={() =>
-                  props.navigation.navigate('HomeStack', {screen:el.route})
-                }>
+                onPress={() => {
+                  if (el.route == 'GroupMapTracking') {
+                    props.navigation.navigate('GroupMapTracking');
+                  } else {
+                    props.navigation.navigate('HomeStack', {screen: el.route});
+                  }
+                }}>
                 <Image source={el.icon} style={{height: 40, width: 40}} />
                 <Text
                   style={{
