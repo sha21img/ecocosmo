@@ -29,7 +29,7 @@ import {log} from 'react-native-reanimated';
 import axios from 'axios';
 
 const Login = ({navigation}) => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState();
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
@@ -39,15 +39,27 @@ const Login = ({navigation}) => {
   const [logo, setLogo] = useState(null);
   const [companyName, setCompanyName] = useState(null);
 
-  const handleLogin = async () => {
+  const handleLogin = async data => {
+    console.log(
+      'dat===================================================a',
+      data,
+    );
+    console.log(
+      'dat===================================================a',
+      data,
+    );
+    console.log(
+      'dat===================================================a',
+      data,
+    );
     setLoading(true);
-    var encodedPassWord = md5(password);
+    var encodedPassWord = md5(data?.password || password);
     console.log('asdf', encodedPassWord);
     const response = await axiosGetData(
-      `account/${username}/${encodedPassWord}`,
+      `account/${data?.username || username}/${encodedPassWord}`,
     );
     console.log('this is response from login scren');
-    const succcess = await Storage.SetLogin(response.data.apiResult);
+    const succcess = await Storage.SetLogin(response?.data?.apiResult);
     const detail = await Storage.SetLoginDetail(response.data);
 
     if (response.data.apiResult === 'success') {
@@ -86,6 +98,11 @@ const Login = ({navigation}) => {
   const changeLanguage = language => {
     return __(language);
   };
+  // const demoLogin = data => {
+  //   // setUsername('demo101');
+  //   // setPassword('demo101');
+  //   handleLogin(data);
+  // };
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -180,12 +197,17 @@ const Login = ({navigation}) => {
             )}
           </LinearGradient>
         </TouchableOpacity>
-{/* 
+
         <View style={styles.footerTab}>
-          <Image source={image.Mob} style={{height: 34, width: 34}} />
-          <Image source={image.whatsApp} style={{height: 34, width: 34}} />
-          <Image source={image.incomingCall} style={{height: 34, width: 34}} />
-        </View> */}
+          <TouchableOpacity
+            onPress={() =>
+              handleLogin({username: 'demo101', password: 'demo101'})
+            }>
+            <Image source={image.Mob} style={{height: 34, width: 34}} />
+          </TouchableOpacity>
+          {/* <Image source={image.whatsApp} style={{height: 34, width: 34}} />
+          <Image source={image.incomingCall} style={{height: 34, width: 34}} /> */}
+        </View>
       </LinearGradient>
     </ScrollView>
   );

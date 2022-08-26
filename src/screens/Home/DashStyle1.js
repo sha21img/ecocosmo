@@ -80,6 +80,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     textAlign: 'center',
   },
+  disablebutton: {
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 12,
+    backgroundColor: 'grey',
+    borderRadius: 5,
+    height: hp('5%'),
+  },
   buttonText: {fontSize: Size.medium, color: colors.white},
 
   button: {

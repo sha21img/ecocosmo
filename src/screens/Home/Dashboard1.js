@@ -157,11 +157,12 @@ function Dashboard1({details, isShow, driverDetails}) {
     const response = await axiosGetData(
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
+    console.log('this si guest', response.data);
     const driverDetails = response.data.driverDetails;
     const filterData = driverDetails.filter(item => {
       return item.deviceId === data.deviceId;
     });
-    const phoneNumber = filterData[0].mobilenumber;
+    const phoneNumber = filterData[0]?.mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
   };
   const getMobileNumber = async number => {
@@ -193,6 +194,10 @@ function Dashboard1({details, isShow, driverDetails}) {
 
     // const filterTime = newDate.toLocaleTimeString('en-US');
     // const filterDate = `${newDate.getDate()}-${month}-${newDate.getFullYear()}`;
+    const isData = driverDetails.find(items => {
+      return items.deviceId === item.deviceId;
+    });
+    console.log('isData', isData);
     return (
       <>
         <TouchableOpacity
@@ -343,7 +348,7 @@ function Dashboard1({details, isShow, driverDetails}) {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 isSetData(item), calling(item);
               }}
@@ -353,7 +358,28 @@ function Dashboard1({details, isShow, driverDetails}) {
                 style={{height: 15, width: 15, marginRight: 7}}
               />
               <Text style={styles.buttonText}> {__('Call')}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            {isData?.mobilenumber !== '' ? (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  isSetData(item), calling(item);
+                }}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}> {__('Call')}</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.disablebutton}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}> {__('Call')}</Text>
+              </TouchableOpacity>
+            )}
           </LinearGradient>
           <LinearGradient
             colors={['#395DBF', '#16BCD4']}

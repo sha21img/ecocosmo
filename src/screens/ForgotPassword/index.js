@@ -30,7 +30,9 @@ const ForgotPassword = props => {
     setLoading(true);
     const response = await axiosGetData(`forgotPasswordOtp/${email}`);
     if (response.data.message.message === 'success') {
-      props.navigation.navigate('ForgotPassword-1', {companyName:props.route.params.companyName});
+      props.navigation.navigate('ForgotPassword-1', {
+        companyName: props.route.params.companyName,
+      });
       setLoading(false);
     } else {
       Toast.show(__(`${response.data.message}`));
@@ -134,6 +136,13 @@ const ForgotPassword = props => {
             )}
           </LinearGradient>
         </TouchableOpacity>
+        <View style={styles.footerTab}>
+          <TouchableOpacity onPress={() => console.log('login as a demo')}>
+            <Image source={image.Mob} style={{height: 34, width: 34}} />
+          </TouchableOpacity>
+          {/* <Image source={image.whatsApp} style={{height: 34, width: 34}} />
+          <Image source={image.incomingCall} style={{height: 34, width: 34}} /> */}
+        </View>
       </ScrollView>
     </LinearGradient>
   );

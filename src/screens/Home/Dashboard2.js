@@ -48,6 +48,7 @@ function Dashboard2({details, isShow, driverDetails}) {
     console.log('filterDatafilterDatafilterDatafilterData', filterData);
     setMobileNumber(filterData[0]);
     setVisible(true);
+    return filterData[0];
   };
   const renderItem = ({item}) => {
     const date = parseFloat(item.validPacketTimeStamp) + 19800;
@@ -62,6 +63,10 @@ function Dashboard2({details, isShow, driverDetails}) {
     //   month = '0' + month;
     // }
     // const filterDate = `${newDate.getDate()}-${month}-${newDate.getFullYear()}`;
+    const isData = driverDetails.find(items => {
+      return items.deviceId === item.deviceId;
+    });
+    console.log('isData', isData);
     return (
       <TouchableOpacity
         onPress={() => {
@@ -299,12 +304,39 @@ function Dashboard2({details, isShow, driverDetails}) {
                 justifyContent: 'flex-end',
                 paddingRight: 10,
               }}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
+                style={styles.button}
                 onPress={() => {
                   isSetData(item), calling(item);
                 }}>
-                <Image source={image.call} style={{padding: 10}} />
-              </TouchableOpacity>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}> {__('Call')}</Text>
+              </TouchableOpacity> */}
+
+              {isData?.mobilenumber != '' ? (
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
+                    isSetData(item), calling(item);
+                  }}>
+                  <Image
+                    source={image.callimg}
+                    style={{height: 15, width: 15, marginRight: 7}}
+                  />
+                  <Text style={styles.buttonText}> {__('Call')}</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.disablebutton}>
+                  <Image
+                    source={image.callimg}
+                    style={{height: 15, width: 15, marginRight: 7}}
+                  />
+                  <Text style={styles.buttonText}> {__('Call')}</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </LinearGradient>
@@ -338,7 +370,7 @@ function Dashboard2({details, isShow, driverDetails}) {
           contentContainerStyle={{paddingBottom: 100}}
           keyExtractor={({item, index}) => index}
           showsVerticalScrollIndicator={false}
-          renderItem={renderItem}
+          renderItem={item => renderItem(item)}
         />
       )}
       <VehicleMenu

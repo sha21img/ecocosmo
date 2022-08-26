@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     marginBottom: 27,
     resizeMode: 'contain',
   },
-  companyText:{
+  companyText: {
     textAlign: 'center',
     color: colors.white,
     fontFamily: 'CircularStd-Bold.eot',
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footerTab: {
-    width: '60%',
+    minWidth: '60%',
     position: 'absolute',
     bottom: 0,
     marginVertical: 25,

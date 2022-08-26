@@ -110,7 +110,7 @@ const VehicleMenu = props => {
               {/* {__('RUNNING')} 14M 38KM/H */}
             </Text>
             <Text style={styles.modalHead}>{details.deviceId}</Text>
-            {mobileNumber.mobilenumber !== '' ? (
+            {mobileNumber?.mobilenumber !== '' ? (
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => calling(details)}>

@@ -253,7 +253,7 @@ function Home(props) {
                       type == 'All' ? colors.white : colors.inputPlaceholdr,
                   },
                 ]}>
-                {__('All')} ({details.length})
+                {__('All')} ({details?.length})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

@@ -22,7 +22,7 @@ import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
 import {axiosGetData} from '../../../Utils/ApiController';
 import DatePicker from 'react-native-date-picker';
-import {VictoryBar, VictoryChart} from 'victory-native';
+import {VictoryBar, VictoryChart, VictoryLabel} from 'victory-native';
 import moment from 'moment';
 
 function GraphicalReports(props) {
@@ -43,6 +43,7 @@ function GraphicalReports(props) {
   const [toggle, setToggle] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
+  const [Sel, setSel] = useState({y: ''});
   const [isActive2, setIsActive2] = useState({
     odometer: 0,
     ignition: 0,
@@ -85,7 +86,6 @@ function GraphicalReports(props) {
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
-    console.log(imei, 'imei02340=2-4=2-4=234');
     const data = {
       accountid: username,
       password: encodedPassWord,
@@ -97,13 +97,11 @@ function GraphicalReports(props) {
       enddate: fdateend.toString(),
       type: 'odo',
     };
-    console.log('data', data);
     const response = await axiosGetData('reportHistory', data);
     const aa = response.data.DeviceHistory.reverse();
     if (aa) {
       setLoading(true);
     }
-    console.log(response.data.DeviceHistory, 'asdhjhhaa a a a a a');
     setMapHistory(aa);
   };
 
@@ -163,11 +161,9 @@ function GraphicalReports(props) {
   };
 
   const getTime = secs => {
-    console.log(secs, 'this is seconds');
     var minutes = Math.floor(secs / 60);
     // secs = secs % 60;
     var hours = Math.floor(minutes / 60);
-    console.log(hours, 'this is hours');
     // minutes = minutes % 60;
     // let time = `${hours.toString().length == 1 ? '0' + hours : hours}:${
     //   minutes.toString().length == 1 ? '0' + minutes : minutes
@@ -331,37 +327,7 @@ function GraphicalReports(props) {
           />
         )} */}
       </View>
-      {/* <VictoryBar
-        style={{
-          data: {fill: '#c43a31'},
-        }}
-        events={[
-          {
-            target: 'data',
-            eventHandlers: {
-              onPress: item => {
-                return [
-                  {
-                    target: 'data',
-                    mutation: props => {
-                      console.log('clicked', props);
-                      const fill = props.style && props.style.fill;
-                      return fill === 'black' ? null : {style: {fill: 'black'}};
-                    },
-                  },
-                ];
-              },
-            },
-          },
-        ]}
-        data={[
-          {x: 'Year 1', y: 150000},
-          {x: 'Year 2', y: 250000},
-          {x: 'Year 3', y: 500020},
-          {x: 'Year 4', y: 750000},
-          {x: 'Year 5', y: 250000},
-        ]}
-      /> */}
+
       {isSelected ? (
         <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
           {loading ? (
@@ -426,6 +392,9 @@ function GraphicalReports(props) {
                 <View>
                   {toggle == 'odometer' && isActive2.odometer === 1 ? (
                     mapHistory.map(item => {
+                      {
+                        /* console.log("this is item", item) */
+                      }
                       return (
                         <VictoryChart
                           key={Math.random()}
@@ -445,11 +414,38 @@ function GraphicalReports(props) {
                               {x: '25', y: 0},
                               {x: '30', y: item.todaysODO},
                             ]}
-                            animate={{
-                              duration: 2000,
-                              onLoad: {duration: 1000},
-                            }}
                             barRatio={0.7}
+                            labels={({datum}) => {
+                              return datum.y === Sel.y
+                                ? `${datum.y}\n${item.timeStamp1}`
+                                : '';
+                            }}
+                            labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                            events={[
+                              {
+                                eventHandlers: {
+                                  onPress: item => {
+                                    return [
+                                      {
+                                        target: 'data',
+                                        mutation: props => {
+                                          console.log(
+                                            'insideeeeeeeeeeeeeeeeeeee',
+                                            props.datum,
+                                            'insideeeeeeeeeeeeeeeeeeee',
+                                          );
+                                          if (Sel.y == props.datum.y) {
+                                            setSel({y: ''});
+                                          } else {
+                                            setSel(props.datum);
+                                          }
+                                        },
+                                      },
+                                    ];
+                                  },
+                                },
+                              },
+                            ]}
                           />
                         </VictoryChart>
                       );
@@ -483,6 +479,37 @@ function GraphicalReports(props) {
                           onLoad: {duration: 1000},
                         }}
                         barRatio={0.7}
+                        labels={({datum}) => {
+                          return datum.y === Sel.y
+                            ? `${datum.y}\n${mapHistory[0]?.timeStamp1}`
+                            : '';
+                        }}
+                        labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                        events={[
+                          {
+                            eventHandlers: {
+                              onPress: item => {
+                                return [
+                                  {
+                                    target: 'data',
+                                    mutation: props => {
+                                      console.log(
+                                        'insideeeeeeeeeeeeeeeeeeee',
+                                        props.datum,
+                                        'insideeeeeeeeeeeeeeeeeeee',
+                                      );
+                                      if (Sel.y == props.datum.y) {
+                                        setSel({y: ''});
+                                      } else {
+                                        setSel(props.datum);
+                                      }
+                                    },
+                                  },
+                                ];
+                              },
+                            },
+                          },
+                        ]}
                       />
                     </VictoryChart>
                   )}
@@ -571,11 +598,38 @@ function GraphicalReports(props) {
                                 y: getTime(item.todaysIgnitionOnTimeSeconds),
                               },
                             ]}
-                            animate={{
-                              duration: 2000,
-                              onLoad: {duration: 1000},
-                            }}
                             barRatio={0.7}
+                            labels={({datum}) => {
+                              return datum.y === Sel.y
+                                ? `${datum.y}\n${item.timeStamp1}`
+                                : '';
+                            }}
+                            labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                            events={[
+                              {
+                                eventHandlers: {
+                                  onPress: item => {
+                                    return [
+                                      {
+                                        target: 'data',
+                                        mutation: props => {
+                                          console.log(
+                                            'insideeeeeeeeeeeeeeeeeeee',
+                                            props.datum,
+                                            'insideeeeeeeeeeeeeeeeeeee',
+                                          );
+                                          if (Sel.y == props.datum.y) {
+                                            setSel({y: ''});
+                                          } else {
+                                            setSel(props.datum);
+                                          }
+                                        },
+                                      },
+                                    ];
+                                  },
+                                },
+                              },
+                            ]}
                           />
                         </VictoryChart>
                       );
@@ -612,6 +666,37 @@ function GraphicalReports(props) {
                           onLoad: {duration: 1000},
                         }}
                         barRatio={0.7}
+                        labels={({datum}) => {
+                          return datum.y === Sel.y
+                            ? `${datum.y}\n${mapHistory[0]?.timeStamp1}`
+                            : '';
+                        }}
+                        labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                        events={[
+                          {
+                            eventHandlers: {
+                              onPress: item => {
+                                return [
+                                  {
+                                    target: 'data',
+                                    mutation: props => {
+                                      console.log(
+                                        'insideeeeeeeeeeeeeeeeeeee',
+                                        props.datum,
+                                        'insideeeeeeeeeeeeeeeeeeee',
+                                      );
+                                      if (Sel.y == props.datum.y) {
+                                        setSel({y: ''});
+                                      } else {
+                                        setSel(props.datum);
+                                      }
+                                    },
+                                  },
+                                ];
+                              },
+                            },
+                          },
+                        ]}
                       />
                     </VictoryChart>
                   )}
@@ -679,10 +764,6 @@ function GraphicalReports(props) {
                 <View>
                   {toggle == 'coverage' && isActive2.coverage === 1 ? (
                     mapHistory.map(item => {
-                      console.log(
-                        'todaysOutOfCoverage',
-                        item.todaysOutOfCoverage,
-                      );
                       return (
                         <VictoryChart
                           width={230}
@@ -701,11 +782,38 @@ function GraphicalReports(props) {
                               {x: '25', y: 0},
                               {x: '30', y: getTime(item.todaysOutOfCoverage)},
                             ]}
-                            animate={{
-                              duration: 2000,
-                              onLoad: {duration: 1000},
-                            }}
                             barRatio={0.7}
+                            labels={({datum}) => {
+                              return datum.y === Sel.y
+                                ? `${datum.y}\n${item.timeStamp1}`
+                                : '';
+                            }}
+                            labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                            events={[
+                              {
+                                eventHandlers: {
+                                  onPress: item => {
+                                    return [
+                                      {
+                                        target: 'data',
+                                        mutation: props => {
+                                          console.log(
+                                            'insideeeeeeeeeeeeeeeeeeee',
+                                            props.datum,
+                                            'insideeeeeeeeeeeeeeeeeeee',
+                                          );
+                                          if (Sel.y == props.datum.y) {
+                                            setSel({y: ''});
+                                          } else {
+                                            setSel(props.datum);
+                                          }
+                                        },
+                                      },
+                                    ];
+                                  },
+                                },
+                              },
+                            ]}
                           />
                         </VictoryChart>
                       );
@@ -739,6 +847,37 @@ function GraphicalReports(props) {
                           onLoad: {duration: 1000},
                         }}
                         barRatio={0.7}
+                        labels={({datum}) => {
+                          return datum.y === Sel.y
+                            ? `${datum.y}\n${mapHistory[0]?.timeStamp1}`
+                            : '';
+                        }}
+                        labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                        events={[
+                          {
+                            eventHandlers: {
+                              onPress: item => {
+                                return [
+                                  {
+                                    target: 'data',
+                                    mutation: props => {
+                                      console.log(
+                                        'insideeeeeeeeeeeeeeeeeeee',
+                                        props.datum,
+                                        'insideeeeeeeeeeeeeeeeeeee',
+                                      );
+                                      if (Sel.y == props.datum.y) {
+                                        setSel({y: ''});
+                                      } else {
+                                        setSel(props.datum);
+                                      }
+                                    },
+                                  },
+                                ];
+                              },
+                            },
+                          },
+                        ]}
                       />
                     </VictoryChart>
                   )}
@@ -827,11 +966,38 @@ function GraphicalReports(props) {
                                 y: getTime(item.todaysWaitingIgnitionTime),
                               },
                             ]}
-                            animate={{
-                              duration: 2000,
-                              onLoad: {duration: 1000},
-                            }}
                             barRatio={0.7}
+                            labels={({datum}) => {
+                              return datum.y === Sel.y
+                                ? `${datum.y}\n${item.timeStamp1}`
+                                : '';
+                            }}
+                            labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                            events={[
+                              {
+                                eventHandlers: {
+                                  onPress: item => {
+                                    return [
+                                      {
+                                        target: 'data',
+                                        mutation: props => {
+                                          console.log(
+                                            'insideeeeeeeeeeeeeeeeeeee',
+                                            props.datum,
+                                            'insideeeeeeeeeeeeeeeeeeee',
+                                          );
+                                          if (Sel.y == props.datum.y) {
+                                            setSel({y: ''});
+                                          } else {
+                                            setSel(props.datum);
+                                          }
+                                        },
+                                      },
+                                    ];
+                                  },
+                                },
+                              },
+                            ]}
                           />
                         </VictoryChart>
                       );
@@ -868,6 +1034,37 @@ function GraphicalReports(props) {
                           onLoad: {duration: 1000},
                         }}
                         barRatio={0.7}
+                        labels={({datum}) => {
+                          return datum.y === Sel.y
+                            ? `${datum.y}\n${mapHistory[0]?.timeStamp1}`
+                            : '';
+                        }}
+                        labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                        events={[
+                          {
+                            eventHandlers: {
+                              onPress: item => {
+                                return [
+                                  {
+                                    target: 'data',
+                                    mutation: props => {
+                                      console.log(
+                                        'insideeeeeeeeeeeeeeeeeeee',
+                                        props.datum,
+                                        'insideeeeeeeeeeeeeeeeeeee',
+                                      );
+                                      if (Sel.y == props.datum.y) {
+                                        setSel({y: ''});
+                                      } else {
+                                        setSel(props.datum);
+                                      }
+                                    },
+                                  },
+                                ];
+                              },
+                            },
+                          },
+                        ]}
                       />
                     </VictoryChart>
                   )}

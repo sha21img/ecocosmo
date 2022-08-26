@@ -1,6 +1,10 @@
 import {StyleSheet} from 'react-native';
 import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
   card2Container: {
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
   driverCar: {
     width: 50,
     height: 100,
-    resizeMode:'contain'
+    resizeMode: 'contain',
   },
   driverAddressBox: {
     paddingVertical: 12,
@@ -74,6 +78,25 @@ const styles = StyleSheet.create({
     color: colors.white,
     paddingHorizontal: 5,
     textAlign: 'center',
+  },
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    backgroundColor: colors.callBtn,
+    borderRadius: 5,
+    height: hp('5%'),
+  },
+  buttonText: {fontSize: Size.medium, color: colors.white},
+  disablebutton: {
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 12,
+    backgroundColor: 'grey',
+    borderRadius: 5,
+    height: hp('5%'),
   },
 });
 export default styles;
