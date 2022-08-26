@@ -1,5 +1,7 @@
 export const image = {
   Alert: require('./Alert.png'),
+  maphistory: require('./maphistory.png'),
+
   arrowDown: require('./arrowDown.png'),
   parkingPoint: require('./parkingPoint.png'),
   atm: require('./atm.png'),

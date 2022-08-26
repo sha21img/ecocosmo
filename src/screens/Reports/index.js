@@ -19,6 +19,7 @@ import ModalSelector from 'react-native-modal-selector';
 import {color} from 'react-native-reanimated';
 import colors from '../../../assets/Colors';
 import Moment from 'moment';
+
 import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
 import {axiosGetData} from '../../../Utils/ApiController';
@@ -54,6 +55,7 @@ function Reports(props) {
   const [addres, setAddress] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
+  const [newFilterVehicle, setNewFilterVehicle] = useState();
 
   const [isActive2, setIsActive2] = useState({
     odometer: 0,
@@ -79,18 +81,34 @@ function Reports(props) {
     setFtime(endTime);
     setFdate(aa);
   };
-  const setVehicleDetail = async () => {
+  const setVehicleDetail = async data => {
+    console.log('setVehicleDetailsetVehicleDetail');
     if (newImei != undefined) {
+      const filterImei = data || newImei;
       setIsSelected(true);
+      const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
+      // console.log('vehicleNumvehicleNum', vehicleNum);
+      const filterVehicleNumber = vehicleNum
+        .filter(item => {
+          return item.imei === filterImei;
+        })
+        .map((item, index) => {
+          return {key: index++, label: item.deviceId};
+        });
+      console.log(
+        'filterVehic99999999999999999999999999999999',
+        filterVehicleNumber,
+      );
+      setNewFilterVehicle(filterVehicleNumber[0].label);
+      const allVehicleDetails = vehicleNum.map((item, index) => {
+        return {key: index++, label: item.deviceId};
+      });
+      setNewVehicleNumber(allVehicleDetails);
     }
-    const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
-    const filterVehicleNumber = vehicleNum.map((item, index) => {
-      return {key: index++, label: item.deviceId};
-    });
-    setNewVehicleNumber(filterVehicleNumber);
   };
   useEffect(() => {
     setDate();
+    console.log('ussuusususu');
     setVehicleDetail();
   }, []);
 
@@ -112,19 +130,20 @@ function Reports(props) {
     };
     console.log('datadatadata', data);
     const response = await axiosGetData('getDriveDetails', data);
-    console.log('ppppppppppppppppppppppppppppppppppppppp', response?.data);
+    // console.log('ppppppppppppppppppppppppppppppppppppppp', response?.data);
     const summarReport = response?.data?.Drives?.forEach(item => {
       // console.log('item', item);
 
       getAddress(item.startPoint, username, encodedPassWord);
     });
-    console.log('response.data.Drives', response.data.Drives);
+    console.log('response.data.Drives', response.data.Drives.length);
     setSummaryReport(response?.data?.Drives);
     return response?.data?.Drives;
   };
   // startPoint":"19.268671,72.869516",
   var filterAddress = [];
   const getAddress = async (address, username, password) => {
+    // console.log('hihi')
     const newAddress = address.split(',').join('/');
     const response =
       // await axiosGetData(`getAddress`,data);
@@ -133,11 +152,13 @@ function Reports(props) {
       );
     filterAddress.push(response.data);
     setData2(filterAddress);
-    //  console.log("aafilterAddressa",filterAddress)
-    // setAddress([...addres, response.data]);
+    // console.log('aafilterAddressa', filterAddress);
 
-    // console.log('pl,pl,pl,pl', response.data);
+    console.log('pl,pl,pl,pl', filterAddress.length);
   };
+  console.log('pl,pl,ddatatatattataa,pl', data2.length);
+
+
   useEffect(() => {
     // if (fdate !== '' && fdateend !== '') {
     //   data1();
@@ -148,7 +169,7 @@ function Reports(props) {
       Promise.all([data1(), getSummaryReport()])
         .then(values => {
           if (values) {
-            console.log('values', values);
+            // console.log('values', values);
             setLoading(true);
           }
         })
@@ -246,6 +267,7 @@ function Reports(props) {
     console.log('includedArray', includedArray[0]);
     setNewImei(includedArray[0]);
     setIsSelected(true);
+    setVehicleDetail(includedArray[0]);
     setLoading(false);
   };
 
@@ -528,12 +550,15 @@ function Reports(props) {
                   <View style={{paddingRight: 20}}>
                     <Text style={styles.textHead}>Vehicle No.</Text>
 
+                    {/* {isActive === 'odometer' && isActive2.odometer === 1 ? (
+                      <Text>{newFilterVehicle}</Text>
+                    ) : null} */}
                     {isActive === 'odometer' && isActive2.odometer === 1 ? (
-                      newVehicleNumber?.map(item => {
-                        return <Text>{item.label.slice(0, 13)}</Text>;
+                      mapHistory?.map(item => {
+                        return <Text>{newFilterVehicle}</Text>;
                       })
                     ) : (
-                      <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
+                      <Text>{newFilterVehicle}</Text>
                     )}
                   </View>
                   <View style={{paddingRight: 20}}>
@@ -637,13 +662,24 @@ function Reports(props) {
                   <View style={{paddingRight: 20}}>
                     <Text style={styles.textHead}>Vehicle No.</Text>
                     {/* <Text>20-07-2022</Text> */}
-                    {isActive === 'ignition' && isActive2.ignition === 1 ? (
+                    {/* {isActive === 'ignition' && isActive2.ignition === 1 ? (
                       newVehicleNumber?.map(item => {
                         return <Text>{item.label.slice(0, 13)}</Text>;
                       })
                     ) : (
                       <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
+                    )} */}
+                    {/* {isActive === 'ignition' && isActive2.ignition === 1 ? ( */}
+
+                    {/* <Text>{newFilterVehicle}</Text> */}
+                    {isActive === 'ignition' && isActive2.ignition === 1 ? (
+                      mapHistory?.map(item => {
+                        return <Text>{newFilterVehicle}</Text>;
+                      })
+                    ) : (
+                      <Text>{newFilterVehicle}</Text>
                     )}
+                    {/* ) : null} */}
                   </View>
                   <View style={{paddingRight: 20}}>
                     <Text style={styles.textHead}>Date</Text>
@@ -764,12 +800,22 @@ function Reports(props) {
                     <View style={{paddingRight: 20}}>
                       <Text style={styles.textHead}>Vehicle No.</Text>
 
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                      {/* {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                         newVehicleNumber?.map(item => {
                           return <Text>{item.label.slice(0, 13)}</Text>;
                         })
                       ) : (
                         <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
+                      )} */}
+                      {/* {isActive === 'vehicle' && isActive2.vehicle === 1 ? ( */}
+                      {/* <Text>{newFilterVehicle}</Text> */}
+                      {/* ) : null} */}
+                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                        mapHistory?.map(item => {
+                          return <Text>{newFilterVehicle}</Text>;
+                        })
+                      ) : (
+                        <Text>{newFilterVehicle}</Text>
                       )}
                     </View>
                     <View style={{paddingRight: 20}}>
@@ -1099,13 +1145,12 @@ function Reports(props) {
                     style={{flexDirection: 'row', paddingTop: 10}}>
                     <View style={{paddingRight: 20}}>
                       <Text style={styles.textHead}>Vehicle No.</Text>
-
                       {isActive === 'drive' && isActive2.drive === 1 ? (
-                        newVehicleNumber?.map(item => {
-                          return <Text>{item.label.slice(0, 13)}</Text>;
+                        summaryReport?.map(item => {
+                          return <Text>{newFilterVehicle}</Text>;
                         })
                       ) : (
-                        <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
+                        <Text>{newFilterVehicle}</Text>
                       )}
                     </View>
                     <View
@@ -1115,58 +1160,103 @@ function Reports(props) {
                       <Text style={styles.textHead}>Start Location</Text>
                       {isActive === 'drive' && isActive2.drive === 1 ? (
                         data2?.map(item => {
-                          {
-                            /* console.log('aaassshihihishishishi', item); */
-                          }
                           return <Text>{item?.vehicleAddress}</Text>;
                         })
                       ) : (
                         <Text>{data2[0]?.vehicleAddress}</Text>
                       )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
                     </View>
-                    <View style={{paddingRight: 20}}>
+                    {/*  */}
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-around',
+                        }}>
+                        <Text style={styles.textHead}>End Time</Text>
+                        <Text style={styles.textHead}>Work/Idle hrs</Text>
+                        <Text style={styles.textHead}>Duration</Text>
+                      </View>
+                      {isActive === 'drive' && isActive2.drive === 1 ? (
+                        summaryReport.map(item => {
+                          return (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                              }}>
+                              <Text style={{paddingRight: 20}}>
+                                {item['endTime:']}
+                              </Text>
+                              <Text style={{paddingRight: 20}}>{item.odo}</Text>
+                              <Text style={{paddingRight: 20}}>
+                                {item.duration}
+                              </Text>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  props.navigation.navigate('MapHistory', {
+                                    summaryData: item,
+                                    imei: newImei,
+                                  })
+                                }>
+                                <Image
+                                  source={image.maphistory}
+                                  style={{
+                                    resizeMode: 'contain',
+                                    height: 20,
+                                    width: 20,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          );
+                        })
+                      ) : (
+                        <View style={{flexDirection: 'row', paddingRight: 20}}>
+                          <Text style={{paddingRight: 20}}>
+                            {summaryReport[0]['endTime:']}
+                          </Text>
+                          <Text style={{paddingRight: 40}}>
+                            {summaryReport[0].odo}
+                          </Text>
+                          <Text style={{color: 'red'}}>
+                            {summaryReport[0].duration}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+
+                    {/* <View style={{paddingRight: 20}}>
                       <Text style={styles.textHead}>End Time</Text>
                       {isActive === 'drive' && isActive2.drive === 1 ? (
                         summaryReport?.map(item => {
-                          {
-                            /* console.log("item.endTime",item) */
-                          }
                           return <Text>{item['endTime:']}</Text>;
                         })
                       ) : (
                         <Text>{summaryReport[0]['endTime:']}</Text>
                       )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
                     </View>
                     <View style={{paddingRight: 20}}>
                       <Text style={styles.textHead}>Duration</Text>
                       {isActive === 'drive' && isActive2.drive === 1 ? (
                         summaryReport?.map(item => {
-                          {
-                            /* console.log("item.endTime",item) */
-                          }
                           return <Text>{item.duration}</Text>;
                         })
                       ) : (
                         <Text>{summaryReport[0]?.duration}</Text>
                       )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
                     </View>
                     <View style={{paddingRight: 20}}>
                       <Text style={styles.textHead}>Work/Idle hrs</Text>
                       {isActive === 'drive' && isActive2.drive === 1 ? (
-                        summaryReport?.map(item => {
-                          {
-                            /* console.log("item.endTime",item) */
-                          }
+                        summaryReport?.map(item => {("item.endTime",item) 
+                          
                           return <Text>{item.odo}</Text>;
                         })
                       ) : (
                         <Text>{summaryReport[0]?.odo}</Text>
                       )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                    </View>
+                    </View> */}
                   </ScrollView>
                 </LinearGradient>
               ) : null}
@@ -1233,12 +1323,22 @@ function Reports(props) {
                   <View style={{paddingRight: 20}}>
                     <Text style={styles.textHead}>Vehicle No.</Text>
                     {/* <Text>20-07-2022</Text> */}
-                    {isActive == 'idle' && isActive2.idle === 1 ? (
+                    {/* {isActive == 'idle' && isActive2.idle === 1 ? (
                       newVehicleNumber?.map(item => {
                         return <Text>{item.label.slice(0, 13)}</Text>;
                       })
                     ) : (
                       <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
+                    )} */}
+                    {/* {isActive == 'idle' && isActive2.idle === 1 ? ( */}
+                    {/* <Text>{newFilterVehicle}</Text> */}
+                    {/* ) : null} */}
+                    {isActive == 'idle' && isActive2.idle === 1 ? (
+                      mapHistory?.map(item => {
+                        return <Text>{newFilterVehicle}</Text>;
+                      })
+                    ) : (
+                      <Text>{newFilterVehicle}</Text>
                     )}
                   </View>
                   <View style={{paddingRight: 20}}>
@@ -1350,12 +1450,22 @@ function Reports(props) {
                   <View style={{paddingRight: 20}}>
                     <Text style={styles.textHead}>Vehicle No.</Text>
                     {isActive === 'daily' && isActive2.daily === 1 ? (
+                      mapHistory?.map(item => {
+                        return <Text>{newFilterVehicle}</Text>;
+                      })
+                    ) : (
+                      <Text>{newFilterVehicle}</Text>
+                    )}
+                    {/* {isActive === 'daily' && isActive2.daily === 1 ? ( */}
+                    {/* <Text>{newFilterVehicle}</Text> */}
+                    {/* ) : null} */}
+                    {/* {isActive === 'daily' && isActive2.daily === 1 ? (
                       newVehicleNumber?.map(item => {
                         return <Text>{item.label.slice(0, 13)}</Text>;
                       })
                     ) : (
                       <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
-                    )}
+                    )} */}
                   </View>
                   <View style={{paddingRight: 20}}>
                     <Text style={styles.textHead}>Date</Text>

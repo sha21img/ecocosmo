@@ -23,7 +23,7 @@ import Storage from '../../../Utils/Storage';
 import SelectDropdown from 'react-native-select-dropdown';
 const Alerts = props => {
   const [selected, setSelected] = useState('All Vehicle');
-  const [Ison, setIson] = useState(true);
+  const [Ison, setIson] = useState(false);
   const [alertDataResponse, setalertResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [data, setdata] = useState([]);
@@ -53,6 +53,7 @@ const Alerts = props => {
     if (response?.data) {
       setalertResponse(response?.data?.alert_details);
       setLoading(false);
+      setIson(!Ison)
     }
     setLoading(false);
   };

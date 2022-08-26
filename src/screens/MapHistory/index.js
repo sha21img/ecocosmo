@@ -42,9 +42,15 @@ const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function MapHistory(props) {
-  console.log('props mapHist', props.route.params.details.imei);
-  const {imei} = props.route.params.details;
+  // console.log('props mapHist', props.route.params.details.imei);
+  const imei = props?.route?.params?.details?.imei;
+  const ime = props?.route?.params?.imei;
+
+  console.log('imeiimeiimeiimeiimei1111111111111111111', imei);
+  console.log('imeimeimeime000000000000000000000000000000000000', ime);
   const [data, setData] = useState([]);
+  const [newImei, setNewImei] = useState(imei || ime);
+  console.log('newImeinewImeinewImeinewImeinewImei', newImei);
 
   //
   const [parkMode, setParkMode] = useState(true);
@@ -74,16 +80,6 @@ function MapHistory(props) {
   const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
 
   useEffect(() => {
-    // {data?.filter((item) => {
-    //   console.log(item.stoppage, "item.stoppage")
-    //   return (
-    //     <>
-    //       <View>
-    //         <Text>d</Text>
-    //       </View>
-    //     </>
-    //   );
-    // })}
     if (fdate !== '') {
       getMapHistory();
     }
@@ -100,21 +96,39 @@ function MapHistory(props) {
       accountid: username,
       password: password,
       // imei: imei,
-      imei: imei,
+      imei: newImei,
       date: fdate,
     };
     const response = await axiosGetData('mapHistory', data);
     let newCoordinate = response?.data?.EventHistory?.slice(0, 9);
-    console.log('==--=-newCoordinate', newCoordinate);
-    if ((newCoordinate = [])) {
-      Toast.show('There is no data for this vehicle');
+    if (ime) {
+      const summaryData = props?.route?.params?.summaryData;
+      console.log('summaryData', summaryData);
+      var ts = moment(
+        summaryData?.['startTime:'],
+        'YYYY-MM-DD hh:mm:ss',
+      ).unix();
+      var te = moment(summaryData?.['endTime:'], 'YYYY-MM-DD hh:mm:ss').unix();
+      const utcTimeStart = ts - 19800;
+      const utcTimeEnd = te - 19800;
+      console.log('utcTimeStartutcTimeStartutcTimeStart', utcTimeStart);
+      console.log('utcTimeEndutcTimeEndutcTimeEnd', utcTimeEnd);
+
+      newCoordinate = response?.data?.EventHistory.filter(item => {
+        return utcTimeStart < parseFloat(item.packetTimeStamp) < utcTimeEnd;
+      });
     }
-    newCoordinate?.forEach(el => {
-      setCoordinates(prev => ({
-        ...prev,
-        coordinate: {latitude: el.lat, longitude: el.lng},
-      }));
-    });
+    // console.log('==--=-newCoordinate', newCoordinate);
+    if ((newCoordinate == [])) {
+      Toast.show('There is no data for this vehicle');
+    } else {
+      newCoordinate?.forEach(el => {
+        setCoordinates(prev => ({
+          ...prev,
+          coordinate: {latitude: el.lat, longitude: el.lng},
+        }));
+      });
+    }
 
     const filterDataa = newCoordinate?.map(item => {
       const date = parseFloat(item.packetTimeStamp) + 19800;
