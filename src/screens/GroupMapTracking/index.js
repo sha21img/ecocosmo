@@ -37,7 +37,7 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function GroupMapTracking(props) {
-  console.log('gigigigigieieuiopipipoipoiop')
+  console.log('gigigigigieieuiopipipoipoiop');
   const [coordinate, setCoordinate] = useState({
     latitude: 26.9110637,
     longitude: 75.7376412,
@@ -48,6 +48,8 @@ function GroupMapTracking(props) {
   const [traffic, setTraffic] = useState(false);
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [driverDetails, setDriverDetails] = useState([]);
+
   const getDetails = async () => {
     // setIsShow(true);
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -101,8 +103,19 @@ function GroupMapTracking(props) {
   //     }
   //   }
   // }, [netInfo.isConnected]);
+  const getVehicle = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    setDriverDetails(driverDetails);
+  };
   useEffect(() => {
     getDetails();
+    getVehicle();
   }, []);
   const [isData, isSetData] = useState({});
 
@@ -146,6 +159,9 @@ function GroupMapTracking(props) {
             }}
             provider={PROVIDER_GOOGLE}>
             {details.map(item => {
+              const isData = driverDetails.find(items => {
+                return items.deviceId === item.deviceId;
+              });
               return (
                 <Marker
                   // ref={markerRef}
@@ -163,7 +179,11 @@ function GroupMapTracking(props) {
                     }}
                   />
 
-                  <Callout tooltip onPress={() => calling(item)}>
+                  <Callout
+                    tooltip
+                    onPress={() =>
+                      isData?.mobilenumber != '' ? calling(item) : null
+                    }>
                     <LinearGradient
                       colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
                       start={{x: 1.3, y: 0}}
@@ -219,26 +239,41 @@ function GroupMapTracking(props) {
                             alignItems: 'center',
                             justifyContent: 'flex-end',
                           }}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              console.log(
-                                'llllllllllllllllllllllllllllllllllllllllllllllllllllll',
-                              );
-                              // calling(item);
-                            }}
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                              backgroundColor: '#24A520',
-                              padding: 9,
-                              borderRadius: 6,
-                              alignItems: 'center',
-                            }}>
-                            <Icon name="call" color="#fff" />
-                            <Text style={{color: '#fff', marginLeft: 5}}>
-                              Call Driver
-                            </Text>
-                          </TouchableOpacity>
+                          {isData?.mobilenumber != '' ? (
+                            <TouchableOpacity
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                backgroundColor: '#24A520',
+                                padding: 9,
+                                borderRadius: 6,
+                                alignItems: 'center',
+                              }}>
+                              <Icon name="call" color="#fff" />
+                              <Text style={{color: '#fff', marginLeft: 5}}>
+                                Call Driver
+                              </Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                backgroundColor: 'grey',
+                                padding: 9,
+                                borderRadius: 6,
+                                alignItems: 'center',
+                              }}>
+                              <Icon name="call" color="#fff" />
+                              <Text style={{color: '#fff', marginLeft: 5}}>
+                                Call Driver
+                              </Text>
+                            </TouchableOpacity>
+                          )}
+
+                          {/*  */}
+
+                          {/*  */}
                         </View>
                       </View>
                     </LinearGradient>

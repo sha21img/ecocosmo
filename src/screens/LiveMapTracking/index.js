@@ -78,10 +78,11 @@ function LiveMapTracking(props) {
     coordinate,
     heading,
   } = state;
+  console.log('destinationCords',coordinate);
   const updateState = data => setState(state => ({...state, ...data}));
   const GOOGLE_MAP_KEY = 'AIzaSyAQDxD_FpUHSM-HGCGrs20T4oZTNRc4Sq0';
   useEffect(() => {
-    getLiveLocation();
+    getDetails();
   }, []);
   const getLiveLocation = async props => {
     const locPermissionDenied = await locationPermission();
@@ -131,7 +132,7 @@ function LiveMapTracking(props) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      getLiveLocation();
+      getDetails();
     }, 15000);
     return () => clearInterval(interval);
   }, []);
@@ -145,17 +146,40 @@ function LiveMapTracking(props) {
     );
     console.log('poiuytrew0-----------', response.data);
     setDetail(response.data.vehicle);
-    setState({
-      ...state,
-      // curLoc: {
-      //   latitude: parseFloat(response.data.vehicle.lat),
-      //   longitude: parseFloat(response.data.vehicle.lng),
-      // },
+    const vehicleDetails = response.data.vehicle;
+    const latitude = parseFloat(vehicleDetails.lat);
+    const longitude = parseFloat(vehicleDetails.lng);
+    const latlatitude = parseFloat(vehicleDetails.lastLat);
+    const lastlongitude = parseFloat(vehicleDetails.lastLng);
+    animate(latitude, longitude);
+    updateState({
+      heading: heading,
+      curLoc: {
+        latitude,
+        longitude,
+      },
+      coordinate: new AnimatedRegion({
+        latitude: latitude,
+        longitude: longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      }),
       destinationCords: {
-        latitude: parseFloat(response.data?.vehicle?.lastLat),
-        longitude: parseFloat(response.data?.vehicle?.lastLng),
+        latitude: latlatitude,
+        longitude: lastlongitude,
       },
     });
+    // setState({
+    //   ...state,
+    //   // curLoc: {
+    //   //   latitude: parseFloat(response.data.vehicle.lat),
+    //   //   longitude: parseFloat(response.data.vehicle.lng),
+    //   // },
+    //   destinationCords: {
+    //     latitude: parseFloat(response.data?.vehicle?.lastLat),
+    //     longitude: parseFloat(response.data?.vehicle?.lastLng),
+    //   },
+    // });
     setIsShow(true);
   };
   useEffect(() => {
@@ -232,17 +256,17 @@ function LiveMapTracking(props) {
               //   longitudeDelta: LONGITUDE_DELTA,
               // }}
             >
-              <Marker.Animated ref={markerRef} coordinate={coordinate}>
-                <Image
-                  source={{uri: detail.markerIcon}}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    transform: [{rotate: `${heading}deg`}],
-                  }}
-                  resizeMode="contain"
-                />
-              </Marker.Animated>
+                <Marker.Animated ref={markerRef} coordinate={coordinate}>
+                  <Image
+                    source={{uri: detail.markerIcon}}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      transform: [{rotate: `${heading}deg`}],
+                    }}
+                    resizeMode="contain"
+                  />
+                </Marker.Animated>
 
               {Object.keys(destinationCords).length > 0 && (
                 <Marker

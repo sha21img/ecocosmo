@@ -82,11 +82,12 @@ function Reports(props) {
     setFdate(aa);
   };
   const setVehicleDetail = async data => {
-    console.log('setVehicleDetailsetVehicleDetail');
-    if (newImei != undefined) {
+    console.log('newImeinewImei', newImei);
+
+    const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
+    if (newImei !== undefined) {
       const filterImei = data || newImei;
       setIsSelected(true);
-      const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
       // console.log('vehicleNumvehicleNum', vehicleNum);
       const filterVehicleNumber = vehicleNum
         .filter(item => {
@@ -100,9 +101,11 @@ function Reports(props) {
         filterVehicleNumber,
       );
       setNewFilterVehicle(filterVehicleNumber[0].label);
+    } else {
       const allVehicleDetails = vehicleNum.map((item, index) => {
         return {key: index++, label: item.deviceId};
       });
+      console.log('setVehicleDetailsetVehicleDetail', allVehicleDetails);
       setNewVehicleNumber(allVehicleDetails);
     }
   };
@@ -157,7 +160,6 @@ function Reports(props) {
     console.log('pl,pl,pl,pl', filterAddress.length);
   };
   console.log('pl,pl,ddatatatattataa,pl', data2.length);
-
 
   useEffect(() => {
     // if (fdate !== '' && fdateend !== '') {
