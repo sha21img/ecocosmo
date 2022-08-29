@@ -7,6 +7,7 @@ import {
   FlatList,
   Linking,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,7 +19,14 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import moment from 'moment';
 
-function Dashboard2({details, isShow, driverDetails}) {
+function Dashboard2({
+  details,
+  isShow,
+  driverDetails,
+  onRefreshPage,
+  type,
+  setIsShow,
+}) {
   const [isData, isSetData] = useState({});
   const [visible, setVisible] = useState(false);
   const [mobileNumber, setMobileNumber] = useState([]);
@@ -51,7 +59,7 @@ function Dashboard2({details, isShow, driverDetails}) {
     return filterData[0];
   };
   const renderItem = ({item}) => {
-    const date = parseFloat(item.validPacketTimeStamp) + 19800;
+    const date = parseFloat(item.validPacketTimeStamp);
     // const newDate = new Date(date);
     const filterDate = moment.unix(date).format('DD-MM-YYYY');
     // console.log("newDate/////////",filterDate)
@@ -66,7 +74,7 @@ function Dashboard2({details, isShow, driverDetails}) {
     const isData = driverDetails.find(items => {
       return items.deviceId === item.deviceId;
     });
-    console.log('isData', isData);
+    // console.log('isData', isData);
     return (
       <TouchableOpacity
         onPress={() => {
@@ -371,6 +379,13 @@ function Dashboard2({details, isShow, driverDetails}) {
           keyExtractor={({item, index}) => index}
           showsVerticalScrollIndicator={false}
           renderItem={item => renderItem(item)}
+          refreshControl={
+            <RefreshControl
+              enabled={true}
+              refreshing={isShow}
+              onRefresh={() => onRefreshPage(type, details, setIsShow)}
+            />
+          }
         />
       )}
       <VehicleMenu

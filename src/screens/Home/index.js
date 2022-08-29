@@ -62,12 +62,13 @@ function Home(props) {
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
     const detail = response.data.vehicles;
+    console.log('details', response.data);
     await Storage.setVehicleDetail(detail);
     setDetails(detail);
     setFilteredDetails(detail);
     setNewFilterDetails(detail);
     if (data === 'first') {
-      detail.forEach(element => {
+      detail?.forEach(element => {
         setCountObj(prev => {
           return {...prev, [element.status]: prev[element.status] + 1};
         });
@@ -125,6 +126,10 @@ function Home(props) {
       setNewFilterDetails(filteredDetails);
     }
   };
+  // const onRefreshPage = (setIsRefreshing) => {
+  //   setIsRefreshing(true);
+  //   getDetails('first');
+  // };
   const getRunningData = (data, details) => {
     // console.log('data', data);
     setType(data);
@@ -136,7 +141,9 @@ function Home(props) {
   };
   // console.log('shahshshahah', type);
 
-  const onRefresh = React.useCallback((data, details) => {
+  const onRefreshPage = React.useCallback((data, details, setIsShow) => {
+    console.log('hihihds');
+    // setIsRefreshing(true);
     setIsShow(true);
     // console.log('typeptprprp', data);
     if (data === 'All') {
@@ -336,20 +343,16 @@ function Home(props) {
           </ScrollView>
         </View>
       ) : null}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.carDetailCard}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => onRefresh(type, details)}
-          />
-        }>
+      <View style={styles.carDetailCard}>
         {dashBoardType === 'Dashboard 1' && (
           <Dashboard1
             details={newFilterDetails}
             isShow={isShow}
             driverDetails={driverDetails}
+            onRefreshPage={onRefreshPage}
+            type={type}
+            // isShow={isShow}
+            setIsShow={setIsShow}
           />
         )}
         {dashBoardType === 'Dashboard 2' && (
@@ -357,9 +360,13 @@ function Home(props) {
             details={newFilterDetails}
             isShow={isShow}
             driverDetails={driverDetails}
+            onRefreshPage={onRefreshPage}
+            type={type}
+            // isShow={isShow}
+            setIsShow={setIsShow}
           />
         )}
-      </ScrollView>
+      </View>
     </>
   );
 }

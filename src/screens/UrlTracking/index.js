@@ -63,7 +63,7 @@ const UrlTracking = props => {
         alert(error.message);
       }
     } else {
-      Toast.show('Please select day and Add description');
+      Toast.show('Please select duration and Add description');
     }
   };
   const daysData = [
@@ -189,7 +189,7 @@ const UrlTracking = props => {
         style={{height: '100%', paddingHorizontal: 16, paddingVertical: 10}}
         colors={[colors.Modalcolor1, colors.white]}>
         <View style={styles.body}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               showDatepicker(), setOpen(true);
             }}
@@ -242,7 +242,7 @@ const UrlTracking = props => {
                 setOpen(false);
               }}
             />
-          )}
+          )} */}
           <SelectDropdown
             buttonStyle={styles.picker}
             data={daysData}

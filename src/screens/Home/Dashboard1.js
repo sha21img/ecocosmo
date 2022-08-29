@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Platform,
   Linking,
+  RefreshControl,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -44,7 +45,17 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import moment from 'moment';
 
-function Dashboard1({details, isShow, driverDetails}) {
+const Dashboard1 = ({
+  details,
+  isShow,
+  driverDetails,
+  onRefreshPage,
+  type,
+  setIsShow,
+}) => {
+  console.log('isShow',isShow)
+  console.log('setIsShow',setIsShow)
+  console.log('onRefreshPage',onRefreshPage)
   const [coordinate, setCoordinate] = useState({
     latitude: 26.9110637,
     longitude: 75.7376412,
@@ -52,6 +63,7 @@ function Dashboard1({details, isShow, driverDetails}) {
   const [mobileNumber, setMobileNumber] = useState([]);
   const [locationPermission, setLocationPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [visible, setVisible] = useState(false);
   const [number, setNumber] = useState(false);
@@ -179,7 +191,7 @@ function Dashboard1({details, isShow, driverDetails}) {
 
   const renderItem = ({item, index}) => {
     // console.log('096322890',item.validPacketTimeStamp)
-    const date = parseFloat(item.validPacketTimeStamp) + 19800;
+    const date = parseFloat(item.validPacketTimeStamp)
     // console.log('datatatta',date)
     const filterDate = moment.unix(date).format('DD-MM-YYYY');
     // console.log("newDate/////////",filterDate)
@@ -197,7 +209,6 @@ function Dashboard1({details, isShow, driverDetails}) {
     const isData = driverDetails.find(items => {
       return items.deviceId === item.deviceId;
     });
-    console.log('isData', isData);
     return (
       <>
         <TouchableOpacity
@@ -415,6 +426,13 @@ function Dashboard1({details, isShow, driverDetails}) {
           keyExtractor={({item, index}) => index}
           showsVerticalScrollIndicator={false}
           renderItem={(item, index) => renderItem(item, index)}
+          refreshControl={
+            <RefreshControl
+              enabled={true}
+              refreshing={isShow}
+              onRefresh={() => onRefreshPage(type, details, setIsShow)}
+            />
+          }
         />
       )}
       <VehicleMenu
@@ -423,9 +441,10 @@ function Dashboard1({details, isShow, driverDetails}) {
         setVisible={setVisible}
         details={isData}
         calling={calling}
+        
       />
     </>
   );
-}
+};
 
 export default Dashboard1;
