@@ -105,7 +105,7 @@ function LiveMapTracking(props) {
   const location = data => {
     console.log('data', data);
     if (data == 2) {
-      getLiveLocation();
+      getDetails();
     } else if (data == 0) {
       setMapType(!mapType);
     }
@@ -395,7 +395,7 @@ function LiveMapTracking(props) {
               </View>
               <View
                 style={{
-                  marginLeft: 15,
+                  marginLeft: 10,
                   width: '90%',
                 }}>
                 <Text style={style.firstboxtext1}>{details.deviceId}</Text>
