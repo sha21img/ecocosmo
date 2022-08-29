@@ -5,15 +5,15 @@ import {Size} from '../../../assets/fonts/Fonts';
 const styles = StyleSheet.create({
   mainContainer: {
     // flex: 1,
-    backgroundColor:'white'
+    backgroundColor: 'white',
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingTop: 25,
+    paddingBottom: 15,
   },
   headerDashboard: {
     flex: 1,
