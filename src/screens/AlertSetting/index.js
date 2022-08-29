@@ -21,6 +21,7 @@ import Storage from '../../../Utils/Storage';
 
 const AlertSetting = props => {
   const {details} = props.route.params;
+  console.log('details.imei', details.imei);
   console.log('details', details);
   const [daysset, setDays] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -133,7 +134,7 @@ const AlertSetting = props => {
     const params = {
       accountid: username,
       password: password,
-      imei: '351608080774446',
+      imei: details.imei,
       alertType: 'overspeed',
       isactive: newDetail.isActive,
       data: newDetail.data,
@@ -152,7 +153,18 @@ const AlertSetting = props => {
     setLoading(true);
     const response = await axiosGetData(`saveVehicleAlert`, params);
     console.log('0987654432', response.data);
+    //
+
+    const paramss = {
+      accountid: username,
+      password: password,
+      imei: details.imei,
+    };
+    const responses = await axiosGetData(`getAlertDetails`, paramss);
+    console.log('alertData', responses.data.alert_details);
+    //
     if (response.data.apiResult === 'success') {
+      // props.navigation.goBack()
       setLoading(false);
     } else {
       Toast.show(response.data.message);
