@@ -156,8 +156,6 @@ function Reports(props) {
     filterAddress.push(response.data);
     setData2(filterAddress);
     // console.log('aafilterAddressa', filterAddress);
-
-    console.log('pl,pl,pl,pl', filterAddress.length);
   };
   console.log('pl,pl,ddatatatattataa,pl', data2.length);
 

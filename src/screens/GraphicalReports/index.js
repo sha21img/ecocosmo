@@ -194,7 +194,7 @@ function GraphicalReports(props) {
             <TouchableOpacity
               onPress={() => props.navigation.navigate('Reports')}>
               <Image
-                source={image.keep}
+                source={image.keepSmall}
                 style={{height: 25, width: 25, marginRight: 5}}
               />
             </TouchableOpacity>

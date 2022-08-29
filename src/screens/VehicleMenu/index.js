@@ -21,7 +21,7 @@ import Storage from '../../../Utils/Storage';
 import AddDriver from '../AddDriver';
 
 const VehicleMenu = props => {
-  // console.log('props.details.imei', props.details);
+  console.log('props.details.imeitwrtwertwert', props.details, 'props.details.imeitwrtwertwert');
   const navigation = useNavigation();
   const [visibles, setVisibles] = useState(false);
   const [modal, setModal] = useState(false);
@@ -134,6 +134,7 @@ const VehicleMenu = props => {
                         });
                       }}>
                       <View key={el.id} style={styles.modalCardBody}>
+                      {/* {props}props.details */}
                         <Image
                           source={el.image}
                           style={styles.modalCardImage}

@@ -49,7 +49,7 @@ const Alerts = props => {
       imei: imei,
     };
     const response = await axiosGetData(`getAlertDetails`, params);
-    console.log('alertData', response.data.alert_details);
+    console.log('alertData )-0_)=0=0= response', response.data.alert_details);
     if (response?.data) {
       setalertResponse(response?.data?.alert_details);
       setLoading(false);

@@ -53,9 +53,6 @@ const Dashboard1 = ({
   type,
   setIsShow,
 }) => {
-  console.log('isShow',isShow)
-  console.log('setIsShow',setIsShow)
-  console.log('onRefreshPage',onRefreshPage)
   const [coordinate, setCoordinate] = useState({
     latitude: 26.9110637,
     longitude: 75.7376412,
@@ -191,7 +188,7 @@ const Dashboard1 = ({
 
   const renderItem = ({item, index}) => {
     // console.log('096322890',item.validPacketTimeStamp)
-    const date = parseFloat(item.validPacketTimeStamp)
+    const date = parseFloat(item.validPacketTimeStamp);
     // console.log('datatatta',date)
     const filterDate = moment.unix(date).format('DD-MM-YYYY');
     // console.log("newDate/////////",filterDate)
@@ -209,6 +206,7 @@ const Dashboard1 = ({
     const isData = driverDetails.find(items => {
       return items.deviceId === item.deviceId;
     });
+    console.log('item', item.features, 'item');
     return (
       <>
         <TouchableOpacity
@@ -441,7 +439,6 @@ const Dashboard1 = ({
         setVisible={setVisible}
         details={isData}
         calling={calling}
-        
       />
     </>
   );
