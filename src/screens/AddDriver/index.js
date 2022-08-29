@@ -19,6 +19,7 @@ import Storage from '../../../Utils/Storage';
 import {useNavigation} from '@react-navigation/native';
 
 const AddDriver = props => {
+  console.log('this is props', props.details);
   const IMEI = props?.details?.imei;
   const navigation = useNavigation();
   const [number, setNumber] = useState('');
@@ -42,7 +43,7 @@ const AddDriver = props => {
       return item.mobilenumber == number;
     });
     if (filterData.length > 0) {
-      Toast.show('Number is already exist');
+      Toast.show('The Driver name and mobile number are already existing.');
     } else {
       postNumber();
     }

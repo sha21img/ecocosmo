@@ -53,13 +53,18 @@ const permanentRoutes = [
   },
   {
     label: 'Reports',
-    icon: image.mapIcon,
+    icon: image.keep,
     route: 'Reports',
   },
   {
     label: 'Contact Us',
     icon: image.callIcon,
     route: 'ContactUs',
+  },
+  {
+    label: 'Map History',
+    icon: image.mapIcon,
+    route: 'MapHistory',
   },
 ];
 const Routes = [
@@ -241,6 +246,7 @@ const MainScreen = props => {
         <Drawer.Screen name="Reports" component={Reports} />
         <Drawer.Screen name="DriverBehaviour" component={DriverBehaviour} />
         <Drawer.Screen name="GroupMapTracking" component={GroupMapTracking} />
+        <Drawer.Screen name="MapHistory" component={MapHistory} />
       </Drawer.Navigator>
     </>
   );

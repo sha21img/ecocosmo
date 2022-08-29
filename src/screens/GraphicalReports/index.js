@@ -67,7 +67,9 @@ function GraphicalReports(props) {
     const filterVehicleNumber = vehicleNum.map((item, index) => {
       return {key: index++, label: item.deviceId};
     });
+    console.log('filterVehicleNumber', filterVehicleNumber[0]);
     setNewVehicleNumber(filterVehicleNumber);
+    getFilterVehicle(filterVehicleNumber[0].label);
   };
   useEffect(() => {
     setDate();
@@ -191,7 +193,10 @@ function GraphicalReports(props) {
 
             <TouchableOpacity
               onPress={() => props.navigation.navigate('Reports')}>
-              <Image source={image.keep} style={{height: 35, width: 35}} />
+              <Image
+                source={image.keep}
+                style={{height: 25, width: 25, marginRight: 5}}
+              />
             </TouchableOpacity>
           </View>
           <View
@@ -211,6 +216,7 @@ function GraphicalReports(props) {
                 data={newVehicleNumber}
                 scrollViewAccessibilityLabel={'Scrollable options'}
                 onChange={option => {
+                  console.log('option', option);
                   getFilterVehicle(option.label);
                 }}>
                 <TouchableOpacity
