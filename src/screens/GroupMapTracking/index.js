@@ -37,7 +37,7 @@ const ASPECT_RATIO = screen.width / screen.height;
 const LATITUDE_DELTA = 0.04;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function GroupMapTracking(props) {
-  console.log('gigigigigieieuiopipipoipoiop');
+  // console.log('gigigigigieieuiopipipoipoiop');s
   const [coordinate, setCoordinate] = useState({
     latitude: 26.9110637,
     longitude: 75.7376412,
@@ -60,7 +60,7 @@ function GroupMapTracking(props) {
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
     const detail = response.data.vehicles;
-    console.log('GroupMapTracking', detail);
+    // console.log('GroupMapTracking', detail);
     setCoordinate(prev => {
       return {
         ...prev,
@@ -117,6 +117,12 @@ function GroupMapTracking(props) {
     getDetails();
     getVehicle();
   }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getDetails();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
   const [isData, isSetData] = useState({});
 
   const calling = async data => {
@@ -160,6 +166,7 @@ function GroupMapTracking(props) {
             provider={PROVIDER_GOOGLE}>
             {details.map(item => {
               const isData = driverDetails.find(items => {
+                console.log('ititiitit', items);
                 return items.deviceId === item.deviceId;
               });
               return (

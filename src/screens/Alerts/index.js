@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -21,6 +21,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import SelectDropdown from 'react-native-select-dropdown';
+import {useIsFocused} from '@react-navigation/native';
 const Alerts = props => {
   const [selected, setSelected] = useState('All Vehicle');
   const [Ison, setIson] = useState(false);
@@ -28,6 +29,7 @@ const Alerts = props => {
   const [loading, setLoading] = useState(false);
   const [data, setdata] = useState([]);
   const [filter, setFilter] = useState([]);
+  const [imei, setImei] = useState('');
   React.useEffect(() => {
     getImei();
   }, []);
@@ -36,6 +38,31 @@ const Alerts = props => {
     const data = await Storage.getVehicleDetail('vehicle_detail');
     setdata(data);
   };
+  const focus = useIsFocused();
+  useEffect(() => {
+    console.log('inininintititiallllresp', imei);
+    if (focus == true && imei !== '') {
+      getInitialResponse();
+    }
+  }, [focus]);
+  const getInitialResponse = async () => {
+    console.log('getInitialResponse');
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let password = succcess.password;
+    const params = {
+      accountid: username,
+      password: password,
+      imei: imei,
+    };
+    console.log('params', params);
+    const response = await axiosGetData(`getAlertDetails`, params);
+    console.log('rrrrrrrrrrrrrrrrr', response?.data);
+    if (response) {
+      setalertResponse(response?.data?.alert_details);
+    }
+  };
+
   const Select = async (data, imei) => {
     console.log('datadatadatadata', imei);
     setSelected(data);
@@ -49,11 +76,17 @@ const Alerts = props => {
       imei: imei,
     };
     const response = await axiosGetData(`getAlertDetails`, params);
+<<<<<<< HEAD
     console.log('alertData )-0_)=0=0= response', response.data.alert_details);
+=======
+    console.log('alertData', response.data.alert_details[0]);
+>>>>>>> 6174bf34018523c760eb8cc6d631adfd0b7b9d6e
     if (response?.data) {
+      console.log('selecting for imei', response.data.alert_details);
       setalertResponse(response?.data?.alert_details);
       setLoading(false);
-      setIson(!Ison)
+      setIson(!Ison);
+      setImei(imei);
     }
     setLoading(false);
   };
@@ -142,7 +175,7 @@ const Alerts = props => {
             onToggle={() => setIson(!Ison)}
           />
         </View>
-        {alertDataResponse.length > 0 ? (
+        {alertDataResponse?.length > 0 ? (
           <ScrollView>
             {loading ? (
               <ActivityIndicator color={colors.black} />

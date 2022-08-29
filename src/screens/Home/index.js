@@ -20,9 +20,11 @@ import colors from '../../../assets/Colors';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {useNavigation} from '@react-navigation/native';
 
 function Home(props) {
-  // console.log('jijijijijijjijijiijijijiijiji', props.route.params);
+  const navigation = useNavigation();
+  console.log('jijijijijijjijijiijijijiijiji');
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);
@@ -87,6 +89,9 @@ function Home(props) {
     const driverDetails = response.data.driverDetails;
     setDriverDetails(driverDetails);
   };
+  useEffect(() => {
+    setDashBoardType('Dashboard 1')
+  }, [props]);
   useEffect(() => {
     console.log(
       '=============================================================================',
@@ -164,7 +169,7 @@ function Home(props) {
           <View style={styles.headerDashboard}>
             <TouchableOpacity
               style={{paddingVertical: 10}}
-              onPress={() => props.navigation.openDrawer()}>
+              onPress={() => navigation.openDrawer()}>
               <Image source={image.drawer} style={{height: 20, width: 23}} />
             </TouchableOpacity>
             <View style={{marginLeft: 15}}>
@@ -193,7 +198,7 @@ function Home(props) {
           </View>
           <View style={styles.alertContainer}>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate('Notifications')}>
+              onPress={() => navigation.navigate('Notifications')}>
               <Image
                 source={image.Notification1}
                 style={{height: 30, width: 30, resizeMode: 'contain'}}

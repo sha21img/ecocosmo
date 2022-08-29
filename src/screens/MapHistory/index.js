@@ -46,11 +46,11 @@ function MapHistory(props) {
   const imei = props?.route?.params?.details?.imei;
   const ime = props?.route?.params?.imei;
 
-  console.log('imeiimeiimeiimeiimei1111111111111111111', imei);
-  console.log('imeimeimeime000000000000000000000000000000000000', ime);
+  // console.log('imeiimeiimeiimeiimei1111111111111111111', imei);
+  // console.log('imeimeimeime000000000000000000000000000000000000', ime);
   const [data, setData] = useState([]);
   const [newImei, setNewImei] = useState(imei || ime);
-  console.log('newImeinewImeinewImeinewImeinewImei', newImei);
+  // console.log('newImeinewImeinewImeinewImeinewImei', newImei);
 
   //
   const [parkMode, setParkMode] = useState(true);
@@ -83,9 +83,9 @@ function MapHistory(props) {
     if (fdate !== '') {
       getMapHistory();
     }
-    return () => {
-      clearInterval(interval);
-    };
+    // return () => {
+    //   clearInterval(interval);
+    // };
   }, [fdate, fdateend, ftime, ftimeend]);
 
   const getMapHistory = async () => {
@@ -100,7 +100,9 @@ function MapHistory(props) {
       date: fdate,
     };
     const response = await axiosGetData('mapHistory', data);
-    let newCoordinate = response?.data?.EventHistory?.slice(0, 9);
+    let newCoordinate = response?.data?.EventHistory;
+
+    console.log('newDDDDDDDDDDDDDDDDDDDDD', newCoordinate);
     if (ime) {
       const summaryData = props?.route?.params?.summaryData;
       console.log('summaryData', summaryData);
@@ -119,7 +121,7 @@ function MapHistory(props) {
       });
     }
     // console.log('==--=-newCoordinate', newCoordinate);
-    if ((newCoordinate == [])) {
+    if (newCoordinate.length <= 0) {
       Toast.show('There is no data for this vehicle');
     } else {
       newCoordinate?.forEach(el => {
@@ -176,7 +178,7 @@ function MapHistory(props) {
     let fDateEnd = new Date(currentDate);
 
     setFdateend(formatDate(fDateEnd.toString()));
-    let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0, 8);
+    let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0, 40);
 
     setFtimeend(fTimeEnd);
   };
@@ -198,7 +200,7 @@ function MapHistory(props) {
   const [interval, setT] = useState(null);
   const start = data => {
     mapRef?.current?.getCamera().then(cam => {
-      cam.zoom += 3;
+      cam.zoom += 5;
       mapRef?.current?.animateCamera(cam);
     });
     setT(
@@ -208,7 +210,7 @@ function MapHistory(props) {
     );
   };
   // console.log('dayaatatatatattatta', data[0]);
-  console.log('i', i);
+  // console.log('i', i);
   function animateMarkerAndCamera(datas) {
     console.log('poiuytrew ', datas);
     if (i <= data?.length - 1) {
@@ -310,7 +312,7 @@ function MapHistory(props) {
           //
 
           mapRef?.current?.getCamera().then(cam => {
-            cam.zoom -= 3;
+            cam.zoom -= 5;
             mapRef?.current?.animateCamera(cam);
           });
 
@@ -550,13 +552,18 @@ function MapHistory(props) {
           </TouchableOpacity>
           {parkMode ? (
             <MapView
-              minZoomLevel={15}
+              // minZoomLevel={15}
               pitchEnabled={false}
               style={{flex: 1}}
               ref={mapRef}
               caheEnabled
               // onMapReady={() => animated()}
-
+              // initialRegion={{
+              //   latitude: parseFloat(data[0].lat),
+              //   longitude: parseFloat(data[0].lng),
+              //   latitudeDelta: LATITUDE_DELTA,
+              //   longitudeDelta: LONGITUDE_DELTA,
+              // }}
               region={{
                 latitude: parseFloat(data[0].lat),
                 longitude: parseFloat(data[0].lng),
@@ -720,7 +727,7 @@ function MapHistory(props) {
           ) : (
             <>
               <MapView
-                minZoomLevel={15}
+                // minZoomLevel={15}
                 pitchEnabled={false}
                 style={{flex: 1}}
                 ref={mapRef}
@@ -845,58 +852,65 @@ function MapHistory(props) {
         style={[styles.bubble, styles.button]}>
         <Text>Animate</Text>
       </TouchableOpacity> */}
-      {animate == 'start' || animate == '' ? (
-        <TouchableOpacity
-          style={{position: 'absolute', bottom: 20, width: '100%'}}
-          onPress={() => {
-            setAnimate('stop'), start('start');
-          }}>
-          <LinearGradient
-            colors={['#0065B3', '#083273']}
-            start={{x: 0, y: 1}}
-            end={{x: 1, y: 0}}
-            style={{
-              width: '80%',
-              backgroundColor: 'red',
-              alignSelf: 'center',
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingVertical: 20,
-              borderRadius: 10,
-            }}>
-            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-              Replay
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={{position: 'absolute', bottom: 20, width: '100%'}}
-          onPress={() => {
-            setAnimate('start'),
-              clearInterval(interval),
-              (i = 0),
-              animateMarkerAndCamera('stop');
-          }}>
-          <LinearGradient
-            colors={['#0065B3', '#083273']}
-            start={{x: 0, y: 1}}
-            end={{x: 1, y: 0}}
-            style={{
-              width: '80%',
-              backgroundColor: 'red',
-              alignSelf: 'center',
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingVertical: 20,
-              borderRadius: 10,
-            }}>
-            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-              stop
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      )}
+
+      {data?.length > 0 ? (
+        <>
+          {animate == 'start' || animate == '' ? (
+            <TouchableOpacity
+              style={{position: 'absolute', bottom: 20, width: '100%'}}
+              onPress={() => {
+                setAnimate('stop'), start('start');
+              }}>
+              <LinearGradient
+                colors={['#0065B3', '#083273']}
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
+                style={{
+                  width: '80%',
+                  backgroundColor: 'red',
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingVertical: 20,
+                  borderRadius: 10,
+                }}>
+                <Text
+                  style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
+                  Replay
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{position: 'absolute', bottom: 20, width: '100%'}}
+              onPress={() => {
+                setAnimate('start'),
+                  clearInterval(interval),
+                  (i = 0),
+                  animateMarkerAndCamera('stop');
+              }}>
+              <LinearGradient
+                colors={['#0065B3', '#083273']}
+                start={{x: 0, y: 1}}
+                end={{x: 1, y: 0}}
+                style={{
+                  width: '80%',
+                  backgroundColor: 'red',
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingVertical: 20,
+                  borderRadius: 10,
+                }}>
+                <Text
+                  style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
+                  stop
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+        </>
+      ) : null}
     </>
   );
 }
