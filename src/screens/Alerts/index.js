@@ -73,10 +73,10 @@ const Alerts = props => {
       imei: imei,
     };
     const response = await axiosGetData(`getAlertDetails`, params);
-<<<<<<< HEAD
-    console.log('alertData', response.data.alert_details[1]);
-=======
->>>>>>> e8e3b7e5a71577a1e3591e8039f4397570a4fdef
+    // <<<<<<<<< Temporary merge branch 1
+    // =========
+    //     console.log('alertData', response.data.alert_details[1]);
+    // >>>>>>>>> Temporary merge branch 2
     if (response?.data) {
       console.log('selecting for imei', response.data.alert_details);
       setalertResponse(response?.data?.alert_details);
