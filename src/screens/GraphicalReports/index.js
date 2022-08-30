@@ -28,7 +28,8 @@ import DatePicker from 'react-native-date-picker';
 import {VictoryBar, VictoryChart, VictoryLabel} from 'victory-native';
 import moment from 'moment';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob';
 function GraphicalReports(props) {
   const [vehicleNumber, setVehicleNumber] = useState('Select vehicle number');
   const [open, setOpen] = useState(false);
@@ -181,7 +182,7 @@ function GraphicalReports(props) {
     const newDate = moment(d).format('YYYY-MM-DD');
     return newDate;
   };
-  requestRunTimePermission = () => {
+  const requestRunTimePermission = () => {
     async function externalStoragePermission() {
       try {
         const granted = await PermissionsAndroid.request(
@@ -211,13 +212,24 @@ function GraphicalReports(props) {
   const createPDF_File = async () => {
     console.log('pdf');
     let options = {
-      html: '<h1>PDF TEST</h1>',
+      html: '<h1 style="text-align: center;"><strong>Hello Guys</strong></h1><p style="text-align: center;">Here is an example of pdf Print in React Native</p><p style="text-align: center;"><strong>Team About React</strong></p>',
       fileName: 'test',
       directory: 'Documents',
     };
     let file = await RNHTMLtoPDF.convert(options);
     console.log(file.filePath);
-    alert(file.filePath);
+    // alert(file.filePath);///
+
+    RNFetchBlob.fs
+      .readFile(file.filePath, 'base64')
+      .then(async data => {
+        const shareOption = {
+          message: ' This is a test message',
+          url: `data:test/pdf;base64,${data}`,
+        };
+        const ShareResponse = await Share.open(shareOption);
+      })
+      .catch(err => {});
   };
   return (
     <>
