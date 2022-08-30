@@ -49,9 +49,11 @@ function LiveMapTracking(props) {
   const [Id, setID] = useState(null);
   const [mapType, setMapType] = useState(false);
   const [traffic, setTraffic] = useState(false);
+  const [isMarkerShow, setIsMarkerShow] = useState(false);
 
   const mapRef = useRef();
   const markerRef = useRef();
+  const markerRefs = useRef();
   const [state, setState] = useState({
     curLoc: {
       latitude: 30.7046,
@@ -65,6 +67,7 @@ function LiveMapTracking(props) {
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     }),
+    liveCords: {},
     time: 0,
     distance: 0,
     heading: 0,
@@ -77,28 +80,32 @@ function LiveMapTracking(props) {
     isLoading,
     coordinate,
     heading,
+    liveCords,
   } = state;
-  console.log('destinationCords',coordinate);
+  console.log('destinationCords', coordinate);
   const updateState = data => setState(state => ({...state, ...data}));
   const GOOGLE_MAP_KEY = 'AIzaSyAQDxD_FpUHSM-HGCGrs20T4oZTNRc4Sq0';
   useEffect(() => {
     getDetails();
   }, []);
   const getLiveLocation = async props => {
+    console.log('hi');
+    setIsMarkerShow(!isMarkerShow);
     const locPermissionDenied = await locationPermission();
     if (locPermissionDenied) {
       const {latitude, longitude, heading} = await getCurrentLocation();
       // console.log('get live location after 4 second', heading);
-      animate(latitude, longitude);
+      animated(latitude, longitude);
+      // onCenters(latitude, longitude);
+      console.log('asasas', latitude, longitude);
       updateState({
         heading: heading,
-        curLoc: {latitude, longitude},
-        coordinate: new AnimatedRegion({
+        liveCords: {
           latitude: latitude,
           longitude: longitude,
           latitudeDelta: LATITUDE_DELTA,
           longitudeDelta: LONGITUDE_DELTA,
-        }),
+        },
       });
     }
   };
@@ -108,6 +115,18 @@ function LiveMapTracking(props) {
       onCenter();
     } else if (data == 0) {
       setMapType(!mapType);
+    } else {
+      getLiveLocation();
+    }
+  };
+  const animated = (latitude, longitude) => {
+    const newCoordinate = {latitude, longitude};
+    if (Platform.OS == 'android') {
+      if (markerRefs.current) {
+        markerRefs.current.animateMarkerToCoordinate(newCoordinate, 7000);
+      }
+    } else {
+      coordinate.timing(newCoordinate).start();
     }
   };
   const animate = (latitude, longitude) => {
@@ -124,6 +143,14 @@ function LiveMapTracking(props) {
     mapRef.current.animateToRegion({
       latitude: curLoc.latitude,
       longitude: curLoc.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
+    });
+  };
+  const onCenters = (latitude, longitude) => {
+    mapRef.current.animateToRegion({
+      latitude: latitude,
+      longitude: longitude,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     });
@@ -149,7 +176,7 @@ function LiveMapTracking(props) {
     const vehicleDetails = response.data.vehicle;
     const latitude = parseFloat(vehicleDetails.lat);
     const longitude = parseFloat(vehicleDetails.lng);
-    const latlatitude = parseFloat(vehicleDetails.lastLat);
+    const lastlatitude = parseFloat(vehicleDetails.lastLat);
     const lastlongitude = parseFloat(vehicleDetails.lastLng);
     animate(latitude, longitude);
     updateState({
@@ -165,7 +192,7 @@ function LiveMapTracking(props) {
         longitudeDelta: LONGITUDE_DELTA,
       }),
       destinationCords: {
-        latitude: latlatitude,
+        latitude: lastlatitude,
         longitude: lastlongitude,
       },
     });
@@ -229,6 +256,7 @@ function LiveMapTracking(props) {
   //     );
   //   }
   // };
+  console.log('livecords', liveCords);
 
   return (
     <>
@@ -253,6 +281,7 @@ function LiveMapTracking(props) {
               //   longitudeDelta: LONGITUDE_DELTA,
               // }}
             >
+              {Object.keys(coordinate).length > 0 && (
                 <Marker.Animated ref={markerRef} coordinate={coordinate}>
                   <Image
                     source={{uri: detail.markerIcon}}
@@ -264,15 +293,39 @@ function LiveMapTracking(props) {
                     resizeMode="contain"
                   />
                 </Marker.Animated>
-
-              {Object.keys(destinationCords).length > 0 && (
-                <Marker
-                  coordinate={destinationCords}
-                  // image={{uri:detail.markerIcon}}
-                />
               )}
 
-              {Object.keys(destinationCords).length > 0 && (
+              {Object.keys(liveCords).length > 0 && isMarkerShow ? (
+                <>
+                  {/* {console.log('live wala chala h')} */}
+                  <Marker.Animated
+                    ref={markerRefs}
+                    coordinate={liveCords}
+                    // image={{uri:detail.markerIcon}}
+                  >
+                    {/* <Image
+                      source={{uri: detail.markerIcon}}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        transform: [{rotate: `${heading}deg`}],
+                      }}
+                      resizeMode="contain"
+                    /> */}
+                  </Marker.Animated>
+
+                  <MapViewDirections
+                    origin={liveCords}
+                    destination={curLoc}
+                    apikey={GOOGLE_MAP_KEY}
+                    strokeWidth={3}
+                    strokeColor="black"
+                    optimizeWaypoints={true}
+                  />
+                </>
+              ) : null}
+
+              {Object.keys(destinationCords).length > 0 && !isMarkerShow ? (
                 <MapViewDirections
                   origin={curLoc}
                   destination={destinationCords}
@@ -302,7 +355,7 @@ function LiveMapTracking(props) {
                     // console.log('GOT AN ERROR');
                   }}
                 />
-              )}
+              ) : null}
             </MapView>
             <TouchableOpacity
               style={{
