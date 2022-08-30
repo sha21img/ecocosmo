@@ -65,6 +65,24 @@ const AddDriver = props => {
       console.log(navigation, 'navigation');
     }
   };
+
+  const getDetail = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    const data = driverDetails.filter((el)=>{
+      return (el.imei == IMEI)
+    })
+    setName(data[0].driverName)
+    setNumber(data[0].mobilenumber)
+    console.log('..........>>>>>', data)
+}
+useEffect(()=>{getDetail()},[props])
+
   return (
     <>
       <Modal
