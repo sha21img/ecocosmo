@@ -26,7 +26,6 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import DatePicker from 'react-native-date-picker';
 import axios from 'axios';
 import moment from 'moment';
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import style from '../MapHistory/style';
 
 function Reports(props) {
@@ -287,17 +286,7 @@ function Reports(props) {
     return newDate;
   };
 
-  const createPDF = async () => {
-    let options = {
-      html: '<h1>PDF TEST</h1>',
-      fileName: 'test',
-      directory: 'Documents',
-    };
 
-    let file = await RNHTMLtoPDF.convert(options);
-    // console.log(file.filePath);
-    alert(file.filePath);
-  };
   return (
     <>
       <View>
@@ -535,7 +524,7 @@ function Reports(props) {
                         name={'keyboard-arrow-down'}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={createPDF}>
+                    <TouchableOpacity>
                       <Image
                         source={image.shareDark}
                         style={{width: 24, height: 24}}
