@@ -101,7 +101,7 @@ function MapHistory(props) {
   };
   useEffect(() => {
     console.log('side bar menu', newImei);
-    if (fdate !== '' && newImei !== undefined) {
+    if (fdate !== '' && newImei !== undefined && fdateend !== '') {
       getMapHistory();
     }
     // return () => {
@@ -130,11 +130,16 @@ function MapHistory(props) {
     const response = await axiosGetData('mapHistory', data);
     let newCoordinate = response?.data?.EventHistory;
     // 12:41:37
-    // var tstart = moment(ftime, 'hh:mm:ss').unix();
-    // var tsend = moment(ftimeend, 'hh:mm:ss').unix();
-    // console.log('tstart', tstart);
-    // console.log('tsend', tsend);
-    // console.log('newDDDDDDDDDDDDDDDDDDDDD', newCoordinate);
+    console.log('1234567ftime', ftime);
+    console.log('1234567ftimeend', ftimeend);
+    var tstart = moment(ftime, 'hh:mm:ss').unix();
+    var tsend = moment(ftimeend, 'hh:mm:ss').unix();
+    console.log('tstart', tstart);
+    console.log('tsend', tsend);
+    newCoordinate.filter(item => {
+      return tstart < parseFloat(item.packetTimeStamp) < tsend;
+    });
+    console.log('newDDDDDDDDDDDDDDDDDDDDD', newCoordinate.length);
     if (ime) {
       const summaryData = props?.route?.params?.summaryData;
       console.log('summaryData', summaryData);
@@ -202,7 +207,7 @@ function MapHistory(props) {
 
     let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
     console.log(fTimeStart);
-    setFtime(fTimeStart);
+    setFtime('00:00:00');
   };
   const onChangeEnd = selectedDate => {
     const currentDate = selectedDate || dateEnd;
