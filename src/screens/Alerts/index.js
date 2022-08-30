@@ -76,7 +76,7 @@ const Alerts = props => {
       imei: imei,
     };
     const response = await axiosGetData(`getAlertDetails`, params);
-    console.log('alertData', response.data.alert_details[0]);
+    console.log('alertData', response.data.alert_details[1]);
     if (response?.data) {
       console.log('selecting for imei', response.data.alert_details);
       setalertResponse(response?.data?.alert_details);
