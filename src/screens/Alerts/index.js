@@ -55,16 +55,13 @@ const Alerts = props => {
       password: password,
       imei: imei,
     };
-    console.log('params', params);
     const response = await axiosGetData(`getAlertDetails`, params);
-    console.log('rrrrrrrrrrrrrrrrr', response?.data);
     if (response) {
       setalertResponse(response?.data?.alert_details);
     }
   };
 
   const Select = async (data, imei) => {
-    console.log('datadatadatadata', imei);
     setSelected(data);
     setLoading(true);
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -76,7 +73,10 @@ const Alerts = props => {
       imei: imei,
     };
     const response = await axiosGetData(`getAlertDetails`, params);
+<<<<<<< HEAD
     console.log('alertData', response.data.alert_details[1]);
+=======
+>>>>>>> e8e3b7e5a71577a1e3591e8039f4397570a4fdef
     if (response?.data) {
       console.log('selecting for imei', response.data.alert_details);
       setalertResponse(response?.data?.alert_details);
