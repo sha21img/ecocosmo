@@ -105,7 +105,7 @@ function LiveMapTracking(props) {
   const location = data => {
     console.log('data', data);
     if (data == 2) {
-      getDetails();
+      onCenter();
     } else if (data == 0) {
       setMapType(!mapType);
     }
@@ -182,9 +182,6 @@ function LiveMapTracking(props) {
     // });
     setIsShow(true);
   };
-  useEffect(() => {
-    getDetails();
-  }, []);
   const [marginBottom, setMarginBottom] = useState(1);
   const [modal, setModal] = useState(false);
   // console.log('detail.markerIcon', detail .markerIcon);
