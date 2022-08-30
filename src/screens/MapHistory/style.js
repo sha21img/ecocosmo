@@ -7,6 +7,18 @@ const style = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
+  textinputbox: {
+    width: '100%',
+    backgroundColor:colors.white,
+    // marginVertical: 20,
+    flexDirection: 'row',
+    // alignItems: 'center',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    // marginRight: 'auto',
+    // alignContent: 'center',
+    // paddingHorizontal: 10,
+  },
   map: {
     // flex:1,
     alignItems: 'center',

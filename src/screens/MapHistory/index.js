@@ -24,6 +24,7 @@ import moment from 'moment';
 import Toast from 'react-native-simple-toast';
 // import MapView from '../../../Utils/helper/GoogleMap';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import SelectDropdown from 'react-native-select-dropdown';
 
 import MapView, {
   AnimatedRegion,
@@ -37,6 +38,7 @@ import MapView, {
 } from 'react-native-maps';
 import GoogleMap from '../../../Utils/helper/GoogleMap';
 import SimpleToast from 'react-native-simple-toast';
+import {color} from 'react-native-reanimated';
 const LATITUDE_DELTA = 0.08;
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
@@ -54,6 +56,7 @@ function MapHistory(props) {
 
   //
   const [parkMode, setParkMode] = useState(true);
+  const [selected, setSelected] = useState('All Vehicle');
 
   const [open, setOpen] = useState(false);
   const [dateStart, setDateStart] = useState(new Date());
@@ -68,6 +71,8 @@ function MapHistory(props) {
   const [myMarker, setMyMarker] = useState(null);
   const [animate, setAnimate] = useState('');
   const [degree, setDegree] = useState(null);
+  const [vehicleData, setVehicleData] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [coordinates, setCoordinates] = useState({
     coordinate: new AnimatedRegion({
@@ -78,16 +83,39 @@ function MapHistory(props) {
     }),
   });
   const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
+  React.useEffect(() => {
+    getImei();
+  }, [props]);
 
+  const getImei = async () => {
+    const data = await Storage.getVehicleDetail('vehicle_detail');
+    if (newImei) {
+      const filterVehicle = data.find(item => {
+        return item.imei === newImei;
+      });
+      // setVehicleData(filterVehicle);
+      setSelected(filterVehicle.deviceId);
+      console.log('filerIIIMMMEEEEIIII', filterVehicle);
+    }
+    setVehicleData(data);
+  };
   useEffect(() => {
-    if (fdate !== '') {
+    console.log('side bar menu', newImei);
+    if (fdate !== '' && newImei !== undefined) {
       getMapHistory();
     }
     // return () => {
     //   clearInterval(interval);
     // };
-  }, [fdate, fdateend, ftime, ftimeend]);
+  }, [fdate, fdateend, ftime, ftimeend, newImei]);
+  const Select = async (data, imei) => {
+    console.log('datadatadatadata', data);
+    setSelected(data);
+    setNewImei(imei);
+    // setLoading(true);
 
+    // setLoading(false);
+  };
   const getMapHistory = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
@@ -101,8 +129,12 @@ function MapHistory(props) {
     };
     const response = await axiosGetData('mapHistory', data);
     let newCoordinate = response?.data?.EventHistory;
-
-    console.log('newDDDDDDDDDDDDDDDDDDDDD', newCoordinate);
+    // 12:41:37
+    // var tstart = moment(ftime, 'hh:mm:ss').unix();
+    // var tsend = moment(ftimeend, 'hh:mm:ss').unix();
+    // console.log('tstart', tstart);
+    // console.log('tsend', tsend);
+    // console.log('newDDDDDDDDDDDDDDDDDDDDD', newCoordinate);
     if (ime) {
       const summaryData = props?.route?.params?.summaryData;
       console.log('summaryData', summaryData);
@@ -169,6 +201,7 @@ function MapHistory(props) {
     setFdate(formatDate(fDateStart.toString()));
 
     let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
+    console.log(fTimeStart);
     setFtime(fTimeStart);
   };
   const onChangeEnd = selectedDate => {
@@ -388,6 +421,39 @@ function MapHistory(props) {
           </Text>
         </View>
       </LinearGradient>
+      <TouchableOpacity style={style.textinputbox}>
+        <SelectDropdown
+          buttonStyle={{
+            width: '100%',
+            borderRadius: 7,
+            backgroundColor: colors.white,
+          }}
+          data={vehicleData}
+          defaultButtonText={selected}
+          onSelect={(selectedItem, index) => {
+            setSelected(selectedItem.deviceId);
+            Select(selectedItem.deviceId, selectedItem.imei);
+            console.log(selectedItem.deviceId, index);
+          }}
+          buttonTextAfterSelection={selectedItem => {
+            return selectedItem.deviceId;
+          }}
+          rowTextForSelection={item => {
+            return item.deviceId;
+          }}
+          renderDropdownIcon={() => {
+            return (
+              <MaterialIcons
+                style={{
+                  color: '#3D3D3D',
+                  fontSize: 20,
+                }}
+                name={'keyboard-arrow-down'}
+              />
+            );
+          }}
+        />
+      </TouchableOpacity>
       <View
         style={{
           flexDirection: 'row',
@@ -395,7 +461,7 @@ function MapHistory(props) {
           paddingHorizontal: 20,
           justifyContent: 'space-between',
           paddingVertical: 10,
-          backgroundColor: 'white',
+          backgroundColor: colors.white,
           elevation: 20,
         }}>
         <TouchableOpacity
@@ -538,6 +604,7 @@ function MapHistory(props) {
           />
         </TouchableOpacity>
       </View>
+
       {data?.length > 0 ? (
         <View style={{flex: 1}}>
           <TouchableOpacity
