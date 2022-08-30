@@ -122,4 +122,5 @@ export const image = {
   carLocation: require('./carLocation.png'),
   testcar: require('./testcar.png'),
   homeUnselected: require('./homeUnselected.png'),
+  keepSmall: require('./keepSmall.png'),
 };
