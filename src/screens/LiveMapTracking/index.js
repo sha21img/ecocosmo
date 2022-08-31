@@ -223,39 +223,10 @@ function LiveMapTracking(props) {
       setTraffic(!traffic);
     } else if (data == 'EngineStopPopup') {
       setModal(true);
-      // } else if (data == 'share') {
-      //   shrethis();
-    } else if (data == 'Nearby') {
-      console.log('--No Idea--');
     } else {
       props.navigation.navigate(data, {details: details});
     }
-  };
-  // const shrethis = async () => {
-  //   // console.log('share');
-  //   const loginDetail = await Storage.getLoginDetail('login_detail');
-  //   let username = loginDetail.accountId;
-  //   let password = loginDetail.password;
-  //   const response = await axiosGetData(
-  //     `gettrackurl/${username}/${password}/${details.imei}/ecvalidate/24`,
-  //   );
-  //   if (response.data.gettrackurl == 'success') {
-  //     let msg = response.data.message;
-  //     Share.share(
-  //       {
-  //         message: msg,
-  //         title: 'hello',
-  //         subject: 'hello',
-  //       },
-  //       {
-  //         // Android only:
-  //         dialogTitle: 'hello',
-  //         // iOS only:
-  //         excludedActivityTypes: ['com.apple.UIKit.activity.PostToTwitter'],
-  //       },
-  //     );
-  //   }
-  // };
+  }
   console.log('livecords', liveCords);
 
   return (

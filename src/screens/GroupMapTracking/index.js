@@ -64,8 +64,8 @@ function GroupMapTracking(props) {
     setCoordinate(prev => {
       return {
         ...prev,
-        latitude: parseFloat(detail[0].lat),
-        longitude: parseFloat(detail[0].lng),
+        latitude: parseFloat(detail[0]?.lat),
+        longitude: parseFloat(detail[0]?.lng),
       };
     });
     setDetails(detail);

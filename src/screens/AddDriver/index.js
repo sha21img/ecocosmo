@@ -77,8 +77,8 @@ const AddDriver = props => {
     const data = driverDetails.filter((el)=>{
       return (el.imei == IMEI)
     })
-    setName(data[0].driverName)
-    setNumber(data[0].mobilenumber)
+    setName(data[0]?.driverName)
+    setNumber(data[0]?.mobilenumber)
     console.log('..........>>>>>', data)
 }
 useEffect(()=>{getDetail()},[props])

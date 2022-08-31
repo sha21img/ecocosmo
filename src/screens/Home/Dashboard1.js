@@ -433,13 +433,13 @@ const Dashboard1 = ({
           }
         />
       )}
-      <VehicleMenu
-        mobileNumber={mobileNumber}
-        visible={visible}
-        setVisible={setVisible}
-        details={isData}
-        calling={calling}
-      />
+        <VehicleMenu
+          mobileNumber={mobileNumber}
+          visible={visible}
+          setVisible={setVisible}
+          details={isData}
+          calling={calling}
+        />
     </>
   );
 };
