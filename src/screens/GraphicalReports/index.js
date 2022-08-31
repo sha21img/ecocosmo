@@ -211,21 +211,57 @@ function GraphicalReports(props) {
   };
   const createPDF_File = async () => {
     console.log('pdf');
-    let options = {
-      html: '<h1 style="text-align: center;"><strong>Hello Guys</strong></h1><p style="text-align: center;">Here is an example of pdf Print in React Native</p><p style="text-align: center;"><strong>Team About React</strong></p>',
-      fileName: 'test',
-      directory: 'Documents',
-    };
-    let file = await RNHTMLtoPDF.convert(options);
-    console.log(file.filePath);
-    // alert(file.filePath);///
+    let html = `<h1 style="text-align: center;">
+      <strong>Graphical Reports</strong>
+      </h1>
+      <p style="text-align: center;">
+      Here is an example of pdf Print in React Native
+      ${mapHistory[0].todaysODO}
+      </p>
+      
 
+      <div>
+      <VictoryChart
+      key={Math.random()}
+      width={230}
+      height={200}
+      domainPadding={{x: 10}}>
+      <VictoryBar
+        style={{
+          data: {fill: '#5EB9FF'},
+        }}
+        alignment="end"
+        data={[
+          {x: '5', y: 0},
+          {x: '10', y: 0},
+          {x: '15', y: 0},
+          {x: '20', y: 0},
+          {x: '25', y: 0},
+          {x: '30', y: 30},
+        ]}
+        barRatio={0.7}
+        labels={({datum}) => {
+          return datum.y;
+        }}
+        labelComponent={<VictoryLabel dy={1} dx={-50} />}
+      
+      />
+    </VictoryChart>
+    </div>
+      
+      <p style="text-align: center;">
+      <strong>Team About React</strong>
+      </p>`;
+      // const {uri} = await Print.printToFileAsync({html})
+      // Sharing.shareAsync(uri)
+  
+    let file = await RNHTMLtoPDF.convert({html});
+    console.log(file.filePath);
     RNFetchBlob.fs
       .readFile(file.filePath, 'base64')
       .then(async data => {
         const shareOption = {
-          message: ' This is a test message',
-          url: `data:test/pdf;base64,${data}`,
+          url: `data:application/pdf;base64,${data}`,
         };
         const ShareResponse = await Share.open(shareOption);
       })
@@ -454,9 +490,8 @@ function GraphicalReports(props) {
                 <View>
                   {toggle == 'odometer' && isActive2.odometer === 1 ? (
                     mapHistory.map(item => {
-                      {
-                        /* console.log("this is item", item) */
-                      }
+                      console.log('this is item', item);
+
                       return (
                         <VictoryChart
                           key={Math.random()}

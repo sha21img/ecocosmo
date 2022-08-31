@@ -76,8 +76,6 @@ function GroupMapTracking(props) {
   const iconPress = data => {
     if (data == 'Traffic') {
       setTraffic(!traffic);
-    } else if (data == 'Nearby') {
-      console.log('--No Idea--');
     } else {
       props.navigation.navigate(data);
     }

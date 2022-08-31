@@ -9,6 +9,9 @@ import {
   FlatList,
   ActivityIndicator,
   Dimensions,
+  Platform,
+  Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -27,6 +30,9 @@ import DatePicker from 'react-native-date-picker';
 import axios from 'axios';
 import moment from 'moment';
 import style from '../MapHistory/style';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob';
 
 function Reports(props) {
   const screen = Dimensions.get('window');
@@ -198,6 +204,7 @@ function Reports(props) {
     const aa = response.data.DeviceHistory.reverse();
     // console.log('098765432345678987654345678', aa);
     setMapHistory(aa);
+
     return aa;
   };
 
@@ -285,7 +292,96 @@ function Reports(props) {
     const newDate = moment(d).format('YYYY-MM-DD');
     return newDate;
   };
+  const requestRunTimePermission = (data, heading) => {
+    async function externalStoragePermission() {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'External Storage Write Permission',
+            message: 'App needs access to Storage data.',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          createPDF_File(data, heading);
+        } else {
+          alert('WRITE_EXTERNAL_STORAGE permission denied');
+        }
+      } catch (err) {
+        Alert.alert('Write permission err', err);
+        console.warn(err);
+      }
+    }
 
+    if (Platform.OS === 'android') {
+      externalStoragePermission();
+    } else {
+      createPDF_File(data, heading);
+    }
+  };
+  const createPDF_File = async (data, heading) => {
+    let html = ``;
+    html += `<h1 style="text-align: center;">${data}</h1>`;
+    html += `<table style="width:100%; border:1px solid black;">
+    <tr>`;
+    heading.map(item => {
+      html += `<th style=" text-align: center; ">${item}</th>`;
+    });
+    html += ` </tr> </table>`;
+
+    // mapHistory?.map(item => {
+    //   const date = getNewDate(item.timeStamp1);
+    //   const kms = item.todaysODO;
+    //   const ingnitionOn = getTime(item.todaysIgnitionOnTimeSeconds);
+    //   const ingnitionOff = getTime(item.todaysIdleTimeSeconds);
+
+    //   console.log('date', date);
+    //   if (data == 'Odometer Total km') {
+    //     html += `<table style="width:100%; border:1px solid black;">
+    //                <tr>
+    //                  <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //                  <td style=" text-align: center; ">${date}</td>
+    //                  <td style=" text-align: center; ">${kms}</td>
+    //                </tr>
+    //             </table>`;
+    //   } else if (data == 'Ignition Location On') {
+    //     html += `<table style="width:100%; border:1px solid black;">
+    //     <tr>
+    //       <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //       <td style=" text-align: center; ">${date}</td>
+    //       <td style=" text-align: center; ">${ingnitionOn}</td>
+    //       <td style=" text-align: center; ">${ingnitionOff}</td>
+    //     </tr>
+    //  </table>`;
+    //   } else if (data == 'Vehicle Summary') {
+    //     html += `<table style="width:100%; border:1px solid black;">
+    //     <tr>
+    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
+    //   </tr>
+    //  </table>`;
+    //   }
+    // });
+    console.log('html', html);
+    let file = await RNHTMLtoPDF.convert({html});
+    console.log(file.filePath);
+    RNFetchBlob.fs
+      .readFile(file.filePath, 'base64')
+      .then(async data => {
+        console.log("datadatadatadatadatadatadatadatadatadatadata",data)
+        const shareOption = {
+          url: `data:application/pdf;base64,${data}`,
+        };
+        const ShareResponse = await Share.open(shareOption);
+      })
+      .catch(err => {console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',err)});
+  };
 
   return (
     <>
@@ -524,7 +620,14 @@ function Reports(props) {
                         name={'keyboard-arrow-down'}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        requestRunTimePermission('Odometer Total km', [
+                          'Vehicle Number',
+                          'Date',
+                          'Kms',
+                        ])
+                      }>
                       <Image
                         source={image.shareDark}
                         style={{width: 24, height: 24}}
@@ -636,7 +739,15 @@ function Reports(props) {
                         name={'keyboard-arrow-down'}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        requestRunTimePermission('Ignition Location On', [
+                          'Vehicle Number',
+                          'Date',
+                          'Ignition On',
+                          'Ignition Off',
+                        ])
+                      }>
                       <Image
                         source={image.shareDark}
                         style={{width: 24, height: 24}}
@@ -774,7 +885,26 @@ function Reports(props) {
                           name={'keyboard-arrow-down'}
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          requestRunTimePermission('Vehicle Summary', [
+                            'Vehicle Number',
+                            'Start Location',
+                            'Start Time',
+                            'Travel Time',
+                            'Work/Idle hrs',
+                            'Stoped Time',
+                            'Max Speed(Km/h)',
+                            'Avg Speed(Km/h)',
+                            'Engine Hours',
+                            'Distance Travelled(kms)',
+                            'End Location',
+                            'End Time (HH:MM)',
+                            '#OverSpeed',
+                            '#Alert',
+                            '#Report Date',
+                          ])
+                        }>
                         <Image
                           source={image.shareDark}
                           style={{width: 24, height: 24}}
@@ -846,27 +976,6 @@ function Reports(props) {
                         })
                       ) : (
                         <Text>{mapHistory[0]?.travelTime}</Text>
-                      )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                    </View>
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Work/Idle hrs</Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          return (
-                            <Text>
-                              {item.todaysWaitingIgnitionTime
-                                ? getTime(item.todaysWaitingIgnitionTime)
-                                : '00:00:00'}
-                            </Text>
-                          );
-                        })
-                      ) : (
-                        <Text>
-                          {mapHistory[0]?.todaysWaitingIgnitionTime
-                            ? getTime(mapHistory[0]?.todaysWaitingIgnitionTime)
-                            : '00:00:00'}
-                        </Text>
                       )}
                       {/* <Text>{sumIgnitionOn}</Text> */}
                     </View>
