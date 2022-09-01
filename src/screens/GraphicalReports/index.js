@@ -30,7 +30,14 @@ import moment from 'moment';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
+import {useIsFocused} from '@react-navigation/native';
+
 function GraphicalReports(props) {
+  const ime = props?.route?.params?.newImei;
+  const im = props?.route?.params?.details?.imei;
+  console.log('ime', ime);
+  console.log('im', im);
+  const filterImei = ime || im;
   const [vehicleNumber, setVehicleNumber] = useState('Select vehicle number');
   const [open, setOpen] = useState(false);
   const [dateStart, setDateStart] = useState(new Date());
@@ -43,7 +50,7 @@ function GraphicalReports(props) {
   const [ftimeend, setFtimeend] = useState('');
   const [dtype, setDtype] = useState();
   const [newVehicleNumber, setNewVehicleNumber] = useState([]);
-  const [imei, setImei] = useState();
+  const [imei, setImei] = useState(filterImei);
   const [mapHistory, setMapHistory] = useState([]);
   const [toggle, setToggle] = useState('');
   const [loading, setLoading] = useState(false);
@@ -55,6 +62,11 @@ function GraphicalReports(props) {
     coverage: 0,
     waiting: 0,
   });
+  const focus = useIsFocused();
+
+  useEffect(() => {
+    setImei(filterImei);
+  }, [focus]);
   const setDate = () => {
     var d = new Date();
     const startDate = moment(d).format('YYYY-MM-DD');
@@ -65,21 +77,31 @@ function GraphicalReports(props) {
     setFdate(aa);
   };
   const setVehicleDetail = async () => {
-    if (imei != undefined) {
-      setIsSelected(true);
-    }
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     const filterVehicleNumber = vehicleNum.map((item, index) => {
       return {key: index++, label: item.deviceId};
     });
     console.log('filterVehicleNumber', filterVehicleNumber[0]);
     setNewVehicleNumber(filterVehicleNumber);
-    getFilterVehicle(filterVehicleNumber[0].label);
+    console.log('graphical report imei', imei);
+    if (imei != undefined) {
+      console.log('fifiififififiifiif');
+      setIsSelected(true);
+      const includedArray = vehicleNum.find(item => {
+        return item.imei == imei;
+      });
+      console.log('poiuytrew', includedArray);
+      setVehicleNumber(includedArray.deviceId);
+      setImei(includedArray.imei);
+    } else {
+      console.log('elselelles');
+      getFilterVehicle(filterVehicleNumber[0].label);
+    }
   };
   useEffect(() => {
     setDate();
     setVehicleDetail();
-  }, []);
+  }, [props]);
   useEffect(() => {
     if (fdate !== '' && fdateend !== '' && imei !== undefined) {
       data1();
@@ -252,9 +274,9 @@ function GraphicalReports(props) {
       <p style="text-align: center;">
       <strong>Team About React</strong>
       </p>`;
-      // const {uri} = await Print.printToFileAsync({html})
-      // Sharing.shareAsync(uri)
-  
+    // const {uri} = await Print.printToFileAsync({html})
+    // Sharing.shareAsync(uri)
+
     let file = await RNHTMLtoPDF.convert({html});
     console.log(file.filePath);
     RNFetchBlob.fs
@@ -282,7 +304,9 @@ function GraphicalReports(props) {
             </View>
 
             <TouchableOpacity
-              onPress={() => props.navigation.navigate('Reports')}>
+              onPress={() =>
+                props.navigation.navigate('Reports', {details: {imei: imei}})
+              }>
               <Image
                 source={image.keepSmall}
                 style={{height: 25, width: 25, marginRight: 5}}

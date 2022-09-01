@@ -12,6 +12,7 @@ import {
   Platform,
   Alert,
   PermissionsAndroid,
+  PERMISSIONS,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -33,7 +34,8 @@ import style from '../MapHistory/style';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
-
+import RNFS from 'react-native-fs';
+import XLSX from 'xlsx';
 function Reports(props) {
   const screen = Dimensions.get('window');
 
@@ -71,7 +73,7 @@ function Reports(props) {
     daily: 0,
   });
   const [data2, setData2] = useState([]);
-
+ 
   const [summaryReport, setSummaryReport] = useState([]);
   // const d = ['odometer', 'ignition', 'vehicle', 'drive', 'idle', 'daily']
   const setDate = () => {
@@ -92,6 +94,7 @@ function Reports(props) {
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     if (newImei !== undefined) {
       const filterImei = data || newImei;
+      console.log('filterImei', filterImei);
       setIsSelected(true);
       // console.log('vehicleNumvehicleNum', vehicleNum);
       const filterVehicleNumber = vehicleNum
@@ -99,20 +102,23 @@ function Reports(props) {
           return item.imei === filterImei;
         })
         .map((item, index) => {
-          return {key: index++, label: item.deviceId};
+          return {key: index++, label: item.deviceId, imei: item.imei};
         });
       console.log(
         'filterVehic99999999999999999999999999999999',
         filterVehicleNumber,
       );
       setNewFilterVehicle(filterVehicleNumber[0].label);
-    } else {
-      const allVehicleDetails = vehicleNum.map((item, index) => {
-        return {key: index++, label: item.deviceId};
-      });
-      console.log('setVehicleDetailsetVehicleDetail', allVehicleDetails);
-      setNewVehicleNumber(allVehicleDetails);
+      setVehicleNumber(filterVehicleNumber[0].label);
+      setNewImei(filterVehicleNumber[0].imei);
     }
+    // else {
+    const allVehicleDetails = vehicleNum.map((item, index) => {
+      return {key: index++, label: item.deviceId};
+    });
+    console.log('setVehicleDetailsetVehicleDetail', allVehicleDetails);
+    setNewVehicleNumber(allVehicleDetails);
+    // }
   };
   useEffect(() => {
     setDate();
@@ -264,6 +270,8 @@ function Reports(props) {
   const getFilterVehicle = async data => {
     setLoading(true);
     setVehicleNumber(data);
+    // setNewVehicleNumber(data)
+
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     const includedArray = vehicleNum
       .filter(item => {
@@ -292,9 +300,13 @@ function Reports(props) {
     const newDate = moment(d).format('YYYY-MM-DD');
     return newDate;
   };
-  const requestRunTimePermission = (data, heading) => {
-    async function externalStoragePermission() {
-      try {
+  const requestRunTimePermission = async (data, heading) => {
+    try {
+      let isPermitedExternalStorage = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      );
+      console.log('isPermitedExternalStorage', isPermitedExternalStorage);
+      if (!isPermitedExternalStorage) {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
           {
@@ -302,22 +314,59 @@ function Reports(props) {
             message: 'App needs access to Storage data.',
           },
         );
+
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           createPDF_File(data, heading);
+          // exportDataToExcel();
         } else {
           alert('WRITE_EXTERNAL_STORAGE permission denied');
         }
-      } catch (err) {
-        Alert.alert('Write permission err', err);
-        console.warn(err);
+      } else {
+        createPDF_File(data, heading);
+        // exportDataToExcel();
       }
+    } catch (err) {
+      Alert.alert('Write permission err', err);
+      console.warn(err);
+      return;
     }
+  };
 
-    if (Platform.OS === 'android') {
-      externalStoragePermission();
-    } else {
-      createPDF_File(data, heading);
-    }
+  // if (Platform.OS === 'android') {
+  //   externalStoragePermission();
+  // } else {
+  //   // createPDF_File(data, heading);
+  //   exportDataToExcel();
+  // }
+
+  const exportDataToExcel = () => {
+    // Created Sample data
+    let sample_data_to_export = [
+      {id: '1', name: 'First User'},
+      {id: '2', name: 'Second User'},
+    ];
+
+    let wb = XLSX.utils.book_new();
+    console.log('wb', wb);
+    let ws = XLSX.utils.json_to_sheet(sample_data_to_export);
+    console.log('ws', ws);
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Users');
+    const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
+    console.log('wbout', wbout);
+    // Write generated excel to Storage
+
+    RNFS.writeFile(
+      RNFS.ExternalStorageDirectoryPath + '/my_exported_file.xlsx',
+      wbout,
+      'ascii',
+    )
+      .then(r => {
+        console.log('Success', r);
+      })
+      .catch(e => {
+        console.log('Error1', e);
+      });
   };
   const createPDF_File = async (data, heading) => {
     let html = ``;
@@ -328,59 +377,90 @@ function Reports(props) {
       html += `<th style=" text-align: center; ">${item}</th>`;
     });
     html += ` </tr> </table>`;
+    if (
+      data == 'Odometer Total km' ||
+      data == 'Ignition Location On' ||
+      data == 'Daily Waiting Time Report' ||
+      data == 'Idle Report'
+    ) {
+      console.log('iffffffffffffffffffffffffffffffff');
+      mapHistory?.map(item => {
+        const date = getNewDate(item.timeStamp1);
+        const kms = item.todaysODO;
+        const ingnitionOn = getTime(item.todaysIgnitionOnTimeSeconds);
+        const ingnitionOff = getTime(item.todaysIdleTimeSeconds);
+        const waitingtime = getTime(item.todaysWaitingIgnitionTime);
 
-    // mapHistory?.map(item => {
-    //   const date = getNewDate(item.timeStamp1);
-    //   const kms = item.todaysODO;
-    //   const ingnitionOn = getTime(item.todaysIgnitionOnTimeSeconds);
-    //   const ingnitionOff = getTime(item.todaysIdleTimeSeconds);
-
-    //   console.log('date', date);
-    //   if (data == 'Odometer Total km') {
-    //     html += `<table style="width:100%; border:1px solid black;">
-    //                <tr>
-    //                  <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //                  <td style=" text-align: center; ">${date}</td>
-    //                  <td style=" text-align: center; ">${kms}</td>
-    //                </tr>
-    //             </table>`;
-    //   } else if (data == 'Ignition Location On') {
-    //     html += `<table style="width:100%; border:1px solid black;">
-    //     <tr>
-    //       <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //       <td style=" text-align: center; ">${date}</td>
-    //       <td style=" text-align: center; ">${ingnitionOn}</td>
-    //       <td style=" text-align: center; ">${ingnitionOff}</td>
-    //     </tr>
-    //  </table>`;
-    //   } else if (data == 'Vehicle Summary') {
-    //     html += `<table style="width:100%; border:1px solid black;">
-    //     <tr>
-    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //     <td style=" text-align: center; ">${newFilterVehicle}</td>
-    //   </tr>
-    //  </table>`;
-    //   }
-    // });
+        console.log('date', date);
+        if (data == 'Odometer Total km') {
+          html += `<table style="width:100%; border:1px solid black;">
+                   <tr>
+                     <td style=" text-align: center; ">${newFilterVehicle}</td>
+                     <td style=" text-align: center; ">${date}</td>
+                     <td style=" text-align: center; ">${kms}</td>
+                   </tr>
+                </table>`;
+        } else if (data == 'Ignition Location On') {
+          html += `<table style="width:100%; border:1px solid black;">
+        <tr>
+          <td style=" text-align: center; ">${newFilterVehicle}</td>
+          <td style=" text-align: center; ">${date}</td>
+          <td style=" text-align: center; ">${ingnitionOn}</td>
+          <td style=" text-align: center; ">${ingnitionOff}</td>
+        </tr>
+     </table>`;
+        } else if (data == 'Idle Report') {
+          html += `<table style="width:100%; border:1px solid black;">
+          <tr>
+            <td style=" text-align: center; ">${newFilterVehicle}</td>
+            <td style=" text-align: center; ">${date}</td>
+            <td style=" text-align: center; ">${ingnitionOff}</td>
+          </tr>
+       </table>`;
+        } else if (data == 'Daily Waiting Time Report') {
+          html += `<table style="width:100%; border:1px solid black;">
+          <tr>
+            <td style=" text-align: center; ">${newFilterVehicle}</td>
+            <td style=" text-align: center; ">${date}</td>
+            <td style=" text-align: center; ">${waitingtime}</td>
+          </tr>
+       </table>`;
+        }
+      });
+    } else {
+      console.log('elllllllllllllllllllllllllllllllllll');
+      data2.map(item => {
+        html += `<table style="width:100%; border:1px solid black;">
+        <tr>
+          <td style=" text-align: center; ">${item?.vehicleAddress}</td>
+        </tr>
+     </table>`;
+      });
+      summaryReport.map(item => {
+        html += `<table style="width:100%; border:1px solid black;">
+        <tr>
+          <td style=" text-align: center; ">${newFilterVehicle}</td>
+          <td style=" text-align: center; ">${item['endTime:']}</td>
+          <td style=" text-align: center; ">${item.odo}</td>
+        </tr>
+     </table>`;
+      });
+    }
     console.log('html', html);
     let file = await RNHTMLtoPDF.convert({html});
     console.log(file.filePath);
     RNFetchBlob.fs
       .readFile(file.filePath, 'base64')
       .then(async data => {
-        console.log("datadatadatadatadatadatadatadatadatadatadata",data)
+        console.log('datadatadatadatadatadatadatadatadatadatadata', data);
         const shareOption = {
           url: `data:application/pdf;base64,${data}`,
         };
         const ShareResponse = await Share.open(shareOption);
       })
-      .catch(err => {console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',err)});
+      .catch(err => {
+        console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', err);
+      });
   };
 
   return (
@@ -399,7 +479,11 @@ function Reports(props) {
             </View>
             <View style={styles.alertContainer}>
               <TouchableOpacity
-                onPress={() => props.navigation.navigate('GraphicalReports')}>
+                onPress={() =>
+                  props.navigation.navigate('GraphicalReports', {
+                    newImei: newImei,
+                  })
+                }>
                 <Image source={image.graph} style={{height: 35, width: 35}} />
               </TouchableOpacity>
             </View>
@@ -1230,7 +1314,16 @@ function Reports(props) {
                         name={'keyboard-arrow-down'}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        requestRunTimePermission('Drive Summary Report', [
+                          'Vehicle Number',
+                          'Start Location',
+                          'End Time',
+                          'Work/Idle hrs',
+                          'Duration',
+                        ])
+                      }>
                       <Image
                         source={image.shareDark}
                         style={{width: 24, height: 24}}
@@ -1406,7 +1499,14 @@ function Reports(props) {
                         name={'keyboard-arrow-down'}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        requestRunTimePermission('Idle Report', [
+                          'Vehicle Number',
+                          'Date',
+                          'Engine Idle Time',
+                        ])
+                      }>
                       <Image
                         source={image.shareDark}
                         style={{width: 24, height: 24}}
@@ -1533,7 +1633,14 @@ function Reports(props) {
                         name={'keyboard-arrow-down'}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        requestRunTimePermission('Daily Waiting Time Report', [
+                          'Vehicle Number',
+                          'Date',
+                          'Waiting Time',
+                        ])
+                      }>
                       <Image
                         source={image.shareDark}
                         style={{width: 24, height: 24}}
@@ -1554,16 +1661,6 @@ function Reports(props) {
                     ) : (
                       <Text>{newFilterVehicle}</Text>
                     )}
-                    {/* {isActive === 'daily' && isActive2.daily === 1 ? ( */}
-                    {/* <Text>{newFilterVehicle}</Text> */}
-                    {/* ) : null} */}
-                    {/* {isActive === 'daily' && isActive2.daily === 1 ? (
-                      newVehicleNumber?.map(item => {
-                        return <Text>{item.label.slice(0, 13)}</Text>;
-                      })
-                    ) : (
-                      <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
-                    )} */}
                   </View>
                   <View style={{paddingRight: 20}}>
                     <Text style={styles.textHead}>Date</Text>
