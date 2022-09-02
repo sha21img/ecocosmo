@@ -38,7 +38,7 @@ const AlertSetting = props => {
     email: details.email == 'Off' ? false : true,
     call: details.email == 'Off' ? false : true,
     days: details.days,
-    isActive: details.isActive,
+    isActive: details.isActive == 'Off' ? false : true,
     anc: details.anc,
     data: details.data,
     mobiles: details.mobiles,
@@ -199,15 +199,17 @@ const AlertSetting = props => {
         </View>
       </LinearGradient>
       <View style={styles.subHeader}>
-        <Text style={styles.subHeaderText}>{__('Ignition OFF')}</Text>
+        <Text style={styles.subHeaderText}>
+          {__('Ignition')} {newDetail['isActive'] == false ? 'Off' : 'On'}
+        </Text>
         {/* <Image source={image.selected} /> */}
         <CheckBox
-          isChecked={newDetail['isActive'] == 'No' ? false : true}
+          isChecked={newDetail['isActive'] == false ? false : true}
           checkBoxColor="skyblue"
           onClick={() => {
             setNewDetail({
               ...newDetail,
-              ['isActive']: newDetail['isActive'] == 'No' ? true : false,
+              ['isActive']: newDetail['isActive'] == false ? true : false,
             });
             // setIsActive(!isActive);
           }}
