@@ -35,9 +35,11 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
+import * as ScopedStorage from "react-native-scoped-storage"
 import XLSX from 'xlsx';
 function Reports(props) {
   const screen = Dimensions.get('window');
+
 
   const imei = props?.route?.params?.details?.imei;
   // console.log("imeiimeiimeiimeiimei",props.route.params.details.imei)
@@ -73,7 +75,7 @@ function Reports(props) {
     daily: 0,
   });
   const [data2, setData2] = useState([]);
- 
+
   const [summaryReport, setSummaryReport] = useState([]);
   // const d = ['odometer', 'ignition', 'vehicle', 'drive', 'idle', 'daily']
   const setDate = () => {
@@ -305,6 +307,7 @@ function Reports(props) {
       let isPermitedExternalStorage = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       );
+
       console.log('isPermitedExternalStorage', isPermitedExternalStorage);
       if (!isPermitedExternalStorage) {
         const granted = await PermissionsAndroid.request(
@@ -316,14 +319,14 @@ function Reports(props) {
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          createPDF_File(data, heading);
-          // exportDataToExcel();
+          // createPDF_File(data, heading);
+          exportDataToExcel();
         } else {
           alert('WRITE_EXTERNAL_STORAGE permission denied');
         }
       } else {
-        createPDF_File(data, heading);
-        // exportDataToExcel();
+        // createPDF_File(data, heading);
+        exportDataToExcel();
       }
     } catch (err) {
       Alert.alert('Write permission err', err);
@@ -339,34 +342,37 @@ function Reports(props) {
   //   exportDataToExcel();
   // }
 
-  const exportDataToExcel = () => {
+  const exportDataToExcel =async () => {
     // Created Sample data
+    let dir = await ScopedStorage.openDocumentTree(true);
     let sample_data_to_export = [
       {id: '1', name: 'First User'},
       {id: '2', name: 'Second User'},
     ];
 
     let wb = XLSX.utils.book_new();
-    console.log('wb', wb);
     let ws = XLSX.utils.json_to_sheet(sample_data_to_export);
-    console.log('ws', ws);
-
     XLSX.utils.book_append_sheet(wb, ws, 'Users');
-    const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
-    console.log('wbout', wbout);
-    // Write generated excel to Storage
+    const wbout = XLSX.write(wb, {type: 'buffer', bookType: 'xlsx'});
+    try{
+      // await ScopedStorage.createDocument(dir.uri,"text/plain","hello");
 
-    RNFS.writeFile(
-      RNFS.ExternalStorageDirectoryPath + '/my_exported_file.xlsx',
-      wbout,
-      'ascii',
-    )
-      .then(r => {
-        console.log('Success', r);
-      })
-      .catch(e => {
-        console.log('Error1', e);
-      });
+      await ScopedStorage.createDocument(dir.uri,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",wbout,"base64");
+
+    }catch(e){
+      console.log('errrrrr',e)
+    }
+    // RNFS.writeFile(
+    //   RNFS.ExternalStorageDirectoryPath + '/my_exported_file.xlsx',
+    //   wbout,
+    //   'ascii',
+    // )
+    //   .then(r => {
+    //     console.log('Success', r);
+    //   })
+    //   .catch(e => {
+    //     console.log('Error1', e);
+    //   });
   };
   const createPDF_File = async (data, heading) => {
     let html = ``;
