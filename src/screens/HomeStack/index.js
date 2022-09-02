@@ -8,7 +8,7 @@ import CustomerProfile from '../CustomerProfile';
 import Setting from '../Setting';
 import Tabs from './Tabs';
 import colors from '../../../assets/Colors';
-import Alerts from '../Alerts';
+import Chat from '../Chat';
 
 function HomeStack(props) {
   console.log('props0000000000000000000000000', props.route.params?.screen);
@@ -81,8 +81,8 @@ function HomeStack(props) {
         // props={props}
       />
       <Tab.Screen
-        name="Alerts"
-        component={Alerts}
+        name="Chat"
+        component={Chat}
         initialParams={{icon: 'chat'}}
       />
       <Tab.Screen

@@ -35,11 +35,12 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
-import * as ScopedStorage from "react-native-scoped-storage"
+import * as ScopedStorage from 'react-native-scoped-storage';
 import XLSX from 'xlsx';
+import {Dirs, FileSystem} from 'react-native-file-access';
+const DDP = Dirs.DocumentDir + '/';
 function Reports(props) {
   const screen = Dimensions.get('window');
-
 
   const imei = props?.route?.params?.details?.imei;
   // console.log("imeiimeiimeiimeiimei",props.route.params.details.imei)
@@ -65,7 +66,11 @@ function Reports(props) {
   const [loading, setLoading] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [newFilterVehicle, setNewFilterVehicle] = useState();
-
+  const {
+    writeFile,
+    readFile,
+    dirs: {DocumentDir},
+  } = RNFetchBlob.fs;
   const [isActive2, setIsActive2] = useState({
     odometer: 0,
     ignition: 0,
@@ -319,14 +324,14 @@ function Reports(props) {
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          // createPDF_File(data, heading);
-          exportDataToExcel();
+          createPDF_File(data, heading);
+          // exportDataToExcel();
         } else {
           alert('WRITE_EXTERNAL_STORAGE permission denied');
         }
       } else {
-        // createPDF_File(data, heading);
-        exportDataToExcel();
+        createPDF_File(data, heading);
+        // exportDataToExcel();
       }
     } catch (err) {
       Alert.alert('Write permission err', err);
@@ -342,37 +347,57 @@ function Reports(props) {
   //   exportDataToExcel();
   // }
 
-  const exportDataToExcel =async () => {
+  const exportDataToExcel = async () => {
     // Created Sample data
-    let dir = await ScopedStorage.openDocumentTree(true);
-    let sample_data_to_export = [
-      {id: '1', name: 'First User'},
-      {id: '2', name: 'Second User'},
+    // let dir = await ScopedStorage.openDocumentTree(true);
+    var data = [
+      {
+        name: 'John',
+        city: 'Seattle',
+      },
+      {
+        name: 'Mike',
+        city: 'Los Angeles',
+      },
+      {
+        name: 'Zach',
+        city: 'New York',
+      },
     ];
 
     let wb = XLSX.utils.book_new();
-    let ws = XLSX.utils.json_to_sheet(sample_data_to_export);
-    XLSX.utils.book_append_sheet(wb, ws, 'Users');
-    const wbout = XLSX.write(wb, {type: 'buffer', bookType: 'xlsx'});
-    try{
-      // await ScopedStorage.createDocument(dir.uri,"text/plain","hello");
+    // var ws = XLSX.utils.json_to_sheet(
+    //   [
+    //     {S: 1, h: 2, t: 5, J: 6, S_1: 7},
+    //     {S: 2, h: 3, t: 6, J: 7, S_1: 8},
+    //     {S: 3, h: 4, t: 7, J: 8, S_1: 9},
+    //     {S: 4, h: 5, e: 6, e_1: 7, t: 8, J: 9, S_1: 0},
+    //   ],
+    //   {header: ['S', 'h', 'e', 'e_1', 't', 'J', 'S_1']},
+    // );
+    let ws = XLSX.utils.json_to_sheet(data);
+    // var worksheet = XLSX.utils.aoa_to_sheet([
+    //   ["A1", "B1", "C1"],
+    //   ["A2", "B2", "C2"],
+    //   ["A3", "B3", "C4"]
+    // ]);
+    XLSX.utils.book_append_sheet(wb, ws);
+    const b64 = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
 
-      await ScopedStorage.createDocument(dir.uri,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",wbout,"base64");
+    // await ScopedStorage.createDocument('file.xlsx',"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",b64,'ascii')
 
-    }catch(e){
-      console.log('errrrrr',e)
-    }
-    // RNFS.writeFile(
-    //   RNFS.ExternalStorageDirectoryPath + '/my_exported_file.xlsx',
-    //   wbout,
-    //   'ascii',
-    // )
-    //   .then(r => {
-    //     console.log('Success', r);
-    //   })
-    //   .catch(e => {
-    //     console.log('Error1', e);
-    //   });
+    RNFS.writeFile(
+      RNFS.DownloadDirectoryPath + '/my_exported_file.xlsx',
+      b64,
+      'ascii',
+    )
+      .then(r => {
+        RNFS.readFile(RNFS.DownloadDirectoryPath + '/my_exported_file.xlsx');
+        console.log('Success', r);
+      })
+      .catch(e => {
+        console.log('Error1', e);
+      });
   };
   const createPDF_File = async (data, heading) => {
     let html = ``;
