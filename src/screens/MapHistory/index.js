@@ -637,8 +637,8 @@ function MapHistory(props) {
               //   longitudeDelta: LONGITUDE_DELTA,
               // }}
               region={{
-                latitude: parseFloat(data[0].lat),
-                longitude: parseFloat(data[0].lng),
+                latitude: parseFloat(data[0]?.lat),
+                longitude: parseFloat(data[0]?.lng),
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
               }}>
@@ -759,8 +759,8 @@ function MapHistory(props) {
                 }}
                 // key={index.toString()}
                 coordinate={{
-                  latitude: parseFloat(data[0].lat),
-                  longitude: parseFloat(data[0].lng),
+                  latitude: parseFloat(data[0]?.lat),
+                  longitude: parseFloat(data[0]?.lng),
                 }}>
                 {animate == 'stop' ? (
                   <Image
@@ -805,8 +805,8 @@ function MapHistory(props) {
                 ref={mapRef}
                 caheEnabled
                 region={{
-                  latitude: parseFloat(data[0].lat),
-                  longitude: parseFloat(data[0].lng),
+                  latitude: parseFloat(data[0]?.lat),
+                  longitude: parseFloat(data[0]?.lng),
                   latitudeDelta: LATITUDE_DELTA,
                   longitudeDelta: LONGITUDE_DELTA,
                 }}>
@@ -875,8 +875,8 @@ function MapHistory(props) {
                   }}
                   // key={index.toString()}
                   coordinate={{
-                    latitude: parseFloat(data[0].lat),
-                    longitude: parseFloat(data[0].lng),
+                    latitude: parseFloat(data[0]?.lat),
+                    longitude: parseFloat(data[0]?.lng),
                   }}>
                   {animate == 'stop' ? (
                     <Image

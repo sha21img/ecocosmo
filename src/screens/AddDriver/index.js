@@ -39,7 +39,7 @@ const AddDriver = props => {
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
     const driverDetails = response.data.driverDetails;
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.mobilenumber == number;
     });
     if (filterData.length > 0) {
@@ -74,7 +74,7 @@ const AddDriver = props => {
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
     const driverDetails = response.data.driverDetails;
-    const data = driverDetails.filter((el)=>{
+    const data = driverDetails?.filter((el)=>{
       return (el.imei == IMEI)
     })
     setName(data[0]?.driverName)

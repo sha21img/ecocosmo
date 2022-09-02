@@ -132,11 +132,11 @@ function GroupMapTracking(props) {
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
     const driverDetails = response.data.driverDetails;
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.deviceId === data.deviceId;
     });
     console.log('filterDathihihhihiha', filterData);
-    const phoneNumber = filterData[0].mobilenumber;
+    const phoneNumber = filterData[0]?.mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
   };
   return (

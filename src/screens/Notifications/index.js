@@ -153,7 +153,6 @@ function Notifications(props) {
           url: urlString,
           type: 'image/jpeg',
         };
-        console.log(options, 'optionsoptionsoptions');
         Share.open(options)
           .then(res => {
             console.log(res);

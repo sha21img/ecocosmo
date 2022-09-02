@@ -39,18 +39,17 @@ function Dashboard2({
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
     const driverDetails = response.data.driverDetails;
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.deviceId === data.deviceId;
     });
-    const phoneNumber = filterData[0].mobilenumber;
-    console.log(filterData[0]);
+    const phoneNumber = filterData[0]?.mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
   };
   const getMobileNumber = async number => {
     // console.log('numbernumbernumber', number);
 
     // console.log('driverDetailsdriverDetails', driverDetails);
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.deviceId === number.deviceId;
     });
     console.log('filterDatafilterDatafilterDatafilterData', filterData);

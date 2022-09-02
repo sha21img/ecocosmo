@@ -31,6 +31,8 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
 import {useIsFocused} from '@react-navigation/native';
+import RNFS from 'react-native-fs';
+import ViewShot from 'react-native-view-shot';
 
 function GraphicalReports(props) {
   const ime = props?.route?.params?.newImei;
@@ -127,7 +129,7 @@ function GraphicalReports(props) {
       type: 'odo',
     };
     const response = await axiosGetData('reportHistory', data);
-    const aa = response.data.DeviceHistory.reverse();
+    const aa = response?.data?.DeviceHistory?.reverse();
     if (aa) {
       setLoading(true);
     }
@@ -231,49 +233,40 @@ function GraphicalReports(props) {
       createPDF_File();
     }
   };
-  const createPDF_File = async () => {
-    console.log('pdf');
-    let html = `<h1 style="text-align: center;">
-      <strong>Graphical Reports</strong>
-      </h1>
-      <p style="text-align: center;">
-      Here is an example of pdf Print in React Native
-      ${mapHistory[0].todaysODO}
-      </p>
-      
+  const refs = React.useRef();
 
-      <div>
-      <VictoryChart
-      key={Math.random()}
-      width={230}
-      height={200}
-      domainPadding={{x: 10}}>
-      <VictoryBar
-        style={{
-          data: {fill: '#5EB9FF'},
-        }}
-        alignment="end"
-        data={[
-          {x: '5', y: 0},
-          {x: '10', y: 0},
-          {x: '15', y: 0},
-          {x: '20', y: 0},
-          {x: '25', y: 0},
-          {x: '30', y: 30},
-        ]}
-        barRatio={0.7}
-        labels={({datum}) => {
-          return datum.y;
-        }}
-        labelComponent={<VictoryLabel dy={1} dx={-50} />}
-      
-      />
-    </VictoryChart>
-    </div>
-      
-      <p style="text-align: center;">
-      <strong>Team About React</strong>
-      </p>`;
+  const createPDF_File = async () => {
+    let image = refs.current.capture().then(uri => {
+      RNFS.readFile(uri, 'base64').then(res => {
+        let urlString = 'data:image/jpeg;base64,' + res;
+        let options = {
+          title: 'Share Title',
+          message: 'Share Message',
+          url: urlString,
+          type: 'image/jpeg',
+        };
+        Share.open(options)
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            err && console.log(err);
+          });
+      });
+    });
+    console.log('pdf');
+    let html = `<img src=${image}>`
+
+    // let html = `<h1 style="text-align: center;">
+    //   <strong>Graphical Reports</strong>
+    //   </h1>
+    //   <p style="text-align: center;">
+    //   Here is an example of pdf Print in React Native
+    //   ${mapHistory[0]?.todaysODO}
+    //   </p>
+    //   <p style="text-align: center;">
+    //   <strong>Team About React</strong>
+    //   </p>`;
     // const {uri} = await Print.printToFileAsync({html})
     // Sharing.shareAsync(uri)
 
@@ -517,58 +510,62 @@ function GraphicalReports(props) {
                       console.log('this is item', item);
 
                       return (
-                        <VictoryChart
-                          key={Math.random()}
-                          width={230}
-                          height={200}
-                          domainPadding={{x: 10}}>
-                          <VictoryBar
-                            style={{
-                              data: {fill: '#5EB9FF'},
-                            }}
-                            alignment="end"
-                            data={[
-                              {x: '5', y: 0},
-                              {x: '10', y: 0},
-                              {x: '15', y: 0},
-                              {x: '20', y: 0},
-                              {x: '25', y: 0},
-                              {x: '30', y: item.todaysODO},
-                            ]}
-                            barRatio={0.7}
-                            labels={({datum}) => {
-                              return datum.y === Sel.y
-                                ? `${datum.y}\n${item.timeStamp1}`
-                                : '';
-                            }}
-                            labelComponent={<VictoryLabel dy={1} dx={-50} />}
-                            events={[
-                              {
-                                eventHandlers: {
-                                  onPress: item => {
-                                    return [
-                                      {
-                                        target: 'data',
-                                        mutation: props => {
-                                          console.log(
-                                            'insideeeeeeeeeeeeeeeeeeee',
-                                            props.datum,
-                                            'insideeeeeeeeeeeeeeeeeeee',
-                                          );
-                                          if (Sel.y == props.datum.y) {
-                                            setSel({y: ''});
-                                          } else {
-                                            setSel(props.datum);
-                                          }
+                        <ViewShot
+                          ref={refs}
+                          options={{format: 'jpg', quality: 0.9}}>
+                          <VictoryChart
+                            key={Math.random()}
+                            width={230}
+                            height={200}
+                            domainPadding={{x: 10}}>
+                            <VictoryBar
+                              style={{
+                                data: {fill: '#5EB9FF'},
+                              }}
+                              alignment="end"
+                              data={[
+                                {x: '5', y: 0},
+                                {x: '10', y: 0},
+                                {x: '15', y: 0},
+                                {x: '20', y: 0},
+                                {x: '25', y: 0},
+                                {x: '30', y: item.todaysODO},
+                              ]}
+                              barRatio={0.7}
+                              labels={({datum}) => {
+                                return datum.y === Sel.y
+                                  ? `${datum.y}\n${item.timeStamp1}`
+                                  : '';
+                              }}
+                              labelComponent={<VictoryLabel dy={1} dx={-50} />}
+                              events={[
+                                {
+                                  eventHandlers: {
+                                    onPress: item => {
+                                      return [
+                                        {
+                                          target: 'data',
+                                          mutation: props => {
+                                            console.log(
+                                              'insideeeeeeeeeeeeeeeeeeee',
+                                              props.datum,
+                                              'insideeeeeeeeeeeeeeeeeeee',
+                                            );
+                                            if (Sel.y == props.datum.y) {
+                                              setSel({y: ''});
+                                            } else {
+                                              setSel(props.datum);
+                                            }
+                                          },
                                         },
-                                      },
-                                    ];
+                                      ];
+                                    },
                                   },
                                 },
-                              },
-                            ]}
-                          />
-                        </VictoryChart>
+                              ]}
+                            />
+                          </VictoryChart>
+                        </ViewShot>
                       );
                     })
                   ) : (

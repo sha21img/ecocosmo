@@ -168,7 +168,7 @@ const Dashboard1 = ({
     );
     console.log('this si guest', response.data);
     const driverDetails = response.data.driverDetails;
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.deviceId === data.deviceId;
     });
     const phoneNumber = filterData[0]?.mobilenumber;
@@ -178,7 +178,7 @@ const Dashboard1 = ({
     // console.log('numbernumbernumber', number);
 
     // console.log('driverDetailsdriverDetails', driverDetails);
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.deviceId === number.deviceId;
     });
     console.log('filterDatafilterDatafilterDatafilterData', filterData);
