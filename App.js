@@ -9,6 +9,7 @@ import HomeStack from './src/screens/HomeStack';
 import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
+import Chat from './src/screens/Chat';
 import Alerts from './src/screens/Alerts';
 import MapHistory from './src/screens/MapHistory';
 import DriverBehaviour from './src/screens/DriverBehaviour';
@@ -370,6 +371,11 @@ const App = () => {
                   <Stack.Screen
                     name="UrlTracking"
                     component={UrlTracking}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Chat"
+                    component={Chat}
                     options={{headerShown: false}}
                   />
                   <Stack.Screen

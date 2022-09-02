@@ -184,7 +184,9 @@ const AlertSetting = props => {
         style={styles.header}>
         <View style={styles.headerContainer}>
           <View style={styles.headerImageCont}>
-            <Image source={image.drawer} style={{height: 20, width: 23}} />
+            <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+              <Image source={image.drawer} style={{height: 20, width: 23}} />
+            </TouchableOpacity>
             <Text
               style={{
                 fontSize: Size.large,
