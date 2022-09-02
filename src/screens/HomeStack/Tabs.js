@@ -22,7 +22,7 @@ function Tabs({tab, onPress, icon, isSelected, index}) {
             ? image[icon]
             : tab.name == 'Home'
             ? image.homeUnselected
-            : tab.name == 'Alerts'
+            : tab.name == 'Chat'
             ? image.home2unselected
             : tab.name == 'Notifications'
             ? image.notifyUnSelected
