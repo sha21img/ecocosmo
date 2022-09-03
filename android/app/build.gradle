@@ -135,7 +135,8 @@ android {
         applicationId "com.demo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+          multiDexEnabled true
         versionCode 1
         versionName "1.0"
         

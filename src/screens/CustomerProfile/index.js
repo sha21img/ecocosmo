@@ -10,7 +10,12 @@ import {
   View,
   Linking,
 } from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import ImagePicker from 'react-native-image-crop-picker';
+
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
@@ -29,6 +34,7 @@ const CustomerProfile = props => {
   const [Address, SetAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
+  const [customerImage, setCustomerImage] = useState('');
 
   const [details, setDetails] = useState();
 
@@ -77,6 +83,14 @@ const CustomerProfile = props => {
     console.log('balle ballle');
     setTimeout(() => ref?.current?.focus(), 1000);
   };
+  // const uploadEventsImages=()=>{
+  //   var data = new FormData();
+  //   data.append('sendimage', {
+  //     uri: imagePath, // your file path string
+  //     name: 'my_photo.jpg',
+  //     type: 'image/jpg',
+  //   });
+  // }
 
   return (
     <>
@@ -115,7 +129,41 @@ const CustomerProfile = props => {
           <LinearGradient
             style={styles.FormContainer}
             colors={[colors.Modalcolor1, colors.white]}>
-            <Image source={image.taxtDriver} style={styles.userImage} />
+            <View
+              style={{
+                resizeMode: 'contain',
+                position: 'absolute',
+                zIndex: 99,
+                top: -50,
+                alignSelf: 'center',
+              }}>
+              <TouchableOpacity
+                style={{
+                  borderRadius: 50,
+                  backgroundColor: 'green',
+                }}
+                onPress={() => {
+                  ImagePicker.openPicker({
+                    width: 300,
+                    height: 400,
+                    cropping: true,
+                  }).then(imag => {
+                    console.log('sasa', imag);
+                    // uploadEventsImages(imag.path);
+                    // const newImage = [...image, imag.path];
+                    setCustomerImage(imag.path);
+                  });
+                }}>
+                {customerImage != '' ? (
+                  <Image
+                    source={{uri: customerImage}}
+                    style={styles.userImage}
+                  />
+                ) : (
+                  <Image source={image.taxtDriver} style={styles.userImage} />
+                )}
+              </TouchableOpacity>
+            </View>
             <Text style={styles.subHead}>{details?.brandName}</Text>
             <TouchableOpacity
               style={styles.subButton}
