@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Image,
   ImageBackground,
@@ -8,8 +8,14 @@ import {
   ActivityIndicator,
   TextInput,
   View,
+  Linking,
 } from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import ImagePicker from 'react-native-image-crop-picker';
+
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
@@ -27,6 +33,9 @@ const CustomerProfile = props => {
   const [secMobile, SetsecMobile] = useState('');
   const [Address, SetAddress] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
+  const [customerImage, setCustomerImage] = useState('');
+
   const [details, setDetails] = useState();
 
   const contactUsDetails = async () => {
@@ -37,6 +46,10 @@ const CustomerProfile = props => {
     const response = await axiosGetData(
       `getAccountDetails/${username}/${encodedPassWord}`,
     );
+    console.log(
+      'response.data.getAccountDetails',
+      response.data.getAccountDetails,
+    );
     SetaccountId(response.data.getAccountDetails.accountId);
     Setemail(response.data.getAccountDetails.email);
     SetprimaryMobile(response.data.getAccountDetails.mobile);
@@ -46,10 +59,10 @@ const CustomerProfile = props => {
   useEffect(() => {
     contactUsDetails();
   }, []);
-
+  const input1 = useRef(null);
   const handleSave = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     setLoading(true);
     const response = await axiosGetData(
@@ -62,6 +75,23 @@ const CustomerProfile = props => {
       setLoading(false);
     }
   };
+  const calling = () => {
+    Linking.openURL(`tel:${primaryMobile}`);
+  };
+
+  const focusOn = ref => {
+    console.log('balle ballle');
+    setTimeout(() => ref?.current?.focus(), 1000);
+  };
+  // const uploadEventsImages=()=>{
+  //   var data = new FormData();
+  //   data.append('sendimage', {
+  //     uri: imagePath, // your file path string
+  //     name: 'my_photo.jpg',
+  //     type: 'image/jpg',
+  //   });
+  // }
+
   return (
     <>
       <LinearGradient
@@ -78,7 +108,12 @@ const CustomerProfile = props => {
               </TouchableOpacity>
               <Text style={styles.headerText}>{__('My Account')}</Text>
             </View>
-            <TouchableOpacity style={styles.editContainer}>
+            <TouchableOpacity
+              style={styles.editContainer}
+              onPress={() => {
+                setIsEditable(true);
+                focusOn(input1);
+              }}>
               <Entypo
                 style={{
                   color: '#fff',
@@ -94,11 +129,47 @@ const CustomerProfile = props => {
           <LinearGradient
             style={styles.FormContainer}
             colors={[colors.Modalcolor1, colors.white]}>
-            <Image source={image.taxtDriver} style={styles.userImage} />
+            <View
+              style={{
+                resizeMode: 'contain',
+                position: 'absolute',
+                zIndex: 99,
+                top: -50,
+                alignSelf: 'center',
+              }}>
+              <TouchableOpacity
+                style={{
+                  borderRadius: 50,
+                  backgroundColor: 'green',
+                }}
+                onPress={() => {
+                  ImagePicker.openPicker({
+                    width: 300,
+                    height: 400,
+                    cropping: true,
+                  }).then(imag => {
+                    console.log('sasa', imag);
+                    // uploadEventsImages(imag.path);
+                    // const newImage = [...image, imag.path];
+                    setCustomerImage(imag.path);
+                  });
+                }}>
+                {customerImage != '' ? (
+                  <Image
+                    source={{uri: customerImage}}
+                    style={styles.userImage}
+                  />
+                ) : (
+                  <Image source={image.taxtDriver} style={styles.userImage} />
+                )}
+              </TouchableOpacity>
+            </View>
             <Text style={styles.subHead}>{details?.brandName}</Text>
-            <TouchableOpacity style={styles.subButton}>
+            <TouchableOpacity
+              style={styles.subButton}
+              onPress={() => calling()}>
               <Image source={image.callWhite} />
-              <Text style={styles.subButtonText}>+91 - 123456789</Text>
+              <Text style={styles.subButtonText}>+91 - {primaryMobile}</Text>
             </TouchableOpacity>
             <ScrollView style={{marginVertical: 16}}>
               <View style={styles.TextFieldContainer}>
@@ -109,6 +180,8 @@ const CustomerProfile = props => {
                     style={{width: 15, height: 14}}
                   />
                   <TextInput
+                    ref={input1}
+                    editable={isEditable}
                     style={styles.textField}
                     placeholder={__('Account ID')}
                     defaultValue={AcountId}
@@ -122,6 +195,7 @@ const CustomerProfile = props => {
                     style={{width: 15, height: 14}}
                   />
                   <TextInput
+                    // editable={isEditable}
                     style={styles.textField}
                     placeholder={__('Email ID')}
                     defaultValue={email}
@@ -134,6 +208,7 @@ const CustomerProfile = props => {
                 <View style={styles.TextFieldSubContainer}>
                   <Image source={image.Phone} style={{width: 15, height: 14}} />
                   <TextInput
+                    // editable={isEditable}
                     style={styles.textField}
                     placeholder={__('Primary Mobile Number *')}
                     defaultValue={primaryMobile}
@@ -146,6 +221,7 @@ const CustomerProfile = props => {
                 <View style={styles.TextFieldSubContainer}>
                   <Image source={image.Phone} style={{width: 15, height: 14}} />
                   <TextInput
+                    // editable={isEditable}
                     style={styles.textField}
                     placeholder={__('Secondary Mobile Number *')}
                     defaultValue={secMobile}
@@ -159,6 +235,7 @@ const CustomerProfile = props => {
                     style={{width: 15, height: 15}}
                   />
                   <TextInput
+                    // editable={isEditable}
                     style={styles.textFieldAddress}
                     placeholder={__('Address *')}
                     numberOfLines={3}

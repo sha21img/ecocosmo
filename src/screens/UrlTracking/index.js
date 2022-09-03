@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   Text,
   View,
   Share,
+  TextInput,
   Linking,
   ScrollView,
   TouchableOpacity,
@@ -18,46 +19,36 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import SelectDropdown from 'react-native-select-dropdown';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-simple-toast';
+import DatePicker from 'react-native-date-picker';
 
 const UrlTracking = props => {
-  // const {details} = props.route.params;
-  // console.log('props props', details);
-  // const [mydate, setDate] = useState(new Date());
-  // const [mode, setMode] = useState('date');
-  // const [show, setShow] = useState(false);
+  console.log('this is props', props.route.params.details.imei);
+  const IMEI = props.route.params.details.imei;
   const [day, setday] = useState(null);
+  const [discription, setDiscription] = useState('');
+  const [show, setShow] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [cdate, setCdate] = useState('');
+  const [ctime, setCtime] = useState('');
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState('All Vehicle');
+  const [data, setdata] = useState();
+  const [imei, setImei] = useState(IMEI || '');
 
-  // const changeSelectedDate = (event, selectedDate) => {
-  //   const currentDate = selectedDate || mydate;
-  //   setDate(currentDate);
-  //   setShow(false);
-  // };
-  // const changeSelectedTime = (event, selectedDate) => {
-  //   const currentDate = selectedDate || mydate;
-  //   setDate(currentDate);
-  //   setShow(false);
-  // };
-  // const showMode = currentMode => {
-  //   setShow(true);
-  //   setMode(currentMode);
-  // };
-  // const displayDatepicker = value => {
-  //   showMode(value);
-  // };
   const sendUrl = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
     let password = succcess.password;
-    if (day != null) {
+    if (day != null && discription != '') {
       const response = await axiosGetData(
-        `gettrackurl/${username}/${password}/${
-          details.imei
-        }/ecvalidate/${day.toString()}`,
+        `gettrackurl/${username}/${password}/${imei}/ecvalidate/${day.toString()}`,
       );
-
       try {
         const result = await Share.share({
-          message: response.data.message,
+          message: `${response.data.message} \n\n\n ${discription}`,
         });
         if (result.action === Share.sharedAction) {
           if (result.activityType) {
@@ -72,7 +63,7 @@ const UrlTracking = props => {
         alert(error.message);
       }
     } else {
-      Toast.show('Please select day');
+      Toast.show('Please select duration and Add description');
     }
   };
   const daysData = [
@@ -100,6 +91,46 @@ const UrlTracking = props => {
       setday(a.toString());
     }
   };
+  function formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
+  }
+  const onChangeStart = selectedDate => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    let fDateStart = new Date(currentDate);
+    setCdate(formatDate(fDateStart.toString()));
+    let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
+    setCtime(fTimeStart);
+  };
+  const showMode = currentMode => {
+    setShow(true);
+    setMode(currentMode);
+  };
+  const showDatepicker = () => {
+    showMode('date');
+  };
+  const showTimepicker = () => {
+    showMode('time');
+  };
+  const SelectVehicle = (data, imei) => {
+    setSelected(data);
+    setImei(imei);
+  };
+
+  const getVehicle = async () => {
+    const data = await Storage.getVehicleDetail('vehicle_detail');
+    setdata(data);
+  };
+  useEffect(() => {
+    getVehicle();
+  }, []);
   return (
     <>
       <LinearGradient
@@ -124,58 +155,132 @@ const UrlTracking = props => {
         </View>
       </LinearGradient>
       <View style={styles.subHeading}>
-        <View style={styles.subHeadingContent}>
-          <Text style={{fontSize: Size.compact, color: colors.black}}>
-            {__('All Vehicle')}
-          </Text>
-          <Image source={image.Down} style={{width: 11, height: 6}} />
+        <View style={styles.textinputbox}>
+          <SelectDropdown
+            buttonStyle={styles.picker}
+            data={data}
+            defaultButtonText={selected}
+            onSelect={(selectedItem, index) => {
+              setSelected(selectedItem.deviceId);
+              SelectVehicle(selectedItem.deviceId, selectedItem.imei);
+              console.log(selectedItem.deviceId, index);
+            }}
+            buttonTextAfterSelection={selectedItem => {
+              return selectedItem.deviceId;
+            }}
+            rowTextForSelection={item => {
+              return item.deviceId;
+            }}
+            renderDropdownIcon={() => {
+              return (
+                <MaterialIcons
+                  style={{
+                    color: '#3D3D3D',
+                    fontSize: 20,
+                  }}
+                  name={'keyboard-arrow-down'}
+                />
+              );
+            }}
+          />
         </View>
       </View>
       <LinearGradient
         style={{height: '100%', paddingHorizontal: 16, paddingVertical: 10}}
         colors={[colors.Modalcolor1, colors.white]}>
         <View style={styles.body}>
-          <TouchableOpacity
-            // onPress={() => displayDatepicker('date')}
+          {/* <TouchableOpacity
+            onPress={() => {
+              showDatepicker(), setOpen(true);
+            }}
             style={styles.bodyContent}>
-            <Text style={{fontSize: Size.large, color: colors.textcolor}}>
-              {__('Select Date')}
-              {/* {date} */}
-            </Text>
-            <Image source={image.Down} style={{width: 11, height: 6}} />
+            <TextInput
+              editable={false}
+              style={{fontSize: 16}}
+              value={cdate}
+              placeholder={'Select Date'}
+            />
+
+            <MaterialIcons
+              style={{
+                color: '#3D3D3D',
+                fontSize: 16,
+              }}
+              name={'keyboard-arrow-down'}
+            />
           </TouchableOpacity>
           <TouchableOpacity
-            // onPress={() => displayDatepicker('time')}
+            onPress={() => {
+              showTimepicker(), setOpen(true);
+            }}
             style={styles.bodyContent}>
-            <Text style={{fontSize: Size.large, color: colors.textcolor}}>
-              {__('Select Time')}
-            </Text>
-            <Image source={image.Down} style={{width: 11, height: 6}} />
+            <TextInput
+              editable={false}
+              placeholder={'Select Time'}
+              style={{fontSize: 16}}
+              value={ctime}
+            />
+            <MaterialIcons
+              style={{
+                color: '#3D3D3D',
+                fontSize: 16,
+              }}
+              name={'keyboard-arrow-down'}
+            />
           </TouchableOpacity>
-          <View style={styles.bodyContent}>
-            <SelectDropdown
-              buttonStyle={{
-                width: '100%',
+          {show && (
+            <DatePicker
+              modal
+              open={open}
+              date={date}
+              onConfirm={date => {
+                onChangeStart(date);
+                setOpen(false);
               }}
-              data={daysData}
-              defaultButtonText={'Duration'}
-              onSelect={(selectedItem, index) => {
-                // setSelected(selectedItem.deviceId);
-                Select(selectedItem);
-                console.log(selectedItem, index);
-              }}
-              buttonTextAfterSelection={selectedItem => {
-                return selectedItem;
-              }}
-              rowTextForSelection={item => {
-                return item;
+              mode={mode}
+              onCancel={() => {
+                setOpen(false);
               }}
             />
-          </View>
+          )} */}
+          <SelectDropdown
+            buttonStyle={styles.picker}
+            data={daysData}
+            defaultButtonText={'Duration'}
+            onSelect={(selectedItem, index) => {
+              Select(selectedItem);
+              console.log(selectedItem, index);
+            }}
+            buttonTextAfterSelection={selectedItem => {
+              return selectedItem;
+            }}
+            rowTextForSelection={item => {
+              return item;
+            }}
+            renderDropdownIcon={() => {
+              return (
+                <MaterialIcons
+                  style={{
+                    color: '#3D3D3D',
+                    fontSize: 20,
+                  }}
+                  name={'keyboard-arrow-down'}
+                />
+              );
+            }}
+          />
           <View style={styles.bodyContent}>
-            <Text style={{fontSize: Size.large, color: colors.grey}}>
-              {__('Asset Description')}
-            </Text>
+            <TextInput
+              placeholder="Asset Description"
+              value={discription}
+              style={{
+                backgroundColor: colors.white,
+                width: '100%',
+                borderRadius: 7,
+                fontSize: 16,
+              }}
+              onChangeText={newText => setDiscription(newText)}
+            />
           </View>
         </View>
         <TouchableOpacity onPress={() => sendUrl()} style={styles.footer}>
@@ -185,17 +290,6 @@ const UrlTracking = props => {
             <Text style={styles.loginButtonText}>{__('Share URL')}</Text>
           </LinearGradient>
         </TouchableOpacity>
-
-        {/* {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={mydate}
-            mode={mode}
-            is24Hour={true}
-            display="default"
-            onChange={changeSelectedDate}
-          />
-        )} */}
       </LinearGradient>
     </>
   );

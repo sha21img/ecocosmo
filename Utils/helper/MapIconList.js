@@ -18,7 +18,6 @@ function MapIconList(props) {
   const data =
     props.k == true
       ? [
-          {imgUrl: image.parking2, route: 'Nearby'},
           {imgUrl: image.trafficlight, route: 'Traffic'},
           {imgUrl: image.map, route: 'MapHistory'},
           {imgUrl: image.keep, route: 'Reports'},
@@ -27,7 +26,6 @@ function MapIconList(props) {
         ]
       : [
           {imgUrl: image.vehicleon, route: 'EngineStopPopup'},
-          {imgUrl: image.parking2, route: 'Nearby'},
           {imgUrl: image.trafficlight, route: 'Traffic'},
           {imgUrl: image.map, route: 'MapHistory'},
           {imgUrl: image.alllocation, route: 'GroupMapTracking'},

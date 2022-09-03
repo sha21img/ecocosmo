@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Platform,
   Linking,
+  RefreshControl,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -44,15 +45,25 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import moment from 'moment';
 
-function Dashboard1({details, isShow}) {
+const Dashboard1 = ({
+  details,
+  isShow,
+  driverDetails,
+  onRefreshPage,
+  type,
+  setIsShow,
+}) => {
   const [coordinate, setCoordinate] = useState({
     latitude: 26.9110637,
     longitude: 75.7376412,
   });
+  const [mobileNumber, setMobileNumber] = useState([]);
   const [locationPermission, setLocationPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [visible, setVisible] = useState(false);
+  const [number, setNumber] = useState(false);
 
   const [alertMsg, setAlertMsg] = useState('');
 
@@ -155,23 +166,34 @@ function Dashboard1({details, isShow}) {
     const response = await axiosGetData(
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
+    console.log('this si guest', response.data);
     const driverDetails = response.data.driverDetails;
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.deviceId === data.deviceId;
     });
-    const phoneNumber = filterData[0].mobilenumber;
+    const phoneNumber = filterData[0]?.mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
+  };
+  const getMobileNumber = async number => {
+    // console.log('numbernumbernumber', number);
+
+    // console.log('driverDetailsdriverDetails', driverDetails);
+    const filterData = driverDetails?.filter(item => {
+      return item.deviceId === number.deviceId;
+    });
+    console.log('filterDatafilterDatafilterDatafilterData', filterData);
+    setMobileNumber(filterData[0]);
+    setVisible(true);
   };
 
   const renderItem = ({item, index}) => {
     // console.log('096322890',item.validPacketTimeStamp)
-    const date = parseFloat(item.validPacketTimeStamp) + 19800;
+    const date = parseFloat(item.validPacketTimeStamp);
     // console.log('datatatta',date)
-    const filterDate=moment.unix(date).format('DD-MM-YYYY')
+    const filterDate = moment.unix(date).format('DD-MM-YYYY');
     // console.log("newDate/////////",filterDate)
-    const filterTime = moment.unix(date).format('HH:MM:SS')
+    const filterTime = moment.unix(date).format('hh:mm:ss');
     // console.log("filterTime",filterTime)
-
 
     // const newDate = new Date(date);
     // let month = newDate.getMonth() + 1;
@@ -181,12 +203,18 @@ function Dashboard1({details, isShow}) {
 
     // const filterTime = newDate.toLocaleTimeString('en-US');
     // const filterDate = `${newDate.getDate()}-${month}-${newDate.getFullYear()}`;
+    const isData = driverDetails.find(items => {
+      return items.deviceId === item.deviceId;
+    });
+    console.log('item', item.features, 'item');
     return (
       <>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            isSetData(item), setVisible(true);
+            getMobileNumber(item);
+            isSetData(item);
+
             // return <VehicleMenu item={item} visible={visible} />;
             // setVisible(true), getVehicleDetail(item);
           }}>
@@ -329,7 +357,7 @@ function Dashboard1({details, isShow}) {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 isSetData(item), calling(item);
               }}
@@ -339,7 +367,28 @@ function Dashboard1({details, isShow}) {
                 style={{height: 15, width: 15, marginRight: 7}}
               />
               <Text style={styles.buttonText}> {__('Call')}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            {isData?.mobilenumber !== '' ? (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  isSetData(item), calling(item);
+                }}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}> {__('Call')}</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.disablebutton}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}> {__('Call')}</Text>
+              </TouchableOpacity>
+            )}
           </LinearGradient>
           <LinearGradient
             colors={['#395DBF', '#16BCD4']}
@@ -375,16 +424,24 @@ function Dashboard1({details, isShow}) {
           keyExtractor={({item, index}) => index}
           showsVerticalScrollIndicator={false}
           renderItem={(item, index) => renderItem(item, index)}
+          refreshControl={
+            <RefreshControl
+              enabled={true}
+              refreshing={isShow}
+              onRefresh={() => onRefreshPage(type, details, setIsShow)}
+            />
+          }
         />
       )}
-      <VehicleMenu
-        visible={visible}
-        setVisible={setVisible}
-        details={isData}
-        calling={calling}
-      />
+        <VehicleMenu
+          mobileNumber={mobileNumber}
+          visible={visible}
+          setVisible={setVisible}
+          details={isData}
+          calling={calling}
+        />
     </>
   );
-}
+};
 
 export default Dashboard1;

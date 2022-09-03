@@ -19,7 +19,8 @@ import Storage from '../../../Utils/Storage';
 import {useNavigation} from '@react-navigation/native';
 
 const AddDriver = props => {
-  console.log('props', props.setVisible);
+  console.log('this is props', props.details);
+  const IMEI = props?.details?.imei;
   const navigation = useNavigation();
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
@@ -38,11 +39,11 @@ const AddDriver = props => {
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
     const driverDetails = response.data.driverDetails;
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.mobilenumber == number;
     });
     if (filterData.length > 0) {
-      Toast.show('Number is already exist');
+      Toast.show('The Driver name and mobile number are already existing.');
     } else {
       postNumber();
     }
@@ -52,7 +53,7 @@ const AddDriver = props => {
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const response = await axiosGetData(
-      `setDriverDetails/${username}/${encodedPassWord}/000009112230477/${name}/${number}/adhar/10/12`,
+      `setDriverDetails/${username}/${encodedPassWord}/${IMEI}/${name}/${number}/adhar/10/12`,
     );
     console.log('response', response.data);
     if (response.data.apiResult == 'success') {
@@ -64,6 +65,24 @@ const AddDriver = props => {
       console.log(navigation, 'navigation');
     }
   };
+
+  const getDetail = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let encodedPassWord = succcess.password;
+    const response = await axiosGetData(
+      `getDriverDetails/${username}/${encodedPassWord}`,
+    );
+    const driverDetails = response.data.driverDetails;
+    const data = driverDetails?.filter((el)=>{
+      return (el.imei == IMEI)
+    })
+    setName(data[0]?.driverName)
+    setNumber(data[0]?.mobilenumber)
+    console.log('..........>>>>>', data)
+}
+useEffect(()=>{getDetail()},[props])
+
   return (
     <>
       <Modal

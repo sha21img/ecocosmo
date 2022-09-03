@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -20,35 +20,72 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
-
+import SelectDropdown from 'react-native-select-dropdown';
+import {useIsFocused} from '@react-navigation/native';
 const Alerts = props => {
-  const [Ison, setIson] = useState(true);
+  const [selected, setSelected] = useState('All Vehicle');
+  const [Ison, setIson] = useState(false);
   const [alertDataResponse, setalertResponse] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [data, setdata] = useState([]);
+  const [filter, setFilter] = useState([]);
+  const [imei, setImei] = useState('');
+  React.useEffect(() => {
+    getImei();
+  }, []);
 
-  const AlertData = async props => {
-    setLoading(true);
+  const getImei = async () => {
+    const data = await Storage.getVehicleDetail('vehicle_detail');
+    setdata(data);
+  };
+  const focus = useIsFocused();
+  useEffect(() => {
+    console.log('inininintititiallllresp', imei);
+    if (focus == true && imei !== '') {
+      getInitialResponse();
+    }
+  }, [focus]);
+  const getInitialResponse = async () => {
+    console.log('getInitialResponse');
     const succcess = await Storage.getLoginDetail('login_detail');
-    let username = succcess.accountName;
+    let username = succcess.accountId;
     let password = succcess.password;
     const params = {
       accountid: username,
       password: password,
-      imei: '459710040353691',
+      imei: imei,
     };
     const response = await axiosGetData(`getAlertDetails`, params);
-    console.log('alertData', response.data.alert_details);
+    if (response) {
+      setalertResponse(response?.data?.alert_details);
+    }
+  };
+
+  const Select = async (data, imei) => {
+    setSelected(data);
+    setLoading(true);
+    const succcess = await Storage.getLoginDetail('login_detail');
+    let username = succcess.accountId;
+    let password = succcess.password;
+    const params = {
+      accountid: username,
+      password: password,
+      imei: imei,
+    };
+    const response = await axiosGetData(`getAlertDetails`, params);
+    // <<<<<<<<< Temporary merge branch 1
+    // =========
+    //     console.log('alertData', response.data.alert_details[1]);
+    // >>>>>>>>> Temporary merge branch 2
     if (response?.data) {
+      console.log('selecting for imei', response.data.alert_details);
       setalertResponse(response?.data?.alert_details);
       setLoading(false);
+      setIson(!Ison);
+      setImei(imei);
     }
     setLoading(false);
   };
-
-  React.useEffect(() => {
-    AlertData();
-  }, []);
-
   return (
     <>
       <View style={{height: '100%'}}>
@@ -91,19 +128,38 @@ const Alerts = props => {
               />
             </View>
           </View>
-          <View style={styles.textinputbox}>
-            <TextInput
-              placeholder={__('Select vehicle number')}
-              style={styles.textinput}
-            />
-            <MaterialIcons
-              style={{
-                color: '#3D3D3D',
-                fontSize: 18,
+          <TouchableOpacity style={styles.textinputbox}>
+            <SelectDropdown
+              buttonStyle={{
+                width: '100%',
+                borderRadius: 7,
               }}
-              name={'keyboard-arrow-down'}
+              data={data}
+              defaultButtonText={selected}
+              onSelect={(selectedItem, index) => {
+                setSelected(selectedItem.deviceId);
+                Select(selectedItem.deviceId, selectedItem.imei);
+                console.log(selectedItem.deviceId, index);
+              }}
+              buttonTextAfterSelection={selectedItem => {
+                return selectedItem.deviceId;
+              }}
+              rowTextForSelection={item => {
+                return item.deviceId;
+              }}
+              renderDropdownIcon={() => {
+                return (
+                  <MaterialIcons
+                    style={{
+                      color: '#3D3D3D',
+                      fontSize: 20,
+                    }}
+                    name={'keyboard-arrow-down'}
+                  />
+                );
+              }}
             />
-          </View>
+          </TouchableOpacity>
         </LinearGradient>
         <View style={styles.box1}>
           <Text style={styles.box1text}>{__('Alert Setting')}</Text>
@@ -115,46 +171,63 @@ const Alerts = props => {
             onToggle={() => setIson(!Ison)}
           />
         </View>
-        <ScrollView style={{}}>
-          {loading ? (
-            <ActivityIndicator color={colors.white} />
-          ) : (
-            <>
-              {Ison
-                ? alertDataResponse.map(el => {
-                    return (
-                      <>
-                        <TouchableOpacity
-                          onPress={() =>
-                            props.navigation.navigate('AlertSetting', {
-                              details: el,
-                            })
-                          }
-                          key={el.id}
-                          style={styles.box2}>
-                          <Text
-                            style={{
-                              fontSize: Size.large,
-                              color: colors.textcolor,
-                            }}>
-                            {el?.displayName}
-                          </Text>
-                          <AntDesign
-                            style={{
-                              color:
-                                el.isActive === 'Yes' ? '#395dbf' : '#d9d9d9',
-                              fontSize: 26,
-                            }}
-                            name={'checkcircle'}
-                          />
-                        </TouchableOpacity>
-                      </>
-                    );
-                  })
-                : null}
-            </>
-          )}
-        </ScrollView>
+        {alertDataResponse?.length > 0 ? (
+          <ScrollView>
+            {loading ? (
+              <ActivityIndicator color={colors.black} />
+            ) : (
+              <>
+                {Ison
+                  ? alertDataResponse.map(el => {
+                      return (
+                        <>
+                          <TouchableOpacity
+                            onPress={() =>
+                              props.navigation.navigate('AlertSetting', {
+                                details: el,
+                              })
+                            }
+                            key={el.id}
+                            style={styles.box2}>
+                            <Text
+                              style={{
+                                fontSize: Size.large,
+                                color: colors.textcolor,
+                              }}>
+                              {el?.displayName}
+                            </Text>
+                            <AntDesign
+                              style={{
+                                color:
+                                  el.isActive === 'Yes' ? '#395dbf' : '#d9d9d9',
+                                fontSize: 26,
+                              }}
+                              name={'checkcircle'}
+                            />
+                          </TouchableOpacity>
+                        </>
+                      );
+                    })
+                  : null}
+              </>
+            )}
+          </ScrollView>
+        ) : (
+          <View
+            style={{
+              height: '100%',
+              backgroundColor: colors.white,
+            }}>
+            <View
+              style={{
+                height: '70%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text>Please select Vehicle</Text>
+            </View>
+          </View>
+        )}
       </View>
     </>
   );

@@ -9,6 +9,8 @@ import HomeStack from './src/screens/HomeStack';
 import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
+import Chat from './src/screens/Chat';
+import ChatDetails from './src/screens/ChatDetails';
 import Alerts from './src/screens/Alerts';
 import MapHistory from './src/screens/MapHistory';
 import DriverBehaviour from './src/screens/DriverBehaviour';
@@ -27,7 +29,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {image} from './assets/images';
 import {__} from './Utils/Translation/translation';
 import {Size} from './assets/fonts/Fonts';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import UrlTracking from './src/screens/UrlTracking';
 import ForgotPassword_1 from './src/screens/ForgetPassword-1';
 import CustomerProfile from './src/screens/CustomerProfile';
@@ -53,13 +55,18 @@ const permanentRoutes = [
   },
   {
     label: 'Reports',
-    icon: image.mapIcon,
+    icon: image.keepSmall,
     route: 'Reports',
   },
   {
     label: 'Contact Us',
     icon: image.callIcon,
     route: 'ContactUs',
+  },
+  {
+    label: 'Map History',
+    icon: image.mapIcon,
+    route: 'MapHistory',
   },
 ];
 const Routes = [
@@ -88,126 +95,134 @@ const DrawerContent = props => {
   });
   const getName = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     const response = await axiosGetData(`account/${username}/${password}`);
-    console.log(response.data, '/////////////////////');
     setName(response.data.accountName);
   };
   return (
     <>
-      <LinearGradient
-        colors={[colors.mainThemeColor3, colors.mainThemeColor1]}
-        style={{flex: 1}}>
-        <View
-          style={{
-            flex: 2,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.white,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Image
-            source={{uri: `${baseUrl}/download/appOwnerLogo`}}
-            style={{width: '100%', height: 80, resizeMode: 'contain'}}
-          />
-          <Text
+      <ScrollView style={{flex: 1}}>
+        <LinearGradient
+          colors={[colors.mainThemeColor3, colors.mainThemeColor1]}
+          style={{flex: 1}}>
+          <View
             style={{
-              fontSize: Size.compact,
-              textAlign: 'center',
-              marginTop: 18,
-              color: colors.white,
+              flex: 2,
+              borderBottomWidth: 1,
+              borderBottomColor: colors.white,
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 30,
             }}>
-            {name}
-          </Text>
-        </View>
-        <View
-          style={{
-            flex: 1.5,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.white,
-            paddingVertical: 34,
-            paddingHorizontal: 20,
-          }}>
-          {Routes.map(el => {
-            return (
-              <TouchableOpacity
-                key={Math.random()}
-                style={{
-                  flexDirection: 'row',
-                  paddingVertical: 5,
-                  alignItems: 'center',
-                }}
-                onPress={() =>
-                  props.navigation.navigate('HomeStack', {screen: "Home"})
-                }>
-                <Image source={el.icon} style={{height: 40, width: 40}} />
-                <Text
-                  style={{
-                    marginLeft: 20,
-                    color: colors.white,
-                    fontSize: Size.large,
-                  }}>
-                  {__(`${el.label}`)}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-        <View style={{flex: 3, paddingVertical: 34, paddingHorizontal: 20}}>
-          {permanentRoutes.map(el => {
-            return (
-              <TouchableOpacity
-                key={Math.random()}
-                style={{
-                  flexDirection: 'row',
-                  paddingVertical: 5,
-                  alignItems: 'center',
-                }}
-                onPress={() => props.navigation.navigate(el.route)}>
-                <Image source={el.icon} style={{height: 40, width: 40}} />
-                <Text
-                  style={{
-                    marginLeft: 20,
-                    color: colors.white,
-                    fontSize: Size.large,
-                  }}>
-                  {__(`${el.label}`)}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-          <TouchableOpacity
-            onPress={async () => {
-              await Storage.clearToken();
-              setToken(null);
-            }}>
-            <LinearGradient
-              colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
-              start={{x: 0, y: 0.5}}
-              end={{x: 1, y: 0.5}}
-              locations={[0.5, 1.5]}
+            <Image
+              source={{uri: `${baseUrl}/download/appOwnerLogo`}}
+              style={{width: '100%', height: 80, resizeMode: 'contain'}}
+            />
+            <Text
               style={{
-                marginTop: 61,
-                height: 56,
-                width: '95%',
-                alignSelf: 'center',
-                borderRadius: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginBottom: 160,
+                fontSize: Size.compact,
+                textAlign: 'center',
+                marginTop: 18,
+                color: colors.white,
               }}>
-              <Text
+              {name}
+            </Text>
+          </View>
+          <View
+            style={{
+              flex: 1.5,
+              borderBottomWidth: 1,
+              borderBottomColor: colors.white,
+              paddingVertical: 34,
+              paddingHorizontal: 20,
+            }}>
+            {Routes.map(el => {
+              return (
+                <TouchableOpacity
+                  key={Math.random()}
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: 5,
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    if (el.route == 'GroupMapTracking') {
+                      props.navigation.navigate('GroupMapTracking');
+                    } else {
+                      props.navigation.navigate('HomeStack', {
+                        screen: el.route,
+                      });
+                    }
+                  }}>
+                  <Image source={el.icon} style={{height: 40, width: 40}} />
+                  <Text
+                    style={{
+                      marginLeft: 20,
+                      color: colors.white,
+                      fontSize: Size.large,
+                    }}>
+                    {__(`${el.label}`)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          <View style={{flex: 3, paddingVertical: 34, paddingHorizontal: 20}}>
+            {permanentRoutes.map(el => {
+              return (
+                <TouchableOpacity
+                  key={Math.random()}
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: 5,
+                    alignItems: 'center',
+                  }}
+                  onPress={() => props.navigation.navigate(el.route)}>
+                  <Image source={el.icon} style={{height: 40, width: 40}} />
+                  <Text
+                    style={{
+                      marginLeft: 20,
+                      color: colors.white,
+                      fontSize: Size.large,
+                    }}>
+                    {__(`${el.label}`)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+            <TouchableOpacity
+              onPress={async () => {
+                await Storage.clearToken();
+                setToken(null);
+              }}>
+              <LinearGradient
+                colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
+                start={{x: 0, y: 0.5}}
+                end={{x: 1, y: 0.5}}
+                locations={[0.5, 1.5]}
                 style={{
-                  color: colors.white,
-                  fontSize: Size.large,
+                  marginTop: 61,
+                  height: 56,
+                  width: '95%',
+                  alignSelf: 'center',
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 160,
                 }}>
-                {__('Logout')}
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
+                <Text
+                  style={{
+                    color: colors.white,
+                    fontSize: Size.large,
+                  }}>
+                  {__('Logout')}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </ScrollView>
     </>
   );
 };
@@ -238,6 +253,7 @@ const MainScreen = props => {
         <Drawer.Screen name="Reports" component={Reports} />
         <Drawer.Screen name="DriverBehaviour" component={DriverBehaviour} />
         <Drawer.Screen name="GroupMapTracking" component={GroupMapTracking} />
+        <Drawer.Screen name="MapHistory" component={MapHistory} />
       </Drawer.Navigator>
     </>
   );
@@ -356,6 +372,16 @@ const App = () => {
                   <Stack.Screen
                     name="UrlTracking"
                     component={UrlTracking}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Chat"
+                    component={Chat}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="ChatDetails"
+                    component={ChatDetails}
                     options={{headerShown: false}}
                   />
                   <Stack.Screen

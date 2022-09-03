@@ -8,7 +8,7 @@ import CustomerProfile from '../CustomerProfile';
 import Setting from '../Setting';
 import Tabs from './Tabs';
 import colors from '../../../assets/Colors';
-import Alerts from '../Alerts';
+import Chat from '../Chat';
 
 function HomeStack(props) {
   console.log('props0000000000000000000000000', props.route.params?.screen);
@@ -18,10 +18,8 @@ function HomeStack(props) {
   const CustomTabBar = ({state, navigation}) => {
     console.log('props', props.route.params?.screen);
     React.useEffect(() => {
-      if (props.route.params?.screen) {
-        console.log('useEffecteeetetceectect');
-        setIsSelected(props.route.params?.screen);
-      }
+      let data = state.history;
+      setIsSelected(data[data.length - 1].key.split('-')[0]);
     }, []);
     console.log('isSelected abhi wala', isSelected);
     const {routes} = state;
@@ -75,11 +73,17 @@ function HomeStack(props) {
         activeTintColor: '#438EFA',
       }}
       tabBar={props => <CustomTabBar {...props} />}>
-      <Tab.Screen name="Home" component={Home} initialParams={{icon: 'home'}} />
       <Tab.Screen
-        name="Alerts"
-        component={Alerts}
+        name="Home"
+        children={(props) => <Home props={props} />}
+        // component={Home}
         initialParams={{icon: 'home'}}
+        // props={props}
+      />
+      <Tab.Screen
+        name="Chat"
+        component={Chat}
+        initialParams={{icon: 'chat'}}
       />
       <Tab.Screen
         name="Notifications"

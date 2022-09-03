@@ -29,14 +29,19 @@ export const styles = StyleSheet.create({
   body: {
     flex: 3,
   },
+  picker: {
+    width: '100%',
+    borderRadius: 7,
+    marginVertical: 5,
+  },
   bodyContent: {
     flexDirection: 'row',
     backgroundColor: colors.white,
-    padding: 15,
     marginVertical: 5,
-    alignItems: 'center',
     borderRadius: 7,
-    justifyContent: 'space-between',
+    justifyContent:'space-between',
+    alignItems:'center',
+    paddingHorizontal:15
   },
   footer: {
     flex: 1.3,

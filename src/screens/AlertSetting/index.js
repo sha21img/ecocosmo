@@ -21,7 +21,8 @@ import Storage from '../../../Utils/Storage';
 
 const AlertSetting = props => {
   const {details} = props.route.params;
-  console.log('details', details);
+  console.log('details.imei', details.imei);
+  console.log('details for alert', details);
   const [daysset, setDays] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -32,12 +33,12 @@ const AlertSetting = props => {
     shift2To: '',
   });
   const [newDetail, setNewDetail] = useState({
-    push: details['push'] == 'Off' ? 0 : 1,
-    sms: details.sms == 'Off' ? 0 : 1,
-    email: details.email == 'Off' ? 0 : 1,
-    call: details.email == 'Off' ? 0 : 1,
+    push: details['push'] == 'Off' ? false : true,
+    sms: details.sms == 'Off' ? false : true,
+    email: details.email == 'Off' ? false : true,
+    call: details.email == 'Off' ? false : true,
     days: details.days,
-    isActive: details.isActive,
+    isActive: details.isActive == 'Off' ? false : true,
     anc: details.anc,
     data: details.data,
     mobiles: details.mobiles,
@@ -128,13 +129,13 @@ const AlertSetting = props => {
 
   const postAlertResponse = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     const params = {
       accountid: username,
       password: password,
-      imei: '351608080774446',
-      alertType: 'overspeed',
+      imei: details.imei,
+      alertType: details.alertName,
       isactive: newDetail.isActive,
       data: newDetail.data,
       mobiles: newDetail.mobiles,
@@ -150,9 +151,23 @@ const AlertSetting = props => {
       shift2_timeRange1: `${shift.shift2From},${shift.shift2To}`,
     };
     setLoading(true);
+
+    console.log('getegetteparams', params);
+
     const response = await axiosGetData(`saveVehicleAlert`, params);
     console.log('0987654432', response.data);
+    //
+
+    const paramss = {
+      accountid: username,
+      password: password,
+      imei: details.imei,
+    };
+    const responses = await axiosGetData(`getAlertDetails`, paramss);
+    console.log('alertData', responses.data.alert_details);
+    //
     if (response.data.apiResult === 'success') {
+      props.navigation.goBack();
       setLoading(false);
     } else {
       Toast.show(response.data.message);
@@ -169,7 +184,9 @@ const AlertSetting = props => {
         style={styles.header}>
         <View style={styles.headerContainer}>
           <View style={styles.headerImageCont}>
-            <Image source={image.drawer} style={{height: 20, width: 23}} />
+            <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+              <Image source={image.drawer} style={{height: 20, width: 23}} />
+            </TouchableOpacity>
             <Text
               style={{
                 fontSize: Size.large,
@@ -184,8 +201,22 @@ const AlertSetting = props => {
         </View>
       </LinearGradient>
       <View style={styles.subHeader}>
-        <Text style={styles.subHeaderText}>{__('Ignition OFF')}</Text>
-        <Image source={image.selected} />
+        <Text style={styles.subHeaderText}>
+          {__('Ignition')} {newDetail['isActive'] == false ? 'Off' : 'On'}
+        </Text>
+        {/* <Image source={image.selected} /> */}
+        <CheckBox
+          isChecked={newDetail['isActive'] == false ? false : true}
+          checkBoxColor="skyblue"
+          onClick={() => {
+            setNewDetail({
+              ...newDetail,
+              ['isActive']: newDetail['isActive'] == false ? true : false,
+            });
+            // setIsActive(!isActive);
+          }}
+          // setState({ ...state, [event.target.name]: event.target.checked });
+        />
       </View>
       <ScrollView>
         <View style={styles.bodyheading}>
@@ -199,12 +230,12 @@ const AlertSetting = props => {
                 style={styles.alertSettingContainer}>
                 <Text style={styles.FooterText}>{el.name}</Text>
                 <CheckBox
-                  isChecked={newDetail[el.name] == 0 ? false : true}
+                  isChecked={newDetail[el.name] == false ? false : true}
                   checkBoxColor="skyblue"
                   onClick={() => {
                     setNewDetail({
                       ...newDetail,
-                      [el.name]: newDetail[el.name] == 0 ? 1 : 0,
+                      [el.name]: newDetail[el.name] == false ? true : false,
                     });
                     // setIsActive(!isActive);
                   }}

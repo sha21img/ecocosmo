@@ -1,6 +1,9 @@
 export const image = {
   Alert: require('./Alert.png'),
+  maphistory: require('./maphistory.png'),
+
   arrowDown: require('./arrowDown.png'),
+  parkingPoint: require('./parkingPoint.png'),
   atm: require('./atm.png'),
   battery: require('./battery.png'),
   batteryWhite: require('./batteryWhite.png'),
@@ -68,6 +71,7 @@ export const image = {
   colouredLock: require('./colouredLock.png'),
   fileRefresh: require('./fileRefresh.png'),
   Petrol: require('./Petrol.png'),
+  chat: require('./chat.png'),
   right: require('./right.png'),
   mapPaper: require('./mapPaper.png'),
   world: require('./world.png'),
@@ -117,5 +121,6 @@ export const image = {
   goToLocation: require('./goToLocation.png'),
   carLocation: require('./carLocation.png'),
   testcar: require('./testcar.png'),
-  
+  homeUnselected: require('./homeUnselected.png'),
+  keepSmall: require('./keepSmall.png'),
 };

@@ -4,7 +4,7 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {image} from '../../../assets/images';
 
 function Tabs({tab, onPress, icon, isSelected, index}) {
-  console.log("isSelected",isSelected)
+  console.log('isSelected', isSelected);
   return (
     <TouchableOpacity
       onPress={() => {
@@ -21,8 +21,8 @@ function Tabs({tab, onPress, icon, isSelected, index}) {
           tab.name == isSelected
             ? image[icon]
             : tab.name == 'Home'
-            ? image.home
-            : tab.name == 'Alerts'
+            ? image.homeUnselected
+            : tab.name == 'Chat'
             ? image.home2unselected
             : tab.name == 'Notifications'
             ? image.notifyUnSelected

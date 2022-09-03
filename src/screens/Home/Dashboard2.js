@@ -7,6 +7,7 @@ import {
   FlatList,
   Linking,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,10 +19,17 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import moment from 'moment';
 
-
-function Dashboard2({details, isShow}) {
+function Dashboard2({
+  details,
+  isShow,
+  driverDetails,
+  onRefreshPage,
+  type,
+  setIsShow,
+}) {
   const [isData, isSetData] = useState({});
   const [visible, setVisible] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState([]);
 
   const calling = async data => {
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -31,19 +39,30 @@ function Dashboard2({details, isShow}) {
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
     const driverDetails = response.data.driverDetails;
-    const filterData = driverDetails.filter(item => {
+    const filterData = driverDetails?.filter(item => {
       return item.deviceId === data.deviceId;
     });
-    const phoneNumber = filterData[0].mobilenumber;
-    console.log(filterData[0]);
+    const phoneNumber = filterData[0]?.mobilenumber;
     Linking.openURL(`tel:${phoneNumber}`);
   };
+  const getMobileNumber = async number => {
+    // console.log('numbernumbernumber', number);
+
+    // console.log('driverDetailsdriverDetails', driverDetails);
+    const filterData = driverDetails?.filter(item => {
+      return item.deviceId === number.deviceId;
+    });
+    console.log('filterDatafilterDatafilterDatafilterData', filterData);
+    setMobileNumber(filterData[0]);
+    setVisible(true);
+    return filterData[0];
+  };
   const renderItem = ({item}) => {
-    const date = parseFloat(item.validPacketTimeStamp) + 19800;
+    const date = parseFloat(item.validPacketTimeStamp);
     // const newDate = new Date(date);
-    const filterDate=moment.unix(date).format('DD-MM-YYYY')
+    const filterDate = moment.unix(date).format('DD-MM-YYYY');
     // console.log("newDate/////////",filterDate)
-    const filterTime = moment.unix(date).format('HH:MM:SS')
+    const filterTime = moment.unix(date).format('hh:mm:ss');
     // console.log("filterTime",filterTime)
     // const filterTime = newDate.toLocaleTimeString('en-US');
     // let month = newDate.getMonth() + 1;
@@ -51,12 +70,17 @@ function Dashboard2({details, isShow}) {
     //   month = '0' + month;
     // }
     // const filterDate = `${newDate.getDate()}-${month}-${newDate.getFullYear()}`;
+    const isData = driverDetails.find(items => {
+      return items.deviceId === item.deviceId;
+    });
+    // console.log('isData', isData);
     return (
       <TouchableOpacity
         onPress={() => {
-          isSetData(item), setVisible(true);
+          getMobileNumber(item);
+
+          isSetData(item);
         }}>
-      
         <LinearGradient
           colors={['#BCE2FF', '#FFFFFF']}
           style={styles.card2Container}>
@@ -113,9 +137,12 @@ function Dashboard2({details, isShow}) {
               </View>
             </View>
             <View style={styles.driverCarBox}>
-            {/* <Image source={image.carUp} style={styles.driverCar} /> */}
+              {/* <Image source={image.carUp} style={styles.driverCar} /> */}
 
-              <Image source={{uri:item.equipmentIcon}} style={styles.driverCar} />
+              <Image
+                source={{uri: item.equipmentIcon}}
+                style={styles.driverCar}
+              />
             </View>
           </View>
           <View
@@ -284,12 +311,39 @@ function Dashboard2({details, isShow}) {
                 justifyContent: 'flex-end',
                 paddingRight: 10,
               }}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
+                style={styles.button}
                 onPress={() => {
                   isSetData(item), calling(item);
                 }}>
-                <Image source={image.call} style={{padding: 10}} />
-              </TouchableOpacity>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}> {__('Call')}</Text>
+              </TouchableOpacity> */}
+
+              {isData?.mobilenumber != '' ? (
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
+                    isSetData(item), calling(item);
+                  }}>
+                  <Image
+                    source={image.callimg}
+                    style={{height: 15, width: 15, marginRight: 7}}
+                  />
+                  <Text style={styles.buttonText}> {__('Call')}</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.disablebutton}>
+                  <Image
+                    source={image.callimg}
+                    style={{height: 15, width: 15, marginRight: 7}}
+                  />
+                  <Text style={styles.buttonText}> {__('Call')}</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </LinearGradient>
@@ -323,10 +377,18 @@ function Dashboard2({details, isShow}) {
           contentContainerStyle={{paddingBottom: 100}}
           keyExtractor={({item, index}) => index}
           showsVerticalScrollIndicator={false}
-          renderItem={renderItem}
+          renderItem={item => renderItem(item)}
+          refreshControl={
+            <RefreshControl
+              enabled={true}
+              refreshing={isShow}
+              onRefresh={() => onRefreshPage(type, details, setIsShow)}
+            />
+          }
         />
       )}
       <VehicleMenu
+        mobileNumber={mobileNumber}
         visible={visible}
         calling={calling}
         setVisible={setVisible}

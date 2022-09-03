@@ -21,11 +21,13 @@ import Storage from '../../../Utils/Storage';
 import AddDriver from '../AddDriver';
 
 const VehicleMenu = props => {
+  console.log('props.details.imeitwrtwertwert', props.details, 'props.details.imeitwrtwertwert');
   const navigation = useNavigation();
   const [visibles, setVisibles] = useState(false);
   const [modal, setModal] = useState(false);
 
-  const {details, visible, calling} = props;
+  const {details, visible, calling, mobileNumber} = props;
+  console.log('mobileNumbermobileNumber', mobileNumber);
   const data = [
     {
       id: 1,
@@ -45,12 +47,7 @@ const VehicleMenu = props => {
       data: 'GRAPHICAL REPORTS',
       routeTo: 'GraphicalReports',
     },
-    {
-      id: 4,
-      image: image.doubleBook,
-      data: 'GROUP REPORTS',
-      routeTo: 'Reports',
-    },
+
     // {
     //   id: 5,
     //   image: image.P,
@@ -85,15 +82,14 @@ const VehicleMenu = props => {
   ];
   const navigatorFrom = async data => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
-    let username = loginDetail.accountName;
+    let username = loginDetail.accountId;
     let password = loginDetail.password;
     props.setVisible(false);
-     if (data === 'EngineStopPopup') {
+    if (data === 'EngineStopPopup') {
       setModal(!modal);
-    }else if(data === 'DRIVERDETAILS'){
-        setVisibles(!visibles);
-
-  }else {
+    } else if (data === 'DRIVERDETAILS') {
+      setVisibles(!visibles);
+    } else {
       navigation.navigate(data, {details: details});
     }
   };
@@ -114,22 +110,31 @@ const VehicleMenu = props => {
               {/* {__('RUNNING')} 14M 38KM/H */}
             </Text>
             <Text style={styles.modalHead}>{details.deviceId}</Text>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => calling(details)}>
-              <Image source={image.callimg} style={{height: 11, width: 11}} />
-              <Text style={styles.buttonText}> {__('Call Driver')}</Text>
-            </TouchableOpacity>
-
+            {mobileNumber?.mobilenumber !== '' ? (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => calling(details)}>
+                <Image source={image.callimg} style={{height: 11, width: 11}} />
+                <Text style={styles.buttonText}> {__('Call Driver')}</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.disablebutton}>
+                <Image source={image.callimg} style={{height: 11, width: 11}} />
+                <Text style={styles.buttonText}> {__('Call Driver')}</Text>
+              </TouchableOpacity>
+            )}
             <View>
               <View style={styles.modalContentContainer}>
                 {data.map(el => {
                   return (
                     <TouchableOpacity
                       onPress={() => {
-                        navigatorFrom(el.routeTo);
+                        navigatorFrom(el.routeTo, {
+                          imei: props.details.imei,
+                        });
                       }}>
                       <View key={el.id} style={styles.modalCardBody}>
+                      {/* {props}props.details */}
                         <Image
                           source={el.image}
                           style={styles.modalCardImage}
@@ -149,7 +154,11 @@ const VehicleMenu = props => {
         details={details}
         setVisible={setModal}
       />
-       <AddDriver visible={visibles} setVisible={setVisibles} />
+      <AddDriver
+        visible={visibles}
+        setVisible={setVisibles}
+        details={details}
+      />
     </>
   );
 };
