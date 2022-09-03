@@ -97,12 +97,12 @@ function Reports(props) {
     setFdate(aa);
   };
   const setVehicleDetail = async data => {
-    console.log('newImeinewImei', newImei);
+    // console.log('newImeinewImei', newImei);
 
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     if (newImei !== undefined) {
       const filterImei = data || newImei;
-      console.log('filterImei', filterImei);
+      // console.log('filterImei', filterImei);
       setIsSelected(true);
       // console.log('vehicleNumvehicleNum', vehicleNum);
       const filterVehicleNumber = vehicleNum
@@ -112,10 +112,10 @@ function Reports(props) {
         .map((item, index) => {
           return {key: index++, label: item.deviceId, imei: item.imei};
         });
-      console.log(
-        'filterVehic99999999999999999999999999999999',
-        filterVehicleNumber,
-      );
+      // console.log(
+      //   'filterVehic99999999999999999999999999999999',
+      //   filterVehicleNumber,
+      // );
       setNewFilterVehicle(filterVehicleNumber[0].label);
       setVehicleNumber(filterVehicleNumber[0].label);
       setNewImei(filterVehicleNumber[0].imei);
@@ -124,15 +124,15 @@ function Reports(props) {
     const allVehicleDetails = vehicleNum.map((item, index) => {
       return {key: index++, label: item.deviceId};
     });
-    console.log('setVehicleDetailsetVehicleDetail', allVehicleDetails);
+    // console.log('setVehicleDetailsetVehicleDetail', allVehicleDetails);
     setNewVehicleNumber(allVehicleDetails);
     // }
   };
   useEffect(() => {
     setDate();
-    console.log('ussuusususu');
+    // console.log('ussuusususu');
     setVehicleDetail();
-  }, []);
+  }, [props]);
 
   const getSummaryReport = async () => {
     console.log('getSummaryReportgetSummaryReportgetSummaryReport');
@@ -150,7 +150,7 @@ function Reports(props) {
       startdate: `${fdate} ${ftime}`,
       enddate: `${fdateend} ${ftimeend}`,
     };
-    console.log('datadatadata', data);
+    // console.log('datadatadata', data);
     const response = await axiosGetData('getDriveDetails', data);
     // console.log('ppppppppppppppppppppppppppppppppppppppp', response?.data);
     const summarReport = response?.data?.Drives?.forEach(item => {
@@ -158,7 +158,7 @@ function Reports(props) {
 
       getAddress(item.startPoint, username, encodedPassWord);
     });
-    console.log('response.data.Drives', response.data.Drives.length);
+    // console.log('response.data.Drives', response.data.Drives.length);
     setSummaryReport(response?.data?.Drives);
     return response?.data?.Drives;
   };
@@ -216,7 +216,7 @@ function Reports(props) {
     };
     const response = await axiosGetData('reportHistory', data);
     const aa = response.data.DeviceHistory.reverse();
-    // console.log('098765432345678987654345678', aa);
+    console.log('098765432345678987654345678', aa);
     setMapHistory(aa);
 
     return aa;
@@ -225,7 +225,7 @@ function Reports(props) {
   let index = 0;
   function formatDate(date) {
     var d = new Date(date);
-    console.log('oiuytrewqweiopoiuytrew', d);
+    // console.log('oiuytrewqweiopoiuytrew', d);
     let month = '' + (d.getMonth() + 1);
     let day = '' + d.getDate();
     let year = d.getFullYear();
@@ -286,7 +286,7 @@ function Reports(props) {
         return item.deviceId == data;
       })
       .map(item => item.imei);
-    console.log('includedArray', includedArray[0]);
+    // console.log('includedArray', includedArray[0]);
     setNewImei(includedArray[0]);
     setIsSelected(true);
     setVehicleDetail(includedArray[0]);
@@ -301,6 +301,7 @@ function Reports(props) {
     let time = `${hours.toString().length == 1 ? '0' + hours : hours}:${
       minutes.toString().length == 1 ? '0' + minutes : minutes
     }:${secs.toString().length == 1 ? '0' + secs : secs}`;
+    // console.log('time', time);
     return time;
   };
   const getNewDate = data => {
@@ -308,13 +309,13 @@ function Reports(props) {
     const newDate = moment(d).format('YYYY-MM-DD');
     return newDate;
   };
-  const requestRunTimePermission = async (data, heading) => {
+  const requestRunTimePermission = async (data, heading, option) => {
     try {
       let isPermitedExternalStorage = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       );
 
-      console.log('isPermitedExternalStorage', isPermitedExternalStorage);
+      // console.log('isPermitedExternalStorage', isPermitedExternalStorage);
       if (!isPermitedExternalStorage) {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -325,14 +326,20 @@ function Reports(props) {
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          // createPDF_File(data, heading);
-          exportDataToExcel();
+          if (option == 'Excel') {
+            exportDataToExcel(data, heading);
+          } else {
+            createPDF_File(data, heading);
+          }
         } else {
           alert('WRITE_EXTERNAL_STORAGE permission denied');
         }
       } else {
-        // createPDF_File(data, heading);
-        exportDataToExcel();
+        if (option == 'Excel') {
+          exportDataToExcel(data, heading);
+        } else {
+          createPDF_File(data, heading);
+        }
       }
     } catch (err) {
       Alert.alert('Write permission err', err);
@@ -340,71 +347,98 @@ function Reports(props) {
       return;
     }
   };
-
-  // if (Platform.OS === 'android') {
-  //   externalStoragePermission();
-  // } else {
-  //   // createPDF_File(data, heading);
-  //   exportDataToExcel();
-  // }
-
-  const exportDataToExcel = async () => {
-    // Created Sample data
-    // let dir = await ScopedStorage.openDocumentTree(true);
-    var data = [
-      {
-        name: 'John',
-        city: 'Seattle',
-      },
-      {
-        name: 'Mike',
-        city: 'Los Angeles',
-      },
-      {
-        name: 'Zach',
-        city: 'New York',
-      },
-    ];
+  const exportDataToExcel = async (data, heading) => {
+    let Data;
+    if (data == 'Odometer Total km') {
+      Data = mapHistory.map(item => {
+        const kms = item.todaysODO;
+        const date = getNewDate(item.timeStamp1);
+        return {newFilterVehicle: newFilterVehicle, Date: date, Kms: kms};
+      });
+    } else if (data == 'Ignition Location On') {
+      const date = getNewDate(item.timeStamp1);
+      const ingnitionOn = getTime(item.todaysIgnitionOnTimeSeconds);
+      const ingnitionOff = getTime(item.todaysIdleTimeSeconds);
+      Data = mapHistory.map(item => {
+        return {
+          Date: date,
+          ingnitionOn: ingnitionOn,
+          ingnitionOff: ingnitionOff,
+        };
+      });
+    } else if (data == 'Idle Report') {
+      Data = mapHistory.map(item => {
+        const date = getNewDate(item.timeStamp1);
+        const ingnitionOff = getTime(item.todaysIdleTimeSeconds);
+        return {
+          newFilterVehicle: newFilterVehicle,
+          Date: date,
+          ingnitionOff: ingnitionOff,
+        };
+      });
+    } else if (data == 'Daily Waiting Time Report') {
+      Data = mapHistory.map(item => {
+        const date = getNewDate(item.timeStamp1);
+        const waitingtime = getTime(item.todaysWaitingIgnitionTime);
+        return {
+          newFilterVehicle: newFilterVehicle,
+          Date: date,
+          waitingtime: waitingtime,
+        };
+      });
+    } else if (data == 'Drive Summary Report') {
+      Data = summaryReport.map(item => {
+        return {
+          newFilterVehicle: newFilterVehicle,
+          EndTime: item['endTime:'],
+          'Work/Idle hrs': item.odo,
+          Duration: item.duration,
+        };
+      });
+      // Data = [...a, ...b];
+    } else if (data == 'Vehicle Summary') {
+      Data = mapHistory.map(item => {
+        const date = getNewDate(item.timeStamp1);
+        const startTime = getTime(item.todaysWaitingIgnitionTime);
+        const idleTime = getTime(item.todaysIdleTimeSeconds);
+        const ignition = getTime(item.todaysIgnitionOnTimeSeconds);
+        return {
+          'Vehicle Number': newFilterVehicle,
+          'Start Location': item?.startLocation,
+          'Start Time': item?.startTime,
+          'Travel Time': item?.travelTime,
+          'Work/Idle hrs': startTime,
+          'Stoped Time': idleTime,
+          'Max Speed(Km/h)': item.todaysMaxSpeed,
+          'Avg Speed(Km/h)': item.avgSpeed,
+          'Engine Hours': ignition,
+          'Distance Travelled(kms)': item?.todaysODO,
+          'End Location': item?.endLocation,
+          'End Time (HH:MM)': item?.endTime,
+          '#OverSpeed': item?.overspeedCounter,
+          '#Alert': item?.alertsCounter,
+          '#Report Date': item?.timeStamp1,
+        };
+      });
+    }
 
     let wb = XLSX.utils.book_new();
-    // var ws = XLSX.utils.json_to_sheet(
-    //   [
-    //     {S: 1, h: 2, t: 5, J: 6, S_1: 7},
-    //     {S: 2, h: 3, t: 6, J: 7, S_1: 8},
-    //     {S: 3, h: 4, t: 7, J: 8, S_1: 9},
-    //     {S: 4, h: 5, e: 6, e_1: 7, t: 8, J: 9, S_1: 0},
-    //   ],
-    //   {header: ['S', 'h', 'e', 'e_1', 't', 'J', 'S_1']},
-    // );
-    let ws = XLSX.utils.json_to_sheet(data);
-    // var worksheet = XLSX.utils.aoa_to_sheet([
-    //   ["A1", "B1", "C1"],
-    //   ["A2", "B2", "C2"],
-    //   ["A3", "B3", "C4"]
-    // ]);
+    let ws = XLSX.utils.json_to_sheet(Data);
     XLSX.utils.book_append_sheet(wb, ws);
     const b64 = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
-
-    // await ScopedStorage.createDocument('file.xlsx',"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",b64,'ascii')
-
-    RNFS.writeFile(
-      RNFS.DownloadDirectoryPath + '/Report.xlsx',
-      b64,
-      'ascii',
-    )
+    RNFS.writeFile(RNFS.DownloadDirectoryPath + '/Report.xlsx', b64, 'ascii')
       .then(async r => {
         RNFetchBlob.fs
-        .readFile(RNFS.DownloadDirectoryPath + '/Report.xlsx', 'base64')
-        .then(async data => {
-          
-          const shareOption = {
-            url: `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${data}`,
-          };
-          const ShareResponse = await Share.open(shareOption);
-        })
-        .catch(err => {
-          console.log('error', err);
-        });
+          .readFile(RNFS.DownloadDirectoryPath + '/Report.xlsx', 'base64')
+          .then(async data => {
+            const shareOption = {
+              url: `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${data}`,
+            };
+            const ShareResponse = await Share.open(shareOption);
+          })
+          .catch(err => {
+            console.log('error', err);
+          });
         console.log('Success', r);
       })
       .catch(e => {
@@ -420,31 +454,23 @@ function Reports(props) {
       html += `<th style=" text-align: center; ">${item}</th>`;
     });
     html += ` </tr> </table>`;
-    if (
-      data == 'Odometer Total km' ||
-      data == 'Ignition Location On' ||
-      data == 'Daily Waiting Time Report' ||
-      data == 'Idle Report'
-    ) {
-      console.log('iffffffffffffffffffffffffffffffff');
-      mapHistory?.map(item => {
-        const date = getNewDate(item.timeStamp1);
-        const kms = item.todaysODO;
-        const ingnitionOn = getTime(item.todaysIgnitionOnTimeSeconds);
-        const ingnitionOff = getTime(item.todaysIdleTimeSeconds);
-        const waitingtime = getTime(item.todaysWaitingIgnitionTime);
+    mapHistory?.map(item => {
+      const date = getNewDate(item.timeStamp1);
+      const kms = item.todaysODO;
+      const ingnitionOn = getTime(item.todaysIgnitionOnTimeSeconds);
+      const ingnitionOff = getTime(item.todaysIdleTimeSeconds);
+      const waitingtime = getTime(item.todaysWaitingIgnitionTime);
 
-        console.log('date', date);
-        if (data == 'Odometer Total km') {
-          html += `<table style="width:100%; border:1px solid black;">
+      if (data == 'Odometer Total km') {
+        html += `<table style="width:100%; border:1px solid black;">
                    <tr>
                      <td style=" text-align: center; ">${newFilterVehicle}</td>
                      <td style=" text-align: center; ">${date}</td>
                      <td style=" text-align: center; ">${kms}</td>
                    </tr>
                 </table>`;
-        } else if (data == 'Ignition Location On') {
-          html += `<table style="width:100%; border:1px solid black;">
+      } else if (data == 'Ignition Location On') {
+        html += `<table style="width:100%; border:1px solid black;">
         <tr>
           <td style=" text-align: center; ">${newFilterVehicle}</td>
           <td style=" text-align: center; ">${date}</td>
@@ -452,50 +478,30 @@ function Reports(props) {
           <td style=" text-align: center; ">${ingnitionOff}</td>
         </tr>
      </table>`;
-        } else if (data == 'Idle Report') {
-          html += `<table style="width:100%; border:1px solid black;">
+      } else if (data == 'Idle Report') {
+        html += `<table style="width:100%; border:1px solid black;">
           <tr>
             <td style=" text-align: center; ">${newFilterVehicle}</td>
             <td style=" text-align: center; ">${date}</td>
             <td style=" text-align: center; ">${ingnitionOff}</td>
           </tr>
        </table>`;
-        } else if (data == 'Daily Waiting Time Report') {
-          html += `<table style="width:100%; border:1px solid black;">
+      } else if (data == 'Daily Waiting Time Report') {
+        html += `<table style="width:100%; border:1px solid black;">
           <tr>
             <td style=" text-align: center; ">${newFilterVehicle}</td>
             <td style=" text-align: center; ">${date}</td>
             <td style=" text-align: center; ">${waitingtime}</td>
           </tr>
        </table>`;
-        }
-      });
-    } else {
-      console.log('elllllllllllllllllllllllllllllllllll');
-      data2.map(item => {
-        html += `<table style="width:100%; border:1px solid black;">
-        <tr>
-          <td style=" text-align: center; ">${item?.vehicleAddress}</td>
-        </tr>
-     </table>`;
-      });
-      summaryReport.map(item => {
-        html += `<table style="width:100%; border:1px solid black;">
-        <tr>
-          <td style=" text-align: center; ">${newFilterVehicle}</td>
-          <td style=" text-align: center; ">${item['endTime:']}</td>
-          <td style=" text-align: center; ">${item.odo}</td>
-        </tr>
-     </table>`;
-      });
-    }
-    console.log('html', html);
+      }
+    });
+   
     let file = await RNHTMLtoPDF.convert({html});
-    console.log(file.filePath);
     RNFetchBlob.fs
       .readFile(file.filePath, 'base64')
       .then(async data => {
-        console.log('datadatadatadatadatadatadatadatadatadatadata', data);
+        // console.log('datadatadatadatadatadatadatadatadatadatadata', data);
         const shareOption = {
           url: `data:application/pdf;base64,${data}`,
         };
@@ -504,6 +510,36 @@ function Reports(props) {
       .catch(err => {
         console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', err);
       });
+  };
+  const showModal = (data, heading) => {
+    console.log('qqqqqqqqqqqqqqqq', data);
+    console.log('hhhhhhhhhhhhhhhhhhh', heading);
+    Alert.alert(
+      '',
+      'Which you want to share',
+      data != 'Vehicle Summary' && data != 'Drive Summary Report'
+        ? [
+            {
+              text: 'Share as Pdf',
+              onPress: () => requestRunTimePermission(data, heading, 'Pdf'),
+            },
+            {
+              text: 'Share as Excel',
+              onPress: () => requestRunTimePermission(data, heading, 'Excel'),
+              style: 'cancel',
+            },
+          ]
+        : [
+            {
+              text: 'Share as Excel',
+              onPress: () => requestRunTimePermission(data, heading, 'Excel'),
+              style: 'cancel',
+            },
+          ],
+      {
+        cancelable: true,
+      },
+    );
   };
 
   return (
@@ -748,12 +784,18 @@ function Reports(props) {
                       />
                     </TouchableOpacity>
                     <TouchableOpacity
-                      onPress={() =>
-                        requestRunTimePermission('Odometer Total km', [
-                          'Vehicle Number',
-                          'Date',
-                          'Kms',
-                        ])
+                      onPress={
+                        () =>
+                          showModal('Odometer Total km', [
+                            'Vehicle Number',
+                            'Date',
+                            'Kms',
+                          ])
+                        // requestRunTimePermission('Odometer Total km', [
+                        //   'Vehicle Number',
+                        //   'Date',
+                        //   'Kms',
+                        // ])
                       }>
                       <Image
                         source={image.shareDark}
@@ -868,7 +910,7 @@ function Reports(props) {
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() =>
-                        requestRunTimePermission('Ignition Location On', [
+                        showModal('Ignition Location On', [
                           'Vehicle Number',
                           'Date',
                           'Ignition On',
@@ -1014,7 +1056,7 @@ function Reports(props) {
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() =>
-                          requestRunTimePermission('Vehicle Summary', [
+                          showModal('Vehicle Summary', [
                             'Vehicle Number',
                             'Start Location',
                             'Start Time',
@@ -1160,7 +1202,7 @@ function Reports(props) {
                           return (
                             <Text>
                               {item.todaysMaxSpeed
-                                ? getTime(item.todaysMaxSpeed)
+                                ? item.todaysMaxSpeed
                                 : '00:00:00'}
                             </Text>
                           );
@@ -1168,7 +1210,7 @@ function Reports(props) {
                       ) : (
                         <Text>
                           {mapHistory[0]?.todaysMaxSpeed
-                            ? getTime(mapHistory[0]?.todaysMaxSpeed)
+                            ? mapHistory[0]?.todaysMaxSpeed
                             : '00:00:00'}
                         </Text>
                       )}
@@ -1179,18 +1221,17 @@ function Reports(props) {
                       <Text style={styles.textHead}>Avg Speed(Km/h)</Text>
                       {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                         mapHistory?.map(item => {
+                          console.log('ppppppoooiiiu', item.avgSpeed);
                           return (
                             <Text>
-                              {item.avgSpeed
-                                ? getTime(item.avgSpeed)
-                                : '00:00:00'}
+                              {item.avgSpeed ? item.avgSpeed : '00:00:00'}
                             </Text>
                           );
                         })
                       ) : (
                         <Text>
                           {mapHistory[0]?.avgSpeed
-                            ? getTime(mapHistory[0]?.avgSpeed)
+                            ? mapHistory[0]?.avgSpeed
                             : '00:00:00'}
                         </Text>
                       )}
@@ -1259,8 +1300,9 @@ function Reports(props) {
                       {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                         mapHistory?.map(item => {
                           {
-                            /* console.log('aaassshihihishishishi', item); */
+                            /* console.log('aaassshihihishishishi', item.endTime); */
                           }
+
                           return <Text>{item?.endTime}</Text>;
                         })
                       ) : (
@@ -1359,7 +1401,7 @@ function Reports(props) {
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() =>
-                        requestRunTimePermission('Drive Summary Report', [
+                        showModal('Drive Summary Report', [
                           'Vehicle Number',
                           'Start Location',
                           'End Time',
@@ -1419,11 +1461,11 @@ function Reports(props) {
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
                               }}>
-                              <Text style={{paddingRight: 20}}>
-                                {item['endTime:']}
+                              <Text style={{paddingRight: 30}}>
+                                {moment(item['endTime:']).format('hh:mm')}
                               </Text>
-                              <Text style={{paddingRight: 20}}>{item.odo}</Text>
-                              <Text style={{paddingRight: 20}}>
+                              <Text style={{paddingRight: 30}}>{item.odo}</Text>
+                              <Text style={{paddingRight: 30}}>
                                 {item.duration}
                               </Text>
                               <TouchableOpacity
@@ -1446,16 +1488,20 @@ function Reports(props) {
                           );
                         })
                       ) : (
-                        <View style={{flexDirection: 'row', paddingRight: 20}}>
-                          <Text style={{paddingRight: 20}}>
-                            {summaryReport[0]['endTime:']}
-                          </Text>
-                          <Text style={{paddingRight: 40}}>
-                            {summaryReport[0].odo}
-                          </Text>
-                          <Text style={{color: 'red'}}>
-                            {summaryReport[0].duration}
-                          </Text>
+                        <View style={{flexDirection: 'row'}}>
+                          <View style={{marginHorizontal: 20}}>
+                            <Text>
+                              {moment(summaryReport[0]['endTime:']).format(
+                                'hh:mm',
+                              )}
+                            </Text>
+                          </View>
+                          <View style={{marginHorizontal: 20}}>
+                            <Text>{summaryReport[0].odo}</Text>
+                          </View>
+                          <View style={{marginHorizontal: 20}}>
+                            <Text>{summaryReport[0].duration}</Text>
+                          </View>
                         </View>
                       )}
                     </View>
@@ -1544,7 +1590,7 @@ function Reports(props) {
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() =>
-                        requestRunTimePermission('Idle Report', [
+                        showModal('Idle Report', [
                           'Vehicle Number',
                           'Date',
                           'Engine Idle Time',
@@ -1587,7 +1633,9 @@ function Reports(props) {
                     {/* <Text>{sumIgnitionOn}</Text> */}
                     {isActive == 'idle' && isActive2.idle === 1 ? (
                       mapHistory?.map(item => {
-                        console.log('item.timeStamp1', item.timeStamp1);
+                        {
+                          /* console.log('item.timeStamp1', item.timeStamp1); */
+                        }
                         return (
                           <Text>
                             {/* {moment(item.timeStamp1.slice(3)).format('YYYY-MM-DD')} */}
@@ -1678,7 +1726,7 @@ function Reports(props) {
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() =>
-                        requestRunTimePermission('Daily Waiting Time Report', [
+                        showModal('Daily Waiting Time Report', [
                           'Vehicle Number',
                           'Date',
                           'Waiting Time',
