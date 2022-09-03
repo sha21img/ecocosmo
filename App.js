@@ -10,6 +10,7 @@ import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
 import Chat from './src/screens/Chat';
+import ChatDetails from './src/screens/ChatDetails';
 import Alerts from './src/screens/Alerts';
 import MapHistory from './src/screens/MapHistory';
 import DriverBehaviour from './src/screens/DriverBehaviour';
@@ -111,8 +112,8 @@ const DrawerContent = props => {
               borderBottomWidth: 1,
               borderBottomColor: colors.white,
               justifyContent: 'center',
-              alignItems: 'center', 
-              paddingVertical: 30,  
+              alignItems: 'center',
+              paddingVertical: 30,
             }}>
             <Image
               source={{uri: `${baseUrl}/download/appOwnerLogo`}}
@@ -376,6 +377,11 @@ const App = () => {
                   <Stack.Screen
                     name="Chat"
                     component={Chat}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="ChatDetails"
+                    component={ChatDetails}
                     options={{headerShown: false}}
                   />
                   <Stack.Screen

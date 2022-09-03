@@ -13,6 +13,7 @@ import {
   Alert,
   PermissionsAndroid,
   PERMISSIONS,
+  Linking,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -324,14 +325,14 @@ function Reports(props) {
         );
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          createPDF_File(data, heading);
-          // exportDataToExcel();
+          // createPDF_File(data, heading);
+          exportDataToExcel();
         } else {
           alert('WRITE_EXTERNAL_STORAGE permission denied');
         }
       } else {
-        createPDF_File(data, heading);
-        // exportDataToExcel();
+        // createPDF_File(data, heading);
+        exportDataToExcel();
       }
     } catch (err) {
       Alert.alert('Write permission err', err);
@@ -387,12 +388,23 @@ function Reports(props) {
     // await ScopedStorage.createDocument('file.xlsx',"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",b64,'ascii')
 
     RNFS.writeFile(
-      RNFS.DownloadDirectoryPath + '/my_exported_file.xlsx',
+      RNFS.DownloadDirectoryPath + '/Report.xlsx',
       b64,
       'ascii',
     )
-      .then(r => {
-        RNFS.readFile(RNFS.DownloadDirectoryPath + '/my_exported_file.xlsx');
+      .then(async r => {
+        RNFetchBlob.fs
+        .readFile(RNFS.DownloadDirectoryPath + '/Report.xlsx', 'base64')
+        .then(async data => {
+          
+          const shareOption = {
+            url: `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${data}`,
+          };
+          const ShareResponse = await Share.open(shareOption);
+        })
+        .catch(err => {
+          console.log('error', err);
+        });
         console.log('Success', r);
       })
       .catch(e => {

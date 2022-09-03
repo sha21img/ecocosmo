@@ -4,16 +4,20 @@ import {Size} from '../../../assets/fonts/Fonts';
 
 const styles = StyleSheet.create({
   mainContainer: {
-    // flex: 1,
     backgroundColor: 'white',
   },
+  header: {width: '100%'},
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 25,
     paddingBottom: 10,
+  },
+  headerImageCont: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   headerDashboard: {
     flex: 1,
