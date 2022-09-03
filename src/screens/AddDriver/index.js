@@ -79,7 +79,6 @@ const AddDriver = props => {
     })
     setName(data[0]?.driverName)
     setNumber(data[0]?.mobilenumber)
-    console.log('..........>>>>>', data)
 }
 useEffect(()=>{getDetail()},[props])
 
