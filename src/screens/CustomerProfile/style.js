@@ -40,12 +40,14 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   userImage: {
-    height: 104,
-    width: 104,
     borderRadius: 50,
+
+    height: 100,
+    width: 100,
     alignSelf: 'center',
-    position: 'absolute',
-    top: -50,
+    // position: 'absolute',
+    // top: -50,
+    // backgroundColor:'red'
   },
   editContainer: {
     borderWidth: 1,
@@ -53,7 +55,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 3,
     borderRadius: 5,
-    flexDirection:'row'
+    flexDirection: 'row',
   },
   FormContainer: {
     paddingHorizontal: 16,
