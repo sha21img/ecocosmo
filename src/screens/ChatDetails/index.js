@@ -24,25 +24,25 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 
 const ChatDetails = props => {
+  const {getDetails, loginDetails} = props.route.params;
   const [message, setMessage] = useState('');
   const [chatDetail, setChatDetail] = useState();
-  const [loginDetails, setLoginDetails] = useState();
 
   // const {details} = props?.route?.params;
   // console.log('pppppppp', details);
 
-  const getChat = async () => {
-    const loginDetails = await Storage.getLoginDetail('login_detail');
-    setLoginDetails(loginDetails);
-    const data = {
-      accountId: loginDetails?.accountId || '',
-      password: loginDetails?.password || '',
-      // accountId: 'virendratest',
-      // password: 'ae6343555ef7aefd8a60ff88c6363e9c',
-    };
-    const response = await axiosGetData('getCustMessages', data);
-    setChatDetail(response.data.messages);
-  };
+  // const getChat = async () => {
+  //   const loginDetails = await Storage.getLoginDetail('login_detail');
+  //   setLoginDetails(loginDetails);
+  //   const data = {
+  //     // accountId: loginDetails?.accountId || '',
+  //     // password: loginDetails?.password || '',
+  //     accountId: 'virendratest',
+  //     password: 'ae6343555ef7aefd8a60ff88c6363e9c',
+  //   };
+  //   const response = await axiosGetData('getCustMessages', data);
+  //   setChatDetail(response.data.messages);
+  // };
   const getChatDetail = async () => {
     const loginDetails = await Storage.getLoginDetail('login_detail');
 
@@ -64,8 +64,18 @@ const ChatDetails = props => {
   };
   const scrollViewRef = React.useRef();
   useEffect(() => {
-    getChat();
+    // getChat();
+    const interval = setInterval(() => {
+      getFunction();
+    }, 1000);
+    return () => clearInterval(interval);
   }, [message]);
+
+  const getFunction = async () => {
+    const details = await getDetails();
+    setChatDetail(details);
+  };
+
   return (
     <>
       <LinearGradient
@@ -97,14 +107,14 @@ const ChatDetails = props => {
                 color: colors.white,
                 paddingHorizontal: 10,
               }}>
-              {__('James Robinson')}
+              {loginDetails?.accountName}
             </Text>
           </View>
           <TouchableOpacity style={{flexDirection: 'row'}}>
             <Ionicons
               style={{
                 color: '#FFFFFF',
-                fontSize: 20,
+                fontSize: 16,
               }}
               name={'call'}
             />
@@ -119,7 +129,7 @@ const ChatDetails = props => {
             scrollViewRef.current.scrollToEnd({animated: true})
           }>
           {chatDetail?.map(item => {
-            return item.accountId == loginDetails?.accountId ? (
+            return item.source == '0' ? (
               <>
                 <LinearGradient
                   colors={['#ffffff', '#ffffff']}

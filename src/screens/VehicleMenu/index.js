@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Modal,
@@ -16,18 +16,16 @@ import {__} from '../../../Utils/Translation/translation';
 import EngineStopPopup from '../EngineStopPopup';
 import {useNavigation} from '@react-navigation/native';
 import {axiosGetData} from '../../../Utils/ApiController';
-
 import Storage from '../../../Utils/Storage';
 import AddDriver from '../AddDriver';
 
 const VehicleMenu = props => {
-  console.log('props.details.imeitwrtwertwert', props.details, 'props.details.imeitwrtwertwert');
   const navigation = useNavigation();
   const [visibles, setVisibles] = useState(false);
   const [modal, setModal] = useState(false);
+  const [loginDetails, setLoginDetails] = useState();
 
   const {details, visible, calling, mobileNumber} = props;
-  console.log('mobileNumbermobileNumber', mobileNumber);
   const data = [
     {
       id: 1,
@@ -93,6 +91,13 @@ const VehicleMenu = props => {
       navigation.navigate(data, {details: details});
     }
   };
+  const getUserDetails = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
+  };
+  useEffect(() => {
+    getUserDetails();
+  }, []);
   return (
     <>
       <Modal
@@ -110,7 +115,15 @@ const VehicleMenu = props => {
               {/* {__('RUNNING')} 14M 38KM/H */}
             </Text>
             <Text style={styles.modalHead}>{details.deviceId}</Text>
-            {mobileNumber?.mobilenumber !== '' ? (
+            {loginDetails?.accountName == 'demo101' ? (
+              <TouchableOpacity style={styles.disablebutton}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}>{__('Call')}</Text>
+              </TouchableOpacity>
+            ) : mobileNumber?.mobilenumber !== '' ? (
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => calling(details)}>
@@ -128,13 +141,15 @@ const VehicleMenu = props => {
                 {data.map(el => {
                   return (
                     <TouchableOpacity
+                      key={Math.random()}
                       onPress={() => {
                         navigatorFrom(el.routeTo, {
                           imei: props.details.imei,
+                          details: props.details,
                         });
                       }}>
                       <View key={el.id} style={styles.modalCardBody}>
-                      {/* {props}props.details */}
+                        {/* {props}props.details */}
                         <Image
                           source={el.image}
                           style={styles.modalCardImage}

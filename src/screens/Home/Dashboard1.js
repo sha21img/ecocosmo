@@ -124,8 +124,13 @@ const Dashboard1 = ({
       });
     });
   };
+  const getUserDetails = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
+  };
   useEffect(() => {
     // getLocation();
+    getUserDetails();
     if (netInfo.isConnected) {
       if (Platform.OS == 'android') {
         checkPermissionAndroid();
@@ -147,6 +152,7 @@ const Dashboard1 = ({
   );
 
   const [marginBottom, setMarginBottom] = useState(1);
+  const [loginDetails, setLoginDetails] = useState();
   const data = [
     {
       latlng: {latitude: 26.9111158, longitude: 75.737648},
@@ -310,11 +316,11 @@ const Dashboard1 = ({
                 <Image source={image.chargeOff} style={styles.images} />
               )}
 
-              {parseFloat(item.lastNoGpsSignalTime) >
-              parseFloat(item.validPacketTimeStamp) ? (
-                <Image source={image.location} style={styles.images} />
-              ) : (
+              {parseFloat(item.validPacketTimeStamp) <
+              parseFloat(item.lastNoGpsSignalTime) ? (
                 <Image source={image.locationOff} style={styles.images} />
+              ) : (
+                <Image source={image.location} style={styles.images} />
               )}
               {parseFloat(item.statusTermInfo & 2) == 2 ? (
                 <Image source={image.shokker} style={styles.images} />
@@ -357,18 +363,15 @@ const Dashboard1 = ({
                 </Text>
               </View>
             </View>
-            {/* <TouchableOpacity
-              onPress={() => {
-                isSetData(item), calling(item);
-              }}
-              style={styles.button}>
-              <Image
-                source={image.callimg}
-                style={{height: 15, width: 15, marginRight: 7}}
-              />
-              <Text style={styles.buttonText}> {__('Call')}</Text>
-            </TouchableOpacity> */}
-            {isData?.mobilenumber !== '' ? (
+            {loginDetails?.accountName == 'demo101' ? (
+              <View style={styles.disablebutton}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}>{__('Call')}</Text>
+              </View>
+            ) : isData?.mobilenumber !== '' ? (
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
@@ -381,13 +384,13 @@ const Dashboard1 = ({
                 <Text style={styles.buttonText}> {__('Call')}</Text>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.disablebutton}>
+              <View style={styles.disablebutton}>
                 <Image
                   source={image.callimg}
                   style={{height: 15, width: 15, marginRight: 7}}
                 />
-                <Text style={styles.buttonText}> {__('Call')}</Text>
-              </TouchableOpacity>
+                <Text style={styles.buttonText}>{__('Call')}</Text>
+              </View>
             )}
           </LinearGradient>
           <LinearGradient
@@ -433,13 +436,13 @@ const Dashboard1 = ({
           }
         />
       )}
-        <VehicleMenu
-          mobileNumber={mobileNumber}
-          visible={visible}
-          setVisible={setVisible}
-          details={isData}
-          calling={calling}
-        />
+      <VehicleMenu
+        mobileNumber={mobileNumber}
+        visible={visible}
+        setVisible={setVisible}
+        details={isData}
+        calling={calling}
+      />
     </>
   );
 };

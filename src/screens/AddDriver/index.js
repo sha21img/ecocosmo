@@ -19,7 +19,6 @@ import Storage from '../../../Utils/Storage';
 import {useNavigation} from '@react-navigation/native';
 
 const AddDriver = props => {
-  console.log('this is props', props.details);
   const IMEI = props?.details?.imei;
   const navigation = useNavigation();
   const [number, setNumber] = useState('');

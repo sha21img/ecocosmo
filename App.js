@@ -63,11 +63,6 @@ const permanentRoutes = [
     icon: image.callIcon,
     route: 'ContactUs',
   },
-  {
-    label: 'Map History',
-    icon: image.mapIcon,
-    route: 'MapHistory',
-  },
 ];
 const Routes = [
   {
@@ -79,6 +74,12 @@ const Routes = [
     label: 'Group Live Tracking',
     icon: image.mapIcon,
     route: 'GroupMapTracking',
+  },
+
+  {
+    label: 'Map History',
+    icon: image.mapIcon,
+    route: 'MapHistory',
   },
   {
     label: 'Alerts',
@@ -147,8 +148,8 @@ const DrawerContent = props => {
                     alignItems: 'center',
                   }}
                   onPress={() => {
-                    if (el.route == 'GroupMapTracking') {
-                      props.navigation.navigate('GroupMapTracking');
+                    if (el.route !== 'HomeStack') {
+                      props.navigation.navigate(el.route);
                     } else {
                       props.navigation.navigate('HomeStack', {
                         screen: el.route,
@@ -191,36 +192,35 @@ const DrawerContent = props => {
                 </TouchableOpacity>
               );
             })}
-            <TouchableOpacity
-              onPress={async () => {
-                await Storage.clearToken();
-                setToken(null);
-              }}>
-              <LinearGradient
-                colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
-                start={{x: 0, y: 0.5}}
-                end={{x: 1, y: 0.5}}
-                locations={[0.5, 1.5]}
-                style={{
-                  marginTop: 61,
-                  height: 56,
-                  width: '95%',
-                  alignSelf: 'center',
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: 160,
-                }}>
-                <Text
-                  style={{
-                    color: colors.white,
-                    fontSize: Size.large,
-                  }}>
-                  {__('Logout')}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
           </View>
+          <TouchableOpacity
+            onPress={async () => {
+              await Storage.clearToken();
+              setToken(null);
+            }}>
+            <LinearGradient
+              colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              locations={[0.5, 1.5]}
+              style={{
+                paddingVertical: 15,
+                width: '95%',
+                alignSelf: 'center',
+                borderRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 160,
+              }}>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontSize: Size.large,
+                }}>
+                {__('Logout')}
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </LinearGradient>
       </ScrollView>
     </>

@@ -16,8 +16,10 @@ function Setting({navigation}) {
   const [Ison, setIson] = useState(true);
   const {setToken} = React.useContext(AuthContext);
   const [notificationMessage, setNotificationMessage] = useState('');
+  const [loginDetails, setLoginDetails] = useState();
   const getNotification = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const response = await axiosGetData(
@@ -63,6 +65,12 @@ function Setting({navigation}) {
         </View>
       </View>
       <TouchableOpacity
+        style={
+          loginDetails?.accountName == 'demo101'
+            ? {backgroundColor: 'grey'}
+            : {backgroundColor: 'transparent'}
+        }
+        disabled={loginDetails?.accountName == 'demo101' ? true : false}
         onPress={() => {
           navigation.navigate('ChangePassword');
         }}>

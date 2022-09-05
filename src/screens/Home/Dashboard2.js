@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -30,6 +30,7 @@ function Dashboard2({
   const [isData, isSetData] = useState({});
   const [visible, setVisible] = useState(false);
   const [mobileNumber, setMobileNumber] = useState([]);
+  const [loginDetails, setLoginDetails] = useState();
 
   const calling = async data => {
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -322,8 +323,15 @@ function Dashboard2({
                 />
                 <Text style={styles.buttonText}> {__('Call')}</Text>
               </TouchableOpacity> */}
-
-              {isData?.mobilenumber != '' ? (
+              {loginDetails?.accountName == 'demo101' ? (
+                <View style={styles.disablebutton}>
+                  <Image
+                    source={image.callimg}
+                    style={{height: 15, width: 15, marginRight: 7}}
+                  />
+                  <Text style={styles.buttonText}>{__('Call')}</Text>
+                </View>
+              ) : isData?.mobilenumber != '' ? (
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
@@ -336,13 +344,13 @@ function Dashboard2({
                   <Text style={styles.buttonText}> {__('Call')}</Text>
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity style={styles.disablebutton}>
+                <View style={styles.disablebutton}>
                   <Image
                     source={image.callimg}
                     style={{height: 15, width: 15, marginRight: 7}}
                   />
                   <Text style={styles.buttonText}> {__('Call')}</Text>
-                </TouchableOpacity>
+                </View>
               )}
             </View>
           </View>
@@ -360,6 +368,13 @@ function Dashboard2({
       </TouchableOpacity>
     );
   };
+  const getUserDetails = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
+  };
+  useEffect(() => {
+    getUserDetails();
+  }, []);
   return (
     <>
       {isShow ? (
