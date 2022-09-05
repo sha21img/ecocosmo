@@ -38,14 +38,18 @@ import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import * as ScopedStorage from 'react-native-scoped-storage';
 import XLSX from 'xlsx';
+import {useIsFocused} from '@react-navigation/native';
 import {Dirs, FileSystem} from 'react-native-file-access';
 const DDP = Dirs.DocumentDir + '/';
 function Reports(props) {
+  const focus = useIsFocused();
   const screen = Dimensions.get('window');
 
   const imei = props?.route?.params?.details?.imei;
   // console.log("imeiimeiimeiimeiimei",props.route.params.details.imei)
-  const [vehicleNumber, setVehicleNumber] = useState('Select vehicle number');
+  const [vehicleNumber, setVehicleNumber] = useState(
+    props?.route?.params?.details?.deviceId || 'Select vehicle number',
+  );
   const [totalOdo, setTotalOdo] = useState();
   const [sumIgnitionOn, setSumIgnitionOn] = useState();
   const [open, setOpen] = useState(false);
@@ -102,7 +106,7 @@ function Reports(props) {
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     if (newImei !== undefined) {
       const filterImei = data || newImei;
-      // console.log('filterImei', filterImei);
+      console.log('filterImei', filterImei);
       setIsSelected(true);
       // console.log('vehicleNumvehicleNum', vehicleNum);
       const filterVehicleNumber = vehicleNum
@@ -112,13 +116,17 @@ function Reports(props) {
         .map((item, index) => {
           return {key: index++, label: item.deviceId, imei: item.imei};
         });
-      // console.log(
-      //   'filterVehic99999999999999999999999999999999',
-      //   filterVehicleNumber,
-      // );
+      console.log(
+        'filterVehic99999999999999999999999999999999',
+        filterVehicleNumber,
+      );
       setNewFilterVehicle(filterVehicleNumber[0].label);
       setVehicleNumber(filterVehicleNumber[0].label);
       setNewImei(filterVehicleNumber[0].imei);
+    } else {
+      setNewFilterVehicle(vehicleNum[0].deviceId);
+      setVehicleNumber(vehicleNum[0].deviceId);
+      setNewImei(vehicleNum[0].imei);
     }
     // else {
     const allVehicleDetails = vehicleNum.map((item, index) => {
@@ -129,10 +137,12 @@ function Reports(props) {
     // }
   };
   useEffect(() => {
-    setDate();
-    // console.log('ussuusususu');
-    setVehicleDetail();
-  }, [props]);
+    if (focus == true) {
+      setNewImei(imei);
+      setDate();
+      setVehicleDetail();
+    }
+  }, [props, focus]);
 
   const getSummaryReport = async () => {
     console.log('getSummaryReportgetSummaryReportgetSummaryReport');
@@ -153,6 +163,7 @@ function Reports(props) {
     // console.log('datadatadata', data);
     const response = await axiosGetData('getDriveDetails', data);
     // console.log('ppppppppppppppppppppppppppppppppppppppp', response?.data);
+
     const summarReport = response?.data?.Drives?.forEach(item => {
       // console.log('item', item);
 
@@ -160,6 +171,7 @@ function Reports(props) {
     });
     // console.log('response.data.Drives', response.data.Drives.length);
     setSummaryReport(response?.data?.Drives);
+
     return response?.data?.Drives;
   };
   // startPoint":"19.268671,72.869516",
@@ -183,20 +195,25 @@ function Reports(props) {
     //   data1();
     // }
     console.log('imei-=-', newImei);
-    if (fdate !== '' && fdateend !== '' && newImei !== undefined) {
+    if (
+      fdate !== '' &&
+      fdateend !== '' &&
+      newImei !== undefined &&
+      focus == true
+    ) {
       console.log('proprorprprorp');
       Promise.all([data1(), getSummaryReport()])
         .then(values => {
-          if (values) {
-            // console.log('values', values);
-            setLoading(true);
-          }
+          // if (values) {
+          //   // console.log('values', values);
+          //   setLoading(true);
+          // }
         })
         .catch(function (error) {
           console.log(error);
         });
     }
-  }, [fdate, fdateend, newImei]);
+  }, [fdate, fdateend, newImei, focus]);
 
   const data1 = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -218,6 +235,7 @@ function Reports(props) {
     const aa = response.data.DeviceHistory.reverse();
     console.log('098765432345678987654345678', aa);
     setMapHistory(aa);
+    setLoading(true);
 
     return aa;
   };
@@ -276,7 +294,7 @@ function Reports(props) {
     showMode('time');
   };
   const getFilterVehicle = async data => {
-    setLoading(true);
+    setLoading(false);
     setVehicleNumber(data);
     // setNewVehicleNumber(data)
 
@@ -290,7 +308,7 @@ function Reports(props) {
     setNewImei(includedArray[0]);
     setIsSelected(true);
     setVehicleDetail(includedArray[0]);
-    setLoading(false);
+    setLoading(true);
   };
 
   const getTime = secs => {
@@ -447,7 +465,7 @@ function Reports(props) {
   };
   const createPDF_File = async (data, heading) => {
     let html = ``;
-    html += `<h1 style="text-align: center;">${data}</h1>`;
+    html += `<h3 style="text-align: center;">${data} ${' '}(${newFilterVehicle})</h3>`;
     html += `<table style="width:100%; border:1px solid black;">
     <tr>`;
     heading.map(item => {
@@ -496,7 +514,7 @@ function Reports(props) {
        </table>`;
       }
     });
-   
+
     let file = await RNHTMLtoPDF.convert({html});
     RNFetchBlob.fs
       .readFile(file.filePath, 'base64')
@@ -614,102 +632,80 @@ function Reports(props) {
                 </TouchableOpacity>
               </ModalSelector>
             </View>
-
-            {/* <TouchableOpacity style={{width: '35%'}}>
-              <LinearGradient
-                colors={['#00D957', '#2ACBA1', '#5EB9FF']}
-                start={{x: 0, y: 1}}
-                end={{x: 1, y: 0}}
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: '100%',
+              paddingHorizontal: 20,
+              justifyContent: 'space-between',
+              paddingVertical: 10,
+              padding: 0,
+              backgroundColor: 'transparent',
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                showDatepicker('start'), setOpen(true);
+              }}
+              style={{
+                borderWidth: 1,
+                borderColor: '#D9D9D9',
+                flexDirection: 'row',
+                paddingHorizontal: 15,
+                width: '47%',
+                height: 50,
+                borderRadius: 7,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                backgroundColor: 'white',
+              }}>
+              <TextInput
+                editable={false}
+                placeholder={'From Date'}
+                style={{fontSize: 14}}
+                value={fdate}
+              />
+              <MaterialIcons
                 style={{
-                  flexDirection: 'row',
-                  paddingHorizontal: 15,
-                  paddingVertical: 12,
-                  // width: '35%',
-                  borderRadius: 7,
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={{fontSize: 14, color: 'white'}}>Yesterday</Text>
-                <MaterialIcons
-                  style={{
-                    color: '#3D3D3D',
-                    fontSize: 16,
-                  }}
-                  name={'keyboard-arrow-down'}
-                />
-              </LinearGradient>
-            </TouchableOpacity> */}
+                  color: '#3D3D3D',
+                  fontSize: 16,
+                }}
+                name={'keyboard-arrow-down'}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                showDatepicker('end'), setOpen(true);
+              }}
+              style={{
+                borderColor: '#D9D9D9',
+                borderWidth: 1,
+                backgroundColor: 'white',
+                flexDirection: 'row',
+                paddingHorizontal: 15,
+                height: 50,
+                width: '47%',
+                borderRadius: 7,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <TextInput
+                editable={false}
+                style={{fontSize: 14}}
+                value={fdateend}
+                placeholder={'To Date'}
+              />
+              <MaterialIcons
+                style={{
+                  color: '#3D3D3D',
+                  fontSize: 16,
+                }}
+                name={'keyboard-arrow-down'}
+              />
+            </TouchableOpacity>
           </View>
         </LinearGradient>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            paddingHorizontal: 20,
-            justifyContent: 'space-between',
-            paddingVertical: 10,
-            padding: 0,
-            backgroundColor: colors.white,
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              showDatepicker('start'), setOpen(true);
-            }}
-            style={{
-              borderWidth: 1,
-              borderColor: '#D9D9D9',
-              flexDirection: 'row',
-              paddingHorizontal: 15,
-              width: '47%',
-              height: 50,
-              borderRadius: 7,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <TextInput
-              editable={false}
-              placeholder={'From Date'}
-              style={{fontSize: 14}}
-              value={fdate}
-            />
-            <MaterialIcons
-              style={{
-                color: '#3D3D3D',
-                fontSize: 16,
-              }}
-              name={'keyboard-arrow-down'}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              showDatepicker('end'), setOpen(true);
-            }}
-            style={{
-              borderColor: '#D9D9D9',
-              borderWidth: 1,
-              flexDirection: 'row',
-              paddingHorizontal: 15,
-              height: 50,
-              width: '47%',
-              borderRadius: 7,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <TextInput
-              editable={false}
-              style={{fontSize: 14}}
-              value={fdateend}
-              placeholder={'To Date'}
-            />
-            <MaterialIcons
-              style={{
-                color: '#3D3D3D',
-                fontSize: 16,
-              }}
-              name={'keyboard-arrow-down'}
-            />
-          </TouchableOpacity>
-        </View>
+
         {show && (
           <DatePicker
             modal
@@ -727,1075 +723,1044 @@ function Reports(props) {
           />
         )}
       </View>
-      {isSelected ? (
-        <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
-          {loading ? (
-            <>
-              <LinearGradient
-                colors={['#BCE2FF', '#ffffff']}
-                start={{x: 0, y: 0.5}}
-                end={{x: 1, y: 0.5}}
+      {/* {isSelected ? ( */}
+      <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
+        {loading ? (
+          <>
+            <LinearGradient
+              colors={['#BCE2FF', '#ffffff']}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              style={{
+                padding: 20,
+                elevation: 20,
+              }}>
+              <View
                 style={{
-                  padding: 20,
-                  elevation: 20,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center',
                 }}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  {__('Odometer Total km')}
+                </Text>
+
                 <View
                   style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    width: '100%',
+                    minWidth: '20%',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
                   }}>
-                  <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                    {__('Odometer Total km')}
-                  </Text>
-
-                  <View
+                  <TouchableOpacity
                     style={{
-                      flexDirection: 'row',
-                      minWidth: '20%',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                    }}
+                    onPress={() => {
+                      setIsActive('odometer');
+                      setIsActive2(prev => {
+                        return {
+                          ...prev,
+                          odometer: prev['odometer'] == 0 ? 1 : 0,
+                        };
+                      });
+                      //   setIsActive2((prev)=>{
+                      //   return
+                      //   {...prev,prev['odometer']:prev['odometer']==0?1:0})
+                      // }
                     }}>
-                    <TouchableOpacity
+                    <MaterialIcons
                       style={{
-                        backgroundColor: colors.mainThemeColor1,
-                        borderRadius: 50,
+                        color: colors.white,
+                        fontSize: 25,
                       }}
-                      onPress={() => {
-                        setIsActive('odometer');
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={
+                      () =>
+                        showModal('Odometer Total km', [
+                          'Vehicle Number',
+                          'Date',
+                          'Kms',
+                        ])
+                      // requestRunTimePermission('Odometer Total km', [
+                      //   'Vehicle Number',
+                      //   'Date',
+                      //   'Kms',
+                      // ])
+                    }>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 24, height: 24}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                style={{flexDirection: 'row', paddingTop: 10}}>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
+
+                  {/* {isActive === 'odometer' && isActive2.odometer === 1 ? (
+                      <Text>{newFilterVehicle}</Text>
+                    ) : null} */}
+                  {isActive === 'odometer' && isActive2.odometer === 1 ? (
+                    mapHistory?.map(item => {
+                      return <Text>{newFilterVehicle}</Text>;
+                    })
+                  ) : (
+                    <Text>{newFilterVehicle}</Text>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Date</Text>
+
+                  {isActive == 'odometer' && isActive2.odometer === 1 ? (
+                    mapHistory.map(item => {
+                      return (
+                        <Text>
+                          {item.timeStamp1
+                            ? getNewDate(item.timeStamp1)
+                            : '00:00:00'}
+                        </Text>
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.timeStamp1
+                        ? getNewDate(mapHistory[0].timeStamp1)
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Kms</Text>
+
+                  {isActive === 'odometer' && isActive2.odometer === 1 ? (
+                    mapHistory.map(item => {
+                      return <Text>{item.todaysODO}</Text>;
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysODO
+                        ? mapHistory[0].todaysODO
+                        : '00.00'}
+                    </Text>
+                  )}
+                </View>
+              </ScrollView>
+            </LinearGradient>
+
+            {/*
+             */}
+
+            <LinearGradient
+              colors={['#BCE2FF', '#ffffff']}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              style={{padding: 20}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  {__('Ignition Location On')}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    minWidth: '20%',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                    }}
+                    onPress={() => {
+                      setIsActive('ignition'),
                         setIsActive2(prev => {
                           return {
                             ...prev,
-                            odometer: prev['odometer'] == 0 ? 1 : 0,
+                            ignition: prev['ignition'] == 0 ? 1 : 0,
                           };
                         });
-                        //   setIsActive2((prev)=>{
-                        //   return
-                        //   {...prev,prev['odometer']:prev['odometer']==0?1:0})
-                        // }
-                      }}>
-                      <MaterialIcons
-                        style={{
-                          color: colors.white,
-                          fontSize: 25,
-                        }}
-                        name={'keyboard-arrow-down'}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={
-                        () =>
-                          showModal('Odometer Total km', [
-                            'Vehicle Number',
-                            'Date',
-                            'Kms',
-                          ])
-                        // requestRunTimePermission('Odometer Total km', [
-                        //   'Vehicle Number',
-                        //   'Date',
-                        //   'Kms',
-                        // ])
-                      }>
-                      <Image
-                        source={image.shareDark}
-                        style={{width: 24, height: 24}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <ScrollView
-                  showsHorizontalScrollIndicator={false}
-                  horizontal={true}
-                  style={{flexDirection: 'row', paddingTop: 10}}>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Vehicle No.</Text>
-
-                    {/* {isActive === 'odometer' && isActive2.odometer === 1 ? (
-                      <Text>{newFilterVehicle}</Text>
-                    ) : null} */}
-                    {isActive === 'odometer' && isActive2.odometer === 1 ? (
-                      mapHistory?.map(item => {
-                        return <Text>{newFilterVehicle}</Text>;
-                      })
-                    ) : (
-                      <Text>{newFilterVehicle}</Text>
-                    )}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Date</Text>
-
-                    {isActive == 'odometer' && isActive2.odometer === 1 ? (
-                      mapHistory.map(item => {
-                        return (
-                          <Text>
-                            {item.timeStamp1
-                              ? getNewDate(item.timeStamp1)
-                              : '00:00:00'}
-                          </Text>
-                        );
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.timeStamp1
-                          ? getNewDate(mapHistory[0].timeStamp1)
-                          : '00:00:00'}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Kms</Text>
-
-                    {isActive === 'odometer' && isActive2.odometer === 1 ? (
-                      mapHistory.map(item => {
-                        return <Text>{item.todaysODO}</Text>;
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.todaysODO
-                          ? mapHistory[0].todaysODO
-                          : '00.00'}
-                      </Text>
-                    )}
-                  </View>
-                </ScrollView>
-              </LinearGradient>
-
-              {/*
-               */}
-
-              <LinearGradient
-                colors={['#BCE2FF', '#ffffff']}
-                start={{x: 0, y: 0.5}}
-                end={{x: 1, y: 0.5}}
-                style={{padding: 20}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    alignItems: 'center',
-                  }}>
-                  <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                    {__('Ignition Location On')}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      minWidth: '20%',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
                     }}>
-                    <TouchableOpacity
+                    <MaterialIcons
                       style={{
-                        backgroundColor: colors.mainThemeColor1,
-                        borderRadius: 50,
+                        color: colors.white,
+                        fontSize: 25,
                       }}
-                      onPress={() => {
-                        setIsActive('ignition'),
-                          setIsActive2(prev => {
-                            return {
-                              ...prev,
-                              ignition: prev['ignition'] == 0 ? 1 : 0,
-                            };
-                          });
-                      }}>
-                      <MaterialIcons
-                        style={{
-                          color: colors.white,
-                          fontSize: 25,
-                        }}
-                        name={'keyboard-arrow-down'}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() =>
-                        showModal('Ignition Location On', [
-                          'Vehicle Number',
-                          'Date',
-                          'Ignition On',
-                          'Ignition Off',
-                        ])
-                      }>
-                      <Image
-                        source={image.shareDark}
-                        style={{width: 24, height: 24}}
-                      />
-                    </TouchableOpacity>
-                  </View>
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      showModal('Ignition Location On', [
+                        'Vehicle Number',
+                        'Date',
+                        'Ignition On',
+                        'Ignition Off',
+                      ])
+                    }>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 24, height: 24}}
+                    />
+                  </TouchableOpacity>
                 </View>
-                <ScrollView
-                  showsHorizontalScrollIndicator={false}
-                  horizontal={true}
-                  style={{flexDirection: 'row', paddingTop: 10}}>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Vehicle No.</Text>
-                    {/* <Text>20-07-2022</Text> */}
-                    {/* {isActive === 'ignition' && isActive2.ignition === 1 ? (
+              </View>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                style={{flexDirection: 'row', paddingTop: 10}}>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
+                  {/* <Text>20-07-2022</Text> */}
+                  {/* {isActive === 'ignition' && isActive2.ignition === 1 ? (
                       newVehicleNumber?.map(item => {
                         return <Text>{item.label.slice(0, 13)}</Text>;
                       })
                     ) : (
                       <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
                     )} */}
-                    {/* {isActive === 'ignition' && isActive2.ignition === 1 ? ( */}
+                  {/* {isActive === 'ignition' && isActive2.ignition === 1 ? ( */}
 
-                    {/* <Text>{newFilterVehicle}</Text> */}
-                    {isActive === 'ignition' && isActive2.ignition === 1 ? (
-                      mapHistory?.map(item => {
-                        return <Text>{newFilterVehicle}</Text>;
-                      })
-                    ) : (
-                      <Text>{newFilterVehicle}</Text>
-                    )}
-                    {/* ) : null} */}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Date</Text>
-                    {isActive === 'ignition' && isActive2.ignition === 1 ? (
-                      mapHistory.map(item => {
-                        return <Text>{getNewDate(item.timeStamp1)}</Text>;
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.timeStamp1
-                          ? getNewDate(mapHistory[0]?.timeStamp1)
-                          : '00-00-00'}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Ignition on</Text>
-                    {isActive === 'ignition' && isActive2.ignition === 1 ? (
-                      mapHistory.map(item => {
-                        return (
-                          <Text>
-                            {item.todaysIgnitionOnTimeSeconds
-                              ? getTime(item.todaysIgnitionOnTimeSeconds)
-                              : '00:00:00'}
-                          </Text>
-                        );
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.todaysIgnitionOnTimeSeconds
-                          ? getTime(mapHistory[0]?.todaysIgnitionOnTimeSeconds)
-                          : '00:00:00'}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Ignition off</Text>
-                    {isActive === 'ignition' && isActive2.ignition === 1 ? (
-                      mapHistory.map(item => {
-                        return (
-                          <Text>
-                            {item.todaysIdleTimeSeconds
-                              ? getTime(item.todaysIdleTimeSeconds)
-                              : '00:00:00'}
-                          </Text>
-                        );
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.todaysIdleTimeSeconds
-                          ? getTime(mapHistory[0]?.todaysIdleTimeSeconds)
-                          : '00:00:00'}
-                      </Text>
-                    )}
-                  </View>
-                </ScrollView>
-              </LinearGradient>
-
-              {/*
-               */}
-              {data2.length > 0 ? (
-                <LinearGradient
-                  colors={['#BCE2FF', '#ffffff']}
-                  start={{x: 0, y: 0.5}}
-                  end={{x: 1, y: 0.5}}
-                  style={{padding: 20}}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                      alignItems: 'center',
-                    }}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                      {__('Vehicle Summary')}
+                  {/* <Text>{newFilterVehicle}</Text> */}
+                  {isActive === 'ignition' && isActive2.ignition === 1 ? (
+                    mapHistory?.map(item => {
+                      return <Text>{newFilterVehicle}</Text>;
+                    })
+                  ) : (
+                    <Text>{newFilterVehicle}</Text>
+                  )}
+                  {/* ) : null} */}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Date</Text>
+                  {isActive === 'ignition' && isActive2.ignition === 1 ? (
+                    mapHistory.map(item => {
+                      return <Text>{getNewDate(item.timeStamp1)}</Text>;
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.timeStamp1
+                        ? getNewDate(mapHistory[0]?.timeStamp1)
+                        : '00-00-00'}
                     </Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        minWidth: '20%',
-                        alignItems: 'center',
-                      }}>
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: colors.mainThemeColor1,
-                          borderRadius: 50,
-                        }}
-                        onPress={() => {
-                          setIsActive('vehicle'),
-                            setIsActive2(prev => {
-                              return {
-                                ...prev,
-                                vehicle: prev['vehicle'] == 0 ? 1 : 0,
-                              };
-                            });
-                        }}>
-                        <MaterialIcons
-                          style={{
-                            color: colors.white,
-                            fontSize: 25,
-                          }}
-                          name={'keyboard-arrow-down'}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          showModal('Vehicle Summary', [
-                            'Vehicle Number',
-                            'Start Location',
-                            'Start Time',
-                            'Travel Time',
-                            'Work/Idle hrs',
-                            'Stoped Time',
-                            'Max Speed(Km/h)',
-                            'Avg Speed(Km/h)',
-                            'Engine Hours',
-                            'Distance Travelled(kms)',
-                            'End Location',
-                            'End Time (HH:MM)',
-                            '#OverSpeed',
-                            '#Alert',
-                            '#Report Date',
-                          ])
-                        }>
-                        <Image
-                          source={image.shareDark}
-                          style={{width: 24, height: 24}}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <ScrollView
-                    showsHorizontalScrollIndicator={false}
-                    horizontal={true}
-                    style={{flexDirection: 'row', paddingTop: 10}}>
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Vehicle No.</Text>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Ignition on</Text>
+                  {isActive === 'ignition' && isActive2.ignition === 1 ? (
+                    mapHistory.map(item => {
+                      return (
+                        <Text>
+                          {item.todaysIgnitionOnTimeSeconds
+                            ? getTime(item.todaysIgnitionOnTimeSeconds)
+                            : '00:00:00'}
+                        </Text>
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysIgnitionOnTimeSeconds
+                        ? getTime(mapHistory[0]?.todaysIgnitionOnTimeSeconds)
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Ignition off</Text>
+                  {isActive === 'ignition' && isActive2.ignition === 1 ? (
+                    mapHistory.map(item => {
+                      return (
+                        <Text>
+                          {item.todaysIdleTimeSeconds
+                            ? getTime(item.todaysIdleTimeSeconds)
+                            : '00:00:00'}
+                        </Text>
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysIdleTimeSeconds
+                        ? getTime(mapHistory[0]?.todaysIdleTimeSeconds)
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                </View>
+              </ScrollView>
+            </LinearGradient>
 
-                      {/* {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+            {/*
+             */}
+            {/* {data2.length > 0 ? ( */}
+            <LinearGradient
+              colors={['#BCE2FF', '#ffffff']}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              style={{padding: 20}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  {__('Vehicle Summary')}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    minWidth: '20%',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                    }}
+                    onPress={() => {
+                      setIsActive('vehicle'),
+                        setIsActive2(prev => {
+                          return {
+                            ...prev,
+                            vehicle: prev['vehicle'] == 0 ? 1 : 0,
+                          };
+                        });
+                    }}>
+                    <MaterialIcons
+                      style={{
+                        color: colors.white,
+                        fontSize: 25,
+                      }}
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      showModal('Vehicle Summary', [
+                        'Vehicle Number',
+                        'Start Location',
+                        'Start Time',
+                        'Travel Time',
+                        'Work/Idle hrs',
+                        'Stoped Time',
+                        'Max Speed(Km/h)',
+                        'Avg Speed(Km/h)',
+                        'Engine Hours',
+                        'Distance Travelled(kms)',
+                        'End Location',
+                        'End Time (HH:MM)',
+                        '#OverSpeed',
+                        '#Alert',
+                        '#Report Date',
+                      ])
+                    }>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 24, height: 24}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                style={{flexDirection: 'row', paddingTop: 10}}>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
+
+                  {/* {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                         newVehicleNumber?.map(item => {
                           return <Text>{item.label.slice(0, 13)}</Text>;
                         })
                       ) : (
                         <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
                       )} */}
-                      {/* {isActive === 'vehicle' && isActive2.vehicle === 1 ? ( */}
-                      {/* <Text>{newFilterVehicle}</Text> */}
-                      {/* ) : null} */}
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          return <Text>{newFilterVehicle}</Text>;
-                        })
-                      ) : (
-                        <Text>{newFilterVehicle}</Text>
-                      )}
-                    </View>
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Start Location</Text>
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          {
-                            /* console.log('aaassshihihishishishi', item); */
-                          }
-                          return <Text>{item?.startLocation}</Text>;
-                        })
-                      ) : (
-                        <Text>{mapHistory[0]?.startLocation}</Text>
-                      )}
-                    </View>
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Start Time</Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          {
-                            /* console.log("item.endTime",item) */
-                          }
-                          return <Text>{item?.startTime}</Text>;
-                        })
-                      ) : (
-                        <Text>{mapHistory[0]?.startTime}</Text>
-                      )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                    </View>
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Travel Time</Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          {
-                            /* console.log("item.endTime",item) */
-                          }
-                          return <Text>{item?.travelTime}</Text>;
-                        })
-                      ) : (
-                        <Text>{mapHistory[0]?.travelTime}</Text>
-                      )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                    </View>
+                  {/* {isActive === 'vehicle' && isActive2.vehicle === 1 ? ( */}
+                  {/* <Text>{newFilterVehicle}</Text> */}
+                  {/* ) : null} */}
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      return <Text>{newFilterVehicle}</Text>;
+                    })
+                  ) : (
+                    <Text>{newFilterVehicle}</Text>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Start Location</Text>
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log('aaassshihihishishishi', item); */
+                      }
+                      return <Text>{item?.startLocation}</Text>;
+                    })
+                  ) : (
+                    <Text>{mapHistory[0]?.startLocation}</Text>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Start Time</Text>
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log("item.endTime",item) */
+                      }
+                      return <Text>{item?.startTime}</Text>;
+                    })
+                  ) : (
+                    <Text>{mapHistory[0]?.startTime}</Text>
+                  )}
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Travel Time</Text>
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log("item.endTime",item) */
+                      }
+                      return <Text>{item?.travelTime}</Text>;
+                    })
+                  ) : (
+                    <Text>{mapHistory[0]?.travelTime}</Text>
+                  )}
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                </View>
 
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Work/Idle hrs</Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          return (
-                            <Text>
-                              {item.todaysWaitingIgnitionTime
-                                ? getTime(item.todaysWaitingIgnitionTime)
-                                : '00:00:00'}
-                            </Text>
-                          );
-                        })
-                      ) : (
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Work/Idle hrs</Text>
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      return (
                         <Text>
-                          {mapHistory[0]?.todaysWaitingIgnitionTime
-                            ? getTime(mapHistory[0]?.todaysWaitingIgnitionTime)
+                          {item.todaysWaitingIgnitionTime
+                            ? getTime(item.todaysWaitingIgnitionTime)
                             : '00:00:00'}
                         </Text>
-                      )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                    </View>
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Stopped Time</Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          return (
-                            <Text>
-                              {item.todaysIdleTimeSeconds
-                                ? getTime(item.todaysIdleTimeSeconds)
-                                : '00:00:00'}
-                            </Text>
-                          );
-                        })
-                      ) : (
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysWaitingIgnitionTime
+                        ? getTime(mapHistory[0]?.todaysWaitingIgnitionTime)
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                </View>
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Stopped Time</Text>
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      return (
                         <Text>
-                          {mapHistory[0]?.todaysIdleTimeSeconds
-                            ? getTime(mapHistory[0]?.todaysIdleTimeSeconds)
+                          {item.todaysIdleTimeSeconds
+                            ? getTime(item.todaysIdleTimeSeconds)
                             : '00:00:00'}
                         </Text>
-                      )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                    </View>
-                    {/*  */}
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysIdleTimeSeconds
+                        ? getTime(mapHistory[0]?.todaysIdleTimeSeconds)
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                </View>
+                {/*  */}
 
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Max Speed(Km/h)</Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          return (
-                            <Text>
-                              {item.todaysMaxSpeed
-                                ? item.todaysMaxSpeed
-                                : '00:00:00'}
-                            </Text>
-                          );
-                        })
-                      ) : (
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Max Speed(Km/h)</Text>
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      return (
                         <Text>
-                          {mapHistory[0]?.todaysMaxSpeed
-                            ? mapHistory[0]?.todaysMaxSpeed
+                          {item.todaysMaxSpeed
+                            ? item.todaysMaxSpeed
                             : '00:00:00'}
                         </Text>
-                      )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                    </View>
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Avg Speed(Km/h)</Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          console.log('ppppppoooiiiu', item.avgSpeed);
-                          return (
-                            <Text>
-                              {item.avgSpeed ? item.avgSpeed : '00:00:00'}
-                            </Text>
-                          );
-                        })
-                      ) : (
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysMaxSpeed
+                        ? mapHistory[0]?.todaysMaxSpeed
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                </View>
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Avg Speed(Km/h)</Text>
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      console.log('ppppppoooiiiu', item.avgSpeed);
+                      return (
                         <Text>
-                          {mapHistory[0]?.avgSpeed
-                            ? mapHistory[0]?.avgSpeed
+                          {item.avgSpeed ? item.avgSpeed : '00:00:00'}
+                        </Text>
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.avgSpeed
+                        ? mapHistory[0]?.avgSpeed
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                </View>
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Engine Hours</Text>
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory.map(item => {
+                      return (
+                        <Text>
+                          {item.todaysIgnitionOnTimeSeconds
+                            ? getTime(item.todaysIgnitionOnTimeSeconds)
                             : '00:00:00'}
                         </Text>
-                      )}
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                    </View>
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Engine Hours</Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory.map(item => {
-                          return (
-                            <Text>
-                              {item.todaysIgnitionOnTimeSeconds
-                                ? getTime(item.todaysIgnitionOnTimeSeconds)
-                                : '00:00:00'}
-                            </Text>
-                          );
-                        })
-                      ) : (
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysIgnitionOnTimeSeconds
+                        ? getTime(mapHistory[0]?.todaysIgnitionOnTimeSeconds)
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                </View>
+                {/*  */}
+
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Distance Travelled(kms)</Text>
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory.map(item => {
+                      return <Text>{item.todaysODO}</Text>;
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysODO
+                        ? mapHistory[0].todaysODO
+                        : '00.00'}
+                    </Text>
+                  )}
+                </View>
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>End Location</Text>
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log('aaassshihihishishishi', item); */
+                      }
+                      return <Text>{item?.endLocation}</Text>;
+                    })
+                  ) : (
+                    <Text>{mapHistory[0]?.endLocation}</Text>
+                  )}
+                </View>
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>End Time (HH:MM)</Text>
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log('aaassshihihishishishi', item.endTime); */
+                      }
+
+                      return <Text>{item?.endTime}</Text>;
+                    })
+                  ) : (
+                    <Text>{mapHistory[0]?.endTime}</Text>
+                  )}
+                </View>
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>#OverSpeed</Text>
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log('aaassshihihishishishi', item); */
+                      }
+                      return <Text>{item?.overspeedCounter}</Text>;
+                    })
+                  ) : (
+                    <Text>{mapHistory[0]?.overspeedCounter}</Text>
+                  )}
+                </View>
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>#Alerts</Text>
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log('aaassshihihishishishi', item); */
+                      }
+                      return <Text>{item?.alertsCounter}</Text>;
+                    })
+                  ) : (
+                    <Text>{mapHistory[0]?.alertsCounter}</Text>
+                  )}
+                </View>
+                {/*  */}
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Report Date</Text>
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log('aaassshihihishishishi', item); */
+                      }
+                      return <Text>{item?.timeStamp1}</Text>;
+                    })
+                  ) : (
+                    <Text>{mapHistory[0]?.timeStamp1}</Text>
+                  )}
+                </View>
+              </ScrollView>
+            </LinearGradient>
+            {/* ) : null} */}
+
+            {/*
+             */}
+
+            {/* {data2.length > 0 ? ( */}
+            <LinearGradient
+              colors={['#BCE2FF', '#ffffff']}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              style={{padding: 20}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  {__('Drive Summary Report')}
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: colors.mainThemeColor1,
+                    borderRadius: 50,
+                  }}
+                  onPress={() => {
+                    setIsActive('drive'),
+                      setIsActive2(prev => {
+                        return {
+                          ...prev,
+                          drive: prev['drive'] == 0 ? 1 : 0,
+                        };
+                      });
+                  }}>
+                  <MaterialIcons
+                    style={{
+                      color: colors.white,
+                      fontSize: 25,
+                    }}
+                    name={'keyboard-arrow-down'}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    showModal('Drive Summary Report', [
+                      'Vehicle Number',
+                      'Start Location',
+                      'End Time',
+                      'Work/Idle hrs',
+                      'Duration',
+                    ])
+                  }>
+                  <Image
+                    source={image.shareDark}
+                    style={{width: 24, height: 24}}
+                  />
+                </TouchableOpacity>
+              </View>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                style={{flexDirection: 'row', paddingTop: 10}}>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
+                  {isActive === 'drive' && isActive2.drive === 1 ? (
+                    summaryReport?.map(item => {
+                      return (
+                        <Text style={{minHeight: 50}}>{newFilterVehicle}</Text>
+                      );
+                    })
+                  ) : (
+                    <Text>{newFilterVehicle}</Text>
+                  )}
+                </View>
+                <View
+                  style={{
+                    paddingRight: 20,
+                  }}>
+                  <Text style={styles.textHead}>Start Location</Text>
+                  {isActive === 'drive' && isActive2.drive === 1 ? (
+                    data2?.map(item => {
+                      return <Text>{item?.vehicleAddress}</Text>;
+                    })
+                  ) : (
+                    <Text>{data2[0]?.vehicleAddress}</Text>
+                  )}
+                </View>
+                {/*  */}
+                <View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}>
+                    <Text style={styles.textHead}>End Time</Text>
+                    <Text style={styles.textHead}>Work/Idle hrs</Text>
+                    <Text style={styles.textHead}>Duration</Text>
+                  </View>
+                  {isActive === 'drive' && isActive2.drive === 1 ? (
+                    summaryReport?.map(item => {
+                      return (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                          }}>
+                          <Text style={{paddingRight: 30}}>
+                            {moment(item['endTime:']).format('hh:mm')}
+                          </Text>
+                          <Text style={{paddingRight: 30}}>{item.odo}</Text>
+                          <Text style={{paddingRight: 30}}>
+                            {item.duration}
+                          </Text>
+                          <TouchableOpacity
+                            onPress={() =>
+                              props.navigation.navigate('MapHistory', {
+                                summaryData: item,
+                                imei: newImei,
+                              })
+                            }>
+                            <Image
+                              source={image.maphistory}
+                              style={{
+                                resizeMode: 'contain',
+                                height: 20,
+                                width: 20,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    })
+                  ) : (
+                    <View style={{flexDirection: 'row'}}>
+                      <View style={{marginHorizontal: 20}}>
                         <Text>
-                          {mapHistory[0]?.todaysIgnitionOnTimeSeconds
-                            ? getTime(
-                                mapHistory[0]?.todaysIgnitionOnTimeSeconds,
+                          {summaryReport[0]
+                            ? moment(summaryReport[0]['endTime:']).format(
+                                'hh:mm',
                               )
                             : '00:00:00'}
                         </Text>
-                      )}
-                    </View>
-                    {/*  */}
-
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>
-                        Distance Travelled(kms)
-                      </Text>
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory.map(item => {
-                          return <Text>{item.todaysODO}</Text>;
-                        })
-                      ) : (
-                        <Text>
-                          {mapHistory[0]?.todaysODO
-                            ? mapHistory[0].todaysODO
-                            : '00.00'}
-                        </Text>
-                      )}
-                    </View>
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>End Location</Text>
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          {
-                            /* console.log('aaassshihihishishishi', item); */
-                          }
-                          return <Text>{item?.endLocation}</Text>;
-                        })
-                      ) : (
-                        <Text>{mapHistory[0]?.endLocation}</Text>
-                      )}
-                    </View>
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>End Time (HH:MM)</Text>
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          {
-                            /* console.log('aaassshihihishishishi', item.endTime); */
-                          }
-
-                          return <Text>{item?.endTime}</Text>;
-                        })
-                      ) : (
-                        <Text>{mapHistory[0]?.endTime}</Text>
-                      )}
-                    </View>
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>#OverSpeed</Text>
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          {
-                            /* console.log('aaassshihihishishishi', item); */
-                          }
-                          return <Text>{item?.overspeedCounter}</Text>;
-                        })
-                      ) : (
-                        <Text>{mapHistory[0]?.overspeedCounter}</Text>
-                      )}
-                    </View>
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>#Alerts</Text>
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          {
-                            /* console.log('aaassshihihishishishi', item); */
-                          }
-                          return <Text>{item?.alertsCounter}</Text>;
-                        })
-                      ) : (
-                        <Text>{mapHistory[0]?.alertsCounter}</Text>
-                      )}
-                    </View>
-                    {/*  */}
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Report Date</Text>
-                      {/* <Text>{sumIgnitionOn}</Text> */}
-                      {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        mapHistory?.map(item => {
-                          {
-                            /* console.log('aaassshihihishishishi', item); */
-                          }
-                          return <Text>{item?.timeStamp1}</Text>;
-                        })
-                      ) : (
-                        <Text>{mapHistory[0]?.timeStamp1}</Text>
-                      )}
-                    </View>
-                  </ScrollView>
-                </LinearGradient>
-              ) : null}
-
-              {/*
-               */}
-
-              {data2.length > 0 ? (
-                <LinearGradient
-                  colors={['#BCE2FF', '#ffffff']}
-                  start={{x: 0, y: 0.5}}
-                  end={{x: 1, y: 0.5}}
-                  style={{padding: 20}}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                      alignItems: 'center',
-                    }}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                      {__('Drive Summary Report')}
-                    </Text>
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: colors.mainThemeColor1,
-                        borderRadius: 50,
-                      }}
-                      onPress={() => {
-                        setIsActive('drive'),
-                          setIsActive2(prev => {
-                            return {
-                              ...prev,
-                              drive: prev['drive'] == 0 ? 1 : 0,
-                            };
-                          });
-                      }}>
-                      <MaterialIcons
-                        style={{
-                          color: colors.white,
-                          fontSize: 25,
-                        }}
-                        name={'keyboard-arrow-down'}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() =>
-                        showModal('Drive Summary Report', [
-                          'Vehicle Number',
-                          'Start Location',
-                          'End Time',
-                          'Work/Idle hrs',
-                          'Duration',
-                        ])
-                      }>
-                      <Image
-                        source={image.shareDark}
-                        style={{width: 24, height: 24}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <ScrollView
-                    showsHorizontalScrollIndicator={false}
-                    horizontal={true}
-                    style={{flexDirection: 'row', paddingTop: 10}}>
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Vehicle No.</Text>
-                      {isActive === 'drive' && isActive2.drive === 1 ? (
-                        summaryReport?.map(item => {
-                          return <Text>{newFilterVehicle}</Text>;
-                        })
-                      ) : (
-                        <Text>{newFilterVehicle}</Text>
-                      )}
-                    </View>
-                    <View
-                      style={{
-                        paddingRight: 20,
-                      }}>
-                      <Text style={styles.textHead}>Start Location</Text>
-                      {isActive === 'drive' && isActive2.drive === 1 ? (
-                        data2?.map(item => {
-                          return <Text>{item?.vehicleAddress}</Text>;
-                        })
-                      ) : (
-                        <Text>{data2[0]?.vehicleAddress}</Text>
-                      )}
-                    </View>
-                    {/*  */}
-                    <View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-around',
-                        }}>
-                        <Text style={styles.textHead}>End Time</Text>
-                        <Text style={styles.textHead}>Work/Idle hrs</Text>
-                        <Text style={styles.textHead}>Duration</Text>
                       </View>
-                      {isActive === 'drive' && isActive2.drive === 1 ? (
-                        summaryReport.map(item => {
-                          return (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                              }}>
-                              <Text style={{paddingRight: 30}}>
-                                {moment(item['endTime:']).format('hh:mm')}
-                              </Text>
-                              <Text style={{paddingRight: 30}}>{item.odo}</Text>
-                              <Text style={{paddingRight: 30}}>
-                                {item.duration}
-                              </Text>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  props.navigation.navigate('MapHistory', {
-                                    summaryData: item,
-                                    imei: newImei,
-                                  })
-                                }>
-                                <Image
-                                  source={image.maphistory}
-                                  style={{
-                                    resizeMode: 'contain',
-                                    height: 20,
-                                    width: 20,
-                                  }}
-                                />
-                              </TouchableOpacity>
-                            </View>
-                          );
-                        })
-                      ) : (
-                        <View style={{flexDirection: 'row'}}>
-                          <View style={{marginHorizontal: 20}}>
-                            <Text>
-                              {moment(summaryReport[0]['endTime:']).format(
-                                'hh:mm',
-                              )}
-                            </Text>
-                          </View>
-                          <View style={{marginHorizontal: 20}}>
-                            <Text>{summaryReport[0].odo}</Text>
-                          </View>
-                          <View style={{marginHorizontal: 20}}>
-                            <Text>{summaryReport[0].duration}</Text>
-                          </View>
-                        </View>
-                      )}
-                    </View>
-
-                    {/* <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>End Time</Text>
-                      {isActive === 'drive' && isActive2.drive === 1 ? (
-                        summaryReport?.map(item => {
-                          return <Text>{item['endTime:']}</Text>;
-                        })
-                      ) : (
-                        <Text>{summaryReport[0]['endTime:']}</Text>
-                      )}
-                    </View>
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Duration</Text>
-                      {isActive === 'drive' && isActive2.drive === 1 ? (
-                        summaryReport?.map(item => {
-                          return <Text>{item.duration}</Text>;
-                        })
-                      ) : (
-                        <Text>{summaryReport[0]?.duration}</Text>
-                      )}
-                    </View>
-                    <View style={{paddingRight: 20}}>
-                      <Text style={styles.textHead}>Work/Idle hrs</Text>
-                      {isActive === 'drive' && isActive2.drive === 1 ? (
-                        summaryReport?.map(item => {("item.endTime",item) 
-                          
-                          return <Text>{item.odo}</Text>;
-                        })
-                      ) : (
+                      <View style={{marginHorizontal: 20}}>
                         <Text>{summaryReport[0]?.odo}</Text>
-                      )}
-                    </View> */}
-                  </ScrollView>
-                </LinearGradient>
-              ) : null}
+                      </View>
+                      <View style={{marginHorizontal: 20}}>
+                        <Text>{summaryReport[0]?.duration}</Text>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              </ScrollView>
+            </LinearGradient>
+            {/* ) : null} */}
 
-              {/*
-               */}
+            {/*
+             */}
 
-              <LinearGradient
-                colors={['#BCE2FF', '#ffffff']}
-                start={{x: 0, y: 0.5}}
-                end={{x: 1, y: 0.5}}
-                style={{padding: 20}}>
+            <LinearGradient
+              colors={['#BCE2FF', '#ffffff']}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              style={{padding: 20}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  {__('Idle Report')}
+                </Text>
                 <View
                   style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    width: '100%',
                     alignItems: 'center',
+                    minWidth: '20%',
+                    justifyContent: 'space-between',
                   }}>
-                  <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                    {__('Idle Report')}
-                  </Text>
-                  <View
+                  <TouchableOpacity
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      minWidth: '20%',
-                      justifyContent: 'space-between',
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                    }}
+                    onPress={() => {
+                      setIsActive('idle'),
+                        setIsActive2(prev => {
+                          return {
+                            ...prev,
+                            idle: prev['idle'] == 0 ? 1 : 0,
+                          };
+                        });
                     }}>
-                    <TouchableOpacity
+                    <MaterialIcons
                       style={{
-                        backgroundColor: colors.mainThemeColor1,
-                        borderRadius: 50,
+                        color: colors.white,
+                        fontSize: 25,
                       }}
-                      onPress={() => {
-                        setIsActive('idle'),
-                          setIsActive2(prev => {
-                            return {
-                              ...prev,
-                              idle: prev['idle'] == 0 ? 1 : 0,
-                            };
-                          });
-                      }}>
-                      <MaterialIcons
-                        style={{
-                          color: colors.white,
-                          fontSize: 25,
-                        }}
-                        name={'keyboard-arrow-down'}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() =>
-                        showModal('Idle Report', [
-                          'Vehicle Number',
-                          'Date',
-                          'Engine Idle Time',
-                        ])
-                      }>
-                      <Image
-                        source={image.shareDark}
-                        style={{width: 24, height: 24}}
-                      />
-                    </TouchableOpacity>
-                  </View>
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      showModal('Idle Report', [
+                        'Vehicle Number',
+                        'Date',
+                        'Engine Idle Time',
+                      ])
+                    }>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 24, height: 24}}
+                    />
+                  </TouchableOpacity>
                 </View>
-                <ScrollView
-                  showsHorizontalScrollIndicator={false}
-                  horizontal={true}
-                  style={{flexDirection: 'row', paddingTop: 10}}>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Vehicle No.</Text>
-                    {/* <Text>20-07-2022</Text> */}
-                    {/* {isActive == 'idle' && isActive2.idle === 1 ? (
+              </View>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                style={{flexDirection: 'row', paddingTop: 10}}>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
+                  {/* <Text>20-07-2022</Text> */}
+                  {/* {isActive == 'idle' && isActive2.idle === 1 ? (
                       newVehicleNumber?.map(item => {
                         return <Text>{item.label.slice(0, 13)}</Text>;
                       })
                     ) : (
                       <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
                     )} */}
-                    {/* {isActive == 'idle' && isActive2.idle === 1 ? ( */}
-                    {/* <Text>{newFilterVehicle}</Text> */}
-                    {/* ) : null} */}
-                    {isActive == 'idle' && isActive2.idle === 1 ? (
-                      mapHistory?.map(item => {
-                        return <Text>{newFilterVehicle}</Text>;
-                      })
-                    ) : (
-                      <Text>{newFilterVehicle}</Text>
-                    )}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Date</Text>
-                    {/* <Text>{sumIgnitionOn}</Text> */}
-                    {isActive == 'idle' && isActive2.idle === 1 ? (
-                      mapHistory?.map(item => {
-                        {
-                          /* console.log('item.timeStamp1', item.timeStamp1); */
-                        }
-                        return (
-                          <Text>
-                            {/* {moment(item.timeStamp1.slice(3)).format('YYYY-MM-DD')} */}
-                            {getNewDate(item.timeStamp1)}
-                          </Text>
-                        );
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.timeStamp1
-                          ? getNewDate(mapHistory[0].timeStamp1)
-                          : '00:00:00'}
-                      </Text>
-                      /* <Text>
+                  {/* {isActive == 'idle' && isActive2.idle === 1 ? ( */}
+                  {/* <Text>{newFilterVehicle}</Text> */}
+                  {/* ) : null} */}
+                  {isActive == 'idle' && isActive2.idle === 1 ? (
+                    mapHistory?.map(item => {
+                      return <Text>{newFilterVehicle}</Text>;
+                    })
+                  ) : (
+                    <Text>{newFilterVehicle}</Text>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Date</Text>
+                  {/* <Text>{sumIgnitionOn}</Text> */}
+                  {isActive == 'idle' && isActive2.idle === 1 ? (
+                    mapHistory?.map(item => {
+                      {
+                        /* console.log('item.timeStamp1', item.timeStamp1); */
+                      }
+                      return (
+                        <Text>
+                          {/* {moment(item.timeStamp1.slice(3)).format('YYYY-MM-DD')} */}
+                          {getNewDate(item.timeStamp1)}
+                        </Text>
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.timeStamp1
+                        ? getNewDate(mapHistory[0].timeStamp1)
+                        : '00:00:00'}
+                    </Text>
+                    /* <Text>
                       {getNewDate(mapHistory[0]?.timeStamp1)}
                     </Text> */
-                    )}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Engine Idle Time</Text>
-                    {isActive == 'idle' && isActive2.idle === 1 ? (
-                      mapHistory?.map(item => {
-                        return (
-                          <Text>
-                            {item.todaysIdleTimeSeconds
-                              ? getTime(item.todaysIdleTimeSeconds)
-                              : '00:00:00'}
-                          </Text>
-                        );
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.todaysIdleTimeSeconds
-                          ? getTime(mapHistory[0]?.todaysIdleTimeSeconds)
-                          : '00:00:00'}
-                      </Text>
-                    )}
-                  </View>
-                </ScrollView>
-              </LinearGradient>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Engine Idle Time</Text>
+                  {isActive == 'idle' && isActive2.idle === 1 ? (
+                    mapHistory?.map(item => {
+                      return (
+                        <Text>
+                          {item.todaysIdleTimeSeconds
+                            ? getTime(item.todaysIdleTimeSeconds)
+                            : '00:00:00'}
+                        </Text>
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysIdleTimeSeconds
+                        ? getTime(mapHistory[0]?.todaysIdleTimeSeconds)
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                </View>
+              </ScrollView>
+            </LinearGradient>
 
-              {/*
-               */}
+            {/*
+             */}
 
-              <LinearGradient
-                colors={['#BCE2FF', '#ffffff']}
-                start={{x: 0, y: 0.5}}
-                end={{x: 1, y: 0.5}}
-                style={{padding: 20}}>
+            <LinearGradient
+              colors={['#BCE2FF', '#ffffff']}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              style={{padding: 20}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  {__('Daily Waiting Time Report')}
+                </Text>
                 <View
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    width: '100%',
+                    minWidth: '20%',
                     alignItems: 'center',
                   }}>
-                  <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                    {__('Daily Waiting Time Report')}
-                  </Text>
-                  <View
+                  <TouchableOpacity
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      minWidth: '20%',
-                      alignItems: 'center',
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                    }}
+                    onPress={() => {
+                      setIsActive('daily'),
+                        setIsActive2(prev => {
+                          return {
+                            ...prev,
+                            daily: prev['daily'] == 0 ? 1 : 0,
+                          };
+                        });
                     }}>
-                    <TouchableOpacity
+                    <MaterialIcons
                       style={{
-                        backgroundColor: colors.mainThemeColor1,
-                        borderRadius: 50,
+                        color: colors.white,
+                        fontSize: 25,
                       }}
-                      onPress={() => {
-                        setIsActive('daily'),
-                          setIsActive2(prev => {
-                            return {
-                              ...prev,
-                              daily: prev['daily'] == 0 ? 1 : 0,
-                            };
-                          });
-                      }}>
-                      <MaterialIcons
-                        style={{
-                          color: colors.white,
-                          fontSize: 25,
-                        }}
-                        name={'keyboard-arrow-down'}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() =>
-                        showModal('Daily Waiting Time Report', [
-                          'Vehicle Number',
-                          'Date',
-                          'Waiting Time',
-                        ])
-                      }>
-                      <Image
-                        source={image.shareDark}
-                        style={{width: 24, height: 24}}
-                      />
-                    </TouchableOpacity>
-                  </View>
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      showModal('Daily Waiting Time Report', [
+                        'Vehicle Number',
+                        'Date',
+                        'Waiting Time',
+                      ])
+                    }>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 24, height: 24}}
+                    />
+                  </TouchableOpacity>
                 </View>
-                <ScrollView
-                  showsHorizontalScrollIndicator={false}
-                  horizontal={true}
-                  style={{flexDirection: 'row', paddingTop: 10}}>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Vehicle No.</Text>
-                    {isActive === 'daily' && isActive2.daily === 1 ? (
-                      mapHistory?.map(item => {
-                        return <Text>{newFilterVehicle}</Text>;
-                      })
-                    ) : (
-                      <Text>{newFilterVehicle}</Text>
-                    )}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Date</Text>
-                    {isActive === 'daily' && isActive2.daily === 1 ? (
-                      mapHistory?.map(item => {
-                        return <Text>{item.timeStamp1.slice(4)}</Text>;
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.timeStamp1
-                          ? getNewDate(mapHistory[0].timeStamp1)
-                          : '00:00:00'}
-                      </Text>
-                      /* <Text>{mapHistory[0]?.timeStamp1.slice(4)}</Text> */
-                    )}
-                  </View>
-                  <View style={{paddingRight: 20}}>
-                    <Text style={styles.textHead}>Waiting Time</Text>
-                    {isActive === 'daily' && isActive2.daily === 1 ? (
-                      mapHistory?.map(item => {
-                        return (
-                          <Text>
-                            {item.todaysWaitingIgnitionTime
-                              ? getTime(item.todaysWaitingIgnitionTime)
-                              : '00:00:00'}
-                          </Text>
-                        );
-                      })
-                    ) : (
-                      <Text>
-                        {mapHistory[0]?.todaysWaitingIgnitionTime
-                          ? getTime(mapHistory[0]?.todaysWaitingIgnitionTime)
-                          : '00:00:00'}
-                      </Text>
-                    )}
-                  </View>
-                </ScrollView>
-              </LinearGradient>
-            </>
-          ) : (
-            <ActivityIndicator color={colors.black} />
-          )}
-        </ScrollView>
-      ) : (
+              </View>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+                style={{flexDirection: 'row', paddingTop: 10}}>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Vehicle No.</Text>
+                  {isActive === 'daily' && isActive2.daily === 1 ? (
+                    mapHistory?.map(item => {
+                      return <Text>{newFilterVehicle}</Text>;
+                    })
+                  ) : (
+                    <Text>{newFilterVehicle}</Text>
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Date</Text>
+                  {isActive === 'daily' && isActive2.daily === 1 ? (
+                    mapHistory?.map(item => {
+                      return <Text>{item.timeStamp1.slice(4)}</Text>;
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.timeStamp1
+                        ? getNewDate(mapHistory[0].timeStamp1)
+                        : '00:00:00'}
+                    </Text>
+                    /* <Text>{mapHistory[0]?.timeStamp1.slice(4)}</Text> */
+                  )}
+                </View>
+                <View style={{paddingRight: 20}}>
+                  <Text style={styles.textHead}>Waiting Time</Text>
+                  {isActive === 'daily' && isActive2.daily === 1 ? (
+                    mapHistory?.map(item => {
+                      return (
+                        <Text>
+                          {item.todaysWaitingIgnitionTime
+                            ? getTime(item.todaysWaitingIgnitionTime)
+                            : '00:00:00'}
+                        </Text>
+                      );
+                    })
+                  ) : (
+                    <Text>
+                      {mapHistory[0]?.todaysWaitingIgnitionTime
+                        ? getTime(mapHistory[0]?.todaysWaitingIgnitionTime)
+                        : '00:00:00'}
+                    </Text>
+                  )}
+                </View>
+              </ScrollView>
+            </LinearGradient>
+          </>
+        ) : (
+          <ActivityIndicator color={colors.black} />
+        )}
+      </ScrollView>
+      {/* ) 
+      : (
         <View
           style={{
             height: '100%',
@@ -1810,7 +1775,7 @@ function Reports(props) {
             <Text>Please select Vehicle</Text>
           </View>
         </View>
-      )}
+      )} */}
     </>
   );
 }
