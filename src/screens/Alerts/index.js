@@ -30,6 +30,7 @@ const Alerts = props => {
   const [data, setdata] = useState([]);
   const [filter, setFilter] = useState([]);
   const [imei, setImei] = useState('');
+  const[isActive,setIsActive] = useState({})
   React.useEffect(() => {
     getImei();
   }, []);

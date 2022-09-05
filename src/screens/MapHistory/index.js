@@ -25,6 +25,7 @@ import Toast from 'react-native-simple-toast';
 // import MapView from '../../../Utils/helper/GoogleMap';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SelectDropdown from 'react-native-select-dropdown';
+import {useIsFocused} from '@react-navigation/native';
 
 import MapView, {
   AnimatedRegion,
@@ -44,12 +45,13 @@ const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function MapHistory(props) {
+  const focus = useIsFocused();
   // console.log('props mapHist', props.route.params.details.imei);
   const imei = props?.route?.params?.details?.imei;
   const ime = props?.route?.params?.imei;
 
-  // console.log('imeiimeiimeiimeiimei1111111111111111111', imei);
-  // console.log('imeimeimeime000000000000000000000000000000000000', ime);
+  console.log('imeiimeiimeiimeiimei1111111111111111111', imei);
+  console.log('imeimeimeime000000000000000000000000000000000000', ime);
   const [data, setData] = useState([]);
   const [newImei, setNewImei] = useState(imei || ime);
   // console.log('newImeinewImeinewImeinewImeinewImei', newImei);
@@ -84,24 +86,46 @@ function MapHistory(props) {
   });
   const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
   React.useEffect(() => {
-    getImei();
-  }, [props]);
+    if (focus == true) {
+      if (props?.route?.params?.details != undefined) {
+        setSelected(props?.route?.params?.details.deviceId);
+      } else {
+        setSelected('All Vehicle');
+      }
+      const a = moment(new Date()).format('YYYY-MM-DD');
+      setFtime('00:00:00');
+      const ab = moment(new Date()).format('hh-mm-ss');
+      console.log('avavava', ab);
+      setFtimeend(ab);
+
+      setFdate(a);
+
+      getImei();
+    }
+  }, [props, focus]);
 
   const getImei = async () => {
     const data = await Storage.getVehicleDetail('vehicle_detail');
+    console.log('datadatadatadatadatadata', data);
+
     if (newImei) {
+      console.log('newImeinewImeinewImeinewImei', newImei);
+
       const filterVehicle = data.find(item => {
+        console.log('vvvvvvvvv', imei);
         return item.imei === newImei;
       });
       // setVehicleData(filterVehicle);
       setSelected(filterVehicle.deviceId);
-      console.log('filerIIIMMMEEEEIIII', filterVehicle);
+      console.log('filerIIIMMMEEEEIIII', filterVehicle.deviceId);
     }
     setVehicleData(data);
   };
   useEffect(() => {
     console.log('side bar menu', newImei);
-    if (fdate !== '' && newImei !== undefined && fdateend !== '') {
+    console.log('fffffffffffffffffffffffffffffffffffff', fdate);
+
+    if (fdate !== '' && newImei !== undefined) {
       getMapHistory();
     }
     // return () => {
@@ -150,8 +174,8 @@ function MapHistory(props) {
       var te = moment(summaryData?.['endTime:'], 'YYYY-MM-DD hh:mm:ss').unix();
       const utcTimeStart = ts - 19800;
       const utcTimeEnd = te - 19800;
-      console.log('utcTimeStartutcTimeStartutcTimeStart', utcTimeStart);
-      console.log('utcTimeEndutcTimeEndutcTimeEnd', utcTimeEnd);
+      // console.log('utcTimeStartutcTimeStartutcTimeStart', utcTimeStart);
+      // console.log('utcTimeEndutcTimeEndutcTimeEnd', utcTimeEnd);
 
       newCoordinate = response?.data?.EventHistory.filter(item => {
         return utcTimeStart < parseFloat(item.packetTimeStamp) < utcTimeEnd;
@@ -207,6 +231,8 @@ function MapHistory(props) {
 
     let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
     console.log(fTimeStart);
+    setFtimeend(fTimeStart);
+
     setFtime('00:00:00');
   };
   const onChangeEnd = selectedDate => {
