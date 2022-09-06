@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   View,
 } from 'react-native';
+import Storage from '../../../Utils/Storage';
+
 import colors from '../../../assets/Colors';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
@@ -26,6 +28,8 @@ import CheckBox from 'react-native-check-box';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const ForgotPassword_1 = props => {
+  const{username}=props?.route?.params;
+  console.log('aaaa',username)
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [newPassword, setnewPassword] = useState('');
@@ -37,19 +41,24 @@ const ForgotPassword_1 = props => {
 
   const handleSubmit = async () => {
     setLoading(true);
+    // const succcess = await Storage.getLoginDetail('login_detail');
+    // let username = succcess.accountId;
+    // console.log("username",username);
+    // let encodedPassWord = succcess.password;
     if (newPassword === confirmPassword) {
       const response = await axiosGetData(
-        `forgotPasswordUpdate/rrenterprises/${otp}/${newPassword}`,
+        `forgotPasswordUpdate/${username}/${otp}/${newPassword}`,
       );
       console.log('forgot password', response.data);
       setLoading(false);
       if (response.data.apiResult === 'success') {
-        if (response.data.message == 'InvalidOtp') {
+        if (response.data.message == 'Success') {
           Toast.show(__(`${response.data.message}`));
+          props.navigation.navigate('Login');
+
           setLoading(false);
         } else {
           Toast.show(__(`${response.data.message}`));
-          props.navigation.navigate('Login');
         }
       }
       if (response.data.apiResult === 'error') {

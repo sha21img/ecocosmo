@@ -53,7 +53,7 @@ function Dashboard2({
     const filterData = driverDetails?.filter(item => {
       return item.deviceId === number.deviceId;
     });
-    console.log('filterDatafilterDatafilterDatafilterData', filterData);
+    // console.log('filterDatafilterDatafilterDatafilterData', filterData);
     setMobileNumber(filterData[0]);
     setVisible(true);
     return filterData[0];
@@ -238,8 +238,8 @@ function Dashboard2({
                     style={{padding: 0.5}}></LinearGradient>
                 </>
               )}
-              {parseFloat(item.lastNoGpsSignalTime) >
-              parseFloat(item.validPacketTimeStamp) ? (
+              {parseFloat(item.validPacketTimeStamp) <
+              parseFloat(item.lastNoGpsSignalTime) ? (
                 <>
                   <View
                     style={{
@@ -248,7 +248,7 @@ function Dashboard2({
                       justifyContent: 'center',
                     }}>
                     <Image
-                      source={image.locationWhite}
+                      source={image.locationWhiteOff}
                       style={{width: 13, height: 18}}
                     />
                   </View>
@@ -265,7 +265,7 @@ function Dashboard2({
                       justifyContent: 'center',
                     }}>
                     <Image
-                      source={image.locationWhiteOff}
+                      source={image.locationWhite}
                       style={{width: 13, height: 18}}
                     />
                   </View>
@@ -402,13 +402,15 @@ function Dashboard2({
           }
         />
       )}
-      <VehicleMenu
-        mobileNumber={mobileNumber}
-        visible={visible}
-        calling={calling}
-        setVisible={setVisible}
-        details={isData}
-      />
+      {visible ? (
+        <VehicleMenu
+          mobileNumber={mobileNumber}
+          visible={visible}
+          calling={calling}
+          setVisible={setVisible}
+          details={isData}
+        />
+      ) : null}
     </>
   );
 }
