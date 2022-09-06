@@ -32,6 +32,7 @@ const ForgotPassword = props => {
     if (response.data.message.message === 'success') {
       props.navigation.navigate('ForgotPassword-1', {
         companyName: props.route.params.companyName,
+        username:email
       });
       setLoading(false);
     } else {

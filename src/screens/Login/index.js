@@ -40,23 +40,12 @@ const Login = ({navigation}) => {
   const [companyName, setCompanyName] = useState(null);
 
   const handleLogin = async data => {
-    console.log(
-      'dat===================================================a',
-      data,
-    );
-    console.log(
-      'dat===================================================a',
-      data,
-    );
-    console.log(
-      'dat===================================================a',
-      data,
-    );
     setLoading(true);
     var encodedPassWord = md5(data?.password || password);
+    const name=data?.username || username
     console.log('asdf', encodedPassWord);
     const response = await axiosGetData(
-      `account/${data?.username || username}/${encodedPassWord}`,
+      `account/${name}/${encodedPassWord}`,
     );
     console.log('this is response from login scren');
     const succcess = await Storage.SetLogin(response?.data?.apiResult);

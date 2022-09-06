@@ -50,8 +50,8 @@ function MapHistory(props) {
   const imei = props?.route?.params?.details?.imei;
   const ime = props?.route?.params?.imei;
 
-  console.log('imeiimeiimeiimeiimei1111111111111111111', imei);
-  console.log('imeimeimeime000000000000000000000000000000000000', ime);
+  // console.log('imeiimeiimeiimeiimei1111111111111111111', imei);
+  // console.log('imeimeimeime000000000000000000000000000000000000', ime);
   const [data, setData] = useState([]);
   const [newImei, setNewImei] = useState(imei || ime);
   // console.log('newImeinewImeinewImeinewImeinewImei', newImei);
@@ -75,6 +75,7 @@ function MapHistory(props) {
   const [degree, setDegree] = useState(null);
   const [vehicleData, setVehicleData] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [speed, setSpeed] = useState(5000);
 
   const [coordinates, setCoordinates] = useState({
     coordinate: new AnimatedRegion({
@@ -87,18 +88,30 @@ function MapHistory(props) {
   const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
   React.useEffect(() => {
     if (focus == true) {
+      setNewImei(imei || ime);
+      const a = moment(new Date()).format('YYYY-MM-DD');
+      setFdate(a);
+
       if (props?.route?.params?.details != undefined) {
         setSelected(props?.route?.params?.details.deviceId);
       } else {
         setSelected('All Vehicle');
       }
-      const a = moment(new Date()).format('YYYY-MM-DD');
-      setFtime('00:00:00');
-      const ab = moment(new Date()).format('hh-mm-ss');
-      console.log('avavava', ab);
-      setFtimeend(ab);
 
-      setFdate(a);
+      if (props?.route?.params?.summaryData != undefined) {
+        const summaryData = props?.route?.params?.summaryData;
+        const fTime = moment(summaryData['startTime:']).format('hh:mm');
+        const endTime = moment(summaryData['endTime:']).format('hh:mm');
+        console.log('fTime', fTime);
+        console.log('endTime', endTime);
+        setFtime(fTime);
+        setFtimeend(endTime);
+      } else {
+        setFtime('00:00');
+        const ab = moment(new Date()).format('hh-mm');
+        console.log('avavava', ab);
+        setFtimeend(ab);
+      }
 
       getImei();
     }
@@ -106,34 +119,39 @@ function MapHistory(props) {
 
   const getImei = async () => {
     const data = await Storage.getVehicleDetail('vehicle_detail');
-    console.log('datadatadatadatadatadata', data);
+    // console.log('datadatadatadatadatadata', data);
 
     if (newImei) {
-      console.log('newImeinewImeinewImeinewImei', newImei);
+      // console.log('newImeinewImeinewImeinewImei', newImei);
 
       const filterVehicle = data.find(item => {
-        console.log('vvvvvvvvv', imei);
+        // console.log('vvvvvvvvv', imei);
         return item.imei === newImei;
       });
       // setVehicleData(filterVehicle);
       setSelected(filterVehicle.deviceId);
-      console.log('filerIIIMMMEEEEIIII', filterVehicle.deviceId);
+      // console.log('filerIIIMMMEEEEIIII', filterVehicle.deviceId);
     }
     setVehicleData(data);
   };
   useEffect(() => {
-    console.log('side bar menu', newImei);
-    console.log('fffffffffffffffffffffffffffffffffffff', fdate);
+    // console.log('fffffffffffffffffffffffffffffffffffff', fdate);
+    console.log(
+      '======================================================================',
+      newImei,
+    );
 
     if (fdate !== '' && newImei !== undefined) {
+      console.log('side bar menu', newImei);
+
       getMapHistory();
     }
     // return () => {
     //   clearInterval(interval);
     // };
-  }, [fdate, fdateend, ftime, ftimeend, newImei]);
+  }, [fdate, fdateend, ftime, ftimeend, newImei, props]);
   const Select = async (data, imei) => {
-    console.log('datadatadatadata', data);
+    // console.log('datadatadatadata', data);
     setSelected(data);
     setNewImei(imei);
     // setLoading(true);
@@ -141,6 +159,15 @@ function MapHistory(props) {
     // setLoading(false);
   };
   const getMapHistory = async () => {
+    console.log('getMapHistory');
+
+    const summaryData = props?.route?.params?.summaryData;
+    console.log('summaryDatasummaryData', summaryData);
+    // {"duration": "25 minutes", "endPoint": "19.003033,72.82708", "endTime:": "2022-09-05 07:24:04",
+    //  "odo": "11.00", "startPoint": "19.004127,72.826933",
+    //  "startTime:": "2022-09-05 06:59:04"}
+    //  imei=353701092279609&date=2022-09-05&startTime=03:00&endTime=10:00
+
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
     let password = loginDetail.password;
@@ -148,70 +175,139 @@ function MapHistory(props) {
       accountid: username,
       password: password,
       // imei: imei,
-      imei: newImei,
-      date: fdate,
+      // imei: newImei,
+      // date: fdate,
+      // startTime: ftime,
+      // endTime: ftimeend,
+      //
+      startTime: '03:00',
+      imei: '353701092279609',
+      endTime: '10:00',
+      date: '2022-09-05',
+      //
     };
-    const response = await axiosGetData('mapHistory', data);
-    let newCoordinate = response?.data?.EventHistory;
-    // 12:41:37
-    console.log('1234567ftime', ftime);
-    console.log('1234567ftimeend', ftimeend);
-    var tstart = moment(ftime, 'hh:mm:ss').unix();
-    var tsend = moment(ftimeend, 'hh:mm:ss').unix();
-    console.log('tstart', tstart);
-    console.log('tsend', tsend);
-    newCoordinate.filter(item => {
-      return tstart < parseFloat(item.packetTimeStamp) < tsend;
-    });
-    console.log('newDDDDDDDDDDDDDDDDDDDDD', newCoordinate.length);
-    if (ime) {
-      const summaryData = props?.route?.params?.summaryData;
-      console.log('summaryData', summaryData);
-      var ts = moment(
-        summaryData?.['startTime:'],
-        'YYYY-MM-DD hh:mm:ss',
-      ).unix();
-      var te = moment(summaryData?.['endTime:'], 'YYYY-MM-DD hh:mm:ss').unix();
-      const utcTimeStart = ts - 19800;
-      const utcTimeEnd = te - 19800;
-      // console.log('utcTimeStartutcTimeStartutcTimeStart', utcTimeStart);
-      // console.log('utcTimeEndutcTimeEndutcTimeEnd', utcTimeEnd);
+    console.log('datatattatattatatat---------------', data);
+    const response = await axiosGetData('mapHistoryWithTime', data);
+    console.log(
+      'aassgshshhsisisisjsss',
+      response.data.EventHistory.slice(0, 20),
+    );
+    let newCoordinate = response?.data?.EventHistory.slice(0, 20);
+    setData(newCoordinate);
 
-      newCoordinate = response?.data?.EventHistory.filter(item => {
-        return utcTimeStart < parseFloat(item.packetTimeStamp) < utcTimeEnd;
-      });
-    }
-    // console.log('==--=-newCoordinate', newCoordinate);
-    if (newCoordinate.length <= 0) {
-      Toast.show('There is no data for this vehicle');
-    } else {
+    // if (ime) {
+    //   const summaryData = props?.route?.params?.summaryData;
+    //   console.log('summaryData', summaryData);
+    //   var ts = moment(
+    //     summaryData?.['startTime:'],
+    //     'YYYY-MM-DD hh:mm:ss',
+    //   ).unix();
+    //   var te = moment(summaryData?.['endTime:'], 'YYYY-MM-DD hh:mm:ss').unix();
+    //   const utcTimeStart = ts - 19800;
+    //   const utcTimeEnd = te - 19800;
+    //   // console.log('utcTimeStartutcTimeStartutcTimeStart', utcTimeStart);
+    //   // console.log('utcTimeEndutcTimeEndutcTimeEnd', utcTimeEnd);
+
+    //   newCoordinate = response?.data?.EventHistory.filter(item => {
+    //     return utcTimeStart < parseFloat(item.packetTimeStamp) < utcTimeEnd;
+    //   });
+    // }
+    if (newCoordinate.length > 0) {
       newCoordinate?.forEach(el => {
         setCoordinates(prev => ({
           ...prev,
           coordinate: {latitude: el.lat, longitude: el.lng},
         }));
       });
-    }
-
-    const filterDataa = newCoordinate?.map(item => {
-      const date = parseFloat(item.packetTimeStamp) + 19800;
-      const newDate = new Date(date);
-      let month = newDate.getMonth() + 1;
-      if (String(Math.abs(month)).length == 1) {
-        month = '0' + month;
-      }
-
-      const filterTime = newDate.toLocaleTimeString('en-US');
-      return {...item, packetTimeStamp: filterTime};
-    });
-    if (fdate === fdateend) {
-      const newFilterData = filterDataa.filter(item => {
-        return item.packetTimeStamp > ftime && item.packetTimeStamp < ftimeend;
-      });
-      setData(newFilterData);
     } else {
-      setData(newCoordinate);
+      Toast.show('There is no data for this vehicle');
     }
+
+    // const filterDataa = newCoordinate?.map(item => {
+    //   const date = parseFloat(item.packetTimeStamp) + 19800;
+    //   const newDate = new Date(date);
+    //   let month = newDate.getMonth() + 1;
+    //   if (String(Math.abs(month)).length == 1) {
+    //     month = '0' + month;
+    //   }
+
+    //   const filterTime = newDate.toLocaleTimeString('en-US');
+    //   return {...item, packetTimeStamp: filterTime};
+    // });
+    // if (fdate === fdateend) {
+    //   const newFilterData = filterDataa.filter(item => {
+    //     return item.packetTimeStamp > ftime && item.packetTimeStamp < ftimeend;
+    //   });
+    //   setData(newFilterData);
+    // } else {
+    //   setData(newCoordinate);
+    // }
+
+    // http://54.169.20.116/react_v1_ec_apps/api/v3/mapHistoryWithTime?accountid=globalcars&password
+    // =ae6343555ef7aefd8a60ff88c6363e9c&imei=353701092279609&
+    // date=2022-09-05&startTime=03:00&endTime=10:00
+    // let data = {
+    //   accountid: username,
+    //   password: password,
+    //   // imei: imei,
+    //   imei: newImei,
+    //   date: fdate,
+    // };
+    // const response = await axiosGetData('mapHistory', data);
+    // let newCoordinate = response?.data?.EventHistory;
+    // var tstart = moment(ftime, 'hh:mm:ss').unix();
+    // var tsend = moment(ftimeend, 'hh:mm:ss').unix();
+    // newCoordinate.filter(item => {
+    //   return tstart < parseFloat(item.packetTimeStamp) < tsend;
+    // });
+    // console.log('newDDDDDDDDDDDDDDDDDDDDD', newCoordinate.slice(0,2));
+    // if (ime) {
+    //   const summaryData = props?.route?.params?.summaryData;
+    //   console.log('summaryData', summaryData);
+    //   var ts = moment(
+    //     summaryData?.['startTime:'],
+    //     'YYYY-MM-DD hh:mm:ss',
+    //   ).unix();
+    //   var te = moment(summaryData?.['endTime:'], 'YYYY-MM-DD hh:mm:ss').unix();
+    //   const utcTimeStart = ts - 19800;
+    //   const utcTimeEnd = te - 19800;
+    //   // console.log('utcTimeStartutcTimeStartutcTimeStart', utcTimeStart);
+    //   // console.log('utcTimeEndutcTimeEndutcTimeEnd', utcTimeEnd);
+
+    //   newCoordinate = response?.data?.EventHistory.filter(item => {
+    //     return utcTimeStart < parseFloat(item.packetTimeStamp) < utcTimeEnd;
+    //   });
+    // }
+    // if (newCoordinate.length <= 0) {
+    //   Toast.show('There is no data for this vehicle');
+    // } else {
+    //   newCoordinate?.forEach(el => {
+    //     setCoordinates(prev => ({
+    //       ...prev,
+    //       coordinate: {latitude: el.lat, longitude: el.lng},
+    //     }));
+    //   });
+    // }
+
+    // const filterDataa = newCoordinate?.map(item => {
+    //   const date = parseFloat(item.packetTimeStamp) + 19800;
+    //   const newDate = new Date(date);
+    //   let month = newDate.getMonth() + 1;
+    //   if (String(Math.abs(month)).length == 1) {
+    //     month = '0' + month;
+    //   }
+
+    //   const filterTime = newDate.toLocaleTimeString('en-US');
+    //   return {...item, packetTimeStamp: filterTime};
+    // });
+    // if (fdate === fdateend) {
+    //   const newFilterData = filterDataa.filter(item => {
+    //     return item.packetTimeStamp > ftime && item.packetTimeStamp < ftimeend;
+    //   });
+    //   setData(newFilterData);
+    // } else {
+    //   setData(newCoordinate);
+    // }
   };
   function formatDate(date) {
     var d = new Date(date),
@@ -276,10 +372,10 @@ function MapHistory(props) {
   // console.log('dayaatatatatattatta', data[0]);
   // console.log('i', i);
   function animateMarkerAndCamera(datas) {
-    console.log('poiuytrew ', datas);
+    // console.log('poiuytrew ', datas);
     if (i <= data?.length - 1) {
       if (datas === 'start') {
-        console.log('dtattatatiifiifif fif fif ', datas);
+        // console.log('dtattatatiifiifif fif fif ', datas);
 
         const cord1 = {
           latitude: parseFloat(data[i - 1].lat),
@@ -299,9 +395,9 @@ function MapHistory(props) {
             Math.cos(cord2.latitude) *
             Math.cos(cord2.longitude - cord1.longitude);
         const θ = Math.atan2(y, x);
-        console.log('θ', θ);
+        // console.log('θ', θ);
         const brng = ((θ * 180) / Math.PI + 360) % 360;
-        console.log('brng', brng);
+        // console.log('brng', brng);
 
         setDegree(brng);
 
@@ -320,8 +416,9 @@ function MapHistory(props) {
           heading: 0,
         };
         if (myMarker && mapRef.current) {
-          myMarker.animateMarkerToCoordinate(newCoordinate, 5000);
-          mapRef.current.animateCamera(newCamera, {duration: 5000});
+          console.log('ppppppppppppppppppppppppppppppppppppppppppp',speed)
+          myMarker.animateMarkerToCoordinate(newCoordinate, speed);
+          mapRef.current.animateCamera(newCamera, {duration: speed});
 
           // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
 
@@ -329,7 +426,7 @@ function MapHistory(props) {
         }
         i++;
       } else {
-        console.log('elseseseelelelsrseese');
+        // console.log('elseseseelelelsrseese');
         const cord1 = {
           latitude: parseFloat(data[i].lat),
           longitude: parseFloat(data[i].lng),
@@ -348,9 +445,9 @@ function MapHistory(props) {
             Math.cos(cord2.latitude) *
             Math.cos(cord2.longitude - cord1.longitude);
         const θ = Math.atan2(y, x);
-        console.log('θ', θ);
+        // console.log('θ', θ);
         const brng = ((θ * 180) / Math.PI + 360) % 360;
-        console.log('brng', brng);
+        // console.log('brng', brng);
 
         setDegree(brng);
 
@@ -387,7 +484,7 @@ function MapHistory(props) {
         }
       }
     } else {
-      console.log('jijijijiij');
+      // console.log('jijijijiij');
       setAnimate(false);
       clearInterval(interval);
       setAnimate('stop');
@@ -452,7 +549,7 @@ function MapHistory(props) {
           </Text>
         </View>
       </LinearGradient>
-      <TouchableOpacity style={style.textinputbox}>
+      <View style={style.textinputbox}>
         <SelectDropdown
           buttonStyle={{
             width: '100%',
@@ -464,7 +561,7 @@ function MapHistory(props) {
           onSelect={(selectedItem, index) => {
             setSelected(selectedItem.deviceId);
             Select(selectedItem.deviceId, selectedItem.imei);
-            console.log(selectedItem.deviceId, index);
+            // console.log(selectedItem.deviceId, index);
           }}
           buttonTextAfterSelection={selectedItem => {
             return selectedItem.deviceId;
@@ -484,7 +581,7 @@ function MapHistory(props) {
             );
           }}
         />
-      </TouchableOpacity>
+      </View>
       <View
         style={{
           flexDirection: 'row',
@@ -635,7 +732,7 @@ function MapHistory(props) {
           />
         </TouchableOpacity>
       </View>
-
+      {/* {console.log(data?.length)} */}
       {data?.length > 0 ? (
         <View style={{flex: 1}}>
           <TouchableOpacity
@@ -672,12 +769,13 @@ function MapHistory(props) {
                 return (
                   <>
                     <MarkerAnimated
+                      key={index}
                       // ref={marker => {
                       //   // console.log('marker', marker);
                       //   setMyMarker(marker);
                       // }}
                       pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
-                      key={index.toString()}
+                      // key={index.toString()}
                       coordinate={{
                         latitude: parseFloat(coordinate.lat),
                         longitude: parseFloat(coordinate.lng),
@@ -839,10 +937,14 @@ function MapHistory(props) {
                 {data
                   ?.filter(item => item.stoppage)
                   .map((coordinate, index) => {
+                    console.log(
+                      'ppppppppppppppppppppppppppppppppppppp',
+                      coordinate,
+                    );
                     return (
                       <>
                         <MarkerAnimated
-                          key={Math.random()}
+                          key={index}
                           coordinate={{
                             latitude: parseFloat(coordinate.lat),
                             longitude: parseFloat(coordinate.lng),
@@ -941,43 +1043,67 @@ function MapHistory(props) {
           )}
         </View>
       ) : (
-        <Text>Loading...</Text>
+        <Text>q...</Text>
       )}
-      {/* <TouchableOpacity
-        onPress={() => {
-          setAnimate(true), start();
-        }}
-        style={[styles.bubble, styles.button]}>
-        <Text>Animate</Text>
-      </TouchableOpacity> */}
 
       {data?.length > 0 ? (
         <>
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              bottom: 200,
+              width: '100%',
+              backgroundColor: 'red',
+            }}
+            onPress={() => {
+              console.log('hihihihiihihihi-----',speed)
+              if (speed <= 20000) {
+                setSpeed(prev => {
+                  return prev + 5000;
+                });
+              } else {
+                setSpeed(5000);
+              }
+            }}>
+            <Text>
+              {speed == 5000
+                ? '1x'
+                : speed == 10000
+                ? '2x'
+                : speed == 15000
+                ? '4x'
+                : speed == 20000
+                ? '8x'
+                : null}
+            </Text>
+          </TouchableOpacity>
           {animate == 'start' || animate == '' ? (
-            <TouchableOpacity
-              style={{position: 'absolute', bottom: 20, width: '100%'}}
-              onPress={() => {
-                setAnimate('stop'), start('start');
-              }}>
-              <LinearGradient
-                colors={['#0065B3', '#083273']}
-                start={{x: 0, y: 1}}
-                end={{x: 1, y: 0}}
-                style={{
-                  width: '80%',
-                  backgroundColor: 'red',
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingVertical: 20,
-                  borderRadius: 10,
+            <>
+              <TouchableOpacity
+                style={{position: 'absolute', bottom: 20, width: '100%'}}
+                onPress={() => {
+                  setAnimate('stop'), start('start');
                 }}>
-                <Text
-                  style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-                  Replay
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
+                <LinearGradient
+                  colors={['#0065B3', '#083273']}
+                  start={{x: 0, y: 1}}
+                  end={{x: 1, y: 0}}
+                  style={{
+                    width: '80%',
+                    backgroundColor: 'red',
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingVertical: 20,
+                    borderRadius: 10,
+                  }}>
+                  <Text
+                    style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
+                    Replay
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </>
           ) : (
             <TouchableOpacity
               style={{position: 'absolute', bottom: 20, width: '100%'}}

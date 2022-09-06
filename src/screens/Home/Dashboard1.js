@@ -172,7 +172,7 @@ const Dashboard1 = ({
     const response = await axiosGetData(
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
-    console.log('this si guest', response.data);
+    // console.log('this si guest', response.data);
     const driverDetails = response.data.driverDetails;
     const filterData = driverDetails?.filter(item => {
       return item.deviceId === data.deviceId;
@@ -187,7 +187,7 @@ const Dashboard1 = ({
     const filterData = driverDetails?.filter(item => {
       return item.deviceId === number.deviceId;
     });
-    console.log('filterDatafilterDatafilterDatafilterData', filterData);
+    // console.log('filterDatafilterDatafilterDatafilterData', filterData);
     setMobileNumber(filterData[0]);
     setVisible(true);
   };
@@ -212,7 +212,7 @@ const Dashboard1 = ({
     const isData = driverDetails.find(items => {
       return items.deviceId === item.deviceId;
     });
-    console.log('item', item.features, 'item');
+    // console.log('item', item.features, 'item');
     return (
       <>
         <TouchableOpacity
@@ -436,13 +436,15 @@ const Dashboard1 = ({
           }
         />
       )}
-      <VehicleMenu
-        mobileNumber={mobileNumber}
-        visible={visible}
-        setVisible={setVisible}
-        details={isData}
-        calling={calling}
-      />
+      {visible ? (
+        <VehicleMenu
+          mobileNumber={mobileNumber}
+          visible={visible}
+          setVisible={setVisible}
+          details={isData}
+          calling={calling}
+        />
+      ) : null}
     </>
   );
 };

@@ -117,6 +117,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     textAlign: 'center',
   },
-  textHead: {fontWeight: 'bold', color: '#B9B9B9'},
+  textHead: {
+    fontWeight: 'bold',
+    color: '#B9B9B9',
+    minWidth: 100,
+    alignContent: 'center',
+    // alignSelf: 'center',
+  },
+  tex: {
+    minWidth: 180,
+    alignSelf: 'center',
+    textAlignVertical: 'top',
+    marginBottom: 'auto',
+  },
+  text: {
+    minWidth: 180,
+    alignSelf: 'center',
+    textAlignVertical: 'top',
+    marginBottom: 'auto',
+    fontWeight: 'bold',
+    color: '#B9B9B9',
+  },
 });
 export default styles;
