@@ -103,7 +103,7 @@ const DrawerContent = props => {
   };
   return (
     <>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
         <LinearGradient
           colors={[colors.mainThemeColor3, colors.mainThemeColor1]}
           style={{flex: 1}}>

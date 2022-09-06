@@ -124,6 +124,7 @@ const ChatDetails = props => {
       <LinearGradient colors={['#BCE2FF', '#FFFFFF']} style={{flex: 1}}>
         <ScrollView
           style={{flex: 1}}
+          showsVerticalScrollIndicator={false}
           ref={scrollViewRef}
           onContentSizeChange={() =>
             scrollViewRef.current.scrollToEnd({animated: true})

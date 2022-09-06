@@ -219,7 +219,7 @@ const AlertSetting = props => {
           // setState({ ...state, [event.target.name]: event.target.checked });
         />
       </View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.bodyheading}>
           <Text style={styles.bodyHeadingText}>{__('Alert Setting')}</Text>
         </View>

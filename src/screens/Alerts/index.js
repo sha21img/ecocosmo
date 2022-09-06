@@ -30,7 +30,8 @@ const Alerts = props => {
   const [data, setdata] = useState([]);
   const [filter, setFilter] = useState([]);
   const [imei, setImei] = useState('');
-  const[isActive,setIsActive] = useState({})
+  const [isActive, setIsActive] = useState({});
+  const [loginDetails, setLoginDetails] = useState();
   React.useEffect(() => {
     getImei();
   }, []);
@@ -38,6 +39,9 @@ const Alerts = props => {
   const getImei = async () => {
     const data = await Storage.getVehicleDetail('vehicle_detail');
     setdata(data);
+    const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
+    Select(data[0].deviceId, data[0].imei);
   };
   const focus = useIsFocused();
   useEffect(() => {
@@ -63,6 +67,7 @@ const Alerts = props => {
   };
 
   const Select = async (data, imei) => {
+    setIson(false);
     setSelected(data);
     setLoading(true);
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -82,7 +87,7 @@ const Alerts = props => {
       console.log('selecting for imei', response.data.alert_details);
       setalertResponse(response?.data?.alert_details);
       setLoading(false);
-      setIson(!Ison);
+      setIson(true);
       setImei(imei);
     }
     setLoading(false);
@@ -129,12 +134,15 @@ const Alerts = props => {
               />
             </View>
           </View>
-          <TouchableOpacity style={styles.textinputbox}>
+          <View style={styles.textinputbox}>
             <SelectDropdown
               buttonStyle={{
                 width: '100%',
                 borderRadius: 7,
+                backgroundColor:
+                  loginDetails?.accountName == 'demo101' ? 'grey' : 'white',
               }}
+              disabled={loginDetails?.accountName == 'demo101' ? true : false}
               data={data}
               defaultButtonText={selected}
               onSelect={(selectedItem, index) => {
@@ -160,12 +168,16 @@ const Alerts = props => {
                 );
               }}
             />
-          </TouchableOpacity>
+          </View>
         </LinearGradient>
-        <View style={styles.box1}>
+        <View
+          style={
+            loginDetails?.accountName == 'demo101' ? styles.box11 : styles.box1
+          }>
           <Text style={styles.box1text}>{__('Alert Setting')}</Text>
           <ToggleSwitch
             isOn={Ison}
+            disabled={loginDetails?.accountName == 'demo101' ? true : false}
             onColor={colors.toggleColoron}
             offColor={colors.toggleColorOff}
             size="large"
@@ -173,7 +185,7 @@ const Alerts = props => {
           />
         </View>
         {alertDataResponse?.length > 0 ? (
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             {loading ? (
               <ActivityIndicator color={colors.black} />
             ) : (
@@ -183,13 +195,23 @@ const Alerts = props => {
                       return (
                         <>
                           <TouchableOpacity
+                            // loginDetails?.accountName == 'demo101' ? 'grey' : 'white',
+                            disabled={
+                              loginDetails?.accountName == 'demo101'
+                                ? true
+                                : false
+                            }
                             onPress={() =>
                               props.navigation.navigate('AlertSetting', {
                                 details: el,
                               })
                             }
                             key={el.id}
-                            style={styles.box2}>
+                            style={
+                              loginDetails?.accountName == 'demo101'
+                                ? styles.box22
+                                : styles.box2
+                            }>
                             <Text
                               style={{
                                 fontSize: Size.large,

@@ -116,13 +116,13 @@ const VehicleMenu = props => {
             </Text>
             <Text style={styles.modalHead}>{details.deviceId}</Text>
             {loginDetails?.accountName == 'demo101' ? (
-              <TouchableOpacity style={styles.disablebutton}>
+              <View style={styles.disablebutton}>
                 <Image
                   source={image.callimg}
                   style={{height: 15, width: 15, marginRight: 7}}
                 />
                 <Text style={styles.buttonText}>{__('Call')}</Text>
-              </TouchableOpacity>
+              </View>
             ) : mobileNumber?.mobilenumber !== '' ? (
               <TouchableOpacity
                 style={styles.button}

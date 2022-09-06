@@ -37,6 +37,8 @@ function GraphicalReports(props) {
   const [imei, setImei] = useState(filterImei);
   const [todayOdo, setTodayOdo] = useState([]);
   const [todayIgniOn, setTodayIgniOn] = useState([]);
+  const [outOfCoverage, setOutOfCoverage] = useState([]);
+  const [todayWaitingIgniTime, setTodayWaitingIgniTime] = useState([]);
   const [toggle, setToggle] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
@@ -55,12 +57,22 @@ function GraphicalReports(props) {
   const setDate = () => {
     var d = new Date();
     const startDate = moment(d).format('YYYY-MM-DD');
-
     setFdateend(startDate);
     d.setMonth(d.getMonth() - 1);
     const aa = moment(d).format('YYYY-MM-DD');
     setFdate(aa);
   };
+  const getTime = secs => {
+    var minutes = Math.floor(secs / 60);
+    // secs = secs % 60;
+    var hours = Math.floor(minutes / 60);
+    // minutes = minutes % 60;
+    // let time = `${hours.toString().length == 1 ? '0' + hours : hours}:${
+    //   minutes.toString().length == 1 ? '0' + minutes : minutes
+    // }:${secs.toString().length == 1 ? '0' + secs : secs}`;
+    return hours;
+  };
+
   const setVehicleDetail = async () => {
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     const filterVehicleNumber = vehicleNum.map((item, index) => {
@@ -113,17 +125,42 @@ function GraphicalReports(props) {
     if (aa) {
       setLoading(true);
     }
-    console.log('this is aa', aa);
+
     const TodaysODO = response?.data?.DeviceHistory?.map((item, index) => {
-      // console.log(item.todaysODO,"item.todaysOdo")
-      return {x: index + 1, y: item.todaysODO};
+      return {x: index + 1, y: item.todaysODO, z: item.timeStamp1};
     });
     setTodayOdo(TodaysODO);
+
     const TodayIgniOn = response?.data?.DeviceHistory?.map((item, index) => {
-      // console.log(item.todaysODO,"item.todaysOdo")
-      return {x: index + 1, y: item.todaysIgnitionOnTimeSeconds};
+      return {
+        x: index + 1,
+        y: getTime(item.todaysIgnitionOnTimeSeconds),
+        z: item.timeStamp1,
+      };
     });
     setTodayIgniOn(TodayIgniOn);
+
+    const OutofCoverage = response?.data?.DeviceHistory?.map((item, index) => {
+      return {
+        x: index + 1,
+        y: getTime(item.todaysOutOfCoverage),
+        z: item.timeStamp1,
+      };
+    });
+    setOutOfCoverage(OutofCoverage);
+
+    const TodayWaitIgniTime = response?.data?.DeviceHistory?.map(
+      (item, index) => {
+        console.log('TodayWaitIgniTime+_+_+_+_=-=-=-=-', item);
+        return {
+          x: index + 1,
+          y: getTime(item.todaysWaitingIgnitionTime),
+          z: item.timeStamp1,
+        };
+      },
+    );
+    0;
+    setTodayWaitingIgniTime(TodayWaitIgniTime);
   };
 
   const getFilterVehicle = async data => {
@@ -139,19 +176,6 @@ function GraphicalReports(props) {
     setIsSelected(true);
     setLoading(false);
   };
-
-  const getTime = secs => {
-    var minutes = Math.floor(secs / 60);
-    // secs = secs % 60;
-    var hours = Math.floor(minutes / 60);
-    // minutes = minutes % 60;
-    // let time = `${hours.toString().length == 1 ? '0' + hours : hours}:${
-    //   minutes.toString().length == 1 ? '0' + minutes : minutes
-    // }:${secs.toString().length == 1 ? '0' + secs : secs}`;
-    return hours;
-  };
-
-  const refs = React.useRef();
 
   return (
     <>
@@ -229,7 +253,9 @@ function GraphicalReports(props) {
       </View>
 
       {isSelected ? (
-        <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
+        <ScrollView 
+        showsVerticalScrollIndicator={false}
+        style={{flex: 1, backgroundColor: 'white'}}>
           {loading ? (
             <>
               {/* 
@@ -240,7 +266,6 @@ function GraphicalReports(props) {
                 start={{x: 0, y: 1}}
                 end={{x: 1, y: 0}}
                 style={{
-                  // flexDirection: 'row',
                   width: '100%',
                   justifyContent: 'space-between',
                   elevation: 20,
@@ -258,7 +283,7 @@ function GraphicalReports(props) {
                   <VictoryChart
                     key={Math.random()}
                     width={400}
-                    height={400}
+                    height={550}
                     domainPadding={{x: 10}}>
                     <VictoryBar
                       style={{
@@ -268,36 +293,70 @@ function GraphicalReports(props) {
                       data={todayOdo}
                       barRatio={1}
                       labels={({datum}) => {
-                        return datum.y === Sel.y
-                          ? `${datum.y}\n${item.timeStamp1}`
+                        return datum.x === Sel.x
+                          ? `${datum.y} KM\n${datum.z}`
                           : '';
                       }}
-                      // labelComponent={<VictoryLabel dy={1} dx={-50} />}
-                      // events={[
-                      //   {
-                      //     eventHandlers: {
-                      //       onPress: item => {
-                      //         return [
-                      //           {
-                      //             target: 'data',
-                      //             mutation: props => {
-                      //               if (Sel.y == props.datum.y) {
-                      //                 setSel({y: ''});
-                      //               } else {
-                      //                 setSel(props.datum);
-                      //               }
-                      //             },
-                      //           },
-                      //         ];
-                      //       },
-                      //     },
-                      //   },
-                      // ]}
+                      labelComponent={
+                        <VictoryLabel
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            fill: 'black',
+                          }}
+                          dy={-10}
+                          dx={0}
+                        />
+                      }
+                      events={[
+                        {
+                          eventHandlers: {
+                            onPress: item => {
+                              return [
+                                {
+                                  target: 'data',
+                                  mutation: props => {
+                                    console.log(
+                                      'props.datum',
+                                      props.datum,
+                                      'props.datum',
+                                    );
+                                    if (Sel.x == props.datum.x) {
+                                      setSel({y: ''});
+                                    } else {
+                                      setSel(props.datum);
+                                    }
+
+                                    // const fill =
+                                    //   props.style && props.style.fill;
+                                    // if (fill === 'red') {
+                                    //   return {
+                                    //     style: {
+                                    //       fill: '#5EB9FF',
+                                    //       padding: 8,
+                                    //       strokeWidth: 0,
+                                    //     },
+                                    //   };
+                                    // } else {
+                                    //   return {
+                                    //     style: {
+                                    //       fill: 'red',
+                                    //       padding: 8,
+                                    //       strokeWidth: 0,
+                                    //     },
+                                    //   };
+                                    // }
+                                  },
+                                },
+                              ];
+                            },
+                          },
+                        },
+                      ]}
                     />
                   </VictoryChart>
                 </View>
               </LinearGradient>
-
               {/* 
           ignition
            */}
@@ -323,7 +382,7 @@ function GraphicalReports(props) {
                   <VictoryChart
                     key={Math.random()}
                     width={400}
-                    height={400}
+                    height={550}
                     domainPadding={{x: 10}}>
                     <VictoryBar
                       style={{
@@ -332,409 +391,194 @@ function GraphicalReports(props) {
                       alignment="end"
                       data={todayIgniOn}
                       barRatio={1}
-                      // labels={({datum}) => {
-                      //   return datum.y === Sel.y
-                      //     ? `${datum.y}\n${item.timeStamp1}`
-                      //     : '';
-                      // }}
-                      // labelComponent={<VictoryLabel dy={1} dx={-50} />}
-                      // events={[
-                      //   {
-                      //     eventHandlers: {
-                      //       onPress: item => {
-                      //         return [
-                      //           {
-                      //             target: 'data',
-                      //             mutation: props => {
-                      //               console.log(
-                      //                 'insideeeeeeeeeeeeeeeeeeee',
-                      //                 props.datum,
-                      //                 'insideeeeeeeeeeeeeeeeeeee',
-                      //               );
-                      //               if (Sel.y == props.datum.y) {
-                      //                 setSel({y: ''});
-                      //               } else {
-                      //                 setSel(props.datum);
-                      //               }
-                      //             },
-                      //           },
-                      //         ];
-                      //       },
-                      //     },
-                      //   },
-                      // ]}
+                      labels={({datum}) => {
+                        return datum.x === Sel.x
+                          ? `${datum.y} Hrs\n${datum.z}`
+                          : '';
+                      }}
+                      labelComponent={
+                        <VictoryLabel
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            fill: 'black',
+                          }}
+                          dy={-10}
+                          dx={0}
+                        />
+                      }
+                      events={[
+                        {
+                          eventHandlers: {
+                            onPress: item => {
+                              return [
+                                {
+                                  target: 'data',
+                                  mutation: props => {
+                                    if (Sel.x == props.datum.x) {
+                                      setSel({y: ''});
+                                    } else {
+                                      setSel(props.datum);
+                                    }
+                                  },
+                                },
+                              ];
+                            },
+                          },
+                        },
+                      ]}
                     />
                   </VictoryChart>
                 </View>
               </LinearGradient>
-
               {/*
         Out Of Coverage
         */}
-
-              {/* <LinearGradient
+              <LinearGradient
                 colors={['#BCE2FF', '#FFFFFF']}
                 start={{x: 0, y: 1}}
                 end={{x: 1, y: 0}}
                 style={{
-                  flexDirection: 'row',
                   width: '100%',
                   justifyContent: 'space-between',
                   elevation: 20,
                 }}>
-                <View style={{width: '50%', padding: 20}}>
-                  <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                    Out Of Coverage
-                  </Text>
-                  <View
-                    style={{
-                      justifyContent: 'space-between',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <TouchableOpacity style={{paddingVertical: 10}}>
-                      <Image
-                        source={image.shareDark}
-                        style={{width: 25, height: 25}}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    padding: 15,
+                    color: 'black',
+                  }}>
+                  Out Of Coverage
+                </Text>
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <VictoryChart
+                    key={Math.random()}
+                    width={370}
+                    height={550}
+                    domainPadding={{x: 10}}>
+                    <VictoryBar
                       style={{
-                        backgroundColor: colors.mainThemeColor1,
-                        borderRadius: 50,
-                        width: 25,
-                        height: 25,
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        data: {fill: '#5EB9FF'},
                       }}
-                      onPress={() => {
-                        setToggle('coverage'), setOpen(true);
-                        setIsActive2(prev => {
-                          return {
-                            ...prev,
-                            coverage: prev['coverage'] == 0 ? 1 : 0,
-                          };
-                        });
-                      }}>
-                      <MaterialIcons
-                        style={{
-                          color: colors.white,
-                          fontSize: 25,
-                        }}
-                        name={'keyboard-arrow-down'}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View>
-                  {toggle == 'coverage' && isActive2.coverage === 1 ? (
-                    mapHistory.map(item => {
-                      return (
-                        <VictoryChart
-                          width={230}
-                          height={200}
-                          domainPadding={{x: 10}}>
-                          <VictoryBar
-                            style={{
-                              data: {fill: '#5EB9FF'},
-                            }}
-                            alignment="end"
-                            data={[
-                              {x: '5', y: 0},
-                              {x: '10', y: 0},
-                              {x: '15', y: 0},
-                              {x: '20', y: 0},
-                              {x: '25', y: 0},
-                              {x: '30', y: getTime(item.todaysOutOfCoverage)},
-                            ]}
-                            barRatio={0.7}
-                            labels={({datum}) => {
-                              return datum.y === Sel.y
-                                ? `${datum.y}\n${item.timeStamp1}`
-                                : '';
-                            }}
-                            labelComponent={<VictoryLabel dy={1} dx={-50} />}
-                            events={[
-                              {
-                                eventHandlers: {
-                                  onPress: item => {
-                                    return [
-                                      {
-                                        target: 'data',
-                                        mutation: props => {
-                                          console.log(
-                                            'insideeeeeeeeeeeeeeeeeeee',
-                                            props.datum,
-                                            'insideeeeeeeeeeeeeeeeeeee',
-                                          );
-                                          if (Sel.y == props.datum.y) {
-                                            setSel({y: ''});
-                                          } else {
-                                            setSel(props.datum);
-                                          }
-                                        },
-                                      },
-                                    ];
+                      alignment="end"
+                      data={outOfCoverage}
+                      barRatio={1}
+                      labels={({datum}) => {
+                        return datum.x === Sel.x
+                          ? `${datum.y} Hrs\n${datum.z}`
+                          : '';
+                      }}
+                      labelComponent={
+                        <VictoryLabel
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            fill: 'black',
+                          }}
+                          dy={-10}
+                          dx={0}
+                        />
+                      }
+                      events={[
+                        {
+                          eventHandlers: {
+                            onPress: item => {
+                              return [
+                                {
+                                  target: 'data',
+                                  mutation: props => {
+                                    if (Sel.x == props.datum.x) {
+                                      setSel({y: ''});
+                                    } else {
+                                      setSel(props.datum);
+                                    }
                                   },
                                 },
-                              },
-                            ]}
-                          />
-                        </VictoryChart>
-                      );
-                    })
-                  ) : (
-                    <VictoryChart
-                      width={230}
-                      height={200}
-                      domainPadding={{x: 10}}>
-                      <VictoryBar
-                        style={{
-                          data: {fill: '#5EB9FF'},
-                        }}
-                        alignment="end"
-                        data={[
-                          {x: '5', y: 0},
-                          {x: '10', y: 0},
-                          {x: '15', y: 0},
-                          {x: '20', y: 0},
-                          {x: '25', y: 0},
-                          {
-                            x: '30',
-                            y:
-                              mapHistory[0]?.todaysOutOfCoverage == undefined
-                                ? 0
-                                : getTime(mapHistory[0]?.todaysOutOfCoverage),
-                          },
-                        ]}
-                        animate={{
-                          duration: 2000,
-                          onLoad: {duration: 1000},
-                        }}
-                        barRatio={0.7}
-                        labels={({datum}) => {
-                          return datum.y === Sel.y
-                            ? `${datum.y}\n${mapHistory[0]?.timeStamp1}`
-                            : '';
-                        }}
-                        labelComponent={<VictoryLabel dy={1} dx={-50} />}
-                        events={[
-                          {
-                            eventHandlers: {
-                              onPress: item => {
-                                return [
-                                  {
-                                    target: 'data',
-                                    mutation: props => {
-                                      console.log(
-                                        'insideeeeeeeeeeeeeeeeeeee',
-                                        props.datum,
-                                        'insideeeeeeeeeeeeeeeeeeee',
-                                      );
-                                      if (Sel.y == props.datum.y) {
-                                        setSel({y: ''});
-                                      } else {
-                                        setSel(props.datum);
-                                      }
-                                    },
-                                  },
-                                ];
-                              },
+                              ];
                             },
                           },
-                        ]}
-                      />
-                    </VictoryChart>
-                  )}
+                        },
+                      ]}
+                    />
+                  </VictoryChart>
                 </View>
-              </LinearGradient> */}
-
+              </LinearGradient>
               {/*
         Daily Waiting
         */}
-
-              {/* <LinearGradient
+              <LinearGradient
                 colors={['#BCE2FF', '#FFFFFF']}
                 start={{x: 0, y: 1}}
                 end={{x: 1, y: 0}}
                 style={{
-                  flexDirection: 'row',
                   width: '100%',
                   justifyContent: 'space-between',
                   elevation: 20,
                 }}>
-                <View style={{width: '50%', padding: 20}}>
-                  <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                    Daily Waiting
-                  </Text>
-                  <View
-                    style={{
-                      justifyContent: 'space-between',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <TouchableOpacity style={{paddingVertical: 10}}>
-                      <Image
-                        source={image.shareDark}
-                        style={{width: 25, height: 25}}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    padding: 15,
+                    color: 'black',
+                  }}>
+                  Daily Waiting
+                </Text>
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <VictoryChart
+                    key={Math.random()}
+                    width={370}
+                    height={550}
+                    domainPadding={{x: 10}}>
+                    <VictoryBar
                       style={{
-                        backgroundColor: colors.mainThemeColor1,
-                        borderRadius: 50,
-                        width: 25,
-                        height: 25,
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        data: {fill: '#5EB9FF'},
                       }}
-                      onPress={() => {
-                        setToggle('waiting'), setOpen(true);
-                        setIsActive2(prev => {
-                          return {
-                            ...prev,
-                            waiting: prev['waiting'] == 0 ? 1 : 0,
-                          };
-                        });
-                      }}>
-                      <MaterialIcons
-                        style={{
-                          color: colors.white,
-                          fontSize: 25,
-                        }}
-                        name={'keyboard-arrow-down'}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View>
-                  {toggle == 'waiting' && isActive2.waiting === 1 ? (
-                    mapHistory.map(item => {
-                      return (
-                        <VictoryChart
-                          width={230}
-                          height={200}
-                          domainPadding={{x: 10}}>
-                          <VictoryBar
-                            style={{
-                              data: {fill: '#5EB9FF'},
-                            }}
-                            alignment="end"
-                            data={[
-                              {x: '5', y: 0},
-                              {x: '10', y: 0},
-                              {x: '15', y: 0},
-                              {x: '20', y: 0},
-                              {x: '25', y: 0},
-                              {
-                                x: '30',
-                                y: getTime(item.todaysWaitingIgnitionTime),
-                              },
-                            ]}
-                            barRatio={0.7}
-                            labels={({datum}) => {
-                              return datum.y === Sel.y
-                                ? `${datum.y}\n${item.timeStamp1}`
-                                : '';
-                            }}
-                            labelComponent={<VictoryLabel dy={1} dx={-50} />}
-                            events={[
-                              {
-                                eventHandlers: {
-                                  onPress: item => {
-                                    return [
-                                      {
-                                        target: 'data',
-                                        mutation: props => {
-                                          console.log(
-                                            'insideeeeeeeeeeeeeeeeeeee',
-                                            props.datum,
-                                            'insideeeeeeeeeeeeeeeeeeee',
-                                          );
-                                          if (Sel.y == props.datum.y) {
-                                            setSel({y: ''});
-                                          } else {
-                                            setSel(props.datum);
-                                          }
-                                        },
-                                      },
-                                    ];
+                      alignment="end"
+                      data={todayWaitingIgniTime}
+                      barRatio={1}
+                      labels={({datum}) => {
+                        return datum.x === Sel.x
+                          ? `${datum.y} Hrs\n${datum.z}`
+                          : '';
+                      }}
+                      labelComponent={
+                        <VictoryLabel
+                          dy={-10}
+                          dx={0}
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            fill: 'black',
+                          }}
+                        />
+                      }
+                      events={[
+                        {
+                          eventHandlers: {
+                            onPress: item => {
+                              return [
+                                {
+                                  target: 'data',
+                                  mutation: props => {
+                                    if (Sel.x == props.datum.x) {
+                                      setSel({y: ''});
+                                    } else {
+                                      setSel(props.datum);
+                                    }
                                   },
                                 },
-                              },
-                            ]}
-                          />
-                        </VictoryChart>
-                      );
-                    })
-                  ) : (
-                    <VictoryChart
-                      width={230}
-                      height={200}
-                      domainPadding={{x: 10}}>
-                      <VictoryBar
-                        style={{
-                          data: {fill: '#5EB9FF'},
-                        }}
-                        alignment="end"
-                        data={[
-                          {x: '5', y: 0},
-                          {x: '10', y: 0},
-                          {x: '15', y: 0},
-                          {x: '20', y: 0},
-                          {x: '25', y: 0},
-                          {
-                            x: '30',
-                            y:
-                              mapHistory[0]?.todaysWaitingIgnitionTime ==
-                              undefined
-                                ? 0
-                                : getTime(
-                                    mapHistory[0]?.todaysWaitingIgnitionTime,
-                                  ),
-                          },
-                        ]}
-                        animate={{
-                          duration: 2000,
-                          onLoad: {duration: 1000},
-                        }}
-                        barRatio={0.7}
-                        labels={({datum}) => {
-                          return datum.y === Sel.y
-                            ? `${datum.y}\n${mapHistory[0]?.timeStamp1}`
-                            : '';
-                        }}
-                        labelComponent={<VictoryLabel dy={1} dx={-50} />}
-                        events={[
-                          {
-                            eventHandlers: {
-                              onPress: item => {
-                                return [
-                                  {
-                                    target: 'data',
-                                    mutation: props => {
-                                      console.log(
-                                        'insideeeeeeeeeeeeeeeeeeee',
-                                        props.datum,
-                                        'insideeeeeeeeeeeeeeeeeeee',
-                                      );
-                                      if (Sel.y == props.datum.y) {
-                                        setSel({y: ''});
-                                      } else {
-                                        setSel(props.datum);
-                                      }
-                                    },
-                                  },
-                                ];
-                              },
+                              ];
                             },
                           },
-                        ]}
-                      />
-                    </VictoryChart>
-                  )}
+                        },
+                      ]}
+                    />
+                  </VictoryChart>
                 </View>
-              </LinearGradient> */}
+              </LinearGradient>
             </>
           ) : (
             <ActivityIndicator color={colors.black} />

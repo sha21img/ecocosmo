@@ -171,7 +171,7 @@ const CustomerProfile = props => {
               <Image source={image.callWhite} />
               <Text style={styles.subButtonText}>+91 - {primaryMobile}</Text>
             </TouchableOpacity>
-            <ScrollView style={{marginVertical: 16}}>
+            <ScrollView style={{marginVertical: 16}} showsVerticalScrollIndicator={false}>
               <View style={styles.TextFieldContainer}>
                 <Text style={styles.textFieldHeading}>{__('Account ID')}</Text>
                 <View style={styles.TextFieldSubContainer}>

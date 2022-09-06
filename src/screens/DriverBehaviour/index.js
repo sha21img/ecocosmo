@@ -49,31 +49,31 @@ function DriverBehaviour(props) {
       <LinearGradient
         colors={['#16BCD4', '#395DBF']}
         style={styles.mainContainer}>
-        <ScrollView>
-          <View style={styles.headerContainer}>
-            <View style={styles.headerDashboard}>
-              <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
-                <Image source={image.drawer} style={{height: 20, width: 23}} />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.dashboardText}
-                editable={false}
-                value={details.deviceId}
-              />
-            </View>
-            <View style={styles.alertContainer}>
-              <TouchableOpacity
-                onPress={() => props.navigation.navigate('Notifications')}>
-                <Image
-                  source={image.Notification1}
-                  style={{height: 30, width: 30, resizeMode: 'contain'}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image source={image.search} style={styles.searchIcon} />
-              </TouchableOpacity>
-            </View>
+        <View style={styles.headerContainer}>
+          <View style={styles.headerDashboard}>
+            <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+              <Image source={image.drawer} style={{height: 20, width: 23}} />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.dashboardText}
+              editable={false}
+              value={details.deviceId}
+            />
           </View>
+          <View style={styles.alertContainer}>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate('Notifications')}>
+              <Image
+                source={image.Notification1}
+                style={{height: 30, width: 30, resizeMode: 'contain'}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image source={image.search} style={styles.searchIcon} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <LinearGradient
             colors={['#BCE2FF', '#FFFFFF']}
             style={styles.card2Container}>

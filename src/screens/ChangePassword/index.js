@@ -10,18 +10,19 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import md5 from 'md5';
 import Toast from 'react-native-simple-toast';
 import Storage from '../../../Utils/Storage';
+import {AuthContext} from '../../../App';
 
 const ChangePassword = props => {
   const [Current, setCurrent] = useState('');
   const [newPassword, setnewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const {setToken} = React.useContext(AuthContext);
 
   const handleSubmit = async () => {
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
     const DecodedPassword = md5(Current);
-    let password = loginDetail.password;
     let data = {
       accountid: username,
       password: DecodedPassword,
@@ -29,22 +30,30 @@ const ChangePassword = props => {
     };
     console.log(data, 'data-=-=-=');
     setLoading(true);
-    if (newPassword === confirmPassword) {
-      const response = await axiosGetData(`changepassword`, data);
-      console.log('response', response.data);
-      if (response?.data?.apiResult === 'Successfully changed password') {
-        Toast.show(response?.data?.apiResult);
-        setLoading(false);
-        props.navigation.goBack();
+    if (Current != '' && newPassword != '' && confirmPassword != '') {
+      if (newPassword === confirmPassword) {
+        const response = await axiosGetData(`changepassword`, data);
+        console.log('response', response.data);
+        if (response?.data?.apiResult === 'Successfully changed password') {
+          Toast.show(response?.data?.apiResult);
+          setLoading(false);
+          logout();
+        } else {
+          Toast.show(response?.data?.message);
+          setLoading(false);
+        }
       } else {
-        console.warn(response?.data?.message);
-        Toast.show(response?.data?.message);
+        console.warn('Did not Match confirm password');
         setLoading(false);
       }
     } else {
-      console.warn('Did not Match confirm password');
+      Toast.show('Fill all fields');
       setLoading(false);
     }
+  };
+  const logout = async () => {
+    await Storage.clearToken();
+    setToken(null);
   };
 
   return (
