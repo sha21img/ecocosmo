@@ -24,7 +24,7 @@ import {useNavigation} from '@react-navigation/native';
 
 function Home(props) {
   const navigation = useNavigation();
-  console.log('jijijijijijjijijiijijijiijiji');
+  // console.log('jijijijijijjijijiijijijiijiji');
   const [selectedLanguage, setSelectedLanguage] = useState();
   const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
   const [details, setDetails] = useState([]);

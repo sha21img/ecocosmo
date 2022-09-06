@@ -201,17 +201,15 @@ function Reports(props) {
       newImei !== undefined &&
       focus == true
     ) {
-      console.log('proprorprprorp');
-      Promise.all([data1(), getSummaryReport()])
-        .then(values => {
-          // if (values) {
-          //   // console.log('values', values);
-          //   setLoading(true);
-          // }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      data1(), getSummaryReport();
+      // console.log('proprorprprorp');
+      // Promise.all([data1(), getSummaryReport()])
+      //   .then(values => {
+
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
     }
   }, [fdate, fdateend, newImei, focus]);
 
@@ -233,7 +231,7 @@ function Reports(props) {
     };
     const response = await axiosGetData('reportHistory', data);
     const aa = response.data.DeviceHistory.reverse();
-    console.log('098765432345678987654345678', aa);
+    // console.log('098765432345678987654345678', aa);
     setMapHistory(aa);
     setLoading(true);
 
@@ -558,6 +556,30 @@ function Reports(props) {
         cancelable: true,
       },
     );
+  };
+
+  const renderLocation = location => {
+    const totalSplits = Math.ceil(location.length / 15);
+    console.log(
+      'asssssss',
+      location
+        .split('')
+        .slice(1 * 15, 1 * 15 + 15)
+        .join(''),
+    );
+    if (!location) return null;
+    return Array(totalSplits)
+      .fill(1)
+      .map((item, i) => {
+        return (
+          <Text>
+            {location
+              .split('')
+              .slice(i * 15, i * 15 + 15)
+              .join('')}
+          </Text>
+        );
+      });
   };
 
   return (
@@ -1006,6 +1028,8 @@ function Reports(props) {
             {/*
              */}
             {/* {data2.length > 0 ? ( */}
+            {mapHistory.length > 0 ?
+            
             <LinearGradient
               colors={['#BCE2FF', '#ffffff']}
               start={{x: 0, y: 0.5}}
@@ -1080,275 +1104,112 @@ function Reports(props) {
               <ScrollView
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}
-                style={{flexDirection: 'row', paddingTop: 10}}>
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Vehicle No.</Text>
-
-                  {/* {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                        newVehicleNumber?.map(item => {
-                          return <Text>{item.label.slice(0, 13)}</Text>;
-                        })
-                      ) : (
-                        <Text>{newVehicleNumber[0]?.label.slice(0, 13)}</Text>
-                      )} */}
-                  {/* {isActive === 'vehicle' && isActive2.vehicle === 1 ? ( */}
-                  {/* <Text>{newFilterVehicle}</Text> */}
-                  {/* ) : null} */}
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      return <Text>{newFilterVehicle}</Text>;
-                    })
-                  ) : (
-                    <Text>{newFilterVehicle}</Text>
-                  )}
-                </View>
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Start Location</Text>
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      {
-                        /* console.log('aaassshihihishishishi', item); */
-                      }
-                      return <Text>{item?.startLocation}</Text>;
-                    })
-                  ) : (
-                    <Text>{mapHistory[0]?.startLocation}</Text>
-                  )}
-                </View>
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Start Time</Text>
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      {
-                        /* console.log("item.endTime",item) */
-                      }
-                      return <Text>{item?.startTime}</Text>;
-                    })
-                  ) : (
-                    <Text>{mapHistory[0]?.startTime}</Text>
-                  )}
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                </View>
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Travel Time</Text>
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      {
-                        /* console.log("item.endTime",item) */
-                      }
-                      return <Text>{item?.travelTime}</Text>;
-                    })
-                  ) : (
-                    <Text>{mapHistory[0]?.travelTime}</Text>
-                  )}
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                </View>
-
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Work/Idle hrs</Text>
+                style={{paddingTop: 10}}>
+                <View>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.text}>Vehicle No.</Text>
+                    <Text style={styles.text}>Report Date</Text>
+                    <Text style={styles.text}>Start Location</Text>
+                    <Text style={styles.text}>Start Time</Text>
+                    <Text style={styles.text}>Travel Time</Text>
+                    <Text style={styles.text}>Work/Idle hrs</Text>
+                    <Text style={styles.text}>Stopped Time</Text>
+                    <Text style={styles.text}>Max Speed(Km/h)</Text>
+                    <Text style={styles.text}>Avg Speed(Km/h)</Text>
+                    <Text style={styles.text}>Engine Hours</Text>
+                    <Text style={styles.text}>Distance Travelled(kms)</Text>
+                    <Text style={styles.text}>End Location</Text>
+                    <Text style={styles.text}>End Time (HH:MM)</Text>
+                    <Text style={styles.text}>#OverSpeed</Text>
+                    <Text style={styles.text}>#Alerts</Text>
+                  </View>
                   {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
                     mapHistory?.map(item => {
                       return (
-                        <Text>
-                          {item.todaysWaitingIgnitionTime
-                            ? getTime(item.todaysWaitingIgnitionTime)
-                            : '00:00:00'}
-                        </Text>
-                      );
-                    })
-                  ) : (
-                    <Text>
-                      {mapHistory[0]?.todaysWaitingIgnitionTime
-                        ? getTime(mapHistory[0]?.todaysWaitingIgnitionTime)
-                        : '00:00:00'}
-                    </Text>
-                  )}
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                </View>
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Stopped Time</Text>
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      return (
-                        <Text>
-                          {item.todaysIdleTimeSeconds
-                            ? getTime(item.todaysIdleTimeSeconds)
-                            : '00:00:00'}
-                        </Text>
-                      );
-                    })
-                  ) : (
-                    <Text>
-                      {mapHistory[0]?.todaysIdleTimeSeconds
-                        ? getTime(mapHistory[0]?.todaysIdleTimeSeconds)
-                        : '00:00:00'}
-                    </Text>
-                  )}
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                </View>
-                {/*  */}
+                        <View style={{flexDirection: 'row'}}>
+                          <Text style={styles.tex}>{newFilterVehicle}</Text>
+                          <Text style={styles.tex}>{item?.timeStamp1}</Text>
 
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Max Speed(Km/h)</Text>
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      return (
-                        <Text>
-                          {item.todaysMaxSpeed
-                            ? item.todaysMaxSpeed
-                            : '00:00:00'}
-                        </Text>
-                      );
-                    })
-                  ) : (
-                    <Text>
-                      {mapHistory[0]?.todaysMaxSpeed
-                        ? mapHistory[0]?.todaysMaxSpeed
-                        : '00:00:00'}
-                    </Text>
-                  )}
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                </View>
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Avg Speed(Km/h)</Text>
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      console.log('ppppppoooiiiu', item.avgSpeed);
-                      return (
-                        <Text>
-                          {item.avgSpeed ? item.avgSpeed : '00:00:00'}
-                        </Text>
-                      );
-                    })
-                  ) : (
-                    <Text>
-                      {mapHistory[0]?.avgSpeed
-                        ? mapHistory[0]?.avgSpeed
-                        : '00:00:00'}
-                    </Text>
-                  )}
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                </View>
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Engine Hours</Text>
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory.map(item => {
-                      return (
-                        <Text>
-                          {item.todaysIgnitionOnTimeSeconds
-                            ? getTime(item.todaysIgnitionOnTimeSeconds)
-                            : '00:00:00'}
-                        </Text>
-                      );
-                    })
-                  ) : (
-                    <Text>
-                      {mapHistory[0]?.todaysIgnitionOnTimeSeconds
-                        ? getTime(mapHistory[0]?.todaysIgnitionOnTimeSeconds)
-                        : '00:00:00'}
-                    </Text>
-                  )}
-                </View>
-                {/*  */}
+                          <View
+                            style={{alignSelf: 'flex-start', minWidth: 180}}>
+                            {renderLocation(item?.startLocation)}
+                          </View>
+                          <Text style={styles.tex}>{item?.startTime}</Text>
+                          <Text style={styles.tex}>{item?.travelTime}</Text>
+                          <Text style={styles.tex}>
+                            {getTime(item.todaysWaitingIgnitionTime)}
+                          </Text>
+                          <Text style={styles.tex}>
+                            {getTime(item.todaysIdleTimeSeconds)}
+                          </Text>
+                          <Text style={styles.tex}>{item.todaysMaxSpeed}</Text>
+                          <Text style={styles.tex}>{item.avgSpeed}</Text>
+                          <Text style={styles.tex}>
+                            {getTime(item.todaysIgnitionOnTimeSeconds)}
+                          </Text>
+                          <Text style={styles.tex}>{item.todaysODO}</Text>
 
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Distance Travelled(kms)</Text>
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory.map(item => {
-                      return <Text>{item.todaysODO}</Text>;
+                          <View
+                            style={{alignSelf: 'flex-start', minWidth: 180}}>
+                            {renderLocation(item?.endLocation)}
+                          </View>
+                          <Text style={styles.tex}>{item?.endTime}</Text>
+                          <Text style={styles.tex}>
+                            {item?.overspeedCounter}
+                          </Text>
+                          <Text style={styles.tex}>{item?.alertsCounter}</Text>
+                        </View>
+                      );
                     })
                   ) : (
-                    <Text>
-                      {mapHistory[0]?.todaysODO
-                        ? mapHistory[0].todaysODO
-                        : '00.00'}
-                    </Text>
-                  )}
-                </View>
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>End Location</Text>
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      {
-                        /* console.log('aaassshihihishishishi', item); */
-                      }
-                      return <Text>{item?.endLocation}</Text>;
-                    })
-                  ) : (
-                    <Text>{mapHistory[0]?.endLocation}</Text>
-                  )}
-                </View>
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>End Time (HH:MM)</Text>
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      {
-                        /* console.log('aaassshihihishishishi', item.endTime); */
-                      }
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={styles.tex}>{newFilterVehicle}</Text>
+                      <Text style={styles.tex}>
+                        {mapHistory[0]?.timeStamp1}
+                      </Text>
 
-                      return <Text>{item?.endTime}</Text>;
-                    })
-                  ) : (
-                    <Text>{mapHistory[0]?.endTime}</Text>
-                  )}
-                </View>
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>#OverSpeed</Text>
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      {
-                        /* console.log('aaassshihihishishishi', item); */
-                      }
-                      return <Text>{item?.overspeedCounter}</Text>;
-                    })
-                  ) : (
-                    <Text>{mapHistory[0]?.overspeedCounter}</Text>
-                  )}
-                </View>
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>#Alerts</Text>
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      {
-                        /* console.log('aaassshihihishishishi', item); */
-                      }
-                      return <Text>{item?.alertsCounter}</Text>;
-                    })
-                  ) : (
-                    <Text>{mapHistory[0]?.alertsCounter}</Text>
-                  )}
-                </View>
-                {/*  */}
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Report Date</Text>
-                  {/* <Text>{sumIgnitionOn}</Text> */}
-                  {isActive === 'vehicle' && isActive2.vehicle === 1 ? (
-                    mapHistory?.map(item => {
-                      {
-                        /* console.log('aaassshihihishishishi', item); */
-                      }
-                      return <Text>{item?.timeStamp1}</Text>;
-                    })
-                  ) : (
-                    <Text>{mapHistory[0]?.timeStamp1}</Text>
+                      {/* <Text style={styles.tex} numberOfLines={1}>
+                        {mapHistory[0]?.startLocation}
+                      </Text> */}
+
+                      <View style={{alignSelf: 'flex-start', minWidth: 180}}>
+                        {renderLocation(mapHistory[0]?.startLocation)}
+                      </View>
+                      <Text style={styles.tex}>{mapHistory[0]?.startTime}</Text>
+                      <Text style={styles.tex}>
+                        {mapHistory[0]?.travelTime}
+                      </Text>
+                      <Text style={styles.tex}>
+                        {getTime(mapHistory[0]?.todaysWaitingIgnitionTime)}
+                      </Text>
+                      <Text style={styles.tex}>
+                        {getTime(mapHistory[0]?.todaysIdleTimeSeconds)}
+                      </Text>
+                      <Text style={styles.tex}>
+                        {mapHistory[0]?.todaysMaxSpeed}
+                      </Text>
+                      <Text style={styles.tex}>{mapHistory[0]?.avgSpeed}</Text>
+                      <Text style={styles.tex}>
+                        {getTime(mapHistory[0]?.todaysIgnitionOnTimeSeconds)}
+                      </Text>
+                      <Text style={styles.tex}>{mapHistory[0]?.todaysODO}</Text>
+                      <View style={{alignSelf: 'flex-start', minWidth: 180}}>
+                        {renderLocation(mapHistory[0]?.endLocation)}
+                      </View>
+                      {/* <Text style={styles.tex}>{mapHistory[0]?.endLocation}</Text> */}
+                      <Text style={styles.tex}>{mapHistory[0]?.endTime}</Text>
+                      <Text style={styles.tex}>
+                        {mapHistory[0]?.overspeedCounter}
+                      </Text>
+                      <Text style={styles.tex}>
+                        {mapHistory[0]?.alertsCounter}
+                      </Text>
+                    </View>
                   )}
                 </View>
               </ScrollView>
             </LinearGradient>
-            {/* ) : null} */}
+            :null}
 
             {/*
              */}
@@ -1415,9 +1276,7 @@ function Reports(props) {
                   <Text style={styles.textHead}>Vehicle No.</Text>
                   {isActive === 'drive' && isActive2.drive === 1 ? (
                     summaryReport?.map(item => {
-                      return (
-                        <Text style={{minHeight: 50}}>{newFilterVehicle}</Text>
-                      );
+                      return <Text>{newFilterVehicle}</Text>;
                     })
                   ) : (
                     <Text>{newFilterVehicle}</Text>
@@ -1436,12 +1295,13 @@ function Reports(props) {
                     <Text>{data2[0]?.vehicleAddress}</Text>
                   )}
                 </View>
-                {/*  */}
                 <View>
                   <View
                     style={{
                       flexDirection: 'row',
-                      justifyContent: 'space-around',
+                      // justifyContent: 'space-around',
+                      // alignContent: 'flex-start',
+                      // justifyContent:'flex-start'
                     }}>
                     <Text style={styles.textHead}>End Time</Text>
                     <Text style={styles.textHead}>Work/Idle hrs</Text>
@@ -1453,13 +1313,15 @@ function Reports(props) {
                         <View
                           style={{
                             flexDirection: 'row',
-                            justifyContent: 'space-between',
+                            // justifyContent: 'space-between',
+                            alignContent: 'flex-start',
+                            // backgroundColor: 'red',
                           }}>
-                          <Text style={{paddingRight: 30}}>
+                          <Text style={{minWidth: 100, alignSelf: 'center'}}>
                             {moment(item['endTime:']).format('hh:mm')}
                           </Text>
-                          <Text style={{paddingRight: 30}}>{item.odo}</Text>
-                          <Text style={{paddingRight: 30}}>
+                          <Text style={{minWidth: 100, alignSelf: 'center'}}>{item.odo}</Text>
+                          <Text style={{minWidth: 100, alignSelf: 'center'}}>
                             {item.duration}
                           </Text>
                           <TouchableOpacity
@@ -1503,10 +1365,6 @@ function Reports(props) {
                 </View>
               </ScrollView>
             </LinearGradient>
-            {/* ) : null} */}
-
-            {/*
-             */}
 
             <LinearGradient
               colors={['#BCE2FF', '#ffffff']}
