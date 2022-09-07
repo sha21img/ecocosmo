@@ -58,7 +58,9 @@ function MapHistory(props) {
 
   //
   const [parkMode, setParkMode] = useState(true);
-  const [selected, setSelected] = useState('All Vehicle');
+  const [selected, setSelected] = useState(
+    props?.route?.params?.details.deviceId || 'All Vehicle',
+  );
 
   const [open, setOpen] = useState(false);
   const [dateStart, setDateStart] = useState(new Date());
@@ -73,7 +75,7 @@ function MapHistory(props) {
   const [myMarker, setMyMarker] = useState(null);
   const [animate, setAnimate] = useState('');
   const [degree, setDegree] = useState(null);
-  const [vehicleData, setVehicleData] = useState(false);
+  const [vehicleData, setVehicleData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [speed, setSpeed] = useState(5000);
 
@@ -88,12 +90,16 @@ function MapHistory(props) {
   const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
   React.useEffect(() => {
     if (focus == true) {
-      setNewImei(imei || ime);
+      // setNewImei(imei || ime);
       const a = moment(new Date()).format('YYYY-MM-DD');
       setFdate(a);
 
       if (props?.route?.params?.details != undefined) {
-        setSelected(props?.route?.params?.details.deviceId);
+        console.log(
+          'props?.route?.params?.details.deviceId',
+          props?.route?.params?.details.deviceId,
+        );
+        setSelected(props?.route?.params?.details?.deviceId);
       } else {
         setSelected('All Vehicle');
       }
@@ -122,34 +128,44 @@ function MapHistory(props) {
     // console.log('datadatadatadatadatadata', data);
 
     if (newImei) {
-      // console.log('newImeinewImeinewImeinewImei', newImei);
+      console.log(
+        'sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
+        newImei,
+      );
 
       const filterVehicle = data.find(item => {
-        // console.log('vvvvvvvvv', imei);
+        // console.log('vvvvvvvvv', item);
         return item.imei === newImei;
       });
       // setVehicleData(filterVehicle);
+      console.log('e;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',filterVehicle)
+
       setSelected(filterVehicle.deviceId);
       // console.log('filerIIIMMMEEEEIIII', filterVehicle.deviceId);
+    } else {
+      // console.log('e;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
+      setSelected(data[0].deviceId);
+      setNewImei(data[0].imei);
     }
     setVehicleData(data);
   };
   useEffect(() => {
     // console.log('fffffffffffffffffffffffffffffffffffff', fdate);
-    console.log(
-      '======================================================================',
-      newImei,
-    );
+    // console.log(
+    //   '======================================================================',
+    //   newImei,
+    // );
+    if (focus == true) {
+      if (fdate !== '' && newImei !== undefined) {
+        // console.log('side bar menu', newImei);
 
-    if (fdate !== '' && newImei !== undefined) {
-      console.log('side bar menu', newImei);
-
-      getMapHistory();
+        getMapHistory();
+      }
     }
     // return () => {
     //   clearInterval(interval);
     // };
-  }, [fdate, fdateend, ftime, ftimeend, newImei, props]);
+  }, [fdate, fdateend, ftime, ftimeend, newImei, props, focus]);
   const Select = async (data, imei) => {
     // console.log('datadatadatadata', data);
     setSelected(data);
@@ -162,7 +178,7 @@ function MapHistory(props) {
     console.log('getMapHistory');
 
     const summaryData = props?.route?.params?.summaryData;
-    console.log('summaryDatasummaryData', summaryData);
+    // console.log('summaryDatasummaryData', summaryData);
     // {"duration": "25 minutes", "endPoint": "19.003033,72.82708", "endTime:": "2022-09-05 07:24:04",
     //  "odo": "11.00", "startPoint": "19.004127,72.826933",
     //  "startTime:": "2022-09-05 06:59:04"}
@@ -175,24 +191,29 @@ function MapHistory(props) {
       accountid: username,
       password: password,
       // imei: imei,
-      // imei: newImei,
-      // date: fdate,
-      // startTime: ftime,
-      // endTime: ftimeend,
+      imei: newImei,
+      date: fdate,
+      startTime: ftime,
+      endTime: ftimeend,
       //
-      startTime: '03:00',
-      imei: '353701092279609',
-      endTime: '10:00',
-      date: '2022-09-05',
+      // startTime: '03:00',
+      // imei: '353701092279609',
+      // endTime: '10:00',
+      // date: '2022-09-05',
       //
     };
-    console.log('datatattatattatatat---------------', data);
+    // console.log('datatattatattatatat---------------', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    console.log(
-      'aassgshshhsisisisjsss',
-      response.data.EventHistory.slice(0, 20),
-    );
-    let newCoordinate = response?.data?.EventHistory.slice(0, 20);
+    // console.log(
+    //   'aassgshshhsisisisjsss',
+    //   response.data.EventHistory.slice(0, 20),
+    // );
+    let newCoordinate = response?.data?.EventHistory;
+    // console.log('newCoordinate',newCoordinate)
+    // const filter = response.data.EventHistory.slice(100, 200).filter(
+    //   item => item.stoppage != '',
+    // );
+    // console.log('filter', filter);
     setData(newCoordinate);
 
     // if (ime) {
@@ -212,6 +233,7 @@ function MapHistory(props) {
     //     return utcTimeStart < parseFloat(item.packetTimeStamp) < utcTimeEnd;
     //   });
     // }
+
     if (newCoordinate.length > 0) {
       newCoordinate?.forEach(el => {
         setCoordinates(prev => ({
@@ -326,7 +348,7 @@ function MapHistory(props) {
     setFdate(formatDate(fDateStart.toString()));
 
     let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
-    console.log(fTimeStart);
+    // console.log(fTimeStart);
     setFtimeend(fTimeStart);
 
     setFtime('00:00:00');
@@ -416,7 +438,7 @@ function MapHistory(props) {
           heading: 0,
         };
         if (myMarker && mapRef.current) {
-          console.log('ppppppppppppppppppppppppppppppppppppppppppp',speed)
+          // console.log('ppppppppppppppppppppppppppppppppppppppppppp', speed);
           myMarker.animateMarkerToCoordinate(newCoordinate, speed);
           mapRef.current.animateCamera(newCamera, {duration: speed});
 
@@ -516,6 +538,7 @@ function MapHistory(props) {
   //   // mapRef.current.animateToRegion(r, 1000);
   //   mapRef.current.animateToRegion(aaa);
   // };
+  const [mapPs, setMapPs] = useState(0);
 
   return (
     <>
@@ -732,24 +755,23 @@ function MapHistory(props) {
           />
         </TouchableOpacity>
       </View>
-      {/* {console.log(data?.length)} */}
+
       {data?.length > 0 ? (
-        <View style={{flex: 1}}>
-          <TouchableOpacity
-            onPress={() => setParkMode(!parkMode)}
-            style={{
-              position: 'absolute',
-              zIndex: 10,
-              right: 0,
-              top: 20,
-            }}>
-            <Image source={image.parking2} style={{width: 65, height: 65}} />
-          </TouchableOpacity>
+        <View
+          style={{position: 'relative'}}
+          onLayout={event => {
+            const layout = event.nativeEvent.layout;
+
+            setMapPs(layout.y);
+          }}>
           {parkMode ? (
             <MapView
               // minZoomLevel={15}
               pitchEnabled={false}
-              style={{flex: 1}}
+              style={{
+                width: Dimensions.get('window').width,
+                height: Dimensions.get('window').height,
+              }}
               ref={mapRef}
               caheEnabled
               // onMapReady={() => animated()}
@@ -766,6 +788,9 @@ function MapHistory(props) {
                 longitudeDelta: LONGITUDE_DELTA,
               }}>
               {data?.map((coordinate, index) => {
+                {
+                  /* console.log('/////////////////////////////////////////////////////',coordinate) */
+                }
                 return (
                   <>
                     <MarkerAnimated
@@ -925,7 +950,10 @@ function MapHistory(props) {
               <MapView
                 // minZoomLevel={15}
                 pitchEnabled={false}
-                style={{flex: 1}}
+                style={{
+                  width: Dimensions.get('window').width,
+                  height: Dimensions.get('window').height,
+                }}
                 ref={mapRef}
                 caheEnabled
                 region={{
@@ -935,16 +963,18 @@ function MapHistory(props) {
                   longitudeDelta: LONGITUDE_DELTA,
                 }}>
                 {data
-                  ?.filter(item => item.stoppage)
+                  ?.filter(item => {
+                    {
+                      /* console.log('5555555555555555555555555555555555555', item); */
+                    }
+                    return item.stoppage !== '';
+                  })
                   .map((coordinate, index) => {
-                    console.log(
-                      'ppppppppppppppppppppppppppppppppppppp',
-                      coordinate,
-                    );
                     return (
                       <>
                         <MarkerAnimated
-                          key={index}
+                          // tracksViewChanges={false}
+                          key={Math.random()}
                           coordinate={{
                             latitude: parseFloat(coordinate.lat),
                             longitude: parseFloat(coordinate.lng),
@@ -1043,20 +1073,27 @@ function MapHistory(props) {
           )}
         </View>
       ) : (
-        <Text>q...</Text>
+        <Text>Loading...</Text>
       )}
 
       {data?.length > 0 ? (
         <>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               position: 'absolute',
-              bottom: 200,
-              width: '100%',
-              backgroundColor: 'red',
+              borderRadius: 50,
+              bottom: 90,
+              right: 10,
+              minWidth: 50,
+              minHeight: 50,
+              backgroundColor: 'white',
+              padding: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              elevation: 20,
             }}
             onPress={() => {
-              console.log('hihihihiihihihi-----',speed)
+              console.log('hihihihiihihihi-----', speed);
               if (speed <= 20000) {
                 setSpeed(prev => {
                   return prev + 5000;
@@ -1065,7 +1102,12 @@ function MapHistory(props) {
                 setSpeed(5000);
               }
             }}>
-            <Text>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: 'black',
+              }}>
               {speed == 5000
                 ? '1x'
                 : speed == 10000
@@ -1076,7 +1118,7 @@ function MapHistory(props) {
                 ? '8x'
                 : null}
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {animate == 'start' || animate == '' ? (
             <>
               <TouchableOpacity
@@ -1134,6 +1176,21 @@ function MapHistory(props) {
             </TouchableOpacity>
           )}
         </>
+      ) : null}
+
+      {data?.length > 0 ? (
+        <TouchableOpacity
+          onPress={() => setParkMode(!parkMode)}
+          style={{
+            position: 'absolute',
+            // zIndex: 60,
+            top: mapPs + 10,
+            right: 10,
+
+            justifyContent: 'center',
+          }}>
+          <Image source={image.parking2} style={{width: 65, height: 65}} />
+        </TouchableOpacity>
       ) : null}
     </>
   );

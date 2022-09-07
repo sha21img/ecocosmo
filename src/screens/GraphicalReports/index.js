@@ -193,7 +193,9 @@ function GraphicalReports(props) {
 
             <TouchableOpacity
               onPress={() =>
-                props.navigation.navigate('Reports', {details: {imei: imei}})
+                props.navigation.navigate('Reports', {
+                  details: {imei: imei, deviceId: vehicleNumber},
+                })
               }>
               <Image
                 source={image.keepSmall}
@@ -253,9 +255,9 @@ function GraphicalReports(props) {
       </View>
 
       {isSelected ? (
-        <ScrollView 
-        showsVerticalScrollIndicator={false}
-        style={{flex: 1, backgroundColor: 'white'}}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{flex: 1, backgroundColor: 'white'}}>
           {loading ? (
             <>
               {/* 

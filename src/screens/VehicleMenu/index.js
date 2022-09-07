@@ -79,6 +79,7 @@ const VehicleMenu = props => {
     {id: 10, image: image.modalmap, data: 'MAP HISTORY', routeTo: 'MapHistory'},
   ];
   const navigatorFrom = async data => {
+    console.log('5555', data);
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
     let password = loginDetail.password;
@@ -88,6 +89,7 @@ const VehicleMenu = props => {
     } else if (data === 'DRIVERDETAILS') {
       setVisibles(!visibles);
     } else {
+      // console.log('pppppppppppppppppppppplkm ',details)
       navigation.navigate(data, {details: details});
     }
   };
@@ -169,6 +171,7 @@ const VehicleMenu = props => {
         details={details}
         setVisible={setModal}
       />
+
       <AddDriver
         visible={visibles}
         setVisible={setVisibles}

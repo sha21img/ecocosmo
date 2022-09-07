@@ -256,3 +256,130 @@ const Alerts = props => {
   );
 };
 export default Alerts;
+
+
+
+
+// <MapView
+//                 // minZoomLevel={15}
+//                 pitchEnabled={false}
+//                 style={{
+//                   width: Dimensions.get('window').width,
+//                   height: Dimensions.get('window').height,
+//                 }}
+//                 ref={mapRef}
+//                 caheEnabled
+//                 region={{
+//                   latitude: parseFloat(data[0]?.lat),
+//                   longitude: parseFloat(data[0]?.lng),
+//                   latitudeDelta: LATITUDE_DELTA,
+//                   longitudeDelta: LONGITUDE_DELTA,
+//                 }}>
+//                 {data
+//                   ?.filter(item => {
+//                     console.log('5555555555555555555555555555555555555', item);
+//                     item.stoppage;
+//                   })
+//                   .map((coordinate, index) => {
+//                     console.log(
+//                       'ppppppppppppppppppppppppppppppppppppp',
+//                       coordinate,
+//                     );
+//                     return (
+//                       <>
+//                         <MarkerAnimated
+//                           key={index}
+//                           coordinate={{
+//                             latitude: parseFloat(coordinate.lat),
+//                             longitude: parseFloat(coordinate.lng),
+//                           }}>
+//                           <Image
+//                             resizeMode="contain"
+//                             source={image.parkingPoint}
+//                             style={{
+//                               height: 50,
+//                               width: 50,
+//                             }}
+//                           />
+//                           <Callout tooltip>
+//                             <LinearGradient
+//                               colors={[
+//                                 colors.mainThemeColor3,
+//                                 colors.mainThemeColor4,
+//                               ]}
+//                               start={{x: 1.3, y: 0}}
+//                               end={{x: 0, y: 0}}
+//                               locations={[0, 0.9]}
+//                               style={style.firstbox}>
+//                               <View style={{paddingBottom: 5}}>
+//                                 <Text style={style.firstboxtext1}>
+//                                   Address : {coordinate.stoppage.address}
+//                                 </Text>
+//                                 <Text style={style.firstboxtext1}>
+//                                   Stop Duration :{' '}
+//                                   {coordinate.stoppage.stopDuration}
+//                                 </Text>
+//                                 <Text style={style.firstboxtext1}>
+//                                   From : {coordinate.stoppage.stopTime1}
+//                                 </Text>
+//                                 <Text style={style.firstboxtext1}>
+//                                   To : {coordinate.stoppage.stopTime2}
+//                                 </Text>
+//                               </View>
+//                             </LinearGradient>
+//                           </Callout>
+//                         </MarkerAnimated>
+//                       </>
+//                     );
+//                   })}
+
+//                 <MarkerAnimated
+//                   ref={marker => {
+//                     // console.log('marker', marker);
+//                     setMyMarker(marker);
+//                   }}
+//                   style={{
+//                     transform: [
+//                       {
+//                         rotate: degree === null ? '0deg' : `${degree}deg`,
+//                       },
+//                     ],
+//                   }}
+//                   // key={index.toString()}
+//                   coordinate={{
+//                     latitude: parseFloat(data[0]?.lat),
+//                     longitude: parseFloat(data[0]?.lng),
+//                   }}>
+//                   {animate == 'stop' ? (
+//                     <Image
+//                       resizeMode="contain"
+//                       source={image.carGreenUp}
+//                       style={{
+//                         height: 30,
+//                         width: 30,
+//                       }}
+//                     />
+//                   ) : animate == 'start' ? (
+//                     <Image
+//                       resizeMode="contain"
+//                       source={image.carGreenUp}
+//                       style={{
+//                         height: 0,
+//                         width: 0,
+//                       }}
+//                     />
+//                   ) : null}
+//                 </MarkerAnimated>
+//                 <Polyline
+//                   strokeWidth={2}
+//                   strokeColor="red"
+//                   coordinates={[
+//                     ...data.map((value, index) => {
+//                       return {
+//                         latitude: parseFloat(value.lat),
+//                         longitude: parseFloat(value.lng),
+//                       };
+//                     }),
+//                   ]}
+//                 />
+//               </MapView>

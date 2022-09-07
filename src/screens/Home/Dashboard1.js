@@ -436,7 +436,6 @@ const Dashboard1 = ({
           }
         />
       )}
-      {visible ? (
         <VehicleMenu
           mobileNumber={mobileNumber}
           visible={visible}
@@ -444,7 +443,6 @@ const Dashboard1 = ({
           details={isData}
           calling={calling}
         />
-      ) : null}
     </>
   );
 };

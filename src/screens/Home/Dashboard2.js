@@ -402,7 +402,6 @@ function Dashboard2({
           }
         />
       )}
-      {visible ? (
         <VehicleMenu
           mobileNumber={mobileNumber}
           visible={visible}
@@ -410,7 +409,6 @@ function Dashboard2({
           setVisible={setVisible}
           details={isData}
         />
-      ) : null}
     </>
   );
 }

@@ -29,7 +29,7 @@ function Setting({navigation}) {
   };
   useEffect(() => {
     getNotification();
-  });
+  }, []);
   const sendNotification = async value => {
     setIson(!Ison);
     let number;
@@ -39,7 +39,6 @@ function Setting({navigation}) {
       number = 1;
     }
     const succcess = await Storage.getLoginDetail('login_detail');
-
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const response = await axiosGetData(
