@@ -73,36 +73,38 @@ function MapHistory(props) {
   const [ftimeend, setFtimeend] = useState('');
   const [dtype, setDtype] = useState();
   const [myMarker, setMyMarker] = useState(null);
-  const [animate, setAnimate] = useState('');
+  const [animate, setAnimate] = useState('start');
   const [degree, setDegree] = useState(null);
   const [vehicleData, setVehicleData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [speed, setSpeed] = useState(5000);
+  const [speed, setSpeed] = useState(8000);
 
   const [coordinates, setCoordinates] = useState({
-    coordinate: new AnimatedRegion({
+    coordinate: {
       latitude: 30.7046,
       longitude: 77.1025,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
-    }),
+    },
   });
   const GOOGLE_MAP_KEY = 'AIzaSyCOKXBz_YM85k4KcFzNxPUvEArDjhipX8c';
   React.useEffect(() => {
     if (focus == true) {
-      // setNewImei(imei || ime);
+      const filterImei = imei || ime;
+      console.log('props', filterImei);
+      setNewImei(imei || ime);
       const a = moment(new Date()).format('YYYY-MM-DD');
       setFdate(a);
 
-      if (props?.route?.params?.details != undefined) {
-        console.log(
-          'props?.route?.params?.details.deviceId',
-          props?.route?.params?.details.deviceId,
-        );
-        setSelected(props?.route?.params?.details?.deviceId);
-      } else {
-        setSelected('All Vehicle');
-      }
+      // if (props?.route?.params?.details != undefined) {
+      //   console.log(
+      //     'props?.route?.params?.details.deviceId',
+      //     props?.route?.params?.details.deviceId,
+      //   );
+      //   setSelected(props?.route?.params?.details?.deviceId);
+      // } else {
+      //   setSelected('All Vehicle');
+      // }
 
       if (props?.route?.params?.summaryData != undefined) {
         const summaryData = props?.route?.params?.summaryData;
@@ -119,46 +121,28 @@ function MapHistory(props) {
         setFtimeend(ab);
       }
 
-      getImei();
+      getImei(filterImei);
     }
   }, [props, focus]);
 
-  const getImei = async () => {
+  const getImei = async filterImei => {
+    console.log('filterImei for ma[', filterImei);
     const data = await Storage.getVehicleDetail('vehicle_detail');
-    // console.log('datadatadatadatadatadata', data);
-
-    if (newImei) {
-      console.log(
-        'sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
-        newImei,
-      );
-
+    if (filterImei !== undefined) {
       const filterVehicle = data.find(item => {
-        // console.log('vvvvvvvvv', item);
-        return item.imei === newImei;
+        return item.imei === filterImei;
       });
       // setVehicleData(filterVehicle);
-      console.log('e;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',filterVehicle)
-
       setSelected(filterVehicle.deviceId);
-      // console.log('filerIIIMMMEEEEIIII', filterVehicle.deviceId);
     } else {
-      // console.log('e;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
       setSelected(data[0].deviceId);
       setNewImei(data[0].imei);
     }
     setVehicleData(data);
   };
   useEffect(() => {
-    // console.log('fffffffffffffffffffffffffffffffffffff', fdate);
-    // console.log(
-    //   '======================================================================',
-    //   newImei,
-    // );
     if (focus == true) {
       if (fdate !== '' && newImei !== undefined) {
-        // console.log('side bar menu', newImei);
-
         getMapHistory();
       }
     }
@@ -167,7 +151,6 @@ function MapHistory(props) {
     // };
   }, [fdate, fdateend, ftime, ftimeend, newImei, props, focus]);
   const Select = async (data, imei) => {
-    // console.log('datadatadatadata', data);
     setSelected(data);
     setNewImei(imei);
     // setLoading(true);
@@ -178,7 +161,6 @@ function MapHistory(props) {
     console.log('getMapHistory');
 
     const summaryData = props?.route?.params?.summaryData;
-    // console.log('summaryDatasummaryData', summaryData);
     // {"duration": "25 minutes", "endPoint": "19.003033,72.82708", "endTime:": "2022-09-05 07:24:04",
     //  "odo": "11.00", "startPoint": "19.004127,72.826933",
     //  "startTime:": "2022-09-05 06:59:04"}
@@ -190,7 +172,7 @@ function MapHistory(props) {
     let data = {
       accountid: username,
       password: password,
-      // imei: imei,
+      imei: imei,
       imei: newImei,
       date: fdate,
       startTime: ftime,
@@ -202,14 +184,9 @@ function MapHistory(props) {
       // date: '2022-09-05',
       //
     };
-    // console.log('datatattatattatatat---------------', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    // console.log(
-    //   'aassgshshhsisisisjsss',
-    //   response.data.EventHistory.slice(0, 20),
-    // );
     let newCoordinate = response?.data?.EventHistory;
-    // console.log('newCoordinate',newCoordinate)
+    console.log('mapHistory APi', newCoordinate.length);
     // const filter = response.data.EventHistory.slice(100, 200).filter(
     //   item => item.stoppage != '',
     // );
@@ -348,7 +325,6 @@ function MapHistory(props) {
     setFdate(formatDate(fDateStart.toString()));
 
     let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
-    // console.log(fTimeStart);
     setFtimeend(fTimeStart);
 
     setFtime('00:00:00');
@@ -387,18 +363,15 @@ function MapHistory(props) {
     });
     setT(
       setInterval(() => {
+        console.log('aaaaabbbccc');
         animateMarkerAndCamera(data);
       }, 5000),
     );
   };
-  // console.log('dayaatatatatattatta', data[0]);
-  // console.log('i', i);
   function animateMarkerAndCamera(datas) {
-    // console.log('poiuytrew ', datas);
+    console.log('speedin', speed);
     if (i <= data?.length - 1) {
       if (datas === 'start') {
-        // console.log('dtattatatiifiifif fif fif ', datas);
-
         const cord1 = {
           latitude: parseFloat(data[i - 1].lat),
           longitude: parseFloat(data[i - 1].lng),
@@ -438,9 +411,8 @@ function MapHistory(props) {
           heading: 0,
         };
         if (myMarker && mapRef.current) {
-          // console.log('ppppppppppppppppppppppppppppppppppppppppppp', speed);
-          myMarker.animateMarkerToCoordinate(newCoordinate, speed);
-          mapRef.current.animateCamera(newCamera, {duration: speed});
+          myMarker.animateMarkerToCoordinate(newCoordinate, 5000);
+          mapRef.current.animateCamera(newCamera, {duration: 5000});
 
           // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
 
@@ -448,7 +420,6 @@ function MapHistory(props) {
         }
         i++;
       } else {
-        // console.log('elseseseelelelsrseese');
         const cord1 = {
           latitude: parseFloat(data[i].lat),
           longitude: parseFloat(data[i].lng),
@@ -491,6 +462,7 @@ function MapHistory(props) {
           myMarker.animateMarkerToCoordinate(newCoordinate, 1000);
           // mapRef == null;
           mapRef.current.animateCamera(newCamera, {duration: 1000});
+          mapRef.current.animateToRegion(newCoordinate);
 
           //
 
@@ -506,10 +478,9 @@ function MapHistory(props) {
         }
       }
     } else {
-      // console.log('jijijijiij');
       setAnimate(false);
       clearInterval(interval);
-      setAnimate('stop');
+      setAnimate('start');
       // i = 1;
 
       //
@@ -521,7 +492,6 @@ function MapHistory(props) {
   }
 
   // const animated = () => {
-  //   console.log('myMarker.myMarker', mapRef.current.animateToRegion);
 
   //   const aaa = {
   //     latitude: parseFloat(data[0].lat),
@@ -766,6 +736,7 @@ function MapHistory(props) {
           }}>
           {parkMode ? (
             <MapView
+              tracksViewChanges={false}
               // minZoomLevel={15}
               pitchEnabled={false}
               style={{
@@ -774,126 +745,135 @@ function MapHistory(props) {
               }}
               ref={mapRef}
               caheEnabled
-              // onMapReady={() => animated()}
-              // initialRegion={{
-              //   latitude: parseFloat(data[0].lat),
-              //   longitude: parseFloat(data[0].lng),
-              //   latitudeDelta: LATITUDE_DELTA,
-              //   longitudeDelta: LONGITUDE_DELTA,
-              // }}
               region={{
-                latitude: parseFloat(data[0]?.lat),
-                longitude: parseFloat(data[0]?.lng),
+                latitude:
+                  parseFloat(data[0]?.lat) || coordinates.coordinate.latitude,
+                longitude:
+                  parseFloat(data[0]?.lng) || coordinates.coordinate.longitude,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
               }}>
               {data?.map((coordinate, index) => {
-                {
-                  /* console.log('/////////////////////////////////////////////////////',coordinate) */
-                }
                 return (
                   <>
-                    <MarkerAnimated
-                      key={index}
-                      // ref={marker => {
-                      //   // console.log('marker', marker);
-                      //   setMyMarker(marker);
-                      // }}
-                      pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
-                      // key={index.toString()}
-                      coordinate={{
-                        latitude: parseFloat(coordinate.lat),
-                        longitude: parseFloat(coordinate.lng),
-                      }}>
-                      {/* {data[data.length - 1] == coordinate ? (
-                      <Image
-                        resizeMode="contain"
-                        source={image.carGreenUp}
-                        style={{
-                          height: 50,
-                          width: 50,
-                        }}
-                      />
-                    ) : null} */}
+                    {data[0] !== coordinate ||
+                    data[data.length - 1] !== coordinate ? (
+                      <MarkerAnimated
+                        tracksViewChanges={
+                          data[0] || data[data.length - 1] ? true : false
+                        }
+                        key={index}
+                        // ref={marker => {
+                        //   // console.log('marker', marker);
+                        //   setMyMarker(marker);
+                        // }}
+                        pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
+                        // key={index.toString()}
+                        coordinate={{
+                          latitude: parseFloat(coordinate.lat),
+                          longitude: parseFloat(coordinate.lng),
+                        }}>
+                        {data[0] == coordinate ? (
+                          <Image
+                            resizeMode="contain"
+                            source={image.pinkFlag}
+                            style={{
+                              height: 50,
+                              width: 50,
+                            }}
+                          />
+                        ) : null}
+                        {data[data.length - 1] == coordinate ? (
+                          <Image
+                            resizeMode="contain"
+                            source={image.greenFlag}
+                            style={{
+                              height: 50,
+                              width: 50,
+                            }}
+                          />
+                        ) : null}
 
-                      <Callout tooltip>
-                        <LinearGradient
-                          colors={[
-                            colors.mainThemeColor3,
-                            colors.mainThemeColor4,
-                          ]}
-                          start={{x: 1.3, y: 0}}
-                          end={{x: 0, y: 0}}
-                          locations={[0, 0.9]}
-                          style={style.firstbox}>
-                          <View style={{paddingBottom: 5}}>
-                            <Text style={style.firstboxtext1}>
-                              {coordinate.timeStamp}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                            }}>
-                            <AntDesign
+                        <Callout tooltip>
+                          <LinearGradient
+                            colors={[
+                              colors.mainThemeColor3,
+                              colors.mainThemeColor4,
+                            ]}
+                            start={{x: 1.3, y: 0}}
+                            end={{x: 0, y: 0}}
+                            locations={[0, 0.9]}
+                            style={style.firstbox}>
+                            <View style={{paddingBottom: 5}}>
+                              <Text style={style.firstboxtext1}>
+                                {coordinate.timeStamp}
+                              </Text>
+                            </View>
+                            <View
                               style={{
-                                color: '#17D180',
-                                fontSize: 16,
-                              }}
-                              name={'caretdown'}
-                            />
-                            <Text
-                              style={{
-                                paddingHorizontal: 10,
-                                color: colors.white,
+                                flexDirection: 'row',
+                                alignItems: 'center',
                               }}>
-                              Ignition: {coordinate.ignition}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                              paddingTop: 5,
-                            }}>
-                            <View style={style.secondboxtextbox1}>
-                              <Text style={{paddingVertical: 8}}>
-                                <Image
-                                  resizeMode="contain"
-                                  source={image.speed}
-                                  style={style.speedimg}
-                                />
-                              </Text>
-                              <Text style={style.secondboxtext1}>
-                                {Math.floor(coordinate?.speed)} {__('KM/H')}
-                              </Text>
-                              <Text style={style.secondboxtext11}>
-                                {__('SPEED')}
+                              <AntDesign
+                                style={{
+                                  color: '#17D180',
+                                  fontSize: 16,
+                                }}
+                                name={'caretdown'}
+                              />
+                              <Text
+                                style={{
+                                  paddingHorizontal: 10,
+                                  color: colors.white,
+                                }}>
+                                Ignition: {coordinate.ignition}
                               </Text>
                             </View>
-                            <View style={style.secondboxtextbox1}>
-                              <Text style={{paddingVertical: 8}}>
-                                <Image
-                                  resizeMode="contain"
-                                  source={image.distance}
-                                  style={style.locimg}
-                                />
-                              </Text>
-                              <Text style={style.secondboxtext1}>
-                                {Math.floor(coordinate.odometer)} {__('KM')}
-                              </Text>
-                              <Text style={style.secondboxtext11}>
-                                {__("TODAY'S ODO")}
-                              </Text>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                paddingTop: 5,
+                              }}>
+                              <View style={style.secondboxtextbox1}>
+                                <Text style={{paddingVertical: 8}}>
+                                  <Image
+                                    resizeMode="contain"
+                                    source={image.speed}
+                                    style={style.speedimg}
+                                  />
+                                </Text>
+                                <Text style={style.secondboxtext1}>
+                                  {Math.floor(coordinate?.speed)} {__('KM/H')}
+                                </Text>
+                                <Text style={style.secondboxtext11}>
+                                  {__('SPEED')}
+                                </Text>
+                              </View>
+                              <View style={style.secondboxtextbox1}>
+                                <Text style={{paddingVertical: 8}}>
+                                  <Image
+                                    resizeMode="contain"
+                                    source={image.distance}
+                                    style={style.locimg}
+                                  />
+                                </Text>
+                                <Text style={style.secondboxtext1}>
+                                  {Math.floor(coordinate.odometer)} {__('KM')}
+                                </Text>
+                                <Text style={style.secondboxtext11}>
+                                  {__("TODAY'S ODO")}
+                                </Text>
+                              </View>
                             </View>
-                          </View>
-                        </LinearGradient>
-                      </Callout>
-                    </MarkerAnimated>
+                          </LinearGradient>
+                        </Callout>
+                      </MarkerAnimated>
+                    ) : null}
                   </>
                 );
               })}
+
               <MarkerAnimated
                 ref={marker => {
                   // console.log('marker', marker);
@@ -923,7 +903,7 @@ function MapHistory(props) {
                 ) : animate == 'start' ? (
                   <Image
                     resizeMode="contain"
-                    source={image.carGreenUp}
+                    source={image.location}
                     style={{
                       height: 0,
                       width: 0,
@@ -1078,7 +1058,7 @@ function MapHistory(props) {
 
       {data?.length > 0 ? (
         <>
-          {/* <TouchableOpacity
+          <TouchableOpacity
             style={{
               position: 'absolute',
               borderRadius: 50,
@@ -1093,13 +1073,12 @@ function MapHistory(props) {
               elevation: 20,
             }}
             onPress={() => {
-              console.log('hihihihiihihihi-----', speed);
-              if (speed <= 20000) {
+              if (speed >= 2000) {
                 setSpeed(prev => {
-                  return prev + 5000;
+                  return prev - 2000;
                 });
               } else {
-                setSpeed(5000);
+                setSpeed(8000);
               }
             }}>
             <Text
@@ -1108,17 +1087,17 @@ function MapHistory(props) {
                 fontWeight: 'bold',
                 color: 'black',
               }}>
-              {speed == 5000
+              {speed == 8000
                 ? '1x'
-                : speed == 10000
+                : speed == 6000
                 ? '2x'
-                : speed == 15000
+                : speed == 4000
                 ? '4x'
-                : speed == 20000
+                : speed == 2000
                 ? '8x'
                 : null}
             </Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
           {animate == 'start' || animate == '' ? (
             <>
               <TouchableOpacity
@@ -1152,7 +1131,6 @@ function MapHistory(props) {
               onPress={() => {
                 setAnimate('start'),
                   clearInterval(interval),
-                  (i = 0),
                   animateMarkerAndCamera('stop');
               }}>
               <LinearGradient
@@ -1178,7 +1156,7 @@ function MapHistory(props) {
         </>
       ) : null}
 
-      {data?.length > 0 ? (
+      {data?.length > 0 && mapPs !== 0 ? (
         <TouchableOpacity
           onPress={() => setParkMode(!parkMode)}
           style={{
