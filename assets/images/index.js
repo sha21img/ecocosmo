@@ -123,4 +123,6 @@ export const image = {
   testcar: require('./testcar.png'),
   homeUnselected: require('./homeUnselected.png'),
   keepSmall: require('./keepSmall.png'),
+  greenFlag: require('./greenFlag.png'),
+  pinkFlag: require('./pinkFlag.png'),
 };

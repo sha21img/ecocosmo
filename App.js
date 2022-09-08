@@ -149,10 +149,14 @@ const DrawerContent = props => {
                   }}
                   onPress={() => {
                     if (el.route !== 'HomeStack') {
-                      props.navigation.navigate(el.route);
+                      props.navigation.navigate(el.route, {
+                        details: {imei: undefined},
+                        imei: undefined,
+                      });
                     } else {
                       props.navigation.navigate('HomeStack', {
                         screen: el.route,
+                        details: {imei: undefined},
                       });
                     }
                   }}>
@@ -179,7 +183,11 @@ const DrawerContent = props => {
                     paddingVertical: 5,
                     alignItems: 'center',
                   }}
-                  onPress={() => props.navigation.navigate(el.route)}>
+                  onPress={() =>
+                    props.navigation.navigate(el.route, {
+                      details: {imei: undefined},
+                    })
+                  }>
                   <Image source={el.icon} style={{height: 40, width: 40}} />
                   <Text
                     style={{
