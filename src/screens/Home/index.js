@@ -64,7 +64,6 @@ function Home(props) {
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
     const detail = response.data.vehicles;
-    console.log('details', response.data);
     await Storage.setVehicleDetail(detail);
     setDetails(detail);
     setFilteredDetails(detail);
