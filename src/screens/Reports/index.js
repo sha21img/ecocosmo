@@ -38,7 +38,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import * as ScopedStorage from 'react-native-scoped-storage';
 import XLSX from 'xlsx';
-import {useIsFocused} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {Dirs, FileSystem} from 'react-native-file-access';
 const DDP = Dirs.DocumentDir + '/';
 function Reports(props) {
@@ -47,7 +47,7 @@ function Reports(props) {
 
   const imei = props?.route?.params?.details?.imei;
   const newDetails = props?.route?.params?.details;
-  console.log('++++++++++++++++++',newDetails)
+  console.log('++++++++++++++++++',imei)
   // console.log("imeiimeiimeiimeiimei",props.route.params.details.imei)
   const [vehicleNumber, setVehicleNumber] = useState(
     props?.route?.params?.details?.deviceId || 'Select vehicle number',
@@ -67,7 +67,6 @@ function Reports(props) {
   const [newVehicleNumber, setNewVehicleNumber] = useState([]);
   const [newImei, setNewImei] = useState(imei);
   const [mapHistory, setMapHistory] = useState([]);
-
   const [isActive, setIsActive] = useState('');
   const [addres, setAddress] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -102,58 +101,63 @@ function Reports(props) {
     setFtime(endTime);
     setFdate(aa);
   };
-  const setVehicleDetail = async data => {
-    // console.log('newImeinewImei', newImei);
+  // const setVehicleDetail = async data => {
+  //   // console.log('newImeinewImei', newImei);
 
-    const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
-    if (newImei !== undefined) {
-      const filterImei = data || newImei;
-      console.log('filterImei', filterImei);
-      setIsSelected(true);
-      // console.log('vehicleNumvehicleNum', vehicleNum);
-      const filterVehicleNumber = vehicleNum
-        .filter(item => {
-          return item.imei === filterImei;
-        })
-        .map((item, index) => {
-          return {key: index++, label: item.deviceId, imei: item.imei};
-        });
-      console.log(
-        'filterVehic99999999999999999999999999999999',
-        filterVehicleNumber,
-      );
-      setNewFilterVehicle(filterVehicleNumber[0].label);
-      setVehicleNumber(filterVehicleNumber[0].label);
-      setNewImei(filterVehicleNumber[0].imei);
-    } else {
-      setNewFilterVehicle(vehicleNum[0].deviceId);
-      setVehicleNumber(vehicleNum[0].deviceId);
-      setNewImei(vehicleNum[0].imei);
-    }
-    // else {
-    const allVehicleDetails = vehicleNum.map((item, index) => {
-      return {key: index++, label: item.deviceId, imei: item.imei};
-    });
-    // console.log('setVehicleDetailsetVehicleDetail', allVehicleDetails);
-    setNewVehicleNumber(allVehicleDetails);
-    // }
-  };
+  //   const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
+  //   if (newImei !== undefined) {
+  //     const filterImei = data || newImei;
+  //     console.log('filterImei', filterImei);
+  //     setIsSelected(true);
+  //     // console.log('vehicleNumvehicleNum', vehicleNum);
+  //     const filterVehicleNumber = vehicleNum
+  //       .filter(item => {
+  //         return item.imei === filterImei;
+  //       })
+  //       .map((item, index) => {
+  //         return {key: index++, label: item.deviceId, imei: item.imei};
+  //       });
+  //     console.log(
+  //       'filterVehic99999999999999999999999999999999',
+  //       filterVehicleNumber,
+  //     );
+  //     setNewFilterVehicle(filterVehicleNumber[0].label);
+  //     setVehicleNumber(filterVehicleNumber[0].label);
+  //     setNewImei(filterVehicleNumber[0].imei);
+  //   } else {
+  //     setNewFilterVehicle(vehicleNum[0].deviceId);
+  //     setVehicleNumber(vehicleNum[0].deviceId);
+  //     setNewImei(vehicleNum[0].imei);
+  //   }
+  //   // else {
+  //   const allVehicleDetails = vehicleNum.map((item, index) => {
+  //     return {key: index++, label: item.deviceId, imei: item.imei};
+  //   });
+  //   // console.log('setVehicleDetailsetVehicleDetail', allVehicleDetails);
+  //   setNewVehicleNumber(allVehicleDetails);
+  //   // }
+  // };
+
   useEffect(() => {
     if (focus == true) {
+      console.log('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv',newImei)
       setNewImei(imei);
       setDate();
-      getInitialData();
+      getInitialData(imei);
       // setVehicleDetail();
     }
   }, [props, focus]);
-  const getInitialData = async () => {
+  const getInitialData = async (imei) => {
+    setLoading(false)
+    console.log("getInitialDatagetInitialDatagetInitialData",newImei)
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     const allVehicleDetails = vehicleNum.map((item, index) => {
       return {key: index++, label: item.deviceId, imei: item.imei};
     });
     setNewVehicleNumber(allVehicleDetails);
 
-    if (newImei == undefined) {
+    if (imei == undefined) {
+      console.log('ifffffffffffffffffffffffffff')
       setNewFilterVehicle(vehicleNum[0].deviceId);
       setVehicleNumber(vehicleNum[0].deviceId);
       setNewImei(vehicleNum[0].imei);
@@ -183,7 +187,7 @@ function Reports(props) {
       startdate: `${fdate} ${ftime}`,
       enddate: `${fdateend} ${ftimeend}`,
     };
-    // console.log('datadatadata', data);
+    console.log('datadatadata', data);
     const response = await axiosGetData('getDriveDetails', data);
     // console.log('ppppppppppppppppppppppppppppppppppppppp', response?.data);
 
@@ -211,7 +215,7 @@ function Reports(props) {
     setData2(filterAddress);
     // console.log('aafilterAddressa', filterAddress);
   };
-  console.log('pl,pl,ddatatatattataa,pl', data2.length);
+  // console.log('pl,pl,ddatatatattataa,pl', data2.length);
 
   useEffect(() => {
     // if (fdate !== '' && fdateend !== '') {
@@ -587,13 +591,13 @@ function Reports(props) {
 
   const renderLocation = location => {
     const totalSplits = Math.ceil(location.length / 15);
-    console.log(
-      'asssssss',
-      location
-        .split('')
-        .slice(1 * 15, 1 * 15 + 15)
-        .join(''),
-    );
+    // console.log(
+    //   'asssssss',
+    //   location
+    //     .split('')
+    //     .slice(1 * 15, 1 * 15 + 15)
+    //     .join(''),
+    // );
     if (!location) return null;
     return Array(totalSplits)
       .fill(1)
