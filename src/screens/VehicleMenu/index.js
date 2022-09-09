@@ -94,12 +94,13 @@ const VehicleMenu = props => {
     }
   };
   const getUserDetails = async () => {
+    console.log('vicky');
     const succcess = await Storage.getLoginDetail('login_detail');
     setLoginDetails(succcess);
   };
   useEffect(() => {
-    getUserDetails();
-  }, []);
+    visible && getUserDetails();
+  }, [visible]);
   return (
     <>
       <Modal

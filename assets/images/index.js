@@ -125,4 +125,12 @@ export const image = {
   keepSmall: require('./keepSmall.png'),
   greenFlag: require('./greenFlag.png'),
   pinkFlag: require('./pinkFlag.png'),
+  E: require('./E.png'),
+  N: require('./N.png'),
+  NE: require('./NE.png'),
+  NW: require('./NW.png'),
+  S: require('./S.png'),
+  SE: require('./SE.png'),
+  SW: require('./SW.png'),
+  W: require('./W.png'),
 };

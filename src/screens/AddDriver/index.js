@@ -66,6 +66,7 @@ const AddDriver = props => {
   };
 
   const getDetail = async () => {
+    console.log("first")
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
@@ -73,13 +74,15 @@ const AddDriver = props => {
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
     const driverDetails = response.data.driverDetails;
-    const data = driverDetails?.filter((el)=>{
-      return (el.imei == IMEI)
-    })
-    setName(data[0]?.driverName)
-    setNumber(data[0]?.mobilenumber)
-}
-useEffect(()=>{getDetail()},[props])
+    const data = driverDetails?.filter(el => {
+      return el.imei == IMEI;
+    });
+    setName(data[0]?.driverName);
+    setNumber(data[0]?.mobilenumber);
+  };
+  useEffect(() => {
+    props.visible && getDetail();
+  }, [props.visible]);
 
   return (
     <>
