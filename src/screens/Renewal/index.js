@@ -37,6 +37,7 @@ const Renewal = props => {
     let password = loginDetail.password;
     setLoginDetails(loginDetail);
     const response = await axiosGetData(`renewal/${username}/${password}`);
+    console.log('ppppppppp',response.data.renewal)
     setRenewalData(response.data.renewal);
     setLoading(false);
   };
@@ -75,9 +76,20 @@ const Renewal = props => {
       theme: {color: '#004daa'},
     };
     RazorpayCheckout.open(options)
-      .then(data => {
+      .then(async data => {
         // handle success
         console.log('data', data);
+        const loginDetail = await Storage.getLoginDetail('login_detail');
+        let username = loginDetail.accountId;
+        let password = loginDetail.password;
+        const response = await axiosGetData(
+          `renewalCallBack/${username}/${password}/${id}/ecRenewValidate$`,
+        );
+        console.log('renewalCallBack', response.data);
+        getRenewal();
+
+        // http://54.169.20.116/devreact_v1_ec_apps/api/v3
+        // /renewalCallBack/globalcars/ae6343555ef7aefd8a60ff88c6363e9c/17/ecRenewValidate$
         Alert.alert(`Success : ${data.razorpay_payment_id}`);
       })
       .catch(error => {
