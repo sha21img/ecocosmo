@@ -18,7 +18,12 @@ import colors from '../../../assets/Colors';
 import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
 import {axiosGetData} from '../../../Utils/ApiController';
-import {VictoryBar, VictoryChart, VictoryLabel} from 'victory-native';
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryLabel,
+  VictoryAxis,
+} from 'victory-native';
 import moment from 'moment';
 import {useIsFocused} from '@react-navigation/native';
 import ViewShot from 'react-native-view-shot';
@@ -125,15 +130,26 @@ function GraphicalReports(props) {
     if (aa) {
       setLoading(true);
     }
-
+    console.log(
+      'response?.data?.DeviceHistory',
+      response?.data?.DeviceHistory.slice(0, 10),
+    );
     const TodaysODO = response?.data?.DeviceHistory?.map((item, index) => {
-      return {x: index + 1, y: item.todaysODO, z: item.timeStamp1};
+      // const i = moment(item.timeStamp1).format('DD');
+      var d = moment(item.timeStamp1, 'Do MMM YYYY').toDate();
+      var a = moment(d).format('DD');
+      console.log('aaaaaa', a);
+      return {x: a, y: item.todaysODO, z: item.timeStamp1};
     });
     setTodayOdo(TodaysODO);
+    console.log('TodaysODO', TodaysODO);
 
     const TodayIgniOn = response?.data?.DeviceHistory?.map((item, index) => {
+      var d = moment(item.timeStamp1, 'Do MMM YYYY').toDate();
+      var a = moment(d).format('DD');
+      // console.log('aaaaaa', a);
       return {
-        x: index + 1,
+        x: a,
         y: getTime(item.todaysIgnitionOnTimeSeconds),
         z: item.timeStamp1,
       };
@@ -141,8 +157,11 @@ function GraphicalReports(props) {
     setTodayIgniOn(TodayIgniOn);
 
     const OutofCoverage = response?.data?.DeviceHistory?.map((item, index) => {
+      var d = moment(item.timeStamp1, 'Do MMM YYYY').toDate();
+      var a = moment(d).format('DD');
+      // console.log('aaaaaa', a);
       return {
-        x: index + 1,
+        x: a,
         y: getTime(item.todaysOutOfCoverage),
         z: item.timeStamp1,
       };
@@ -151,9 +170,12 @@ function GraphicalReports(props) {
 
     const TodayWaitIgniTime = response?.data?.DeviceHistory?.map(
       (item, index) => {
-        console.log('TodayWaitIgniTime+_+_+_+_=-=-=-=-', item);
+        // console.log('TodayWaitIgniTime+_+_+_+_=-=-=-=-', item);
+        var d = moment(item.timeStamp1, 'Do MMM YYYY').toDate();
+      var a = moment(d).format('DD');
+      console.log('aaaaaa', a);
         return {
-          x: index + 1,
+          x: a,
           y: getTime(item.todaysWaitingIgnitionTime),
           z: item.timeStamp1,
         };
@@ -284,13 +306,16 @@ function GraphicalReports(props) {
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <VictoryChart
                     key={Math.random()}
+                    // minDomain={{x:2}}
                     width={400}
+                    // padding={{top: 100, bottom: 90, left: 70, right: 80}}
                     height={550}
                     domainPadding={{x: 10}}>
                     <VictoryBar
                       style={{
                         data: {fill: '#5EB9FF'},
                       }}
+                      // fixoverlap={true}
                       alignment="end"
                       data={todayOdo}
                       barRatio={1}
@@ -355,6 +380,16 @@ function GraphicalReports(props) {
                           },
                         },
                       ]}
+                    />
+                    <VictoryAxis
+                      dependentAxis
+                      axisLabelComponent={<VictoryLabel dx={20} />}
+                    />
+                    <VictoryAxis
+                      scale="time"
+                      tickFormat={t => `${t}`}
+                      fixLabelOverlap
+                      style={{tickLabels: {padding: 3, fontSize: 7}}}
                     />
                   </VictoryChart>
                 </View>
@@ -430,6 +465,16 @@ function GraphicalReports(props) {
                         },
                       ]}
                     />
+                     <VictoryAxis
+                      dependentAxis
+                      axisLabelComponent={<VictoryLabel dx={20} />}
+                    />
+                    <VictoryAxis
+                      scale="time"
+                      tickFormat={t => `${t}`}
+                      fixLabelOverlap
+                      style={{tickLabels: {padding: 3, fontSize: 7}}}
+                    />
                   </VictoryChart>
                 </View>
               </LinearGradient>
@@ -504,6 +549,16 @@ function GraphicalReports(props) {
                         },
                       ]}
                     />
+                     <VictoryAxis
+                      dependentAxis
+                      axisLabelComponent={<VictoryLabel dx={20} />}
+                    />
+                    <VictoryAxis
+                      scale="time"
+                      tickFormat={t => `${t}`}
+                      fixLabelOverlap
+                      style={{tickLabels: {padding: 3, fontSize: 7}}}
+                    />
                   </VictoryChart>
                 </View>
               </LinearGradient>
@@ -577,6 +632,16 @@ function GraphicalReports(props) {
                           },
                         },
                       ]}
+                    />
+                     <VictoryAxis
+                      dependentAxis
+                      axisLabelComponent={<VictoryLabel dx={20} />}
+                    />
+                    <VictoryAxis
+                      scale="time"
+                      tickFormat={t => `${t}`}
+                      fixLabelOverlap
+                      style={{tickLabels: {padding: 3, fontSize: 7}}}
                     />
                   </VictoryChart>
                 </View>

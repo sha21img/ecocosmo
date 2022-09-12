@@ -78,6 +78,7 @@ function MapHistory(props) {
   const [vehicleData, setVehicleData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [speed, setSpeed] = useState(8000);
+  const [trackViewChanges, setTrackViewChanges] = useState(false);
 
   const [coordinates, setCoordinates] = useState({
     coordinate: {
@@ -175,22 +176,22 @@ function MapHistory(props) {
       accountid: username,
       password: password,
 
-      imei: newImei,
-      date: date || fdate,
-      startTime: ftime,
-      endTime: endTime || ftimeend,
+      // imei: newImei,
+      // date: date || fdate,
+      // startTime: ftime,
+      // endTime: endTime || ftimeend,
       //
-      // startTime: '03:00',
-      // imei: '353701092279609',
-      // endTime: '10:00',
-      // date: '2022-09-05',
+      startTime: '03:00',
+      imei: '353701092279609',
+      endTime: '10:00',
+      date: '2022-09-05',
       // imei=353701092279609&date=2022-09-05&startTime=03:00&endTime=10:00
       //
     };
     console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    let newCoordinate = response?.data?.EventHistory?.slice(0, 10);
-    console.log('mapHistory APi', newCoordinate?.slice(0, 10));
+    let newCoordinate = response?.data?.EventHistory
+    console.log('mapHistory APi', newCoordinate?.length);
     // const filter = response.data.EventHistory.slice(100, 200).filter(
     //   item => item.stoppage != '',
     // );
@@ -332,7 +333,7 @@ function MapHistory(props) {
     // setFtimeend(fTimeStart);
     // setFtime(fTimeStart);
     const fTimeStart = moment(fDateStart).format('hh:mm');
-    setFtimeend(fTimeStart);
+    setFtime(fTimeStart);
 
     // setFtime('00:00:00');
   };
@@ -369,7 +370,9 @@ function MapHistory(props) {
     speedRef.current = speed;
   });
   const start = data => {
+    console.log('markerRef.current', mapRef.current);
     mapRef?.current?.getCamera().then(cam => {
+      console.log('caamam', cam);
       cam.zoom += 5;
       mapRef?.current?.animateCamera(cam);
     });
@@ -778,9 +781,7 @@ function MapHistory(props) {
                       {data[0] !== coordinate ||
                       data[data.length - 1] !== coordinate ? (
                         <MarkerAnimated
-                          tracksViewChanges={
-                            data[0] || data[data.length - 1] ? true : false
-                          }
+                          tracksViewChanges={trackViewChanges}
                           key={index}
                           pinColor={
                             coordinate.ignition == 'On' ? 'green' : 'red'
@@ -791,6 +792,9 @@ function MapHistory(props) {
                           }}>
                           {data[0] == coordinate ? (
                             <Image
+                              onLoad={() =>
+                                setTrackViewChanges(!trackViewChanges)
+                              }
                               resizeMode="contain"
                               source={image.pinkFlag}
                               style={{
@@ -801,6 +805,9 @@ function MapHistory(props) {
                           ) : null}
                           {data[data.length - 1] == coordinate ? (
                             <Image
+                              onLoad={() =>
+                                setTrackViewChanges(!trackViewChanges)
+                              }
                               resizeMode="contain"
                               source={image.greenFlag}
                               style={{
@@ -811,6 +818,9 @@ function MapHistory(props) {
                           ) : null}
 
                           <Image
+                            onLoad={() =>
+                              setTrackViewChanges(!trackViewChanges)
+                            }
                             resizeMode="contain"
                             source={
                               coordinate.direction == 'E'
