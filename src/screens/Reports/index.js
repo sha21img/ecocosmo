@@ -47,7 +47,7 @@ function Reports(props) {
 
   const imei = props?.route?.params?.details?.imei;
   const newDetails = props?.route?.params?.details;
-  console.log('++++++++++++++++++',imei)
+  console.log('++++++++++++++++++', imei);
   // console.log("imeiimeiimeiimeiimei",props.route.params.details.imei)
   const [vehicleNumber, setVehicleNumber] = useState(
     props?.route?.params?.details?.deviceId || 'Select vehicle number',
@@ -72,6 +72,7 @@ function Reports(props) {
   const [loading, setLoading] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [newFilterVehicle, setNewFilterVehicle] = useState();
+  const [lastLocation, setLastLocation] = useState([]);
   const {
     writeFile,
     readFile,
@@ -140,16 +141,19 @@ function Reports(props) {
 
   useEffect(() => {
     if (focus == true) {
-      console.log('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv',newImei)
+      console.log(
+        'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv',
+        newImei,
+      );
       setNewImei(imei);
       setDate();
       getInitialData(imei);
       // setVehicleDetail();
     }
   }, [props, focus]);
-  const getInitialData = async (imei) => {
-    setLoading(false)
-    console.log("getInitialDatagetInitialDatagetInitialData",newImei)
+  const getInitialData = async imei => {
+    setLoading(false);
+    console.log('getInitialDatagetInitialDatagetInitialData', newImei);
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     const allVehicleDetails = vehicleNum.map((item, index) => {
       return {key: index++, label: item.deviceId, imei: item.imei};
@@ -157,7 +161,7 @@ function Reports(props) {
     setNewVehicleNumber(allVehicleDetails);
 
     if (imei == undefined) {
-      console.log('ifffffffffffffffffffffffffff')
+      console.log('ifffffffffffffffffffffffffff');
       setNewFilterVehicle(vehicleNum[0].deviceId);
       setVehicleNumber(vehicleNum[0].deviceId);
       setNewImei(vehicleNum[0].imei);
@@ -191,15 +195,27 @@ function Reports(props) {
     const response = await axiosGetData('getDriveDetails', data);
     // console.log('ppppppppppppppppppppppppppppppppppppppp', response?.data);
 
-    const summarReport = response?.data?.Drives?.forEach(item => {
+    const summarReport = response?.data?.Drives?.forEach(async item => {
       // console.log('item', item);
 
       getAddress(item.startPoint, username, encodedPassWord);
+      getLastAddress(item.endPoint, username, encodedPassWord);
     });
-    // console.log('response.data.Drives', response.data.Drives.length);
+    console.log('response.data.Drives', response.data.Drives.slice(0, 3));
     setSummaryReport(response?.data?.Drives);
 
     return response?.data?.Drives;
+  };
+  var lastFilterAddress = [];
+  const getLastAddress = async (address, username, password) => {
+    const newAddress = address.split(',').join('/');
+    const response =
+      // await axiosGetData(`getAddress`,data);
+      await axios.get(
+        `http://54.169.20.116/react_v1_ec_apps/api/v3/getAddress/${username}/${password}/${newAddress}`,
+      );
+    lastFilterAddress.push(response.data);
+    setLastLocation(lastFilterAddress);
   };
   // startPoint":"19.268671,72.869516",
   var filterAddress = [];
@@ -437,8 +453,9 @@ function Reports(props) {
       Data = summaryReport.map(item => {
         return {
           newFilterVehicle: newFilterVehicle,
+          StartTime: item['startTime:'],
           EndTime: item['endTime:'],
-          'Work/Idle hrs': item.odo,
+          kms: item.odo,
           Duration: item.duration,
         };
       });
@@ -1296,10 +1313,13 @@ function Reports(props) {
                   onPress={() =>
                     showModal('Drive Summary Report', [
                       'Vehicle Number',
-                      'Start Location',
+                      // 'Start Location',
                       'End Time',
-                      'Work/Idle hrs',
+                      'kms',
                       'Duration',
+                      'Start Time',
+                      // 'End Location',
+                      // 'kms',
                     ])
                   }>
                   <Image
@@ -1335,6 +1355,20 @@ function Reports(props) {
                     <Text>{data2[0]?.vehicleAddress}</Text>
                   )}
                 </View>
+                {/*  */}
+                <View
+                  style={{
+                    paddingRight: 20,
+                  }}>
+                  <Text style={styles.textHead}>End Location</Text>
+                  {isActive === 'drive' && isActive2.drive === 1 ? (
+                    lastLocation?.map(item => {
+                      return <Text>{item?.vehicleAddress}</Text>;
+                    })
+                  ) : (
+                    <Text>{lastLocation[0]?.vehicleAddress}</Text>
+                  )}
+                </View>
                 <View>
                   <View
                     style={{
@@ -1343,12 +1377,15 @@ function Reports(props) {
                       // alignContent: 'flex-start',
                       // justifyContent:'flex-start'
                     }}>
+                    <Text style={styles.textHead}>Start Time</Text>
                     <Text style={styles.textHead}>End Time</Text>
-                    <Text style={styles.textHead}>Work/Idle hrs</Text>
+                    <Text style={styles.textHead}>kms</Text>
                     <Text style={styles.textHead}>Duration</Text>
+                    {/* <Text style={styles.textHead}>kms</Text> */}
                   </View>
                   {isActive === 'drive' && isActive2.drive === 1 ? (
                     summaryReport?.map(item => {
+                      console.log('push', item.odo);
                       return (
                         <View
                           style={{
@@ -1358,6 +1395,9 @@ function Reports(props) {
                             // backgroundColor: 'red',
                           }}>
                           <Text style={{minWidth: 100, alignSelf: 'center'}}>
+                            {moment(item['startTime:']).format('hh:mm')}
+                          </Text>
+                          <Text style={{minWidth: 100, alignSelf: 'center'}}>
                             {moment(item['endTime:']).format('hh:mm')}
                           </Text>
                           <Text style={{minWidth: 100, alignSelf: 'center'}}>
@@ -1366,6 +1406,9 @@ function Reports(props) {
                           <Text style={{minWidth: 100, alignSelf: 'center'}}>
                             {item.duration}
                           </Text>
+                          {/* <Text style={{minWidth: 100, alignSelf: 'center'}}>
+                            {item.odo}
+                          </Text> */}
                           <TouchableOpacity
                             onPress={() =>
                               props.navigation.navigate('MapHistory', {
@@ -1387,7 +1430,16 @@ function Reports(props) {
                     })
                   ) : (
                     <View style={{flexDirection: 'row'}}>
-                      <View style={{marginHorizontal: 20}}>
+                      <View style={styles.textHead}>
+                        <Text>
+                          {summaryReport[0]
+                            ? moment(summaryReport[0]['startTime:']).format(
+                                'hh:mm',
+                              )
+                            : '00:00:00'}
+                        </Text>
+                      </View>
+                      <View style={styles.textHead}>
                         <Text>
                           {summaryReport[0]
                             ? moment(summaryReport[0]['endTime:']).format(
@@ -1396,10 +1448,10 @@ function Reports(props) {
                             : '00:00:00'}
                         </Text>
                       </View>
-                      <View style={{marginHorizontal: 20}}>
+                      <View style={styles.textHead}>
                         <Text>{summaryReport[0]?.odo}</Text>
                       </View>
-                      <View style={{marginHorizontal: 20}}>
+                      <View style={styles.textHead}>
                         <Text>{summaryReport[0]?.duration}</Text>
                       </View>
                     </View>
