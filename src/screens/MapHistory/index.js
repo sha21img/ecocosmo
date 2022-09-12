@@ -59,7 +59,7 @@ function MapHistory(props) {
   //
   const [parkMode, setParkMode] = useState(true);
   const [selected, setSelected] = useState(
-    props?.route?.params?.details.deviceId || 'All Vehicle',
+    props?.route?.params?.details?.deviceId || 'All Vehicle',
   );
 
   const [open, setOpen] = useState(false);
@@ -69,7 +69,7 @@ function MapHistory(props) {
   const [show, setShow] = useState(false);
   const [fdate, setFdate] = useState('');
   const [fdateend, setFdateend] = useState('');
-  const [ftime, setFtime] = useState('');
+  const [ftime, setFtime] = useState('00:00');
   const [ftimeend, setFtimeend] = useState('');
   const [dtype, setDtype] = useState();
   const [myMarker, setMyMarker] = useState(null);
@@ -116,12 +116,13 @@ function MapHistory(props) {
         setFtimeend(endTime);
       } else {
         setFtime('00:00');
-        const ab = moment(new Date()).format('hh-mm');
+        var ab = moment(new Date()).format('hh:mm');
         console.log('avavava', ab);
         setFtimeend(ab);
       }
 
       getImei(filterImei);
+      getMapHistory(a, ab);
     }
   }, [props, focus]);
 
@@ -140,16 +141,17 @@ function MapHistory(props) {
     }
     setVehicleData(data);
   };
-  useEffect(() => {
-    if (focus == true) {
-      if (fdate !== '' && newImei !== undefined) {
-        getMapHistory();
-      }
-    }
-    // return () => {
-    //   clearInterval(interval);
-    // };
-  }, [fdate, fdateend, ftime, ftimeend, newImei, props, focus]);
+  // useEffect(() => {
+  //   if (focus == true) {
+  //     if (fdate !== '' && newImei !== undefined) {
+  //       console.log('hi')
+  //       getMapHistory();
+  //     }
+  //   }
+  // return () => {
+  //   clearInterval(interval);
+  // };
+  // }, [focus]);
   const Select = async (data, imei) => {
     setSelected(data);
     setNewImei(imei);
@@ -157,7 +159,7 @@ function MapHistory(props) {
 
     // setLoading(false);
   };
-  const getMapHistory = async () => {
+  const getMapHistory = async (date, endTime) => {
     console.log('getMapHistory');
 
     const summaryData = props?.route?.params?.summaryData;
@@ -173,21 +175,22 @@ function MapHistory(props) {
       accountid: username,
       password: password,
 
-      // imei: newImei,
-      // date: fdate,
-      // startTime: ftime,
-      // endTime: ftimeend,
+      imei: newImei,
+      date: date || fdate,
+      startTime: ftime,
+      endTime: endTime || ftimeend,
       //
-      startTime: '03:00',
-      imei: '353701092279609',
-      endTime: '10:00',
-      date: '2022-09-05',
+      // startTime: '03:00',
+      // imei: '353701092279609',
+      // endTime: '10:00',
+      // date: '2022-09-05',
       // imei=353701092279609&date=2022-09-05&startTime=03:00&endTime=10:00
       //
     };
+    console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    let newCoordinate = response?.data?.EventHistory.slice(0, 10);
-    console.log('mapHistory APi', newCoordinate.length);
+    let newCoordinate = response?.data?.EventHistory?.slice(0, 10);
+    console.log('mapHistory APi', newCoordinate?.slice(0, 10));
     // const filter = response.data.EventHistory.slice(100, 200).filter(
     //   item => item.stoppage != '',
     // );
@@ -325,10 +328,13 @@ function MapHistory(props) {
     let fDateStart = new Date(currentDate);
     setFdate(formatDate(fDateStart.toString()));
 
-    let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
+    // let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
+    // setFtimeend(fTimeStart);
+    // setFtime(fTimeStart);
+    const fTimeStart = moment(fDateStart).format('hh:mm');
     setFtimeend(fTimeStart);
 
-    setFtime('00:00:00');
+    // setFtime('00:00:00');
   };
   const onChangeEnd = selectedDate => {
     const currentDate = selectedDate || dateEnd;
@@ -339,7 +345,8 @@ function MapHistory(props) {
     setFdateend(formatDate(fDateEnd.toString()));
     let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0, 40);
 
-    setFtimeend(fTimeEnd);
+    const endTime = moment(fDateEnd).format('hh:mm');
+    setFtimeend(endTime);
   };
   const showMode = currentMode => {
     setShow(true);
@@ -426,7 +433,7 @@ function MapHistory(props) {
         }
         i++;
       } else {
-        console.log('elelelelssesesese',i);
+        console.log('elelelelssesesese', i);
         const cord1 = {
           latitude: parseFloat(data[i].lat),
           longitude: parseFloat(data[i].lng),
@@ -514,22 +521,43 @@ function MapHistory(props) {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'flex-start',
+            justifyContent: 'space-between',
             paddingVertical: 10,
           }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity
+              onPress={() => props.navigation.goBack()}
+              // style={{paddingVertical: 10}}
+            >
+              <Image source={image.backArrow} style={{height: 12, width: 23}} />
+            </TouchableOpacity>
+            <Text
+              style={{
+                fontSize: Size.large,
+                color: colors.white,
+                paddingHorizontal: 15,
+              }}>
+              {__('Map History')}
+            </Text>
+          </View>
           <TouchableOpacity
-            onPress={() => props.navigation.goBack()}
-            style={{paddingVertical: 10}}>
-            <Image source={image.backArrow} style={{height: 12, width: 23}} />
-          </TouchableOpacity>
-          <Text
+            onPress={() => {
+              getMapHistory();
+            }}
             style={{
-              fontSize: Size.large,
-              color: colors.white,
-              paddingHorizontal: 15,
+              borderRadius: 50,
+              float: 'right',
+              justifyContent: 'flex-end',
             }}>
-            {__('Map History')}
-          </Text>
+            <Text
+              style={{
+                fontSize: Size.large,
+                color: colors.white,
+                paddingHorizontal: 15,
+              }}>
+              {__('Go')}
+            </Text>
+          </TouchableOpacity>
         </View>
       </LinearGradient>
       <View style={style.textinputbox}>
@@ -1227,7 +1255,7 @@ function MapHistory(props) {
                     setT(null),
                     clearInterval(interval),
                     // (i = 0);
-                  animateMarkerAndCamera('stop');
+                    animateMarkerAndCamera('stop');
                 }}>
                 <LinearGradient
                   colors={['#0065B3', '#083273']}
