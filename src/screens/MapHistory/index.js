@@ -190,7 +190,7 @@ function MapHistory(props) {
     };
     console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    let newCoordinate = response?.data?.EventHistory.slice(0,10)
+    let newCoordinate = response?.data?.EventHistory;
     console.log('mapHistory APi', newCoordinate?.length);
     // const filter = response.data.EventHistory.slice(100, 200).filter(
     //   item => item.stoppage != '',
@@ -217,12 +217,20 @@ function MapHistory(props) {
     // }
 
     if (newCoordinate.length > 0) {
-      newCoordinate?.forEach(el => {
-        setCoordinates(prev => ({
-          ...prev,
-          coordinate: {latitude: el.lat, longitude: el.lng},
-        }));
-      });
+      setCoordinates(prev => ({
+        ...prev,
+        coordinate: {
+          latitude: parseFloat(newCoordinate[0].lat),
+          longitude: parseFloat(newCoordinate[0].lng),
+        },
+      }));
+
+      // newCoordinate?.forEach(el => {
+      //   setCoordinates(prev => ({
+      //     ...prev,
+      //     coordinate: {latitude: el.lat, longitude: el.lng},
+      //   }));
+      // });
     } else {
       Toast.show('There is no data for this vehicle');
     }
@@ -462,8 +470,8 @@ function MapHistory(props) {
         setDegree(brng);
 
         let newCoordinate = {
-          latitude: parseFloat(data[0]?.lat),
-          longitude: parseFloat(data[0]?.lng),
+          latitude: parseFloat(coordinates.coordinate.latitude),
+          longitude: parseFloat(coordinates.coordinate.longitude),
           latitudeDelta: 0.012,
           longitudeDelta: 0.012,
         };
@@ -509,6 +517,147 @@ function MapHistory(props) {
     }
   }
   const [mapPs, setMapPs] = useState(0);
+  const CustomMarker = () => {
+    return (
+      <>
+        {data.map((coordinate, index) => {
+          return (
+            <Marker
+              // tracksViewChanges={trackViewChanges}
+              key={index}
+              pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
+              coordinate={{
+                latitude: parseFloat(coordinate.lat),
+                longitude: parseFloat(coordinate.lng),
+              }}>
+              {data[0] == coordinate ? (
+                <Image
+                  // onLoad={() =>
+                  //   setTrackViewChanges(!trackViewChanges)
+                  // }
+                  resizeMode="contain"
+                  source={image.pinkFlag}
+                  style={{
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+              ) : null}
+              {data[data.length - 1] == coordinate ? (
+                <Image
+                  // onLoad={() =>
+                  //   setTrackViewChanges(!trackViewChanges)
+                  // }
+                  resizeMode="contain"
+                  source={image.greenFlag}
+                  style={{
+                    height: 25,
+                    width: 25,
+                  }}
+                />
+              ) : null}
+              <Image
+                // onLoad={() => setTrackViewChanges(true)}
+                resizeMode="contain"
+                source={
+                  coordinate.direction == 'E'
+                    ? image.E
+                    : coordinate.direction == 'N'
+                    ? image.N
+                    : coordinate.direction == 'NE'
+                    ? image.NE
+                    : coordinate.direction == 'NW'
+                    ? image.NW
+                    : coordinate.direction == 'S'
+                    ? image.S
+                    : coordinate.direction == 'SE'
+                    ? image.SE
+                    : coordinate.direction == 'SW'
+                    ? image.SW
+                    : coordinate.direction == 'W'
+                    ? image.W
+                    : null
+                }
+                style={{
+                  height: 25,
+                  width: 25,
+                }}
+              />
+              <Callout tooltip>
+                <LinearGradient
+                  colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
+                  start={{x: 1.3, y: 0}}
+                  end={{x: 0, y: 0}}
+                  locations={[0, 0.9]}
+                  style={style.firstbox}>
+                  <View style={{paddingBottom: 5}}>
+                    <Text style={style.firstboxtext1}>
+                      {coordinate.timeStamp}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <AntDesign
+                      style={{
+                        color: '#17D180',
+                        fontSize: 16,
+                      }}
+                      name={'caretdown'}
+                    />
+                    <Text
+                      style={{
+                        paddingHorizontal: 10,
+                        color: colors.white,
+                      }}>
+                      Ignition: {coordinate.ignition}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      paddingTop: 5,
+                    }}>
+                    <View style={style.secondboxtextbox1}>
+                      <Text style={{paddingVertical: 8}}>
+                        <Image
+                          resizeMode="contain"
+                          source={image.speed}
+                          style={style.speedimg}
+                        />
+                      </Text>
+                      <Text style={style.secondboxtext1}>
+                        {Math.floor(coordinate?.speed)} {__('KM/H')}
+                      </Text>
+                      <Text style={style.secondboxtext11}>{__('SPEED')}</Text>
+                    </View>
+                    <View style={style.secondboxtextbox1}>
+                      <Text style={{paddingVertical: 8}}>
+                        <Image
+                          resizeMode="contain"
+                          source={image.distance}
+                          style={style.locimg}
+                        />
+                      </Text>
+                      <Text style={style.secondboxtext1}>
+                        {Math.floor(coordinate.odometer)} {__('KM')}
+                      </Text>
+                      <Text style={style.secondboxtext11}>
+                        {__("TODAY'S ODO")}
+                      </Text>
+                    </View>
+                  </View>
+                </LinearGradient>
+              </Callout>
+            </Marker>
+          );
+        })}
+      </>
+    );
+  };
 
   return (
     <>
@@ -756,8 +905,38 @@ function MapHistory(props) {
         }}>
         {parkMode ? (
           <MapView
-            tracksViewChanges={false}
+            // onRegionChangeComplete={region =>
+            //   setCoordinates(prev => {
+            //     return {
+            //       ...prev,
+            //       coordinate: {
+            //         latitude:
+            //           parseFloat(data[0]?.lat) ||
+            //           coordinates.coordinate.latitude,
+            //         longitude:
+            //           parseFloat(data[0]?.lng) ||
+            //           coordinates.coordinate.longitude,
+            //       },
+            //     };
+            //   })
+            // }
+            // tracksViewChanges={trackViewChanges}
             // minZoomLevel={15}
+            onMapReady={region =>
+              setCoordinates(prev => {
+                return {
+                  ...prev,
+                  coordinate: {
+                    latitude:
+                      parseFloat(data[0]?.lat) ||
+                      coordinates.coordinate.latitude,
+                    longitude:
+                      parseFloat(data[0]?.lng) ||
+                      coordinates.coordinate.longitude,
+                  },
+                };
+              })
+            }
             pitchEnabled={false}
             style={{
               width: Dimensions.get('window').width,
@@ -766,160 +945,15 @@ function MapHistory(props) {
             ref={mapRef}
             caheEnabled
             region={{
-              latitude:
-                parseFloat(data[0]?.lat) || coordinates.coordinate.latitude,
-              longitude:
-                parseFloat(data[0]?.lng) || coordinates.coordinate.longitude,
+              latitude: coordinates.coordinate.latitude,
+              longitude: coordinates.coordinate.longitude,
               latitudeDelta: LATITUDE_DELTA,
               longitudeDelta: LONGITUDE_DELTA,
             }}>
             {data.length > 0 ? (
               <>
-                {data?.map((coordinate, index) => {
-                  return (
-                    <>
-                      <MarkerAnimated
-                        tracksViewChanges={trackViewChanges}
-                        key={index}
-                        pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
-                        coordinate={{
-                          latitude: parseFloat(coordinate.lat),
-                          longitude: parseFloat(coordinate.lng),
-                        }}>
-                        {data[0] == coordinate ? (
-                          <Image
-                            onLoad={() =>
-                              setTrackViewChanges(!trackViewChanges)
-                            }
-                            resizeMode="contain"
-                            source={image.pinkFlag}
-                            style={{
-                              height: 50,
-                              width: 50,
-                            }}
-                          />
-                        ) : null}
-                        {data[data.length - 1] == coordinate ? (
-                          <Image
-                            onLoad={() =>
-                              setTrackViewChanges(!trackViewChanges)
-                            }
-                            resizeMode="contain"
-                            source={image.greenFlag}
-                            style={{
-                              height: 50,
-                              width: 50,
-                            }}
-                          />
-                        ) : null}
-
-                        <Image
-                          onLoad={() => setTrackViewChanges(!trackViewChanges)}
-                          resizeMode="contain"
-                          source={
-                            coordinate.direction == 'E'
-                              ? image.E
-                              : coordinate.direction == 'N'
-                              ? image.N
-                              : coordinate.direction == 'NE'
-                              ? image.NE
-                              : coordinate.direction == 'NW'
-                              ? image.NW
-                              : coordinate.direction == 'S'
-                              ? image.S
-                              : coordinate.direction == 'SE'
-                              ? image.SE
-                              : coordinate.direction == 'SW'
-                              ? image.SW
-                              : coordinate.direction == 'W'
-                              ? image.W
-                              : null
-                          }
-                          style={{
-                            height: 45,
-                            width: 45,
-                          }}
-                        />
-
-                        <Callout tooltip>
-                          <LinearGradient
-                            colors={[
-                              colors.mainThemeColor3,
-                              colors.mainThemeColor4,
-                            ]}
-                            start={{x: 1.3, y: 0}}
-                            end={{x: 0, y: 0}}
-                            locations={[0, 0.9]}
-                            style={style.firstbox}>
-                            <View style={{paddingBottom: 5}}>
-                              <Text style={style.firstboxtext1}>
-                                {coordinate.timeStamp}
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <AntDesign
-                                style={{
-                                  color: '#17D180',
-                                  fontSize: 16,
-                                }}
-                                name={'caretdown'}
-                              />
-                              <Text
-                                style={{
-                                  paddingHorizontal: 10,
-                                  color: colors.white,
-                                }}>
-                                Ignition: {coordinate.ignition}
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'flex-start',
-                                paddingTop: 5,
-                              }}>
-                              <View style={style.secondboxtextbox1}>
-                                <Text style={{paddingVertical: 8}}>
-                                  <Image
-                                    resizeMode="contain"
-                                    source={image.speed}
-                                    style={style.speedimg}
-                                  />
-                                </Text>
-                                <Text style={style.secondboxtext1}>
-                                  {Math.floor(coordinate?.speed)} {__('KM/H')}
-                                </Text>
-                                <Text style={style.secondboxtext11}>
-                                  {__('SPEED')}
-                                </Text>
-                              </View>
-                              <View style={style.secondboxtextbox1}>
-                                <Text style={{paddingVertical: 8}}>
-                                  <Image
-                                    resizeMode="contain"
-                                    source={image.distance}
-                                    style={style.locimg}
-                                  />
-                                </Text>
-                                <Text style={style.secondboxtext1}>
-                                  {Math.floor(coordinate.odometer)} {__('KM')}
-                                </Text>
-                                <Text style={style.secondboxtext11}>
-                                  {__("TODAY'S ODO")}
-                                </Text>
-                              </View>
-                            </View>
-                          </LinearGradient>
-                        </Callout>
-                      </MarkerAnimated>
-                    </>
-                  );
-                })}
-
+                {/* {data?.map((coordinate, index) => { */}
+                <CustomMarker />
                 <MarkerAnimated
                   ref={marker => {
                     // console.log('marker', marker);
@@ -942,8 +976,8 @@ function MapHistory(props) {
                       resizeMode="contain"
                       source={image.carGreenUp}
                       style={{
-                        height: 30,
-                        width: 30,
+                        height: 20,
+                        width: 20,
                       }}
                     />
                   ) : animate == 'start' ? (
@@ -957,7 +991,6 @@ function MapHistory(props) {
                     />
                   ) : null}
                 </MarkerAnimated>
-
                 <Polyline
                   strokeWidth={2}
                   strokeColor="red"
