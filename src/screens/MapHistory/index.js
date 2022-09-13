@@ -190,7 +190,7 @@ function MapHistory(props) {
     };
     console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    let newCoordinate = response?.data?.EventHistory
+    let newCoordinate = response?.data?.EventHistory.slice(0,10)
     console.log('mapHistory APi', newCoordinate?.length);
     // const filter = response.data.EventHistory.slice(100, 200).filter(
     //   item => item.stoppage != '',
@@ -778,151 +778,144 @@ function MapHistory(props) {
                 {data?.map((coordinate, index) => {
                   return (
                     <>
-                      {data[0] !== coordinate ||
-                      data[data.length - 1] !== coordinate ? (
-                        <MarkerAnimated
-                          tracksViewChanges={trackViewChanges}
-                          key={index}
-                          pinColor={
-                            coordinate.ignition == 'On' ? 'green' : 'red'
-                          }
-                          coordinate={{
-                            latitude: parseFloat(coordinate.lat),
-                            longitude: parseFloat(coordinate.lng),
-                          }}>
-                          {data[0] == coordinate ? (
-                            <Image
-                              onLoad={() =>
-                                setTrackViewChanges(!trackViewChanges)
-                              }
-                              resizeMode="contain"
-                              source={image.pinkFlag}
-                              style={{
-                                height: 50,
-                                width: 50,
-                              }}
-                            />
-                          ) : null}
-                          {data[data.length - 1] == coordinate ? (
-                            <Image
-                              onLoad={() =>
-                                setTrackViewChanges(!trackViewChanges)
-                              }
-                              resizeMode="contain"
-                              source={image.greenFlag}
-                              style={{
-                                height: 50,
-                                width: 50,
-                              }}
-                            />
-                          ) : null}
-
+                      <MarkerAnimated
+                        tracksViewChanges={trackViewChanges}
+                        key={index}
+                        pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
+                        coordinate={{
+                          latitude: parseFloat(coordinate.lat),
+                          longitude: parseFloat(coordinate.lng),
+                        }}>
+                        {data[0] == coordinate ? (
                           <Image
                             onLoad={() =>
                               setTrackViewChanges(!trackViewChanges)
                             }
                             resizeMode="contain"
-                            source={
-                              coordinate.direction == 'E'
-                                ? image.E
-                                : coordinate.direction == 'N'
-                                ? image.N
-                                : coordinate.direction == 'NE'
-                                ? image.NE
-                                : coordinate.direction == 'NW'
-                                ? image.NW
-                                : coordinate.direction == 'S'
-                                ? image.S
-                                : coordinate.direction == 'SE'
-                                ? image.SE
-                                : coordinate.direction == 'SW'
-                                ? image.SW
-                                : coordinate.direction == 'W'
-                                ? image.W
-                                : null
-                            }
+                            source={image.pinkFlag}
                             style={{
-                              height: 45,
-                              width: 45,
+                              height: 50,
+                              width: 50,
                             }}
                           />
+                        ) : null}
+                        {data[data.length - 1] == coordinate ? (
+                          <Image
+                            onLoad={() =>
+                              setTrackViewChanges(!trackViewChanges)
+                            }
+                            resizeMode="contain"
+                            source={image.greenFlag}
+                            style={{
+                              height: 50,
+                              width: 50,
+                            }}
+                          />
+                        ) : null}
 
-                          <Callout tooltip>
-                            <LinearGradient
-                              colors={[
-                                colors.mainThemeColor3,
-                                colors.mainThemeColor4,
-                              ]}
-                              start={{x: 1.3, y: 0}}
-                              end={{x: 0, y: 0}}
-                              locations={[0, 0.9]}
-                              style={style.firstbox}>
-                              <View style={{paddingBottom: 5}}>
-                                <Text style={style.firstboxtext1}>
-                                  {coordinate.timeStamp}
+                        <Image
+                          onLoad={() => setTrackViewChanges(!trackViewChanges)}
+                          resizeMode="contain"
+                          source={
+                            coordinate.direction == 'E'
+                              ? image.E
+                              : coordinate.direction == 'N'
+                              ? image.N
+                              : coordinate.direction == 'NE'
+                              ? image.NE
+                              : coordinate.direction == 'NW'
+                              ? image.NW
+                              : coordinate.direction == 'S'
+                              ? image.S
+                              : coordinate.direction == 'SE'
+                              ? image.SE
+                              : coordinate.direction == 'SW'
+                              ? image.SW
+                              : coordinate.direction == 'W'
+                              ? image.W
+                              : null
+                          }
+                          style={{
+                            height: 45,
+                            width: 45,
+                          }}
+                        />
+
+                        <Callout tooltip>
+                          <LinearGradient
+                            colors={[
+                              colors.mainThemeColor3,
+                              colors.mainThemeColor4,
+                            ]}
+                            start={{x: 1.3, y: 0}}
+                            end={{x: 0, y: 0}}
+                            locations={[0, 0.9]}
+                            style={style.firstbox}>
+                            <View style={{paddingBottom: 5}}>
+                              <Text style={style.firstboxtext1}>
+                                {coordinate.timeStamp}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}>
+                              <AntDesign
+                                style={{
+                                  color: '#17D180',
+                                  fontSize: 16,
+                                }}
+                                name={'caretdown'}
+                              />
+                              <Text
+                                style={{
+                                  paddingHorizontal: 10,
+                                  color: colors.white,
+                                }}>
+                                Ignition: {coordinate.ignition}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                                paddingTop: 5,
+                              }}>
+                              <View style={style.secondboxtextbox1}>
+                                <Text style={{paddingVertical: 8}}>
+                                  <Image
+                                    resizeMode="contain"
+                                    source={image.speed}
+                                    style={style.speedimg}
+                                  />
+                                </Text>
+                                <Text style={style.secondboxtext1}>
+                                  {Math.floor(coordinate?.speed)} {__('KM/H')}
+                                </Text>
+                                <Text style={style.secondboxtext11}>
+                                  {__('SPEED')}
                                 </Text>
                               </View>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                }}>
-                                <AntDesign
-                                  style={{
-                                    color: '#17D180',
-                                    fontSize: 16,
-                                  }}
-                                  name={'caretdown'}
-                                />
-                                <Text
-                                  style={{
-                                    paddingHorizontal: 10,
-                                    color: colors.white,
-                                  }}>
-                                  Ignition: {coordinate.ignition}
+                              <View style={style.secondboxtextbox1}>
+                                <Text style={{paddingVertical: 8}}>
+                                  <Image
+                                    resizeMode="contain"
+                                    source={image.distance}
+                                    style={style.locimg}
+                                  />
+                                </Text>
+                                <Text style={style.secondboxtext1}>
+                                  {Math.floor(coordinate.odometer)} {__('KM')}
+                                </Text>
+                                <Text style={style.secondboxtext11}>
+                                  {__("TODAY'S ODO")}
                                 </Text>
                               </View>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'flex-start',
-                                  paddingTop: 5,
-                                }}>
-                                <View style={style.secondboxtextbox1}>
-                                  <Text style={{paddingVertical: 8}}>
-                                    <Image
-                                      resizeMode="contain"
-                                      source={image.speed}
-                                      style={style.speedimg}
-                                    />
-                                  </Text>
-                                  <Text style={style.secondboxtext1}>
-                                    {Math.floor(coordinate?.speed)} {__('KM/H')}
-                                  </Text>
-                                  <Text style={style.secondboxtext11}>
-                                    {__('SPEED')}
-                                  </Text>
-                                </View>
-                                <View style={style.secondboxtextbox1}>
-                                  <Text style={{paddingVertical: 8}}>
-                                    <Image
-                                      resizeMode="contain"
-                                      source={image.distance}
-                                      style={style.locimg}
-                                    />
-                                  </Text>
-                                  <Text style={style.secondboxtext1}>
-                                    {Math.floor(coordinate.odometer)} {__('KM')}
-                                  </Text>
-                                  <Text style={style.secondboxtext11}>
-                                    {__("TODAY'S ODO")}
-                                  </Text>
-                                </View>
-                              </View>
-                            </LinearGradient>
-                          </Callout>
-                        </MarkerAnimated>
-                      ) : null}
+                            </View>
+                          </LinearGradient>
+                        </Callout>
+                      </MarkerAnimated>
                     </>
                   );
                 })}
@@ -1262,7 +1255,7 @@ function MapHistory(props) {
                 style={{position: 'absolute', bottom: 0, width: '100%'}}
                 onPress={() => {
                   setAnimate('start'),
-                    setT(null),
+                    // setT(null),
                     clearInterval(interval),
                     // (i = 0);
                     animateMarkerAndCamera('stop');
