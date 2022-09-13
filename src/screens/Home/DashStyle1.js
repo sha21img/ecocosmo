@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     borderRadius: 5,
     height: hp('5%'),
+    maxWidth:70
   },
   buttonText: {fontSize: Size.medium, color: colors.white},
 

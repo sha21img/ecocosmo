@@ -138,7 +138,7 @@ function GraphicalReports(props) {
       // const i = moment(item.timeStamp1).format('DD');
       var d = moment(item.timeStamp1, 'Do MMM YYYY').toDate();
       var a = moment(d).format('DD');
-      console.log('aaaaaa', a);
+      console.log('aaaaaa', item);
       return {x: a, y: item.todaysODO, z: item.timeStamp1};
     });
     setTodayOdo(TodaysODO);
@@ -172,8 +172,8 @@ function GraphicalReports(props) {
       (item, index) => {
         // console.log('TodayWaitIgniTime+_+_+_+_=-=-=-=-', item);
         var d = moment(item.timeStamp1, 'Do MMM YYYY').toDate();
-      var a = moment(d).format('DD');
-      console.log('aaaaaa', a);
+        var a = moment(d).format('DD');
+        console.log('aaaaaa', a);
         return {
           x: a,
           y: getTime(item.todaysWaitingIgnitionTime),
@@ -320,7 +320,7 @@ function GraphicalReports(props) {
                       data={todayOdo}
                       barRatio={1}
                       labels={({datum}) => {
-                        return datum.x === Sel.x
+                        return datum.x === Sel.x && datum.y === Sel.y
                           ? `${datum.y} KM\n${datum.z}`
                           : '';
                       }}
@@ -429,7 +429,7 @@ function GraphicalReports(props) {
                       data={todayIgniOn}
                       barRatio={1}
                       labels={({datum}) => {
-                        return datum.x === Sel.x
+                        return datum.x === Sel.x && datum.y === Sel.y
                           ? `${datum.y} Hrs\n${datum.z}`
                           : '';
                       }}
@@ -465,7 +465,7 @@ function GraphicalReports(props) {
                         },
                       ]}
                     />
-                     <VictoryAxis
+                    <VictoryAxis
                       dependentAxis
                       axisLabelComponent={<VictoryLabel dx={20} />}
                     />
@@ -513,7 +513,7 @@ function GraphicalReports(props) {
                       data={outOfCoverage}
                       barRatio={1}
                       labels={({datum}) => {
-                        return datum.x === Sel.x
+                        return datum.x === Sel.x && datum.y === Sel.y
                           ? `${datum.y} Hrs\n${datum.z}`
                           : '';
                       }}
@@ -549,7 +549,7 @@ function GraphicalReports(props) {
                         },
                       ]}
                     />
-                     <VictoryAxis
+                    <VictoryAxis
                       dependentAxis
                       axisLabelComponent={<VictoryLabel dx={20} />}
                     />
@@ -597,7 +597,7 @@ function GraphicalReports(props) {
                       data={todayWaitingIgniTime}
                       barRatio={1}
                       labels={({datum}) => {
-                        return datum.x === Sel.x
+                        return datum.x === Sel.x && datum.y === Sel.y
                           ? `${datum.y} Hrs\n${datum.z}`
                           : '';
                       }}
@@ -633,7 +633,7 @@ function GraphicalReports(props) {
                         },
                       ]}
                     />
-                     <VictoryAxis
+                    <VictoryAxis
                       dependentAxis
                       axisLabelComponent={<VictoryLabel dx={20} />}
                     />
