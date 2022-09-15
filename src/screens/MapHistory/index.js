@@ -378,26 +378,26 @@ function MapHistory(props) {
                     <Image
                       onLoad={() => setTrackViewChanges(true)}
                       resizeMode="contain"
-                      source={image.E}
-                      // source={
-                      //   coordinate.direction == 'E'
-                      //     ? image.E
-                      //     : coordinate.direction == 'N'
-                      //     ? image.N
-                      //     : coordinate.direction == 'NE'
-                      //     ? image.NE
-                      //     : coordinate.direction == 'NW'
-                      //     ? image.NW
-                      //     : coordinate.direction == 'S'
-                      //     ? image.S
-                      //     : coordinate.direction == 'SE'
-                      //     ? image.SE
-                      //     : coordinate.direction == 'SW'
-                      //     ? image.SW
-                      //     : coordinate.direction == 'W'
-                      //     ? image.W
-                      //     : null
-                      // }
+                      // source={image.E}
+                      source={
+                        coordinate.direction == 'E'
+                          ? image.E
+                          : coordinate.direction == 'N'
+                          ? image.N
+                          : coordinate.direction == 'NE'
+                          ? image.NE
+                          : coordinate.direction == 'NW'
+                          ? image.NW
+                          : coordinate.direction == 'S'
+                          ? image.S
+                          : coordinate.direction == 'SE'
+                          ? image.SE
+                          : coordinate.direction == 'SW'
+                          ? image.SW
+                          : coordinate.direction == 'W'
+                          ? image.W
+                          : null
+                      }
                       style={{
                         height: 25,
                         width: 25,
@@ -539,7 +539,7 @@ function MapHistory(props) {
               ) : (
                 <Image
                   source={image.inActiveLocation}
-                  style={{resizeMode: 'contain', width: 25, height: 25}}
+                  style={{resizeMode: 'contain', width: 30, height: 30}}
                 />
               )}
             </TouchableOpacity>

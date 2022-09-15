@@ -318,7 +318,7 @@ function GraphicalReports(props) {
                       // fixoverlap={true}
                       alignment="end"
                       data={todayOdo}
-                      barRatio={1}
+                      barRatio={0.7}
                       labels={({datum}) => {
                         return datum.x === Sel.x && datum.y === Sel.y
                           ? `${datum.y} KM\n${datum.z}`
@@ -427,7 +427,7 @@ function GraphicalReports(props) {
                       }}
                       alignment="end"
                       data={todayIgniOn}
-                      barRatio={1}
+                      barRatio={0.7}
                       labels={({datum}) => {
                         return datum.x === Sel.x && datum.y === Sel.y
                           ? `${datum.y} Hrs\n${datum.z}`
@@ -467,6 +467,10 @@ function GraphicalReports(props) {
                     />
                     <VictoryAxis
                       dependentAxis
+                      domain={{y: [0, 24]}}
+                      tickCount={12}
+                      tickFormat={t => t}
+                      fixLabelOverlap
                       axisLabelComponent={<VictoryLabel dx={20} />}
                     />
                     <VictoryAxis
@@ -511,7 +515,7 @@ function GraphicalReports(props) {
                       }}
                       alignment="end"
                       data={outOfCoverage}
-                      barRatio={1}
+                      barRatio={0.7}
                       labels={({datum}) => {
                         return datum.x === Sel.x && datum.y === Sel.y
                           ? `${datum.y} Hrs\n${datum.z}`
@@ -551,6 +555,10 @@ function GraphicalReports(props) {
                     />
                     <VictoryAxis
                       dependentAxis
+                      domain={{y: [0, 24]}}
+                      tickCount={12}
+                      tickFormat={t => t}
+                      fixLabelOverlap
                       axisLabelComponent={<VictoryLabel dx={20} />}
                     />
                     <VictoryAxis
@@ -595,7 +603,7 @@ function GraphicalReports(props) {
                       }}
                       alignment="end"
                       data={todayWaitingIgniTime}
-                      barRatio={1}
+                      barRatio={0.7}
                       labels={({datum}) => {
                         return datum.x === Sel.x && datum.y === Sel.y
                           ? `${datum.y} Hrs\n${datum.z}`
@@ -635,6 +643,10 @@ function GraphicalReports(props) {
                     />
                     <VictoryAxis
                       dependentAxis
+                      domain={{y: [0, 24]}}
+                      tickCount={12}
+                      tickFormat={t => t}
+                      fixLabelOverlap
                       axisLabelComponent={<VictoryLabel dx={20} />}
                     />
                     <VictoryAxis
