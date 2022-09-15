@@ -133,4 +133,6 @@ export const image = {
   SE: require('./SE.png'),
   SW: require('./SW.png'),
   W: require('./W.png'),
+  activeLocation: require('./activeLocation.png'),
+  inActiveLocation: require('./inActiveLocation.png'),
 };
