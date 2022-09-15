@@ -273,8 +273,8 @@ function Reports(props) {
       type: 'odo',
     };
     const response = await axiosGetData('reportHistory', data);
-    const aa = response.data.DeviceHistory.reverse();
-    // console.log('098765432345678987654345678', aa);
+    const aa = response.data.DeviceHistory
+    console.log('098765432345678987654345678', aa);
     setMapHistory(aa);
     setLoading(true);
 
@@ -1175,7 +1175,9 @@ function Reports(props) {
                         return (
                           <View style={{flexDirection: 'row'}}>
                             <Text style={styles.tex}>{newFilterVehicle}</Text>
-                            <Text style={styles.tex}>{item?.timeStamp1}</Text>
+                            <Text style={styles.tex}>
+                              {getNewDate(item.timeStamp1)}
+                            </Text>
 
                             <View
                               style={{alignSelf: 'flex-start', minWidth: 180}}>

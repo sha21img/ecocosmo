@@ -7,61 +7,43 @@ import {
   Dimensions,
   TextInput,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import colors from '../../../assets/Colors';
 import {axiosGetData} from '../../../Utils/ApiController';
 import {Size} from '../../../assets/fonts/Fonts';
 import Storage from '../../../Utils/Storage';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {__} from '../../../Utils/Translation/translation';
 import style from './style';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MapViewDirections from 'react-native-maps-directions';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import Toast from 'react-native-simple-toast';
-// import MapView from '../../../Utils/helper/GoogleMap';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SelectDropdown from 'react-native-select-dropdown';
 import {useIsFocused} from '@react-navigation/native';
-
 import MapView, {
-  AnimatedRegion,
-  Animated,
   MarkerAnimated,
   Callout,
-  CalloutSubview,
   Marker,
   Polyline,
-  PROVIDER_GOOGLE,
 } from 'react-native-maps';
-import GoogleMap from '../../../Utils/helper/GoogleMap';
-import SimpleToast from 'react-native-simple-toast';
-import {color} from 'react-native-reanimated';
 const LATITUDE_DELTA = 0.08;
 const screen = Dimensions.get('window');
 const ASPECT_RATIO = screen.width / screen.height;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 function MapHistory(props) {
   const focus = useIsFocused();
-  // console.log('props mapHist', props.route.params.details.imei);
   const imei = props?.route?.params?.details?.imei;
   const ime = props?.route?.params?.imei;
-
-  // console.log('imeiimeiimeiimeiimei1111111111111111111', imei);
-  // console.log('imeimeimeime000000000000000000000000000000000000', ime);
   const [data, setData] = useState([]);
   const [newImei, setNewImei] = useState(imei || ime);
-  // console.log('newImeinewImeinewImeinewImeinewImei', newImei);
-
-  //
   const [parkMode, setParkMode] = useState(true);
   const [selected, setSelected] = useState(
     props?.route?.params?.details?.deviceId || 'All Vehicle',
   );
-
   const [open, setOpen] = useState(false);
   const [dateStart, setDateStart] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
@@ -76,9 +58,10 @@ function MapHistory(props) {
   const [animate, setAnimate] = useState('start');
   const [degree, setDegree] = useState(null);
   const [vehicleData, setVehicleData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [speed, setSpeed] = useState(8000);
   const [trackViewChanges, setTrackViewChanges] = useState(false);
+  const [isVisibleMarker, setIsVisibleMarker] = useState(false);
 
   const [coordinates, setCoordinates] = useState({
     coordinate: {
@@ -96,17 +79,6 @@ function MapHistory(props) {
       setNewImei(imei || ime);
       const a = moment(new Date()).format('YYYY-MM-DD');
       setFdate(a);
-
-      // if (props?.route?.params?.details != undefined) {
-      //   console.log(
-      //     'props?.route?.params?.details.deviceId',
-      //     props?.route?.params?.details.deviceId,
-      //   );
-      //   setSelected(props?.route?.params?.details?.deviceId);
-      // } else {
-      //   setSelected('All Vehicle');
-      // }
-
       if (props?.route?.params?.summaryData != undefined) {
         const summaryData = props?.route?.params?.summaryData;
         const fTime = moment(summaryData['startTime:']).format('hh:mm');
@@ -134,7 +106,6 @@ function MapHistory(props) {
       const filterVehicle = data.find(item => {
         return item.imei === filterImei;
       });
-      // setVehicleData(filterVehicle);
       setSelected(filterVehicle.deviceId);
     } else {
       setSelected(data[0].deviceId);
@@ -142,32 +113,13 @@ function MapHistory(props) {
     }
     setVehicleData(data);
   };
-  // useEffect(() => {
-  //   if (focus == true) {
-  //     if (fdate !== '' && newImei !== undefined) {
-  //       console.log('hi')
-  //       getMapHistory();
-  //     }
-  //   }
-  // return () => {
-  //   clearInterval(interval);
-  // };
-  // }, [focus]);
   const Select = async (data, imei) => {
     setSelected(data);
     setNewImei(imei);
-    // setLoading(true);
-
-    // setLoading(false);
   };
   const getMapHistory = async (date, endTime) => {
-    console.log('getMapHistory');
-
-    const summaryData = props?.route?.params?.summaryData;
-    // {"duration": "25 minutes", "endPoint": "19.003033,72.82708", "endTime:": "2022-09-05 07:24:04",
-    //  "odo": "11.00", "startPoint": "19.004127,72.826933",
-    //  "startTime:": "2022-09-05 06:59:04"}
-    //  imei=353701092279609&date=2022-09-05&startTime=03:00&endTime=10:00
+    console.log('gggetetetetmamam', loading);
+    setLoading(false);
 
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
@@ -185,36 +137,16 @@ function MapHistory(props) {
       imei: '353701092279609',
       endTime: '10:00',
       date: '2022-09-05',
-      // imei=353701092279609&date=2022-09-05&startTime=03:00&endTime=10:00
       //
     };
     console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
     let newCoordinate = response?.data?.EventHistory;
+    setLoading(true);
+
     console.log('mapHistory APi', newCoordinate?.length);
-    // const filter = response.data.EventHistory.slice(100, 200).filter(
-    //   item => item.stoppage != '',
-    // );
-    // console.log('filter', filter);
+
     setData(newCoordinate);
-
-    // if (ime) {
-    //   const summaryData = props?.route?.params?.summaryData;
-    //   console.log('summaryData', summaryData);
-    //   var ts = moment(
-    //     summaryData?.['startTime:'],
-    //     'YYYY-MM-DD hh:mm:ss',
-    //   ).unix();
-    //   var te = moment(summaryData?.['endTime:'], 'YYYY-MM-DD hh:mm:ss').unix();
-    //   const utcTimeStart = ts - 19800;
-    //   const utcTimeEnd = te - 19800;
-    //   // console.log('utcTimeStartutcTimeStartutcTimeStart', utcTimeStart);
-    //   // console.log('utcTimeEndutcTimeEndutcTimeEnd', utcTimeEnd);
-
-    //   newCoordinate = response?.data?.EventHistory.filter(item => {
-    //     return utcTimeStart < parseFloat(item.packetTimeStamp) < utcTimeEnd;
-    //   });
-    // }
 
     if (newCoordinate.length > 0) {
       setCoordinates(prev => ({
@@ -224,102 +156,9 @@ function MapHistory(props) {
           longitude: parseFloat(newCoordinate[0].lng),
         },
       }));
-
-      // newCoordinate?.forEach(el => {
-      //   setCoordinates(prev => ({
-      //     ...prev,
-      //     coordinate: {latitude: el.lat, longitude: el.lng},
-      //   }));
-      // });
     } else {
       Toast.show('There is no data for this vehicle');
     }
-
-    // const filterDataa = newCoordinate?.map(item => {
-    //   const date = parseFloat(item.packetTimeStamp) + 19800;
-    //   const newDate = new Date(date);
-    //   let month = newDate.getMonth() + 1;
-    //   if (String(Math.abs(month)).length == 1) {
-    //     month = '0' + month;
-    //   }
-
-    //   const filterTime = newDate.toLocaleTimeString('en-US');
-    //   return {...item, packetTimeStamp: filterTime};
-    // });
-    // if (fdate === fdateend) {
-    //   const newFilterData = filterDataa.filter(item => {
-    //     return item.packetTimeStamp > ftime && item.packetTimeStamp < ftimeend;
-    //   });
-    //   setData(newFilterData);
-    // } else {
-    //   setData(newCoordinate);
-    // }
-
-    // http://54.169.20.116/react_v1_ec_apps/api/v3/mapHistoryWithTime?accountid=globalcars&password
-    // =ae6343555ef7aefd8a60ff88c6363e9c&imei=353701092279609&
-    // date=2022-09-05&startTime=03:00&endTime=10:00
-    // let data = {
-    //   accountid: username,
-    //   password: password,
-    //   // imei: imei,
-    //   imei: newImei,
-    //   date: fdate,
-    // };
-    // const response = await axiosGetData('mapHistory', data);
-    // let newCoordinate = response?.data?.EventHistory;
-    // var tstart = moment(ftime, 'hh:mm:ss').unix();
-    // var tsend = moment(ftimeend, 'hh:mm:ss').unix();
-    // newCoordinate.filter(item => {
-    //   return tstart < parseFloat(item.packetTimeStamp) < tsend;
-    // });
-    // console.log('newDDDDDDDDDDDDDDDDDDDDD', newCoordinate.slice(0,2));
-    // if (ime) {
-    //   const summaryData = props?.route?.params?.summaryData;
-    //   console.log('summaryData', summaryData);
-    //   var ts = moment(
-    //     summaryData?.['startTime:'],
-    //     'YYYY-MM-DD hh:mm:ss',
-    //   ).unix();
-    //   var te = moment(summaryData?.['endTime:'], 'YYYY-MM-DD hh:mm:ss').unix();
-    //   const utcTimeStart = ts - 19800;
-    //   const utcTimeEnd = te - 19800;
-    //   // console.log('utcTimeStartutcTimeStartutcTimeStart', utcTimeStart);
-    //   // console.log('utcTimeEndutcTimeEndutcTimeEnd', utcTimeEnd);
-
-    //   newCoordinate = response?.data?.EventHistory.filter(item => {
-    //     return utcTimeStart < parseFloat(item.packetTimeStamp) < utcTimeEnd;
-    //   });
-    // }
-    // if (newCoordinate.length <= 0) {
-    //   Toast.show('There is no data for this vehicle');
-    // } else {
-    //   newCoordinate?.forEach(el => {
-    //     setCoordinates(prev => ({
-    //       ...prev,
-    //       coordinate: {latitude: el.lat, longitude: el.lng},
-    //     }));
-    //   });
-    // }
-
-    // const filterDataa = newCoordinate?.map(item => {
-    //   const date = parseFloat(item.packetTimeStamp) + 19800;
-    //   const newDate = new Date(date);
-    //   let month = newDate.getMonth() + 1;
-    //   if (String(Math.abs(month)).length == 1) {
-    //     month = '0' + month;
-    //   }
-
-    //   const filterTime = newDate.toLocaleTimeString('en-US');
-    //   return {...item, packetTimeStamp: filterTime};
-    // });
-    // if (fdate === fdateend) {
-    //   const newFilterData = filterDataa.filter(item => {
-    //     return item.packetTimeStamp > ftime && item.packetTimeStamp < ftimeend;
-    //   });
-    //   setData(newFilterData);
-    // } else {
-    //   setData(newCoordinate);
-    // }
   };
   function formatDate(date) {
     var d = new Date(date),
@@ -337,13 +176,8 @@ function MapHistory(props) {
     let fDateStart = new Date(currentDate);
     setFdate(formatDate(fDateStart.toString()));
 
-    // let fTimeStart = fDateStart.toLocaleTimeString().slice(0, 8);
-    // setFtimeend(fTimeStart);
-    // setFtime(fTimeStart);
     const fTimeStart = moment(fDateStart).format('hh:mm');
     setFtime(fTimeStart);
-
-    // setFtime('00:00:00');
   };
   const onChangeEnd = selectedDate => {
     const currentDate = selectedDate || dateEnd;
@@ -414,9 +248,7 @@ function MapHistory(props) {
             Math.cos(cord2.latitude) *
             Math.cos(cord2.longitude - cord1.longitude);
         const θ = Math.atan2(y, x);
-        // console.log('θ', θ);
         const brng = ((θ * 180) / Math.PI + 360) % 360;
-        // console.log('brng', brng);
 
         setDegree(brng);
 
@@ -437,10 +269,6 @@ function MapHistory(props) {
         if (myMarker && mapRef.current) {
           myMarker.animateMarkerToCoordinate(newCoordinate, speedRef.current);
           mapRef.current.animateCamera(newCamera, {duration: speedRef.current});
-
-          // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
-
-          // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
         }
         i++;
       } else {
@@ -463,9 +291,7 @@ function MapHistory(props) {
             Math.cos(cord2.latitude) *
             Math.cos(cord2.longitude - cord1.longitude);
         const θ = Math.atan2(y, x);
-        // console.log('θ', θ);
         const brng = ((θ * 180) / Math.PI + 360) % 360;
-        // console.log('brng', brng);
 
         setDegree(brng);
 
@@ -485,21 +311,11 @@ function MapHistory(props) {
         };
         if (myMarker && mapRef.current) {
           myMarker.animateMarkerToCoordinate(newCoordinate, 1000);
-          // mapRef == null;
           mapRef.current.animateCamera(newCamera, {duration: 1000});
-          // mapRef.current.animateToRegion(newCoordinate);
-
-          //
-
           mapRef?.current?.getCamera().then(cam => {
             cam.zoom -= 5;
             mapRef?.current?.animateCamera(cam);
           });
-
-          //
-          // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
-
-          // mapRef.current.animateToRegion(newCoordinate, {duration: 5000});
         }
       }
     } else {
@@ -517,144 +333,155 @@ function MapHistory(props) {
     }
   }
   const [mapPs, setMapPs] = useState(0);
-  const CustomMarker = () => {
+  const CustomMarker = ({isVisibleMarker}) => {
+    console.log('Marker', isVisibleMarker);
     return (
       <>
-        {data.map((coordinate, index) => {
-          return (
-            <Marker
-              // tracksViewChanges={trackViewChanges}
-              key={index}
-              pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
-              coordinate={{
-                latitude: parseFloat(coordinate.lat),
-                longitude: parseFloat(coordinate.lng),
-              }}>
-              {data[0] == coordinate ? (
-                <Image
-                  // onLoad={() =>
-                  //   setTrackViewChanges(!trackViewChanges)
-                  // }
-                  resizeMode="contain"
-                  source={image.pinkFlag}
-                  style={{
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              ) : null}
-              {data[data.length - 1] == coordinate ? (
-                <Image
-                  // onLoad={() =>
-                  //   setTrackViewChanges(!trackViewChanges)
-                  // }
-                  resizeMode="contain"
-                  source={image.greenFlag}
-                  style={{
-                    height: 25,
-                    width: 25,
-                  }}
-                />
-              ) : null}
-              <Image
-                // onLoad={() => setTrackViewChanges(true)}
-                resizeMode="contain"
-                source={
-                  coordinate.direction == 'E'
-                    ? image.E
-                    : coordinate.direction == 'N'
-                    ? image.N
-                    : coordinate.direction == 'NE'
-                    ? image.NE
-                    : coordinate.direction == 'NW'
-                    ? image.NW
-                    : coordinate.direction == 'S'
-                    ? image.S
-                    : coordinate.direction == 'SE'
-                    ? image.SE
-                    : coordinate.direction == 'SW'
-                    ? image.SW
-                    : coordinate.direction == 'W'
-                    ? image.W
-                    : null
-                }
-                style={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-              <Callout tooltip>
-                <LinearGradient
-                  colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
-                  start={{x: 1.3, y: 0}}
-                  end={{x: 0, y: 0}}
-                  locations={[0, 0.9]}
-                  style={style.firstbox}>
-                  <View style={{paddingBottom: 5}}>
-                    <Text style={style.firstboxtext1}>
-                      {coordinate.timeStamp}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
+        {isVisibleMarker
+          ? data.map((coordinate, index) => {
+              return (
+                <>
+                  <Marker
+                    tracksViewChanges={trackViewChanges}
+                    key={index}
+                    pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
+                    coordinate={{
+                      latitude: parseFloat(coordinate.lat),
+                      longitude: parseFloat(coordinate.lng),
                     }}>
-                    <AntDesign
+                    {data[0] == coordinate ? (
+                      <Image
+                        // onLoad={() =>
+                        //   setTrackViewChanges(!trackViewChanges)
+                        // }
+                        resizeMode="contain"
+                        source={image.pinkFlag}
+                        style={{
+                          height: 25,
+                          width: 25,
+                        }}
+                      />
+                    ) : null}
+                    {data[data.length - 1] == coordinate ? (
+                      <Image
+                        // onLoad={() =>
+                        //   setTrackViewChanges(!trackViewChanges)
+                        // }
+                        resizeMode="contain"
+                        source={image.greenFlag}
+                        style={{
+                          height: 25,
+                          width: 25,
+                        }}
+                      />
+                    ) : null}
+                    <Image
+                      onLoad={() => setTrackViewChanges(true)}
+                      resizeMode="contain"
+                      source={image.E}
+                      // source={
+                      //   coordinate.direction == 'E'
+                      //     ? image.E
+                      //     : coordinate.direction == 'N'
+                      //     ? image.N
+                      //     : coordinate.direction == 'NE'
+                      //     ? image.NE
+                      //     : coordinate.direction == 'NW'
+                      //     ? image.NW
+                      //     : coordinate.direction == 'S'
+                      //     ? image.S
+                      //     : coordinate.direction == 'SE'
+                      //     ? image.SE
+                      //     : coordinate.direction == 'SW'
+                      //     ? image.SW
+                      //     : coordinate.direction == 'W'
+                      //     ? image.W
+                      //     : null
+                      // }
                       style={{
-                        color: '#17D180',
-                        fontSize: 16,
+                        height: 25,
+                        width: 25,
                       }}
-                      name={'caretdown'}
                     />
-                    <Text
-                      style={{
-                        paddingHorizontal: 10,
-                        color: colors.white,
-                      }}>
-                      Ignition: {coordinate.ignition}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      paddingTop: 5,
-                    }}>
-                    <View style={style.secondboxtextbox1}>
-                      <Text style={{paddingVertical: 8}}>
-                        <Image
-                          resizeMode="contain"
-                          source={image.speed}
-                          style={style.speedimg}
-                        />
-                      </Text>
-                      <Text style={style.secondboxtext1}>
-                        {Math.floor(coordinate?.speed)} {__('KM/H')}
-                      </Text>
-                      <Text style={style.secondboxtext11}>{__('SPEED')}</Text>
-                    </View>
-                    <View style={style.secondboxtextbox1}>
-                      <Text style={{paddingVertical: 8}}>
-                        <Image
-                          resizeMode="contain"
-                          source={image.distance}
-                          style={style.locimg}
-                        />
-                      </Text>
-                      <Text style={style.secondboxtext1}>
-                        {Math.floor(coordinate.odometer)} {__('KM')}
-                      </Text>
-                      <Text style={style.secondboxtext11}>
-                        {__("TODAY'S ODO")}
-                      </Text>
-                    </View>
-                  </View>
-                </LinearGradient>
-              </Callout>
-            </Marker>
-          );
-        })}
+                    <Callout tooltip>
+                      <LinearGradient
+                        colors={[
+                          colors.mainThemeColor3,
+                          colors.mainThemeColor4,
+                        ]}
+                        start={{x: 1.3, y: 0}}
+                        end={{x: 0, y: 0}}
+                        locations={[0, 0.9]}
+                        style={style.firstbox}>
+                        <View style={{paddingBottom: 5}}>
+                          <Text style={style.firstboxtext1}>
+                            {coordinate.timeStamp}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}>
+                          <AntDesign
+                            style={{
+                              color: '#17D180',
+                              fontSize: 16,
+                            }}
+                            name={'caretdown'}
+                          />
+                          <Text
+                            style={{
+                              paddingHorizontal: 10,
+                              color: colors.white,
+                            }}>
+                            Ignition: {coordinate.ignition}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            paddingTop: 5,
+                          }}>
+                          <View style={style.secondboxtextbox1}>
+                            <Text style={{paddingVertical: 8}}>
+                              <Image
+                                resizeMode="contain"
+                                source={image.speed}
+                                style={style.speedimg}
+                              />
+                            </Text>
+                            <Text style={style.secondboxtext1}>
+                              {Math.floor(coordinate?.speed)} {__('KM/H')}
+                            </Text>
+                            <Text style={style.secondboxtext11}>
+                              {__('SPEED')}
+                            </Text>
+                          </View>
+                          <View style={style.secondboxtextbox1}>
+                            <Text style={{paddingVertical: 8}}>
+                              <Image
+                                resizeMode="contain"
+                                source={image.distance}
+                                style={style.locimg}
+                              />
+                            </Text>
+                            <Text style={style.secondboxtext1}>
+                              {Math.floor(coordinate.odometer)} {__('KM')}
+                            </Text>
+                            <Text style={style.secondboxtext11}>
+                              {__("TODAY'S ODO")}
+                            </Text>
+                          </View>
+                        </View>
+                      </LinearGradient>
+                    </Callout>
+                  </Marker>
+                </>
+              );
+            })
+          : null}
       </>
     );
   };
@@ -675,6 +502,7 @@ function MapHistory(props) {
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingVertical: 10,
+            // backgroundColor: 'red',
           }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity
@@ -692,24 +520,50 @@ function MapHistory(props) {
               {__('Map History')}
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              getMapHistory();
-            }}
-            style={{
-              borderRadius: 50,
-              float: 'right',
-              justifyContent: 'flex-end',
-            }}>
-            <Text
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsVisibleMarker(!isVisibleMarker);
+              }}
               style={{
-                fontSize: Size.large,
-                color: colors.white,
-                paddingHorizontal: 15,
+                borderRadius: 50,
+                float: 'right',
+                justifyContent: 'flex-end',
+                // backgroundColor: 'green',
               }}>
-              {__('Go')}
-            </Text>
-          </TouchableOpacity>
+              {isVisibleMarker ? (
+                <Image
+                  source={image.activeLocation}
+                  style={{resizeMode: 'contain', width: 25, height: 25}}
+                />
+              ) : (
+                <Image
+                  source={image.inActiveLocation}
+                  style={{resizeMode: 'contain', width: 25, height: 25}}
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={!loading}
+              onPress={() => {
+                console.log('GOOOOOOOOOOOOOOOOOOOOOOOO');
+                getMapHistory();
+              }}
+              style={{
+                borderRadius: 50,
+                float: 'right',
+                justifyContent: 'flex-end',
+              }}>
+              <Text
+                style={{
+                  fontSize: Size.large,
+                  color: colors.white,
+                  paddingHorizontal: 15,
+                }}>
+                {__('Go')}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </LinearGradient>
       <View style={style.textinputbox}>
@@ -895,441 +749,434 @@ function MapHistory(props) {
           />
         </TouchableOpacity>
       </View>
+      {loading ? (
+        <>
+          <View
+            style={{position: 'relative'}}
+            onLayout={event => {
+              const layout = event.nativeEvent.layout;
 
-      <View
-        style={{position: 'relative'}}
-        onLayout={event => {
-          const layout = event.nativeEvent.layout;
-
-          setMapPs(layout.y);
-        }}>
-        {parkMode ? (
-          <MapView
-            // onRegionChangeComplete={region =>
-            //   setCoordinates(prev => {
-            //     return {
-            //       ...prev,
-            //       coordinate: {
-            //         latitude:
-            //           parseFloat(data[0]?.lat) ||
-            //           coordinates.coordinate.latitude,
-            //         longitude:
-            //           parseFloat(data[0]?.lng) ||
-            //           coordinates.coordinate.longitude,
-            //       },
-            //     };
-            //   })
-            // }
-            // tracksViewChanges={trackViewChanges}
-            // minZoomLevel={15}
-            onMapReady={region =>
-              setCoordinates(prev => {
-                return {
-                  ...prev,
-                  coordinate: {
-                    latitude:
-                      parseFloat(data[0]?.lat) ||
-                      coordinates.coordinate.latitude,
-                    longitude:
-                      parseFloat(data[0]?.lng) ||
-                      coordinates.coordinate.longitude,
-                  },
-                };
-              })
-            }
-            pitchEnabled={false}
-            style={{
-              width: Dimensions.get('window').width,
-              height: Dimensions.get('window').height,
-            }}
-            ref={mapRef}
-            caheEnabled
-            region={{
-              latitude: coordinates.coordinate.latitude,
-              longitude: coordinates.coordinate.longitude,
-              latitudeDelta: LATITUDE_DELTA,
-              longitudeDelta: LONGITUDE_DELTA,
+              setMapPs(layout.y);
             }}>
-            {data.length > 0 ? (
-              <>
-                {/* {data?.map((coordinate, index) => { */}
-                <CustomMarker />
-                <MarkerAnimated
-                  ref={marker => {
-                    // console.log('marker', marker);
-                    setMyMarker(marker);
-                  }}
-                  style={{
-                    transform: [
-                      {
-                        rotate: degree === null ? '0deg' : `${degree}deg`,
+            {parkMode ? (
+              <MapView
+                onMapReady={region =>
+                  setCoordinates(prev => {
+                    return {
+                      ...prev,
+                      coordinate: {
+                        latitude:
+                          parseFloat(data[0]?.lat) ||
+                          coordinates.coordinate.latitude,
+                        longitude:
+                          parseFloat(data[0]?.lng) ||
+                          coordinates.coordinate.longitude,
                       },
-                    ],
-                  }}
-                  // key={index.toString()}
-                  coordinate={{
-                    latitude: parseFloat(data[0]?.lat),
-                    longitude: parseFloat(data[0]?.lng),
-                  }}>
-                  {animate == 'stop' ? (
-                    <Image
-                      resizeMode="contain"
-                      source={image.carGreenUp}
-                      style={{
-                        height: 20,
-                        width: 20,
+                    };
+                  })
+                }
+                pitchEnabled={false}
+                style={{
+                  width: Dimensions.get('window').width,
+                  height: Dimensions.get('window').height,
+                }}
+                ref={mapRef}
+                caheEnabled
+                region={{
+                  latitude: coordinates.coordinate.latitude,
+                  longitude: coordinates.coordinate.longitude,
+                  latitudeDelta: LATITUDE_DELTA,
+                  longitudeDelta: LONGITUDE_DELTA,
+                }}>
+                {data.length > 0 ? (
+                  <>
+                    <CustomMarker isVisibleMarker={isVisibleMarker} />
+                    <MarkerAnimated
+                      ref={marker => {
+                        setMyMarker(marker);
                       }}
-                    />
-                  ) : animate == 'start' ? (
-                    <Image
-                      resizeMode="contain"
-                      source={image.location}
                       style={{
-                        height: 0,
-                        width: 0,
+                        transform: [
+                          {
+                            rotate: degree === null ? '0deg' : `${degree}deg`,
+                          },
+                        ],
                       }}
-                    />
-                  ) : null}
-                </MarkerAnimated>
-                <Polyline
-                  strokeWidth={2}
-                  strokeColor="red"
-                  coordinates={[
-                    ...data.map((value, index) => {
-                      return {
-                        latitude: parseFloat(value.lat),
-                        longitude: parseFloat(value.lng),
-                      };
-                    }),
-                  ]}
-                />
-              </>
-            ) : null}
-          </MapView>
-        ) : (
-          <>
-            <MapView
-              pitchEnabled={false}
-              style={{
-                width: Dimensions.get('window').width,
-                height: Dimensions.get('window').height,
-              }}
-              ref={mapRef}
-              caheEnabled
-              region={{
-                latitude: parseFloat(data[0]?.lat),
-                longitude: parseFloat(data[0]?.lng),
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              }}>
-              {data
-                ?.filter(item => {
-                  return item.stoppage !== '';
-                })
-                .map((coordinate, index) => {
-                  return (
-                    <>
-                      <MarkerAnimated
-                        key={index}
-                        coordinate={{
-                          latitude: parseFloat(coordinate.lat),
-                          longitude: parseFloat(coordinate.lng),
-                        }}>
+                      coordinate={{
+                        latitude: parseFloat(data[0]?.lat),
+                        longitude: parseFloat(data[0]?.lng),
+                      }}>
+                      {animate == 'stop' ? (
                         <Image
                           resizeMode="contain"
-                          source={image.parkingPoint}
+                          source={image.carGreenUp}
                           style={{
-                            height: 50,
-                            width: 50,
+                            height: 20,
+                            width: 20,
                           }}
                         />
-                        <Callout tooltip>
-                          <LinearGradient
-                            colors={[
-                              colors.mainThemeColor3,
-                              colors.mainThemeColor4,
-                            ]}
-                            start={{x: 1.3, y: 0}}
-                            end={{x: 0, y: 0}}
-                            locations={[0, 0.9]}
-                            style={style.firstbox}>
-                            <View style={{paddingBottom: 5}}>
-                              <Text style={style.firstboxtext1}>
-                                Address : {coordinate.stoppage.address}
-                              </Text>
-                              <Text style={style.firstboxtext1}>
-                                Stop Duration :{' '}
-                                {coordinate.stoppage.stopDuration}
-                              </Text>
-                              <Text style={style.firstboxtext1}>
-                                From : {coordinate.stoppage.stopTime1}
-                              </Text>
-                              <Text style={style.firstboxtext1}>
-                                To : {coordinate.stoppage.stopTime2}
-                              </Text>
-                            </View>
-                          </LinearGradient>
-                        </Callout>
-                      </MarkerAnimated>
-                    </>
-                  );
-                })}
-
-              <MarkerAnimated
-                ref={marker => {
-                  setMyMarker(marker);
-                }}
-                style={{
-                  transform: [
-                    {
-                      rotate: degree === null ? '0deg' : `${degree}deg`,
-                    },
-                  ],
-                }}
-                coordinate={{
-                  latitude: parseFloat(data[0]?.lat),
-                  longitude: parseFloat(data[0]?.lng),
-                }}>
-                {animate == 'stop' ? (
-                  <Image
-                    resizeMode="contain"
-                    source={image.carGreenUp}
-                    style={{
-                      height: 30,
-                      width: 30,
-                    }}
-                  />
-                ) : animate == 'start' ? (
-                  <Image
-                    resizeMode="contain"
-                    source={image.carGreenUp}
-                    style={{
-                      height: 0,
-                      width: 0,
-                    }}
-                  />
+                      ) : animate == 'start' ? (
+                        <Image
+                          resizeMode="contain"
+                          source={image.location}
+                          style={{
+                            height: 0,
+                            width: 0,
+                          }}
+                        />
+                      ) : null}
+                    </MarkerAnimated>
+                    <Polyline
+                      strokeWidth={2}
+                      strokeColor="red"
+                      coordinates={[
+                        ...data.map((value, index) => {
+                          return {
+                            latitude: parseFloat(value.lat),
+                            longitude: parseFloat(value.lng),
+                          };
+                        }),
+                      ]}
+                    />
+                  </>
                 ) : null}
-              </MarkerAnimated>
-              <Polyline
-                strokeWidth={2}
-                strokeColor="red"
-                coordinates={[
-                  ...data.map((value, index) => {
-                    return {
-                      latitude: parseFloat(value.lat),
-                      longitude: parseFloat(value.lng),
-                    };
-                  }),
-                ]}
-              />
-            </MapView>
-          </>
-        )}
-      </View>
-      {data?.length > 0 ? (
-        <>
-          {animate == 'start' || animate == '' ? (
-            <>
-              <TouchableOpacity
-                style={{position: 'absolute', bottom: 0, width: '100%'}}
-                onPress={() => {
-                  setAnimate('stop'), start('start');
-                }}>
-                <LinearGradient
-                  colors={['#0065B3', '#083273']}
-                  start={{x: 0, y: 1}}
-                  end={{x: 1, y: 0}}
+              </MapView>
+            ) : (
+              <>
+                <MapView
+                  pitchEnabled={false}
                   style={{
-                    width: '100%',
-                    backgroundColor: 'red',
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    paddingVertical: 15,
+                    width: Dimensions.get('window').width,
+                    height: Dimensions.get('window').height,
+                  }}
+                  ref={mapRef}
+                  caheEnabled
+                  region={{
+                    latitude: parseFloat(data[0]?.lat),
+                    longitude: parseFloat(data[0]?.lng),
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LONGITUDE_DELTA,
                   }}>
-                  <Text
-                    style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-                    Replay
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  position: 'absolute',
-                  bottom: 60,
-                  width: '100%',
-                  justifyContent: 'space-around',
-                }}>
-                <LinearGradient
-                  style={{borderRadius: 7, padding: 5, width: '21%'}}
-                  start={{x: 0, y: 1}}
-                  end={{x: 1, y: 0}}
-                  colors={[colors.largeBtn1, colors.largeBtn2]}>
-                  <TouchableOpacity
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      paddingVertical: 5,
-                      borderRadius: 10,
-                    }}>
-                    <Text style={{fontSize: 14, color: 'white'}}>
-                      {data[data.length - 1].odometer} KM
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: 'white',
-                      }}>
-                      Odometer
-                    </Text>
-                  </TouchableOpacity>
-                </LinearGradient>
-                <LinearGradient
-                  start={{x: 0, y: 1}}
-                  end={{x: 1, y: 0}}
-                  style={{borderRadius: 7, padding: 5, width: '21%'}}
-                  colors={[colors.largeBtn1, colors.largeBtn2]}>
-                  <TouchableOpacity
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      paddingVertical: 5,
-                      borderRadius: 10,
-                    }}>
-                    <Text style={{fontSize: 14, color: 'white'}}>
-                      {moment(data[0].timeStamp).format('hh:mm A')}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: 'white',
-                      }}>
-                      Start Time
-                    </Text>
-                  </TouchableOpacity>
-                </LinearGradient>
-                <LinearGradient
-                  start={{x: 0, y: 1}}
-                  end={{x: 1, y: 0}}
-                  style={{borderRadius: 7, padding: 5, width: '21%'}}
-                  colors={[colors.largeBtn1, colors.largeBtn2]}>
-                  <TouchableOpacity
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                    }}>
-                    <Text style={{fontSize: 14, color: 'white'}}>
-                      {moment(data[data.length - 1].timeStamp).format(
-                        'hh:mm A',
-                      )}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: 'white',
-                      }}>
-                      End Time
-                    </Text>
-                  </TouchableOpacity>
-                </LinearGradient>
-                <LinearGradient
-                  start={{x: 0, y: 1}}
-                  end={{x: 1, y: 0}}
-                  style={{borderRadius: 7, padding: 5, width: '21%'}}
-                  colors={[colors.largeBtn1, colors.largeBtn2]}>
-                  <TouchableOpacity
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      paddingVertical: 5,
-                      borderRadius: 10,
+                  {data
+                    ?.filter(item => {
+                      return item.stoppage !== '';
+                    })
+                    .map((coordinate, index) => {
+                      return (
+                        <>
+                          <MarkerAnimated
+                            key={index}
+                            coordinate={{
+                              latitude: parseFloat(coordinate.lat),
+                              longitude: parseFloat(coordinate.lng),
+                            }}>
+                            <Image
+                              resizeMode="contain"
+                              source={image.parkingPoint}
+                              style={{
+                                height: 50,
+                                width: 50,
+                              }}
+                            />
+                            <Callout tooltip>
+                              <LinearGradient
+                                colors={[
+                                  colors.mainThemeColor3,
+                                  colors.mainThemeColor4,
+                                ]}
+                                start={{x: 1.3, y: 0}}
+                                end={{x: 0, y: 0}}
+                                locations={[0, 0.9]}
+                                style={style.firstbox}>
+                                <View style={{paddingBottom: 5}}>
+                                  <Text style={style.firstboxtext1}>
+                                    Address : {coordinate.stoppage.address}
+                                  </Text>
+                                  <Text style={style.firstboxtext1}>
+                                    Stop Duration :{' '}
+                                    {coordinate.stoppage.stopDuration}
+                                  </Text>
+                                  <Text style={style.firstboxtext1}>
+                                    From : {coordinate.stoppage.stopTime1}
+                                  </Text>
+                                  <Text style={style.firstboxtext1}>
+                                    To : {coordinate.stoppage.stopTime2}
+                                  </Text>
+                                </View>
+                              </LinearGradient>
+                            </Callout>
+                          </MarkerAnimated>
+                        </>
+                      );
+                    })}
+
+                  <MarkerAnimated
+                    ref={marker => {
+                      setMyMarker(marker);
                     }}
-                    onPress={() => {
-                      if (speed > 2000) {
-                        setSpeed(prev => {
-                          return prev - 2000;
-                        });
-                      } else {
-                        setSpeed(8000);
-                      }
+                    style={{
+                      transform: [
+                        {
+                          rotate: degree === null ? '0deg' : `${degree}deg`,
+                        },
+                      ],
+                    }}
+                    coordinate={{
+                      latitude: parseFloat(data[0]?.lat),
+                      longitude: parseFloat(data[0]?.lng),
                     }}>
-                    <Text style={{fontSize: 14, color: 'white'}}>
-                      {speed == 8000
-                        ? '1x'
-                        : speed == 6000
-                        ? '2x'
-                        : speed == 4000
-                        ? '4x'
-                        : speed == 2000
-                        ? '8x'
-                        : null}
-                    </Text>
-                    <Text
+                    {animate == 'stop' ? (
+                      <Image
+                        resizeMode="contain"
+                        source={image.carGreenUp}
+                        style={{
+                          height: 25,
+                          width: 25,
+                        }}
+                      />
+                    ) : animate == 'start' ? (
+                      <Image
+                        resizeMode="contain"
+                        source={image.carGreenUp}
+                        style={{
+                          height: 0,
+                          width: 0,
+                        }}
+                      />
+                    ) : null}
+                  </MarkerAnimated>
+                  <Polyline
+                    strokeWidth={2}
+                    strokeColor="red"
+                    coordinates={[
+                      ...data.map((value, index) => {
+                        return {
+                          latitude: parseFloat(value.lat),
+                          longitude: parseFloat(value.lng),
+                        };
+                      }),
+                    ]}
+                  />
+                </MapView>
+              </>
+            )}
+          </View>
+          {data?.length > 0 ? (
+            <>
+              {animate == 'start' || animate == '' ? (
+                <>
+                  <TouchableOpacity
+                    style={{position: 'absolute', bottom: 0, width: '100%'}}
+                    onPress={() => {
+                      setAnimate('stop'), start('start');
+                    }}>
+                    <LinearGradient
+                      colors={['#0065B3', '#083273']}
+                      start={{x: 0, y: 1}}
+                      end={{x: 1, y: 0}}
                       style={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: 'white',
+                        width: '100%',
+                        backgroundColor: 'red',
+                        alignSelf: 'center',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingVertical: 15,
                       }}>
-                      Replay Speed
-                    </Text>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 20,
+                          fontWeight: 'bold',
+                        }}>
+                        Replay
+                      </Text>
+                    </LinearGradient>
                   </TouchableOpacity>
-                </LinearGradient>
-              </View>
-              <TouchableOpacity
-                style={{position: 'absolute', bottom: 0, width: '100%'}}
-                onPress={() => {
-                  setAnimate('start'),
-                    // setT(null),
-                    clearInterval(interval),
-                    // (i = 0);
-                    animateMarkerAndCamera('stop');
-                }}>
-                <LinearGradient
-                  colors={['#0065B3', '#083273']}
-                  start={{x: 0, y: 1}}
-                  end={{x: 1, y: 0}}
-                  style={{
-                    width: '100%',
-                    backgroundColor: 'red',
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    paddingVertical: 15,
-                  }}>
-                  <Text
-                    style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-                    stop
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      position: 'absolute',
+                      bottom: 60,
+                      width: '100%',
+                      justifyContent: 'space-around',
+                    }}>
+                    <LinearGradient
+                      style={{borderRadius: 7, padding: 5, width: '21%'}}
+                      start={{x: 0, y: 1}}
+                      end={{x: 1, y: 0}}
+                      colors={[colors.largeBtn1, colors.largeBtn2]}>
+                      <TouchableOpacity
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          paddingVertical: 5,
+                          borderRadius: 10,
+                        }}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          {data[data.length - 1].odometer} KM
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: 'white',
+                          }}>
+                          Odometer
+                        </Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+                    <LinearGradient
+                      start={{x: 0, y: 1}}
+                      end={{x: 1, y: 0}}
+                      style={{borderRadius: 7, padding: 5, width: '21%'}}
+                      colors={[colors.largeBtn1, colors.largeBtn2]}>
+                      <TouchableOpacity
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          paddingVertical: 5,
+                          borderRadius: 10,
+                        }}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          {moment(data[0].timeStamp).format('hh:mm A')}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: 'white',
+                          }}>
+                          Start Time
+                        </Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+                    <LinearGradient
+                      start={{x: 0, y: 1}}
+                      end={{x: 1, y: 0}}
+                      style={{borderRadius: 7, padding: 5, width: '21%'}}
+                      colors={[colors.largeBtn1, colors.largeBtn2]}>
+                      <TouchableOpacity
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderRadius: 10,
+                          paddingVertical: 5,
+                        }}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          {moment(data[data.length - 1].timeStamp).format(
+                            'hh:mm A',
+                          )}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: 'white',
+                          }}>
+                          End Time
+                        </Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+                    <LinearGradient
+                      start={{x: 0, y: 1}}
+                      end={{x: 1, y: 0}}
+                      style={{borderRadius: 7, padding: 5, width: '21%'}}
+                      colors={[colors.largeBtn1, colors.largeBtn2]}>
+                      <TouchableOpacity
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          paddingVertical: 5,
+                          borderRadius: 10,
+                        }}
+                        onPress={() => {
+                          if (speed > 2000) {
+                            setSpeed(prev => {
+                              return prev - 2000;
+                            });
+                          } else {
+                            setSpeed(8000);
+                          }
+                        }}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          {speed == 8000
+                            ? '1x'
+                            : speed == 6000
+                            ? '2x'
+                            : speed == 4000
+                            ? '4x'
+                            : speed == 2000
+                            ? '8x'
+                            : null}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: 'white',
+                          }}>
+                          Replay Speed
+                        </Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+                  </View>
+                  <TouchableOpacity
+                    style={{position: 'absolute', bottom: 0, width: '100%'}}
+                    onPress={() => {
+                      setAnimate('start'),
+                        // setT(null),
+                        clearInterval(interval),
+                        // (i = 0);
+                        animateMarkerAndCamera('stop');
+                    }}>
+                    <LinearGradient
+                      colors={['#0065B3', '#083273']}
+                      start={{x: 0, y: 1}}
+                      end={{x: 1, y: 0}}
+                      style={{
+                        width: '100%',
+                        backgroundColor: 'red',
+                        alignSelf: 'center',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingVertical: 15,
+                      }}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 20,
+                          fontWeight: 'bold',
+                        }}>
+                        stop
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </>
+              )}
             </>
-          )}
+          ) : null}
+
+          {data?.length > 0 && mapPs !== 0 ? (
+            <TouchableOpacity
+              onPress={() => setParkMode(!parkMode)}
+              style={{
+                position: 'absolute',
+                // zIndex: 60,
+                top: mapPs + 10,
+                right: 10,
+
+                justifyContent: 'center',
+              }}>
+              <Image source={image.parking2} style={{width: 65, height: 65}} />
+            </TouchableOpacity>
+          ) : null}
         </>
-      ) : null}
-
-      {data?.length > 0 && mapPs !== 0 ? (
-        <TouchableOpacity
-          onPress={() => setParkMode(!parkMode)}
-          style={{
-            position: 'absolute',
-            // zIndex: 60,
-            top: mapPs + 10,
-            right: 10,
-
-            justifyContent: 'center',
-          }}>
-          <Image source={image.parking2} style={{width: 65, height: 65}} />
-        </TouchableOpacity>
-      ) : null}
+      ) : (
+        <ActivityIndicator color={colors.black} />
+      )}
     </>
   );
 }

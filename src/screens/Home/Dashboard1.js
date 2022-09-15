@@ -214,339 +214,499 @@ const Dashboard1 = ({
     });
     // console.log('item', item.features, 'item');
     return (
-      <>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={{marginBottom: 10, padding: 0}}
-          onPress={() => {
-            getMobileNumber(item);
-            isSetData(item);
-          }}>
-          <LinearGradient
-            colors={['#16BCD4', '#395DBF']}
-            start={{x: 0, y: 0.5}}
-            end={{x: 1, y: 0.5}}
-            style={{borderRadius: 15}}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <View></View>
-              <View
-                style={{
-                  // paddingHorizontal: 10,
-                  width: '55%',
-                  paddingBottom: 20,
-                  paddingTop: 15,
-                  // paddingLeft: 10,
-                }}>
-                <Text
-                  style={{color: 'white', fontWeight: 'bold', fontSize: 22}}>
-                  {item.deviceId}
-                </Text>
-                <Text
-                  style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
-                  {item.statusMessage}
-                </Text>
-                {loginDetails?.accountName == 'demo101' ? (
-                  <View
-                    style={{
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-around',
-                      paddingHorizontal: 12,
-                      backgroundColor: 'grey',
-                      borderRadius: 5,
-                      position: 'absolute',
-                      zIndex: 10,
-                      bottom: -20,
-                      maxWidth: 70,
-                    }}>
-                    <Image
-                      source={image.callimg}
-                      style={{height: 15, width: 15, marginRight: 7}}
-                    />
-                    <Text style={styles.buttonText}>{__('Call')}</Text>
-                  </View>
-                ) : isData?.mobilenumber !== '' ? (
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      paddingHorizontal: 10,
-                      backgroundColor: colors.callBtn,
-                      paddingVertical: 10,
-                      maxWidth: 70,
-                      borderRadius: 5,
-                      position: 'absolute',
-                      zIndex: 10,
-                      bottom: -20,
-                    }}
-                    onPress={() => {
-                      isSetData(item), calling(item);
-                    }}>
-                    <Image
-                      source={image.callimg}
-                      style={{height: 15, width: 15, marginRight: 7}}
-                    />
-                    <Text style={styles.buttonText}> {__('Call')}</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <View
-                    style={{
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-around',
-                      paddingHorizontal: 12,
-                      backgroundColor: 'grey',
-                      borderRadius: 5,
-                      position: 'absolute',
-                      zIndex: 10,
-                      bottom: -20,
-                      maxWidth: 70,
-                    }}>
-                    <Image
-                      source={image.callimg}
-                      style={{height: 15, width: 15, marginRight: 7}}
-                    />
-                    <Text style={styles.buttonText}>{__('Call')}</Text>
-                  </View>
-                )}
-              </View>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => {
+          getMobileNumber(item);
+          isSetData(item);
+        }}>
+        <View style={styles.card1Container}>
+          <Image
+            resizeMode="contain"
+            source={{uri: item.equipmentIcon}}
+            style={{
+              height: 30,
+              width: 70,
+            }}
+          />
+          <View style={{paddingHorizontal: 10}}>
+            <Text style={styles.driverCarNumber}>{item.deviceId}</Text>
+            <View style={styles.driverCarSpeedBox}>
+              <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>
+              <Text style={styles.driverCarSpeed}>{item.statusMessage}</Text>
             </View>
-            <View
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 10,
-                paddingTop: 30,
-                paddingBottom: 15,
-                paddingHorizontal: 15,
+          </View>
+        </View>
+        <View style={{backgroundColor: 'lightgreen', height: 150}}>
+          <MapView
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%',
+            }}
+            zoomEnabled={true}
+            trackViewChanges={false}
+            scrollEnabled={false}
+            pointerEvents="none"
+            minZoomLevel={15}
+            initialRegion={{
+              latitude: parseFloat(item.lat),
+              longitude: parseFloat(item.lng),
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            provider={PROVIDER_GOOGLE}>
+            <Marker
+              // ref={markerRef}
+              key={index.toString()}
+              coordinate={{
+                latitude: parseFloat(item.lat),
+                longitude: parseFloat(item.lng),
               }}>
-              <View
-                style={{position: 'absolute', zIndex: 10, top: -40, left: 15}}>
-                <Image
-                  resizeMode="contain"
-                  source={{uri: item.equipmentIcon}}
-                  style={{
-                    height: 50,
-                    width: 120,
-                  }}
-                />
-              </View>
-              <View
+              <Image
+                resizeMode="contain"
+                source={{uri: item.equipmentIcon}}
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: '#616161',
-                      fontWeight: 'bold',
-                      paddingBottom: 5,
-                    }}>
-                    {__('CHECK IN DATE & TIME')}
-                  </Text>
-                  <Text
-                    style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-                    {filterDate}
-                  </Text>
-                  <Text
-                    style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-                    {filterTime}
-                  </Text>
-                </View>
-                <View style={{alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: '#616161',
-                      fontWeight: 'bold',
-                      paddingBottom: 5,
-                    }}>
-                    {__('TODAYS ODO')}
-                  </Text>
-                  <Text
-                    style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-                    {Math.floor(item.todaysODO)} {__('KM')}
-                  </Text>
-                </View>
-                <View style={{alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: '#616161',
-                      fontWeight: 'bold',
-                      paddingBottom: 5,
-                    }}>
-                    {__('SPEED')}
-                  </Text>
-                  <Text
-                    style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-                    {Math.floor(item.speed)} {__('KM/H')}
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  padding: 5,
-                  justifyContent: 'space-between',
-                  backgroundColor: 'lightgrey',
-                  alignItems: 'center',
-                  borderRadius: 7,
-                  marginVertical: 10,
-                }}>
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    paddingHorizontal: 10,
-                  }}>
-                  {parseFloat(item.validPacketTimeStamp) <
-                  parseFloat(item.lastNoGpsSignalTime) ? (
-                    <Image
-                      source={image.locationOff}
-                      style={{width: 20, height: 20}}
-                    />
-                  ) : (
-                    <Image
-                      source={image.location}
-                      style={{width: 20, height: 20}}
-                    />
-                  )}
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: '#616161',
-                      fontWeight: 'bold',
-                    }}>
-                    GPS On
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    borderLeftWidth: 1,
-                    borderColor: '#616161',
-                    height: 27,
-                  }}
-                />
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    paddingHorizontal: 10,
-                    alignItems: 'center',
-                  }}>
-                  {parseFloat(item.validPacketTimeStamp) -
-                    parseFloat(item.lastPowerCutTime) >
-                  300 ? (
-                    <Image
-                      source={image.battery}
-                      style={{width: 20, height: 20}}
-                    />
-                  ) : (
-                    <Image
-                      source={image.batteryOff}
-                      style={{width: 20, height: 20}}
-                    />
-                  )}
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: '#616161',
-                      fontWeight: 'bold',
-                    }}>
-                    Battery
-                  </Text>
-                </View>
+                  height: 20,
+                  width: 70,
+                }}
+              />
+            </Marker>
+          </MapView>
+        </View>
+        <LinearGradient
+          colors={['#45E384', '#02D958']}
+          style={styles.driverCarDetailBox}>
+          <View style={styles.imageContainer}>
+            {parseFloat(item.validPacketTimeStamp) -
+              parseFloat(item.lastPowerCutTime) >
+            300 ? (
+              <Image source={image.battery} style={styles.images} />
+            ) : (
+              <Image source={image.batteryOff} style={styles.images} />
+            )}
 
-                <View
-                  style={{
-                    borderLeftWidth: 1,
-                    borderColor: '#616161',
-                    height: 27,
-                  }}
-                />
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    paddingHorizontal: 10,
-                    alignItems: 'center',
-                  }}>
-                  {parseFloat(item.validPacketTimeStamp) -
-                    parseFloat(item.lastLowBatteryTime) >
-                  21600 ? (
-                    <Image
-                      source={image.charge}
-                      style={{width: 20, height: 20}}
-                    />
-                  ) : (
-                    <Image
-                      source={image.chargeOff}
-                      style={{width: 20, height: 20}}
-                    />
-                  )}
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: '#616161',
-                      fontWeight: 'bold',
-                    }}>
-                    Power
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    borderLeftWidth: 1,
-                    borderColor: '#616161',
-                    height: 27,
-                  }}
-                />
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    paddingHorizontal: 10,
-                    alignItems: 'center',
-                  }}>
-                  {parseFloat(item.statusTermInfo & 2) == 2 ? (
-                    <Image
-                      source={image.shokker}
-                      style={{width: 20, height: 20}}
-                    />
-                  ) : (
-                    <Image
-                      source={image.shokkerOff}
-                      style={{width: 20, height: 20}}
-                    />
-                  )}
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: '#616161',
-                      fontWeight: 'bold',
-                    }}>
-                    Ignition
-                  </Text>
-                </View>
-              </View>
-              {/*  */}
-              <View
-                style={{
-                  paddingHorizontal: 25,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    textAlign: 'center',
-                  }}>
-                  {item.address}
-                </Text>
-              </View>
+            {parseFloat(item.validPacketTimeStamp) -
+              parseFloat(item.lastLowBatteryTime) >
+            21600 ? (
+              <Image source={image.charge} style={styles.images} />
+            ) : (
+              <Image source={image.chargeOff} style={styles.images} />
+            )}
+
+            {parseFloat(item.validPacketTimeStamp) <
+            parseFloat(item.lastNoGpsSignalTime) ? (
+              <Image source={image.locationOff} style={styles.images} />
+            ) : (
+              <Image source={image.location} style={styles.images} />
+            )}
+            {parseFloat(item.statusTermInfo & 2) == 2 ? (
+              <Image source={image.shokker} style={styles.images} />
+            ) : (
+              <Image source={image.shokkerOff} style={styles.images} />
+            )}
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              // width: wp('65%'),
+              justifyContent: 'flex-start',
+              // alignItems:'center'
+              // backgroundColor:'red',
+              // flexWrap:'nowrap'
+            }}>
+            <View style={styles.driverDetailBox}>
+              <Text style={styles.driverDetailText1}>
+                {__('CHECK IN DATE & TIME')}
+              </Text>
+              <Text style={styles.driverDetailText2}>{filterDate}</Text>
+              <Text style={styles.driverDetailText2}>{filterTime}</Text>
             </View>
-          </LinearGradient>
-        </TouchableOpacity>
-      </>
+            <View style={styles.driverDetailBox}>
+              <Text style={styles.driverDetailText1}>{__('TODAYS ODO')}</Text>
+              <Text style={styles.driverDetailText2}>
+                {Math.floor(item.todaysODO)} {__('KM')}
+              </Text>
+            </View>
+            <View style={styles.driverDetailBox}>
+              <Text style={styles.driverDetailText1}>{__('SPEED')}</Text>
+              <Text style={styles.driverDetailText2}>
+                {Math.floor(item.speed)} {__('KM/H')}
+              </Text>
+            </View>
+          </View>
+          {loginDetails?.accountName == 'demo101' ? (
+            <View style={styles.disablebutton}>
+              <Image
+                source={image.callimg}
+                style={{height: 15, width: 15, marginRight: 7}}
+              />
+              <Text style={styles.buttonText}>{__('Call')}</Text>
+            </View>
+          ) : isData?.mobilenumber !== '' ? (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                isSetData(item), calling(item);
+              }}>
+              <Image
+                source={image.callimg}
+                style={{height: 15, width: 15, marginRight: 7}}
+              />
+              <Text style={styles.buttonText}> {__('Call')}</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.disablebutton}>
+              <Image
+                source={image.callimg}
+                style={{height: 15, width: 15, marginRight: 7}}
+              />
+              <Text style={styles.buttonText}>{__('Call')}</Text>
+            </View>
+          )}
+        </LinearGradient>
+        <LinearGradient
+          colors={['#395DBF', '#16BCD4']}
+          start={{x: 0, y: 0.5}}
+          end={{x: 1, y: 0.5}}
+          style={styles.driverAddressBox}>
+          <Text style={styles.driverAddressText}>{item.address}</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+      // <>
+      //   <TouchableOpacity
+      //     activeOpacity={0.8}
+      //     style={{marginBottom: 10, padding: 0}}
+      //     onPress={() => {
+      //       getMobileNumber(item);
+      //       isSetData(item);
+      //     }}>
+      //     <LinearGradient
+      //       colors={['#16BCD4', '#395DBF']}
+      //       start={{x: 0, y: 0.5}}
+      //       end={{x: 1, y: 0.5}}
+      //       style={{borderRadius: 15}}>
+      //       <View
+      //         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      //         <View></View>
+      //         <View
+      //           style={{
+      //             // paddingHorizontal: 10,
+      //             width: '55%',
+      //             paddingBottom: 20,
+      //             paddingTop: 15,
+      //             // paddingLeft: 10,
+      //           }}>
+      //           <Text
+      //             style={{color: 'white', fontWeight: 'bold', fontSize: 22}}>
+      //             {item.deviceId}
+      //           </Text>
+      //           <Text
+      //             style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
+      //             {item.statusMessage}
+      //           </Text>
+      //           {loginDetails?.accountName == 'demo101' ? (
+      //             <View
+      //               style={{
+      //                 paddingVertical: 10,
+      //                 flexDirection: 'row',
+      //                 alignItems: 'center',
+      //                 justifyContent: 'space-around',
+      //                 paddingHorizontal: 12,
+      //                 backgroundColor: 'grey',
+      //                 borderRadius: 5,
+      //                 position: 'absolute',
+      //                 zIndex: 10,
+      //                 bottom: -20,
+      //                 maxWidth: 70,
+      //               }}>
+      //               <Image
+      //                 source={image.callimg}
+      //                 style={{height: 15, width: 15, marginRight: 7}}
+      //               />
+      //               <Text style={styles.buttonText}>{__('Call')}</Text>
+      //             </View>
+      //           ) : isData?.mobilenumber !== '' ? (
+      //             <TouchableOpacity
+      //               style={{
+      //                 flexDirection: 'row',
+      //                 alignItems: 'center',
+      //                 paddingHorizontal: 10,
+      //                 backgroundColor: colors.callBtn,
+      //                 paddingVertical: 10,
+      //                 maxWidth: 70,
+      //                 borderRadius: 5,
+      //                 position: 'absolute',
+      //                 zIndex: 10,
+      //                 bottom: -20,
+      //               }}
+      //               onPress={() => {
+      //                 isSetData(item), calling(item);
+      //               }}>
+      //               <Image
+      //                 source={image.callimg}
+      //                 style={{height: 15, width: 15, marginRight: 7}}
+      //               />
+      //               <Text style={styles.buttonText}> {__('Call')}</Text>
+      //             </TouchableOpacity>
+      //           ) : (
+      //             <View
+      //               style={{
+      //                 paddingVertical: 10,
+      //                 flexDirection: 'row',
+      //                 alignItems: 'center',
+      //                 justifyContent: 'space-around',
+      //                 paddingHorizontal: 12,
+      //                 backgroundColor: 'grey',
+      //                 borderRadius: 5,
+      //                 position: 'absolute',
+      //                 zIndex: 10,
+      //                 bottom: -20,
+      //                 maxWidth: 70,
+      //               }}>
+      //               <Image
+      //                 source={image.callimg}
+      //                 style={{height: 15, width: 15, marginRight: 7}}
+      //               />
+      //               <Text style={styles.buttonText}>{__('Call')}</Text>
+      //             </View>
+      //           )}
+      //         </View>
+      //       </View>
+      //       <View
+      //         style={{
+      //           backgroundColor: 'white',
+      //           borderRadius: 10,
+      //           paddingTop: 30,
+      //           paddingBottom: 15,
+      //           paddingHorizontal: 15,
+      //         }}>
+      //         <View
+      //           style={{position: 'absolute', zIndex: 10, top: -40, left: 15}}>
+      //           <Image
+      //             resizeMode="contain"
+      //             source={{uri: item.equipmentIcon}}
+      //             style={{
+      //               height: 50,
+      //               width: 120,
+      //             }}
+      //           />
+      //         </View>
+      //         <View
+      //           style={{
+      //             flexDirection: 'row',
+      //             justifyContent: 'space-between',
+      //           }}>
+      //           <View style={{alignItems: 'center'}}>
+      //             <Text
+      //               style={{
+      //                 fontSize: 12,
+      //                 color: '#616161',
+      //                 fontWeight: 'bold',
+      //                 paddingBottom: 5,
+      //               }}>
+      //               {__('CHECK IN DATE & TIME')}
+      //             </Text>
+      //             <Text
+      //               style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+      //               {filterDate}
+      //             </Text>
+      //             <Text
+      //               style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+      //               {filterTime}
+      //             </Text>
+      //           </View>
+      //           <View style={{alignItems: 'center'}}>
+      //             <Text
+      //               style={{
+      //                 fontSize: 12,
+      //                 color: '#616161',
+      //                 fontWeight: 'bold',
+      //                 paddingBottom: 5,
+      //               }}>
+      //               {__('TODAYS ODO')}
+      //             </Text>
+      //             <Text
+      //               style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+      //               {Math.floor(item.todaysODO)} {__('KM')}
+      //             </Text>
+      //           </View>
+      //           <View style={{alignItems: 'center'}}>
+      //             <Text
+      //               style={{
+      //                 fontSize: 12,
+      //                 color: '#616161',
+      //                 fontWeight: 'bold',
+      //                 paddingBottom: 5,
+      //               }}>
+      //               {__('SPEED')}
+      //             </Text>
+      //             <Text
+      //               style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
+      //               {Math.floor(item.speed)} {__('KM/H')}
+      //             </Text>
+      //           </View>
+      //         </View>
+      //         <View
+      //           style={{
+      //             flexDirection: 'row',
+      //             padding: 5,
+      //             justifyContent: 'space-between',
+      //             backgroundColor: 'lightgrey',
+      //             alignItems: 'center',
+      //             borderRadius: 7,
+      //             marginVertical: 10,
+      //           }}>
+      //           <View
+      //             style={{
+      //               justifyContent: 'center',
+      //               alignItems: 'center',
+      //               paddingHorizontal: 10,
+      //             }}>
+      //             {parseFloat(item.validPacketTimeStamp) <
+      //             parseFloat(item.lastNoGpsSignalTime) ? (
+      //               <Image
+      //                 source={image.locationOff}
+      //                 style={{width: 20, height: 20}}
+      //               />
+      //             ) : (
+      //               <Image
+      //                 source={image.location}
+      //                 style={{width: 20, height: 20}}
+      //               />
+      //             )}
+      //             <Text
+      //               style={{
+      //                 fontSize: 12,
+      //                 color: '#616161',
+      //                 fontWeight: 'bold',
+      //               }}>
+      //               GPS On
+      //             </Text>
+      //           </View>
+      //           <View
+      //             style={{
+      //               borderLeftWidth: 1,
+      //               borderColor: '#616161',
+      //               height: 27,
+      //             }}
+      //           />
+      //           <View
+      //             style={{
+      //               justifyContent: 'center',
+      //               paddingHorizontal: 10,
+      //               alignItems: 'center',
+      //             }}>
+      //             {parseFloat(item.validPacketTimeStamp) -
+      //               parseFloat(item.lastPowerCutTime) >
+      //             300 ? (
+      //               <Image
+      //                 source={image.battery}
+      //                 style={{width: 20, height: 20}}
+      //               />
+      //             ) : (
+      //               <Image
+      //                 source={image.batteryOff}
+      //                 style={{width: 20, height: 20}}
+      //               />
+      //             )}
+      //             <Text
+      //               style={{
+      //                 fontSize: 12,
+      //                 color: '#616161',
+      //                 fontWeight: 'bold',
+      //               }}>
+      //               Battery
+      //             </Text>
+      //           </View>
+
+      //           <View
+      //             style={{
+      //               borderLeftWidth: 1,
+      //               borderColor: '#616161',
+      //               height: 27,
+      //             }}
+      //           />
+      //           <View
+      //             style={{
+      //               justifyContent: 'center',
+      //               paddingHorizontal: 10,
+      //               alignItems: 'center',
+      //             }}>
+      //             {parseFloat(item.validPacketTimeStamp) -
+      //               parseFloat(item.lastLowBatteryTime) >
+      //             21600 ? (
+      //               <Image
+      //                 source={image.charge}
+      //                 style={{width: 20, height: 20}}
+      //               />
+      //             ) : (
+      //               <Image
+      //                 source={image.chargeOff}
+      //                 style={{width: 20, height: 20}}
+      //               />
+      //             )}
+      //             <Text
+      //               style={{
+      //                 fontSize: 12,
+      //                 color: '#616161',
+      //                 fontWeight: 'bold',
+      //               }}>
+      //               Power
+      //             </Text>
+      //           </View>
+      //           <View
+      //             style={{
+      //               borderLeftWidth: 1,
+      //               borderColor: '#616161',
+      //               height: 27,
+      //             }}
+      //           />
+      //           <View
+      //             style={{
+      //               justifyContent: 'center',
+      //               paddingHorizontal: 10,
+      //               alignItems: 'center',
+      //             }}>
+      //             {parseFloat(item.statusTermInfo & 2) == 2 ? (
+      //               <Image
+      //                 source={image.shokker}
+      //                 style={{width: 20, height: 20}}
+      //               />
+      //             ) : (
+      //               <Image
+      //                 source={image.shokkerOff}
+      //                 style={{width: 20, height: 20}}
+      //               />
+      //             )}
+      //             <Text
+      //               style={{
+      //                 fontSize: 12,
+      //                 color: '#616161',
+      //                 fontWeight: 'bold',
+      //               }}>
+      //               Ignition
+      //             </Text>
+      //           </View>
+      //         </View>
+      //         {/*  */}
+      //         <View
+      //           style={{
+      //             paddingHorizontal: 25,
+      //           }}>
+      //           <Text
+      //             style={{
+      //               fontSize: 12,
+      //               textAlign: 'center',
+      //             }}>
+      //             {item.address}
+      //           </Text>
+      //         </View>
+      //       </View>
+      //     </LinearGradient>
+      //   </TouchableOpacity>
+      // </>
     );
   };
 
