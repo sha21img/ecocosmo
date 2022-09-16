@@ -59,7 +59,7 @@ function MapHistory(props) {
   const [degree, setDegree] = useState(null);
   const [vehicleData, setVehicleData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [speed, setSpeed] = useState(8000);
+  const [speed, setSpeed] = useState(4000);
   const [trackViewChanges, setTrackViewChanges] = useState(false);
   const [isVisibleMarker, setIsVisibleMarker] = useState(false);
 
@@ -211,6 +211,7 @@ function MapHistory(props) {
   useEffect(() => {
     speedRef.current = speed;
   });
+
   const start = data => {
     console.log('markerRef.current', mapRef.current);
     mapRef?.current?.getCamera().then(cam => {
@@ -222,7 +223,7 @@ function MapHistory(props) {
       setInterval(() => {
         console.log('aaaaabbbccc');
         animateMarkerAndCamera(data);
-      }, 5000),
+      }, speedRef.current),
     );
   };
 
@@ -333,8 +334,10 @@ function MapHistory(props) {
     }
   }
   const [mapPs, setMapPs] = useState(0);
-  const CustomMarker = ({isVisibleMarker}) => {
-    console.log('Marker', isVisibleMarker);
+  const markerRef = React.useRef(null);
+  const [isActive, setIsActive] = useState({});
+  const CustomMarker = ({isVisibleMarker, isActive, setIsActive}) => {
+    console.log('Marker', isVisibleMarker, isActive);
     return (
       <>
         {isVisibleMarker
@@ -342,18 +345,45 @@ function MapHistory(props) {
               return (
                 <>
                   <Marker
-                    tracksViewChanges={trackViewChanges}
+                    trackViewChanges={false}
+                    ref={markerRef}
+                    onPress={() => {
+                      setIsActive(coordinate),
+                        console.log(',,,,,,', coordinate);
+                    }}
+                    // onCalloutPress={() => console.log('Marker')}
+                    // onLoad={() => setTrackViewChanges(true)}
+                    icon={
+                      coordinate.direction == 'E'
+                        ? image.E
+                        : coordinate.direction == 'N'
+                        ? image.N
+                        : coordinate.direction == 'NE'
+                        ? image.NE
+                        : coordinate.direction == 'NW'
+                        ? image.NW
+                        : coordinate.direction == 'S'
+                        ? image.S
+                        : coordinate.direction == 'SE'
+                        ? image.SE
+                        : coordinate.direction == 'SW'
+                        ? image.SW
+                        : coordinate.direction == 'W'
+                        ? image.W
+                        : null
+                    }
+                    // tracksViewChanges={trackViewChanges}
                     key={index}
                     pinColor={coordinate.ignition == 'On' ? 'green' : 'red'}
                     coordinate={{
                       latitude: parseFloat(coordinate.lat),
                       longitude: parseFloat(coordinate.lng),
                     }}>
-                    {data[0] == coordinate ? (
+                    {/* {data[0] == coordinate ? (
                       <Image
-                        // onLoad={() =>
-                        //   setTrackViewChanges(!trackViewChanges)
-                        // }
+                        onLoad={() =>
+                          setTrackViewChanges(!trackViewChanges)
+                        }
                         resizeMode="contain"
                         source={image.pinkFlag}
                         style={{
@@ -364,9 +394,9 @@ function MapHistory(props) {
                     ) : null}
                     {data[data.length - 1] == coordinate ? (
                       <Image
-                        // onLoad={() =>
-                        //   setTrackViewChanges(!trackViewChanges)
-                        // }
+                        onLoad={() =>
+                          setTrackViewChanges(!trackViewChanges)
+                        }
                         resizeMode="contain"
                         source={image.greenFlag}
                         style={{
@@ -374,8 +404,8 @@ function MapHistory(props) {
                           width: 25,
                         }}
                       />
-                    ) : null}
-                    <Image
+                    ) : null} */}
+                    {/* <Image
                       onLoad={() => setTrackViewChanges(true)}
                       resizeMode="contain"
                       // source={image.E}
@@ -402,7 +432,8 @@ function MapHistory(props) {
                         height: 25,
                         width: 25,
                       }}
-                    />
+                    /> */}
+                    {/* {isActive == coordinate ? ( */}
                     <Callout tooltip>
                       <LinearGradient
                         colors={[
@@ -477,6 +508,7 @@ function MapHistory(props) {
                         </View>
                       </LinearGradient>
                     </Callout>
+                    {/* ) : null} */}
                   </Marker>
                 </>
               );
@@ -788,10 +820,25 @@ function MapHistory(props) {
                   latitudeDelta: LATITUDE_DELTA,
                   longitudeDelta: LONGITUDE_DELTA,
                 }}>
-                {data.length > 0 ? (
+                {data?.length > 0 ? (
                   <>
-                    <CustomMarker isVisibleMarker={isVisibleMarker} />
+                    <CustomMarker
+                      isVisibleMarker={isVisibleMarker}
+                      isActive={isActive}
+                      setIsActive={setIsActive}
+                    />
                     <MarkerAnimated
+                      icon={
+                        animate == 'stop'
+                          ? image.carGreenUp1
+                          : animate == 'start'
+                          ? image.blank
+                          : null
+                      }
+                      // size={
+                      //   animate == 'stop' ? 20 : animate == 'start' ? 0 : null
+                      // }
+
                       ref={marker => {
                         setMyMarker(marker);
                       }}
@@ -802,11 +849,12 @@ function MapHistory(props) {
                           },
                         ],
                       }}
+                      // icon={icon}
                       coordinate={{
                         latitude: parseFloat(data[0]?.lat),
                         longitude: parseFloat(data[0]?.lng),
                       }}>
-                      {animate == 'stop' ? (
+                      {/* {animate == 'stop' ? (
                         <Image
                           resizeMode="contain"
                           source={image.carGreenUp}
@@ -824,7 +872,7 @@ function MapHistory(props) {
                             width: 0,
                           }}
                         />
-                      ) : null}
+                      ) : null} */}
                     </MarkerAnimated>
                     <Polyline
                       strokeWidth={2}
@@ -844,6 +892,152 @@ function MapHistory(props) {
             ) : (
               <>
                 <MapView
+                  onMapReady={region =>
+                    setCoordinates(prev => {
+                      return {
+                        ...prev,
+                        coordinate: {
+                          latitude:
+                            parseFloat(data[0]?.lat) ||
+                            coordinates.coordinate.latitude,
+                          longitude:
+                            parseFloat(data[0]?.lng) ||
+                            coordinates.coordinate.longitude,
+                        },
+                      };
+                    })
+                  }
+                  pitchEnabled={false}
+                  style={{
+                    width: Dimensions.get('window').width,
+                    height: Dimensions.get('window').height,
+                  }}
+                  ref={mapRef}
+                  caheEnabled
+                  region={{
+                    latitude: parseFloat(data[0]?.lat),
+                    longitude: parseFloat(data[0]?.lng),
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LONGITUDE_DELTA,
+                  }}>
+                  {data?.length > 0 ? (
+                    <>
+                      {data
+                        ?.filter(item => {
+                          return item.stoppage !== '';
+                        })
+                        .map((coordinate, index) => {
+                          return (
+                            <>
+                              <MarkerAnimated
+                                key={index}
+                                coordinate={{
+                                  latitude: parseFloat(coordinate.lat),
+                                  longitude: parseFloat(coordinate.lng),
+                                }}>
+                                <Image
+                                  resizeMode="contain"
+                                  source={image.parkingPoint}
+                                  style={{
+                                    height: 50,
+                                    width: 50,
+                                  }}
+                                />
+                                <Callout tooltip>
+                                  <LinearGradient
+                                    colors={[
+                                      colors.mainThemeColor3,
+                                      colors.mainThemeColor4,
+                                    ]}
+                                    start={{x: 1.3, y: 0}}
+                                    end={{x: 0, y: 0}}
+                                    locations={[0, 0.9]}
+                                    style={style.firstbox}>
+                                    <View style={{paddingBottom: 5}}>
+                                      <Text style={style.firstboxtext1}>
+                                        Address : {coordinate.stoppage.address}
+                                      </Text>
+                                      <Text style={style.firstboxtext1}>
+                                        Stop Duration :{' '}
+                                        {coordinate.stoppage.stopDuration}
+                                      </Text>
+                                      <Text style={style.firstboxtext1}>
+                                        From : {coordinate.stoppage.stopTime1}
+                                      </Text>
+                                      <Text style={style.firstboxtext1}>
+                                        To : {coordinate.stoppage.stopTime2}
+                                      </Text>
+                                    </View>
+                                  </LinearGradient>
+                                </Callout>
+                              </MarkerAnimated>
+                            </>
+                          );
+                        })}
+
+                      <MarkerAnimated
+                        icon={
+                          animate == 'stop'
+                            ? image.carGreenUp1
+                            : animate == 'start'
+                            ? image.blank
+                            : null
+                        }
+                        // size={
+                        //   animate == 'stop' ? 20 : animate == 'start' ? 0 : null
+                        // }
+
+                        ref={marker => {
+                          setMyMarker(marker);
+                        }}
+                        style={{
+                          transform: [
+                            {
+                              rotate: degree === null ? '0deg' : `${degree}deg`,
+                            },
+                          ],
+                        }}
+                        // icon={icon}
+                        coordinate={{
+                          latitude: parseFloat(data[0]?.lat),
+                          longitude: parseFloat(data[0]?.lng),
+                        }}>
+                        {/* {animate == 'stop' ? (
+                        <Image
+                          resizeMode="contain"
+                          source={image.carGreenUp}
+                          style={{
+                            height: 20,
+                            width: 20,
+                          }}
+                        />
+                      ) : animate == 'start' ? (
+                        <Image
+                          resizeMode="contain"
+                          source={image.location}
+                          style={{
+                            height: 0,
+                            width: 0,
+                          }}
+                        />
+                      ) : null} */}
+                      </MarkerAnimated>
+                      <Polyline
+                        strokeWidth={2}
+                        strokeColor="red"
+                        coordinates={[
+                          ...data.map((value, index) => {
+                            return {
+                              latitude: parseFloat(value.lat),
+                              longitude: parseFloat(value.lng),
+                            };
+                          }),
+                        ]}
+                      />
+                    </>
+                  ) : null}
+                </MapView>
+                {/* <MapView
                   pitchEnabled={false}
                   style={{
                     width: Dimensions.get('window').width,
@@ -957,7 +1151,7 @@ function MapHistory(props) {
                       }),
                     ]}
                   />
-                </MapView>
+                </MapView> */}
               </>
             )}
           </View>
@@ -1093,22 +1287,22 @@ function MapHistory(props) {
                           borderRadius: 10,
                         }}
                         onPress={() => {
-                          if (speed > 2000) {
+                          if (speed > 1000) {
                             setSpeed(prev => {
-                              return prev - 2000;
+                              return prev - 1000;
                             });
                           } else {
-                            setSpeed(8000);
+                            setSpeed(4000);
                           }
                         }}>
                         <Text style={{fontSize: 14, color: 'white'}}>
-                          {speed == 8000
+                          {speed == 4000
                             ? '1x'
-                            : speed == 6000
+                            : speed == 3000
                             ? '2x'
-                            : speed == 4000
-                            ? '4x'
                             : speed == 2000
+                            ? '4x'
+                            : speed == 1000
                             ? '8x'
                             : null}
                         </Text>
@@ -1126,11 +1320,26 @@ function MapHistory(props) {
                   <TouchableOpacity
                     style={{position: 'absolute', bottom: 0, width: '100%'}}
                     onPress={() => {
+                      const newCoordinate = {
+                        latitude: parseFloat(data[0].lat),
+                        longitude: parseFloat(data[0].lng),
+                      };
                       setAnimate('start'),
                         // setT(null),
-                        clearInterval(interval),
-                        // (i = 0);
-                        animateMarkerAndCamera('stop');
+                        clearInterval(interval);
+                      // (i = 0);
+                      // animateMarkerAndCamera('stop');
+                      myMarker.animateMarkerToCoordinate(
+                        newCoordinate,
+                        speedRef.current,
+                      );
+                      mapRef.current.animateCamera(newCoordinate, {
+                        duration: speedRef.current,
+                      });
+                      mapRef?.current?.getCamera().then(cam => {
+                        cam.zoom -= 5;
+                        mapRef?.current?.animateCamera(cam);
+                      });
                     }}>
                     <LinearGradient
                       colors={['#0065B3', '#083273']}

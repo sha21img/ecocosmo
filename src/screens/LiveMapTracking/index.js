@@ -50,6 +50,7 @@ function LiveMapTracking(props) {
   const [mapType, setMapType] = useState(false);
   const [traffic, setTraffic] = useState(false);
   const [isMarkerShow, setIsMarkerShow] = useState(false);
+  const [vehicleData, setVehicleData] = useState(false);
 
   const mapRef = useRef();
   const markerRef = useRef();
@@ -171,11 +172,14 @@ function LiveMapTracking(props) {
     const response = await axiosGetData(
       `livetrack/${username}/${password}/${props.route.params.details.imei}/${type}`,
     );
-    console.log('poiuytrew0-----------', response.data);
+    console.log('poiuytrew0-----------', response.data.vehicle);
     setDetail(response.data.vehicle);
     const vehicleDetails = response.data.vehicle;
+    setVehicleData(vehicleDetails);
     const latitude = parseFloat(vehicleDetails.lat);
     const longitude = parseFloat(vehicleDetails.lng);
+    // const latitude = 26.876;
+    // const longitude = 75.7687;
     const lastlatitude = parseFloat(vehicleDetails.lastLat);
     const lastlongitude = parseFloat(vehicleDetails.lastLng);
     animate(latitude, longitude);
@@ -226,7 +230,7 @@ function LiveMapTracking(props) {
     } else {
       props.navigation.navigate(data, {details: details});
     }
-  }
+  };
   console.log('livecords', liveCords);
 
   return (
@@ -257,9 +261,30 @@ function LiveMapTracking(props) {
                   <Image
                     source={{uri: detail.markerIcon}}
                     style={{
-                      width: 40,
-                      height: 40,
-                      transform: [{rotate: `${heading}deg`}],
+                      width: 25,
+                      height: 25,
+                      transform: [
+                        {
+                          rotate:
+                            vehicleData.heading == 'E'
+                              ? `${90}deg`
+                              : vehicleData.heading == 'N'
+                              ? `${0}deg`
+                              : vehicleData.heading == 'NE'
+                              ? `${45}deg`
+                              : vehicleData.heading == 'NW'
+                              ? `${255}deg`
+                              : vehicleData.heading == 'S'
+                              ? `${180}deg`
+                              : vehicleData.heading == 'SE'
+                              ? `${135}deg`
+                              : vehicleData.heading == 'SW'
+                              ? `${225}deg`
+                              : vehicleData.heading == 'W'
+                              ? `${270}deg`
+                              : null,
+                        },
+                      ],
                     }}
                     resizeMode="contain"
                   />

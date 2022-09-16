@@ -135,4 +135,7 @@ export const image = {
   W: require('./W.png'),
   activeLocation: require('./activeLocation.png'),
   inActiveLocation: require('./inActiveLocation.png'),
+  carGreenUp1: require('./carGreenUp1.png'),
+  blank: require('./blank.png'),
+  
 };
