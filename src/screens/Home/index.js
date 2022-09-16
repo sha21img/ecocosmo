@@ -21,6 +21,7 @@ import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
 
 function Home(props) {
   const navigation = useNavigation();
@@ -89,7 +90,10 @@ function Home(props) {
     setDriverDetails(driverDetails);
   };
   useEffect(() => {
-    setDashBoardType('Dashboard 1')
+    setDashBoardType('Dashboard 1');
+    // messaging().onMessage(async remoteMessage => {
+    //   Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    // });
   }, [props]);
   useEffect(() => {
     console.log(

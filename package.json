@@ -14,6 +14,8 @@
     "@react-native-community/datetimepicker": "^6.3.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "^9.3.0",
+    "@react-native-firebase/app": "^15.4.0",
+    "@react-native-firebase/messaging": "^15.4.0",
     "@react-native-maps/polyline-direction": "^1.0.0",
     "@react-native-picker/picker": "^2.4.2",
     "@react-navigation/bottom-tabs": "^5.11.15",
