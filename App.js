@@ -39,6 +39,7 @@ import {LogBox} from 'react-native';
 import {axiosGetData} from './Utils/ApiController';
 import Reports from './src/screens/Reports';
 import {baseUrl} from './Utils/ApiController';
+import {requestUserPermission, notificationListeners} from './Utils/helper/NotificationHelper'
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -332,8 +333,9 @@ const App = () => {
   useEffect(() => {
     LogBox.ignoreAllLogs();
     changeLang();
-
     initializeApp();
+    requestUserPermission();
+    notificationListeners();
   }, []);
 
   if (isLoading == true) {
