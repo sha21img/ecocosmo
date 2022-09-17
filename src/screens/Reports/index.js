@@ -47,7 +47,7 @@ function Reports(props) {
 
   const imei = props?.route?.params?.details?.imei;
   const newDetails = props?.route?.params?.details;
-  console.log('++++++++++++++++++', imei);
+  // console.log('++++++++++++++++++', imei);
   // console.log("imeiimeiimeiimeiimei",props.route.params.details.imei)
   const [vehicleNumber, setVehicleNumber] = useState(
     props?.route?.params?.details?.deviceId || 'Select vehicle number',
@@ -94,6 +94,7 @@ function Reports(props) {
     var d = new Date();
     const startDate = moment(d).format('YYYY-MM-DD');
     const startTime = moment(d).format('hh-mm-ss');
+    // console.log('lkjh',startDate)
     setFtimeend(startTime);
     setFdateend(startDate);
     d.setMonth(d.getMonth() - 1);
@@ -140,17 +141,14 @@ function Reports(props) {
   // };
 
   useEffect(() => {
-    if (focus == true) {
-      console.log(
-        'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv',
-        newImei,
-      );
+    // if (focus == true) {
+     
       setNewImei(imei);
       setDate();
       getInitialData(imei);
       // setVehicleDetail();
-    }
-  }, [props, focus]);
+    
+  }, [props]);
   const getInitialData = async imei => {
     setLoading(false);
     console.log('getInitialDatagetInitialDatagetInitialData', newImei);
@@ -161,14 +159,14 @@ function Reports(props) {
     setNewVehicleNumber(allVehicleDetails);
 
     if (imei == undefined) {
-      console.log('ifffffffffffffffffffffffffff');
+      // console.log('ifffffffffffffffffffffffffff');
       setNewFilterVehicle(vehicleNum[0].deviceId);
       setVehicleNumber(vehicleNum[0].deviceId);
       setNewImei(vehicleNum[0].imei);
     } else {
       // console.log()
-      console.log('newDetails.deviceId', newDetails.deviceId);
-      console.log('newDetails.imei', newDetails.imei);
+      // console.log('newDetails.deviceId', newDetails.deviceId);
+      // console.log('newDetails.imei', newDetails.imei);
       setNewFilterVehicle(newDetails.deviceId);
       setVehicleNumber(newDetails.deviceId);
       setNewImei(newDetails.imei);
@@ -194,14 +192,15 @@ function Reports(props) {
     console.log('datadatadata', data);
     const response = await axiosGetData('getDriveDetails', data);
     // console.log('ppppppppppppppppppppppppppppppppppppppp', response?.data);
+    if (response?.data?.Drives.length > 0) {
+      const summarReport = response?.data?.Drives?.forEach(async item => {
+        // console.log('item', item);
 
-    const summarReport = response?.data?.Drives?.forEach(async item => {
-      // console.log('item', item);
-
-      getAddress(item.startPoint, username, encodedPassWord);
-      getLastAddress(item.endPoint, username, encodedPassWord);
-    });
-    console.log('response.data.Drives', response.data.Drives.slice(0, 3));
+        getAddress(item.startPoint, username, encodedPassWord);
+        getLastAddress(item.endPoint, username, encodedPassWord);
+      });
+    }
+    // console.log('response.data.Drives', response.data.Drives.slice(0, 3));
     setSummaryReport(response?.data?.Drives);
 
     return response?.data?.Drives;
@@ -237,12 +236,11 @@ function Reports(props) {
     // if (fdate !== '' && fdateend !== '') {
     //   data1();
     // }
-    console.log('imei-=-', newImei);
+    // console.log('imei-=-', newImei);
     if (
       fdate !== '' &&
       fdateend !== '' &&
-      newImei !== undefined &&
-      focus == true
+      newImei !== undefined 
     ) {
       data1(), getSummaryReport();
       // console.log('proprorprprorp');
@@ -254,11 +252,11 @@ function Reports(props) {
       //     console.log(error);
       //   });
     }
-  }, [fdate, fdateend, newImei, focus]);
+  }, [fdate, fdateend, newImei]);
 
   const data1 = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
-    // console.log("succcess",succcess)
+    console.log("succcess")
 
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
@@ -272,9 +270,10 @@ function Reports(props) {
       enddate: fdateend.toString(),
       type: 'odo',
     };
+    console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',data)
     const response = await axiosGetData('reportHistory', data);
-    const aa = response.data.DeviceHistory
-    console.log('098765432345678987654345678', aa);
+    const aa = response.data.DeviceHistory;
+    console.log('098765432345678987654345678', aa.length);
     setMapHistory(aa);
     setLoading(true);
 
@@ -335,7 +334,7 @@ function Reports(props) {
     showMode('time');
   };
   const getFilterVehicle = async (data, imei) => {
-    console.log('selected==============', data, imei);
+    // console.log('selected==============', data, imei);
     setLoading(false);
     setVehicleNumber(data);
     // setNewVehicleNumber(data)
@@ -576,8 +575,8 @@ function Reports(props) {
       });
   };
   const showModal = (data, heading) => {
-    console.log('qqqqqqqqqqqqqqqq', data);
-    console.log('hhhhhhhhhhhhhhhhhhh', heading);
+    // console.log('qqqqqqqqqqqqqqqq', data);
+    // console.log('hhhhhhhhhhhhhhhhhhh', heading);
     Alert.alert(
       '',
       'Which you want to share',
@@ -1387,7 +1386,7 @@ function Reports(props) {
                   </View>
                   {isActive === 'drive' && isActive2.drive === 1 ? (
                     summaryReport?.map(item => {
-                      console.log('push', item.odo);
+                      {/* console.log('push', item.odo); */}
                       return (
                         <View
                           style={{
