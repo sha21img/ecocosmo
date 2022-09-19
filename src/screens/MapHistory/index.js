@@ -133,15 +133,15 @@ function MapHistory(props) {
       accountid: username,
       password: password,
 
-      imei: newImei,
-      date: date || fdate,
-      startTime: startTime || ftime,
-      endTime: endTime || ftimeend,
+      // imei: newImei,
+      // date: date || fdate,
+      // startTime: startTime || ftime,
+      // endTime: endTime || ftimeend,
       //
-      // startTime: '03:00',
-      // imei: '353701092279609',
-      // endTime: '10:00',
-      // date: '2022-09-05',
+      startTime: '03:00',
+      imei: '353701092279609',
+      endTime: '10:00',
+      date: '2022-09-05',
       //
     };
     console.log('maphistory eith time daata', data);
@@ -846,10 +846,6 @@ function MapHistory(props) {
                         ? image.blank
                         : null
                     }
-                    // size={
-                    //   animate == 'stop' ? 20 : animate == 'start' ? 0 : null
-                    // }
-
                     ref={marker => {
                       setMyMarker(marker);
                     }}
@@ -860,31 +856,10 @@ function MapHistory(props) {
                         },
                       ],
                     }}
-                    // icon={icon}
                     coordinate={{
                       latitude: parseFloat(data[0]?.lat),
                       longitude: parseFloat(data[0]?.lng),
-                    }}>
-                    {/* {animate == 'stop' ? (
-                        <Image
-                          resizeMode="contain"
-                          source={image.carGreenUp}
-                          style={{
-                            height: 20,
-                            width: 20,
-                          }}
-                        />
-                      ) : animate == 'start' ? (
-                        <Image
-                          resizeMode="contain"
-                          source={image.location}
-                          style={{
-                            height: 0,
-                            width: 0,
-                          }}
-                        />
-                      ) : null} */}
-                  </MarkerAnimated>
+                    }}></MarkerAnimated>
                   <Polyline
                     strokeWidth={2}
                     strokeColor="red"

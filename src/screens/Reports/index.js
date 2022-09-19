@@ -142,12 +142,11 @@ function Reports(props) {
 
   useEffect(() => {
     // if (focus == true) {
-     
-      setNewImei(imei);
-      setDate();
-      getInitialData(imei);
-      // setVehicleDetail();
-    
+
+    setNewImei(imei);
+    setDate();
+    getInitialData(imei);
+    // setVehicleDetail();
   }, [props]);
   const getInitialData = async imei => {
     setLoading(false);
@@ -237,26 +236,15 @@ function Reports(props) {
     //   data1();
     // }
     // console.log('imei-=-', newImei);
-    if (
-      fdate !== '' &&
-      fdateend !== '' &&
-      newImei !== undefined 
-    ) {
-      data1(), getSummaryReport();
-      // console.log('proprorprprorp');
-      // Promise.all([data1(), getSummaryReport()])
-      //   .then(values => {
-
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error);
-      //   });
+    if (fdate !== '' && fdateend !== '' && newImei !== undefined) {
+      data1();
+      getSummaryReport();
     }
   }, [fdate, fdateend, newImei]);
 
   const data1 = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
-    console.log("succcess")
+    console.log('succcess');
 
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
@@ -270,7 +258,7 @@ function Reports(props) {
       enddate: fdateend.toString(),
       type: 'odo',
     };
-    console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',data)
+    console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', data);
     const response = await axiosGetData('reportHistory', data);
     const aa = response.data.DeviceHistory;
     console.log('098765432345678987654345678', aa.length);
@@ -1273,193 +1261,6 @@ function Reports(props) {
              */}
 
             {/* {data2.length > 0 ? ( */}
-            <LinearGradient
-              colors={['#BCE2FF', '#ffffff']}
-              start={{x: 0, y: 0.5}}
-              end={{x: 1, y: 0.5}}
-              style={{padding: 20}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  alignItems: 'center',
-                }}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                  {__('Drive Summary Report')}
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: colors.mainThemeColor1,
-                    borderRadius: 50,
-                  }}
-                  onPress={() => {
-                    setIsActive('drive'),
-                      setIsActive2(prev => {
-                        return {
-                          ...prev,
-                          drive: prev['drive'] == 0 ? 1 : 0,
-                        };
-                      });
-                  }}>
-                  <MaterialIcons
-                    style={{
-                      color: colors.white,
-                      fontSize: 25,
-                    }}
-                    name={'keyboard-arrow-down'}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() =>
-                    showModal('Drive Summary Report', [
-                      'Vehicle Number',
-                      // 'Start Location',
-                      'End Time',
-                      'kms',
-                      'Duration',
-                      'Start Time',
-                      // 'End Location',
-                      // 'kms',
-                    ])
-                  }>
-                  <Image
-                    source={image.shareDark}
-                    style={{width: 24, height: 24}}
-                  />
-                </TouchableOpacity>
-              </View>
-              <ScrollView
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                style={{flexDirection: 'row', paddingTop: 10}}>
-                <View style={{paddingRight: 20}}>
-                  <Text style={styles.textHead}>Vehicle No.</Text>
-                  {isActive === 'drive' && isActive2.drive === 1 ? (
-                    summaryReport?.map(item => {
-                      return <Text>{newFilterVehicle}</Text>;
-                    })
-                  ) : (
-                    <Text>{newFilterVehicle}</Text>
-                  )}
-                </View>
-                <View
-                  style={{
-                    paddingRight: 20,
-                  }}>
-                  <Text style={styles.textHead}>Start Location</Text>
-                  {isActive === 'drive' && isActive2.drive === 1 ? (
-                    data2?.map(item => {
-                      return <Text>{item?.vehicleAddress}</Text>;
-                    })
-                  ) : (
-                    <Text>{data2[0]?.vehicleAddress}</Text>
-                  )}
-                </View>
-                {/*  */}
-                <View
-                  style={{
-                    paddingRight: 20,
-                  }}>
-                  <Text style={styles.textHead}>End Location</Text>
-                  {isActive === 'drive' && isActive2.drive === 1 ? (
-                    lastLocation?.map(item => {
-                      return <Text>{item?.vehicleAddress}</Text>;
-                    })
-                  ) : (
-                    <Text>{lastLocation[0]?.vehicleAddress}</Text>
-                  )}
-                </View>
-                <View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      // justifyContent: 'space-around',
-                      // alignContent: 'flex-start',
-                      // justifyContent:'flex-start'
-                    }}>
-                    <Text style={styles.textHead}>Start Time</Text>
-                    <Text style={styles.textHead}>End Time</Text>
-                    <Text style={styles.textHead}>kms</Text>
-                    <Text style={styles.textHead}>Duration</Text>
-                    {/* <Text style={styles.textHead}>kms</Text> */}
-                  </View>
-                  {isActive === 'drive' && isActive2.drive === 1 ? (
-                    summaryReport?.map(item => {
-                      {/* console.log('push', item.odo); */}
-                      return (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            // justifyContent: 'space-between',
-                            alignContent: 'flex-start',
-                            // backgroundColor: 'red',
-                          }}>
-                          <Text style={{minWidth: 100, alignSelf: 'center'}}>
-                            {moment(item['startTime:']).format('hh:mm')}
-                          </Text>
-                          <Text style={{minWidth: 100, alignSelf: 'center'}}>
-                            {moment(item['endTime:']).format('hh:mm')}
-                          </Text>
-                          <Text style={{minWidth: 100, alignSelf: 'center'}}>
-                            {item.odo}
-                          </Text>
-                          <Text style={{minWidth: 100, alignSelf: 'center'}}>
-                            {item.duration}
-                          </Text>
-                          {/* <Text style={{minWidth: 100, alignSelf: 'center'}}>
-                            {item.odo}
-                          </Text> */}
-                          <TouchableOpacity
-                            onPress={() =>
-                              props.navigation.navigate('MapHistory', {
-                                summaryData: item,
-                                imei: newImei,
-                              })
-                            }>
-                            <Image
-                              source={image.maphistory}
-                              style={{
-                                resizeMode: 'contain',
-                                height: 20,
-                                width: 20,
-                              }}
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      );
-                    })
-                  ) : (
-                    <View style={{flexDirection: 'row'}}>
-                      <View style={styles.textHead}>
-                        <Text>
-                          {summaryReport[0]
-                            ? moment(summaryReport[0]['startTime:']).format(
-                                'hh:mm',
-                              )
-                            : '00:00:00'}
-                        </Text>
-                      </View>
-                      <View style={styles.textHead}>
-                        <Text>
-                          {summaryReport[0]
-                            ? moment(summaryReport[0]['endTime:']).format(
-                                'hh:mm',
-                              )
-                            : '00:00:00'}
-                        </Text>
-                      </View>
-                      <View style={styles.textHead}>
-                        <Text>{summaryReport[0]?.odo}</Text>
-                      </View>
-                      <View style={styles.textHead}>
-                        <Text>{summaryReport[0]?.duration}</Text>
-                      </View>
-                    </View>
-                  )}
-                </View>
-              </ScrollView>
-            </LinearGradient>
 
             <LinearGradient
               colors={['#BCE2FF', '#ffffff']}
@@ -1707,6 +1508,183 @@ function Reports(props) {
                 </View>
               </ScrollView>
             </LinearGradient>
+            {summaryReport.length > 0 ? (
+              <LinearGradient
+                colors={['#BCE2FF', '#ffffff']}
+                start={{x: 0, y: 0.5}}
+                end={{x: 1, y: 0.5}}
+                style={{padding: 20}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                    {__('Drive Summary Report')}
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: colors.mainThemeColor1,
+                      borderRadius: 50,
+                    }}
+                    onPress={() => {
+                      setIsActive('drive'),
+                        setIsActive2(prev => {
+                          return {
+                            ...prev,
+                            drive: prev['drive'] == 0 ? 1 : 0,
+                          };
+                        });
+                    }}>
+                    <MaterialIcons
+                      style={{
+                        color: colors.white,
+                        fontSize: 25,
+                      }}
+                      name={'keyboard-arrow-down'}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      showModal('Drive Summary Report', [
+                        'Vehicle Number',
+                        'End Time',
+                        'kms',
+                        'Duration',
+                        'Start Time',
+                      ])
+                    }>
+                    <Image
+                      source={image.shareDark}
+                      style={{width: 24, height: 24}}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <ScrollView
+                  showsHorizontalScrollIndicator={false}
+                  horizontal={true}
+                  style={{flexDirection: 'row', paddingTop: 10}}>
+                  <View style={{paddingRight: 20}}>
+                    <Text style={styles.textHead}>Vehicle No.</Text>
+                    {isActive === 'drive' && isActive2.drive === 1 ? (
+                      summaryReport?.map(item => {
+                        return <Text>{newFilterVehicle}</Text>;
+                      })
+                    ) : (
+                      <Text>{newFilterVehicle}</Text>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      paddingRight: 20,
+                    }}>
+                    <Text style={styles.textHead}>Start Location</Text>
+                    {isActive === 'drive' && isActive2.drive === 1 ? (
+                      data2?.map(item => {
+                        return <Text>{item?.vehicleAddress}</Text>;
+                      })
+                    ) : (
+                      <Text>{data2[0]?.vehicleAddress}</Text>
+                    )}
+                  </View>
+                  {/*  */}
+                  <View
+                    style={{
+                      paddingRight: 20,
+                    }}>
+                    <Text style={styles.textHead}>End Location</Text>
+                    {isActive === 'drive' && isActive2.drive === 1 ? (
+                      lastLocation?.map(item => {
+                        return <Text>{item?.vehicleAddress}</Text>;
+                      })
+                    ) : (
+                      <Text>{lastLocation[0]?.vehicleAddress}</Text>
+                    )}
+                  </View>
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                      }}>
+                      <Text style={styles.textHead}>Start Time</Text>
+                      <Text style={styles.textHead}>End Time</Text>
+                      <Text style={styles.textHead}>kms</Text>
+                      <Text style={styles.textHead}>Duration</Text>
+                    </View>
+                    {isActive === 'drive' && isActive2.drive === 1 ? (
+                      summaryReport?.map(item => {
+                        return (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignContent: 'flex-start',
+                            }}>
+                            <Text style={{minWidth: 100, alignSelf: 'center'}}>
+                              {moment(item['startTime:']).format('hh:mm')}
+                            </Text>
+                            <Text style={{minWidth: 100, alignSelf: 'center'}}>
+                              {moment(item['endTime:']).format('hh:mm')}
+                            </Text>
+                            <Text style={{minWidth: 100, alignSelf: 'center'}}>
+                              {item.odo}
+                            </Text>
+                            <Text style={{minWidth: 100, alignSelf: 'center'}}>
+                              {item.duration}
+                            </Text>
+
+                            <TouchableOpacity
+                              onPress={() =>
+                                props.navigation.navigate('MapHistory', {
+                                  summaryData: item,
+                                  imei: newImei,
+                                })
+                              }>
+                              <Image
+                                source={image.maphistory}
+                                style={{
+                                  resizeMode: 'contain',
+                                  height: 20,
+                                  width: 20,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        );
+                      })
+                    ) : (
+                      <View style={{flexDirection: 'row'}}>
+                        <View style={styles.textHead}>
+                          <Text>
+                            {summaryReport[0]
+                              ? moment(summaryReport[0]['startTime:']).format(
+                                  'hh:mm',
+                                )
+                              : '00:00:00'}
+                          </Text>
+                        </View>
+                        <View style={styles.textHead}>
+                          <Text>
+                            {summaryReport[0]
+                              ? moment(summaryReport[0]['endTime:']).format(
+                                  'hh:mm',
+                                )
+                              : '00:00:00'}
+                          </Text>
+                        </View>
+                        <View style={styles.textHead}>
+                          <Text>{summaryReport[0]?.odo}</Text>
+                        </View>
+                        <View style={styles.textHead}>
+                          <Text>{summaryReport[0]?.duration}</Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                </ScrollView>
+              </LinearGradient>
+            ) : null}
           </>
         ) : (
           <ActivityIndicator color={colors.black} />
