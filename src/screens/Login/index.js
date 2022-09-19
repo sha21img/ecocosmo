@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   ScrollView,
+  Platform,
   Text,
   TextInput,
   ActivityIndicator,
@@ -27,6 +28,7 @@ import ModalSelector from 'react-native-modal-selector';
 import {setDefaultLocale} from '../../../Utils/Translation/translation';
 import {log} from 'react-native-reanimated';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
   const [username, setUsername] = useState();
@@ -35,31 +37,44 @@ const Login = ({navigation}) => {
   const [show, setShow] = useState(false);
   const [language, setLanguage] = useState('English');
   const {setToken, setSplash} = React.useContext(AuthContext);
-
   const [logo, setLogo] = useState(null);
   const [companyName, setCompanyName] = useState(null);
 
   const handleLogin = async data => {
     setLoading(true);
     var encodedPassWord = md5(data?.password || password);
-    const name=data?.username || username
+    const name = data?.username || username;
     console.log('asdf', encodedPassWord);
-    const response = await axiosGetData(
-      `account/${name}/${encodedPassWord}`,
-    );
+    const response = await axiosGetData(`account/${name}/${encodedPassWord}`);
     console.log('this is response from login scren');
     const succcess = await Storage.SetLogin(response?.data?.apiResult);
     const detail = await Storage.SetLoginDetail(response.data);
 
     if (response.data.apiResult === 'success') {
       setLoading(false);
+      checkNotification(response.data);
     } else {
       Toast.show(__(`${response.data.message}`));
       setLoading(false);
     }
-
     setToken(succcess);
     setSplash(true);
+  };
+  const checkNotification = async data => {
+    const get = await AsyncStorage.getItem('fcmtoken');
+    console.log('get, -=-=-=', get);
+    data = {
+      key: 'db12a172330ef8f0d881c4caea225ef4',
+      notification_regid: get,
+      gps_accountId: data.accountId,
+      gcm_inserted_id: 0,
+      phone_deviceId: "phoneId",
+      phoneType: Platform.OS === 'android' ? 1 : 2,
+      isUpdate: 0,
+    };
+    const checkNoti = await axiosGetData(`registerUser`, data);
+    console.log('get, -=-=-=  0  032 0 0  0 ');
+    console.log('this is a response', checkNoti.data);
   };
   const getLogo = async () => {
     const logo = await axiosGetData(`download/appOwnerLogo`);
@@ -76,7 +91,6 @@ const Login = ({navigation}) => {
       console.log(values);
     });
   });
-  // const data = [{language: 'English'}, {language: 'Hindi'}];
   let index = 0;
   const data = [
     {key: index++, label: 'English'},

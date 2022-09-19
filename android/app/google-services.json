@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "263493917722",
-    "project_id": "newvikasi",
-    "storage_bucket": "newvikasi.appspot.com"
+    "project_number": "1046127459010",
+    "project_id": "vikasi-93e8a",
+    "storage_bucket": "vikasi-93e8a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:263493917722:android:e297fad443ddce66c545a3",
+        "mobilesdk_app_id": "1:1046127459010:android:0f3f1cef9acf0f5930195b",
         "android_client_info": {
-          "package_name": "com.demo"
+          "package_name": "com.vikasi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "263493917722-o8qo3lhcmdrd78soo177um05v5gp73gp.apps.googleusercontent.com",
+          "client_id": "1046127459010-40dd6b8c44lo6vbf20bk5vrlnbm93mu0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCX-DDSW1VP7ei2YQ03fWDgNaw1U61WULU"
+          "current_key": "AIzaSyCc0_dCRbkobr_gst_Kead3nVosOaivI70"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "263493917722-o8qo3lhcmdrd78soo177um05v5gp73gp.apps.googleusercontent.com",
+              "client_id": "1046127459010-40dd6b8c44lo6vbf20bk5vrlnbm93mu0.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

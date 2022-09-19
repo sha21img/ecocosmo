@@ -191,18 +191,18 @@ function LiveMapTracking(props) {
       updateState({
         heading: heading,
         curLoc: {
-          latitude,
-          longitude,
+          latitude: lastlatitude,
+          longitude: lastlongitude,
         },
         coordinate: {
-          latitude: latitude,
-          longitude: longitude,
+          latitude: lastlatitude,
+          longitude: lastlongitude,
           latitudeDelta: LATITUDE_DELTA,
           longitudeDelta: LONGITUDE_DELTA,
         },
         destinationCords: {
-          latitude: lastlatitude,
-          longitude: lastlongitude,
+          latitude: latitude,
+          longitude: longitude,
         },
       });
     } else {
@@ -244,12 +244,11 @@ function LiveMapTracking(props) {
                 ...curLoc,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
-              }}
-            >
+              }}>
               {Object.keys(coordinate).length > 0 && (
-                <Marker.Animated ref={markerRef} coordinate={coordinate}>
-                  <Image
-                    source={{uri: detail.markerIcon}}
+                <>
+                  <Marker.Animated
+                    icon={{uri: detail.markerIcon}}
                     style={{
                       width: 40,
                       height: 40,
@@ -276,9 +275,18 @@ function LiveMapTracking(props) {
                         },
                       ],
                     }}
-                    resizeMode="contain"
+                    ref={markerRef}
+                    coordinate={coordinate}
                   />
-                </Marker.Animated>
+                  <MapViewDirections
+                    origin={curLoc}
+                    destination={destinationCords}
+                    apikey={GOOGLE_MAP_KEY}
+                    strokeWidth={3}
+                    strokeColor="black"
+                    optimizeWaypoints={true}
+                  />
+                </>
               )}
               {Object.keys(liveCords).length > 0 && isMarkerShow ? (
                 <>
@@ -294,35 +302,6 @@ function LiveMapTracking(props) {
                     optimizeWaypoints={true}
                   />
                 </>
-              ) : null}
-
-              {Object.keys(destinationCords).length > 0 && !isMarkerShow ? (
-                <MapViewDirections
-                  origin={curLoc}
-                  destination={destinationCords}
-                  apikey={GOOGLE_MAP_KEY}
-                  strokeWidth={3}
-                  strokeColor="black"
-                  optimizeWaypoints={true}
-                  onStart={params => {
-                    // console.log(
-                    //   `Started routing between "${params.origin}" and "${params.destination}"`,
-                    // );
-                  }}
-                  onReady={result => {
-                    mapRef.current.fitToCoordinates(result.coordinates, {
-                      edgePadding: {
-                        // right: 30,
-                        // bottom: 300,
-                        // left: 30,
-                        // top: 100,
-                      },
-                    });
-                  }}
-                  onError={errorMessage => {
-                    // console.log('GOT AN ERROR');
-                  }}
-                />
               ) : null}
             </MapView>
             <TouchableOpacity
