@@ -63,6 +63,7 @@ function MapHistory(props) {
   const [trackViewChanges, setTrackViewChanges] = useState(false);
   const [isVisibleMarker, setIsVisibleMarker] = useState(false);
   const [isVisibleMarker1, setIsVisibleMarker1] = useState(false);
+  const [lastRide, setLastRide] = useState(false);
 
   const [coordinates, setCoordinates] = useState({
     coordinate: {
@@ -133,20 +134,20 @@ function MapHistory(props) {
       accountid: username,
       password: password,
 
-      // imei: newImei,
-      // date: date || fdate,
-      // startTime: startTime || ftime,
-      // endTime: endTime || ftimeend,
+      imei: newImei,
+      date: date || fdate,
+      startTime: startTime || ftime,
+      endTime: endTime || ftimeend,
       //
-      startTime: '03:00',
-      imei: '353701092279609',
-      endTime: '10:00',
-      date: '2022-09-05',
+      // startTime: '03:00',
+      // imei: '353701092279609',
+      // endTime: '10:00',
+      // date: '2022-09-05',
       //
     };
     console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    let newCoordinate = response?.data?.EventHistory;
+    let newCoordinate = response?.data?.EventHistory.slice(0, 9);
     setLoading(true);
 
     console.log('mapHistory APi', newCoordinate?.length);
@@ -216,6 +217,11 @@ function MapHistory(props) {
   useEffect(() => {
     speedRef.current = speed;
   });
+  useEffect(() => {
+    if (lastRide == true) {
+      clearInterval(interval);
+    }
+  }, [lastRide]);
 
   const start = datas => {
     console.log('markerRef.current', mapRef.current);
@@ -286,13 +292,13 @@ function MapHistory(props) {
       }
       i++;
     } else {
+      console.log('0987654321234567890');
       setAnimate('start');
       const newCoordinate = {
         latitude: parseFloat(data[0]?.lat),
         longitude: parseFloat(data[0]?.lng),
       };
 
-      clearInterval(interval);
       myMarker.animateMarkerToCoordinate(newCoordinate, speedRef.current);
       mapRef.current.animateCamera(newCoordinate, {
         duration: speedRef.current,
@@ -300,6 +306,7 @@ function MapHistory(props) {
       // setT(null);
       // setAnimate('start');
       i = 1;
+      setLastRide(true);
 
       //
       // mapRef?.current?.getCamera().then(cam => {
@@ -839,6 +846,7 @@ function MapHistory(props) {
                     <CustomMarker1 isVisibleMarker={isVisibleMarker1} />
                   )}
                   <MarkerAnimated
+                    flat={true}
                     icon={
                       animate == 'stop'
                         ? image.carGreenUp1
@@ -1058,6 +1066,7 @@ function MapHistory(props) {
                       mapRef.current.animateCamera(newCoordinate, {
                         duration: speedRef.current,
                       });
+                      setLastRide(true);
                       // mapRef?.current?.getCamera().then(cam => {
                       //   cam.zoom -= 3;
                       //   mapRef?.current?.animateCamera(cam);
