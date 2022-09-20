@@ -149,7 +149,7 @@ function Reports(props) {
     // setVehicleDetail();
   }, [props]);
   const getInitialData = async imei => {
-    setLoading(false);
+    
     console.log('getInitialDatagetInitialDatagetInitialData', newImei);
     const vehicleNum = await Storage.getVehicleDetail('vehicle_detail');
     const allVehicleDetails = vehicleNum.map((item, index) => {
@@ -245,6 +245,7 @@ function Reports(props) {
   const data1 = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
     console.log('succcess');
+    setLoading(false);
 
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
@@ -261,7 +262,7 @@ function Reports(props) {
     console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', data);
     const response = await axiosGetData('reportHistory', data);
     const aa = response.data.DeviceHistory;
-    console.log('098765432345678987654345678', aa.length);
+    console.log('098765432345678987654345678', aa?.length);
     setMapHistory(aa);
     setLoading(true);
 
@@ -594,7 +595,7 @@ function Reports(props) {
   };
 
   const renderLocation = location => {
-    const totalSplits = Math.ceil(location.length / 15);
+    const totalSplits = Math.ceil(location?.length / 15);
     // console.log(
     //   'asssssss',
     //   location
@@ -1063,7 +1064,7 @@ function Reports(props) {
             {/*
              */}
             {/* {data2.length > 0 ? ( */}
-            {mapHistory.length > 0 ? (
+            {/* {mapHistory.length > 0 ? ( */}
               <LinearGradient
                 colors={['#BCE2FF', '#ffffff']}
                 start={{x: 0, y: 0.5}}
@@ -1255,7 +1256,7 @@ function Reports(props) {
                   </View>
                 </ScrollView>
               </LinearGradient>
-            ) : null}
+            {/* ) : null} */}
 
             {/*
              */}
