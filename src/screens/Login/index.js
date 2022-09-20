@@ -29,6 +29,10 @@ import {setDefaultLocale} from '../../../Utils/Translation/translation';
 import {log} from 'react-native-reanimated';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DeviceInfo, {
+  getUniqueId,
+  getManufacturer,
+} from 'react-native-device-info';
 
 const Login = ({navigation}) => {
   const [username, setUsername] = useState();
@@ -39,6 +43,7 @@ const Login = ({navigation}) => {
   const {setToken, setSplash} = React.useContext(AuthContext);
   const [logo, setLogo] = useState(null);
   const [companyName, setCompanyName] = useState(null);
+  const [deviceUniqueId, setDeviceUniqueId] = useState('');
 
   const handleLogin = async data => {
     setLoading(true);
@@ -66,15 +71,15 @@ const Login = ({navigation}) => {
     data = {
       key: 'db12a172330ef8f0d881c4caea225ef4',
       notification_regid: get,
-      gps_accountId: data.accountId,
+     gps_accountId: data.accountId,
       gcm_inserted_id: 0,
-      phone_deviceId: "phoneId",
+      phone_deviceId: deviceUniqueId,
       phoneType: Platform.OS === 'android' ? 1 : 2,
       isUpdate: 0,
     };
     const checkNoti = await axiosGetData(`registerUser`, data);
     console.log('get, -=-=-=  0  032 0 0  0 ');
-    console.log('this is a response', checkNoti.data);
+    console.log('this is a response -=4- 43-=34-5 ', checkNoti.data);
   };
   const getLogo = async () => {
     const logo = await axiosGetData(`download/appOwnerLogo`);
@@ -87,6 +92,10 @@ const Login = ({navigation}) => {
     console.log('logo', companyName.data.message);
   };
   useEffect(() => {
+    DeviceInfo.getUniqueId().then(uniqueId => {
+      console.log('uniqueId', uniqueId);
+      setDeviceUniqueId(uniqueId);
+    });
     Promise.all([getLogo(), getCompanyName()]).then(values => {
       console.log(values);
     });

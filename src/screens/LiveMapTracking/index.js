@@ -156,9 +156,9 @@ function LiveMapTracking(props) {
       longitudeDelta: LONGITUDE_DELTA,
     });
   };
-  const updateRef = React.useRef(state.coordinate);
+  const updateRef = React.useRef(state.destinationCords);
   useEffect(() => {
-    updateRef.current = state.coordinate;
+    updateRef.current = state.destinationCords;
   });
   useEffect(() => {
     const interval = setInterval(() => {
@@ -185,7 +185,27 @@ function LiveMapTracking(props) {
     // const longitude = 75.7687;
     const lastlatitude = parseFloat(vehicleDetails.lastLat);
     const lastlongitude = parseFloat(vehicleDetails.lastLng);
-    if (refUpdate.latitude != latitude && refUpdate.longitude != longitude) {
+    console.log(
+      'this is location2-=3-2=3-2=3-=23=2-=3-2=3423-4=32   23=4 -=234-=32-4=',
+      refUpdate.latitude != latitude,
+    );
+    console.log(
+      'this is location2-=3-2=3-2=3-=23=2-=3-2=3423-4=32   23=4 -=234-=32-4=',
+      refUpdate.latitude,
+      latitude,
+    );
+    console.log(
+      'this is location2-=3-2=3-2=3-=23=2-=3-2=3423-4=32   23=4 -=234-=32-4=',
+      refUpdate.longitude != longitude,
+    );
+    console.log(
+      'this is location2-=3-2=3-2=3-=23=2-=3-2=3423-4=32   23=4 -=234-=32-4=',
+      refUpdate.longitude,
+      longitude,
+    );
+    if (refUpdate.latitude == latitude && refUpdate.longitude == longitude) {
+      console.log('nhi chala');
+    } else {
       console.log('chal gya');
       animate(latitude, longitude);
       updateState({
@@ -205,8 +225,6 @@ function LiveMapTracking(props) {
           longitude: longitude,
         },
       });
-    } else {
-      console.log('nhi chala');
     }
     setIsShow(true);
   };
@@ -247,6 +265,7 @@ function LiveMapTracking(props) {
               }}>
               {Object.keys(coordinate).length > 0 && (
                 <>
+                  {console.log(vehicleData.heading, 'vehicleData.heading')}
                   <Marker.Animated
                     icon={{uri: detail.markerIcon}}
                     style={{
@@ -275,6 +294,7 @@ function LiveMapTracking(props) {
                         },
                       ],
                     }}
+                    flat={true}
                     ref={markerRef}
                     coordinate={coordinate}
                   />

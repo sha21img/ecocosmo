@@ -11,6 +11,7 @@ import md5 from 'md5';
 import Toast from 'react-native-simple-toast';
 import Storage from '../../../Utils/Storage';
 import {AuthContext} from '../../../App';
+import {logout} from '../../../Utils/helper/logout';
 
 const ChangePassword = props => {
   const [Current, setCurrent] = useState('');
@@ -37,7 +38,7 @@ const ChangePassword = props => {
         if (response?.data?.apiResult === 'Successfully changed password') {
           Toast.show(response?.data?.apiResult);
           setLoading(false);
-          logout();
+          logout(setToken);
         } else {
           Toast.show(response?.data?.message);
           setLoading(false);
@@ -50,10 +51,6 @@ const ChangePassword = props => {
       Toast.show('Fill all fields');
       setLoading(false);
     }
-  };
-  const logout = async () => {
-    await Storage.clearToken();
-    setToken(null);
   };
 
   return (

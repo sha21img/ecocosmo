@@ -39,7 +39,11 @@ import {LogBox} from 'react-native';
 import {axiosGetData} from './Utils/ApiController';
 import Reports from './src/screens/Reports';
 import {baseUrl} from './Utils/ApiController';
-import {requestUserPermission, notificationListeners} from './Utils/helper/NotificationHelper'
+import {logout} from './Utils/helper/logout';
+import {
+  requestUserPermission,
+  notificationListeners,
+} from './Utils/helper/NotificationHelper';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -202,11 +206,7 @@ const DrawerContent = props => {
               );
             })}
           </View>
-          <TouchableOpacity
-            onPress={async () => {
-              await Storage.clearToken();
-              setToken(null);
-            }}>
+          <TouchableOpacity onPress={() => logout(setToken)}>
             <LinearGradient
               colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
               start={{x: 0, y: 0.5}}

@@ -11,6 +11,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Storage from '../../../Utils/Storage';
 import {AuthContext} from '../../../App';
 import {axiosGetData} from '../../../Utils/ApiController';
+import {logout} from '../../../Utils/helper/logout';
 
 function Setting({navigation}) {
   const [Ison, setIson] = useState(true);
@@ -126,11 +127,7 @@ function Setting({navigation}) {
           }}
         />
       </View>
-      <TouchableOpacity
-        onPress={async () => {
-          await Storage.clearToken();
-          setToken(null);
-        }}>
+      <TouchableOpacity onPress={() => logout(setToken)}>
         <LinearGradient
           colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
           start={{x: 0, y: 0.5}}
