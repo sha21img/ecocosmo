@@ -92,6 +92,7 @@ function MapHistory(props) {
         setFtime(fTime);
         setFtimeend(endTime);
         getMapHistory(a, endTime, fTime);
+        setIsVisibleMarker(true);
       } else {
         setFtime('00:00');
         var ab = moment(new Date()).format('hh:mm');
@@ -492,18 +493,6 @@ function MapHistory(props) {
                       latitude: parseFloat(coordinate.lat),
                       longitude: parseFloat(coordinate.lng),
                     }}>
-                    {data[0] == coordinate ? (
-                      <Image
-                        source={image.greenFlag}
-                        style={{resizeMode: 'contain', height: 30, width: 30}}
-                      />
-                    ) : null}
-                    {data[data.length - 1] == coordinate ? (
-                      <Image
-                        source={image.pinkFlag}
-                        style={{resizeMode: 'contain', height: 30, width: 30}}
-                      />
-                    ) : null}
                     {/* {showCallout ? ( */}
                     {/* <Callout tooltip> */}
                     {isActive === coordinate.packetTimeStamp
@@ -558,7 +547,7 @@ function MapHistory(props) {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity
               onPress={() => {
-                setIsVisibleMarker(!isVisibleMarker);
+                animate == 'start' && setIsVisibleMarker(!isVisibleMarker);
               }}
               style={{
                 borderRadius: 50,
@@ -834,6 +823,30 @@ function MapHistory(props) {
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
               }}>
+              {data[0] ? (
+                <Marker
+                  coordinate={{
+                    latitude: parseFloat(data[0]?.lat),
+                    longitude: parseFloat(data[0]?.lng),
+                  }}>
+                  <Image
+                    source={image.greenFlag}
+                    style={{resizeMode: 'contain', height: 40, width: 40}}
+                  />
+                </Marker>
+              ) : null}
+              {data[data.length - 1] ? (
+                <Marker
+                  coordinate={{
+                    latitude: parseFloat(data[data.length - 1]?.lat),
+                    longitude: parseFloat(data[data.length - 1]?.lng),
+                  }}>
+                  <Image
+                    source={image.pinkFlag}
+                    style={{resizeMode: 'contain', height: 40, width: 40}}
+                  />
+                </Marker>
+              ) : null}
               {data?.length > 0 ? (
                 <>
                   {parkMode ? (

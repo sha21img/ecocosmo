@@ -134,9 +134,9 @@ function LiveMapTracking(props) {
     const newCoordinate = {latitude, longitude};
     if (Platform.OS == 'android') {
       if (markerRef.current) {
-        markerRef.current.animateMarkerToCoordinate(newCoordinate, 15000);
+        markerRef.current.animateMarkerToCoordinate(newCoordinate, 60000);
         mapRef.current.animateToRegion(newCoordinate);
-        mapRef.current.animateCamera(newCoordinate, {duration: 15000});
+        mapRef.current.animateCamera(newCoordinate, {duration: 60000});
       }
     } else {
       coordinate.timing(newCoordinate).start();
@@ -165,7 +165,7 @@ function LiveMapTracking(props) {
   useEffect(() => {
     const interval = setInterval(() => {
       getDetails();
-    }, 8000);
+    }, 20000);
     return () => clearInterval(interval);
   }, []);
   const getDetails = async () => {
@@ -290,7 +290,7 @@ function LiveMapTracking(props) {
               }}>
               {Object.keys(coordinate).length > 0 && (
                 <>
-                  {console.log(vehicleData.heading, 'vehicleData.heading')}
+                {console.log(heading, 'vehiheadingheadingheadingheadingheadingheadingcleData.heading')}
                   <Marker.Animated
                     // rotation={heading}
                     icon={{uri: detail.markerIcon}}
