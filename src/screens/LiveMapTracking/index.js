@@ -62,12 +62,12 @@ function LiveMapTracking(props) {
     },
     destinationCords: {},
     isLoading: false,
-    coordinate: {
+    coordinate: new AnimatedRegion({
       latitude: 30.7046,
       longitude: 77.1025,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
-    },
+    }),
     liveCords: {},
     time: 0,
     distance: 0,
@@ -130,7 +130,7 @@ function LiveMapTracking(props) {
       coordinate.timing(newCoordinate).start();
     }
   };
-  const animate = (latitude, longitude) => {
+  const animate = async (latitude, longitude) => {
     const newCoordinate = {latitude, longitude};
     if (Platform.OS == 'android') {
       if (markerRef.current) {
@@ -209,7 +209,7 @@ function LiveMapTracking(props) {
       console.log('nhi chala');
     } else {
       console.log('chal gya');
-      animate(latitude, longitude);
+      await animate(latitude, longitude);
 
       const cord1 = {
         latitude: parseFloat(lastlatitude),
@@ -235,12 +235,12 @@ function LiveMapTracking(props) {
           latitude: lastlatitude,
           longitude: lastlongitude,
         },
-        coordinate: {
+        coordinate: new AnimatedRegion({
           latitude: lastlatitude,
           longitude: lastlongitude,
           latitudeDelta: LATITUDE_DELTA,
           longitudeDelta: LONGITUDE_DELTA,
-        },
+        }),
         destinationCords: {
           latitude: latitude,
           longitude: longitude,
