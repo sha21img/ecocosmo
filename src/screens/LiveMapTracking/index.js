@@ -134,7 +134,9 @@ function LiveMapTracking(props) {
     const newCoordinate = {latitude, longitude};
     if (Platform.OS == 'android') {
       if (markerRef.current) {
-        markerRef.current.animateMarkerToCoordinate(newCoordinate, 7000);
+        markerRef.current.animateMarkerToCoordinate(newCoordinate, 15000);
+        mapRef.current.animateToRegion(newCoordinate);
+        mapRef.current.animateCamera(newCoordinate, {duration: 15000});
       }
     } else {
       coordinate.timing(newCoordinate).start();
@@ -163,7 +165,7 @@ function LiveMapTracking(props) {
   useEffect(() => {
     const interval = setInterval(() => {
       getDetails();
-    }, 5000);
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
   const getDetails = async () => {
@@ -208,8 +210,27 @@ function LiveMapTracking(props) {
     } else {
       console.log('chal gya');
       animate(latitude, longitude);
+
+      const cord1 = {
+        latitude: parseFloat(lastlatitude),
+        longitude: parseFloat(lastlongitude),
+      };
+      const cord2 = {
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+      };
+
+      const y =
+        Math.sin(cord2.longitude - cord1.longitude) * Math.cos(cord2.latitude);
+      const x =
+        Math.cos(cord1.latitude) * Math.sin(cord2.latitude) -
+        Math.sin(cord1.latitude) *
+          Math.cos(cord2.latitude) *
+          Math.cos(cord2.longitude - cord1.longitude);
+      const θ = Math.atan2(y, x);
+      var brng = ((θ * 180) / Math.PI + 360) % 360;
       updateState({
-        heading: heading,
+        heading: brng,
         curLoc: {
           latitude: lastlatitude,
           longitude: lastlongitude,
@@ -253,6 +274,10 @@ function LiveMapTracking(props) {
         <View style={style.container}>
           <View style={style.map_container}>
             <MapView
+              provider={PROVIDER_GOOGLE}
+              zoomEnabled={true}
+              zoomControlEnabled={true}
+              zoomTapEnabled={true}
               tracksViewChanges={false}
               mapType={mapType ? 'satellite' : 'standard'}
               showsTraffic={traffic}
@@ -267,30 +292,15 @@ function LiveMapTracking(props) {
                 <>
                   {console.log(vehicleData.heading, 'vehicleData.heading')}
                   <Marker.Animated
+                    // rotation={heading}
                     icon={{uri: detail.markerIcon}}
                     style={{
-                      width: 40,
-                      height: 40,
                       transform: [
                         {
                           rotate:
-                            vehicleData.heading == 'E'
-                              ? `${90}deg`
-                              : vehicleData.heading == 'N'
-                              ? `${0}deg`
-                              : vehicleData.heading == 'NE'
-                              ? `${45}deg`
-                              : vehicleData.heading == 'NW'
-                              ? `${315}deg`
-                              : vehicleData.heading == 'S'
-                              ? `${180}deg`
-                              : vehicleData.heading == 'SE'
-                              ? `${135}deg`
-                              : vehicleData.heading == 'SW'
-                              ? `${225}deg`
-                              : vehicleData.heading == 'W'
-                              ? `${270}deg`
-                              : null,
+                            heading === null || heading === undefined
+                              ? '0deg'
+                              : `${heading}deg`,
                         },
                       ],
                     }}
@@ -299,12 +309,12 @@ function LiveMapTracking(props) {
                     coordinate={coordinate}
                   />
                   <MapViewDirections
-                    origin={curLoc}
+                    origin={coordinate}
                     destination={destinationCords}
                     apikey={GOOGLE_MAP_KEY}
                     strokeWidth={3}
                     strokeColor="black"
-                    optimizeWaypoints={true}
+                    // optimizeWaypoints={true}
                   />
                 </>
               )}
