@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Dimensions,
   TouchableOpacity,
 } from 'react-native';
 import {image} from '../../../assets/images';
@@ -14,24 +15,39 @@ import {__} from '../../../Utils/Translation/translation';
 import {VictoryPie, VictoryLegend} from 'victory-native';
 import moment from 'moment';
 
+const screen = Dimensions.get('window');
+const ASPECT_RATIO = screen.width / screen.height;
+
 function DriverBehaviour(props) {
   const {details} = props.route.params;
-  console.log('detaaaaaaaaails', details.validPacketTimeStamp);
+  console.log(
+    'detaaaaaaaaails',
+    parseFloat(details.speed0_to_20Counter),
+    parseFloat(details.speed20_to_40Counter),
+    parseFloat(details.speed40_to_60Counter),
+    parseFloat(details.speed60_to_80Counter),
+    parseFloat(details.speed80_to_100Counter),
+    parseFloat(details.speed100plusCounter),
+  );
+
   const date = parseFloat(details.validPacketTimeStamp) + 19800;
   const filterDate = moment.unix(date).format('DD-MM-YYYY');
   const filterTime = moment.unix(date).format('hh:mm:ss');
 
   const calcu = perc => {
-    let TotalSpeed =
-      Number(details.speed0_to_20Counter) +
-      Number(details.speed20_to_40Counter) +
-      Number(details.speed40_to_60Counter) +
-      Number(details.speed60_to_80Counter);
+    const TotalCounter =
+      parseFloat(details.speed0_to_20Counter) +
+      parseFloat(details.speed20_to_40Counter) +
+      parseFloat(details.speed40_to_60Counter) +
+      parseFloat(details.speed60_to_80Counter) +
+      parseFloat(details.speed80_to_100Counter) +
+      parseFloat(details.speed100plusCounter);
     if (perc == 0) {
+      console.log('zero');
       return 0;
     } else {
-      let percentage = (perc / TotalSpeed) * 100;
-      return percentage.toFixed(1);
+      let percentage = (perc / TotalCounter) * 100;
+      return `${percentage.toFixed(1)}`;
     }
   };
 
@@ -44,6 +60,45 @@ function DriverBehaviour(props) {
     }min`;
     return time;
   };
+
+  const driverBehaviourData = [
+    calcu(details?.speed0_to_20Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: `${calcu(details?.speed0_to_20Counter)}`,
+          y: `${calcu(details?.speed0_to_20Counter)}`,
+        },
+    calcu(details?.speed20_to_40Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: `${calcu(details?.speed20_to_40Counter)}`,
+          y: `${calcu(details?.speed20_to_40Counter)}`,
+        },
+    calcu(details?.speed40_to_60Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: `${calcu(details?.speed40_to_60Counter)}`,
+          y: `${calcu(details?.speed40_to_60Counter)}`,
+        },
+    calcu(details?.speed60_to_80Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: `${calcu(details?.speed60_to_80Counter)}`,
+          y: `${calcu(details?.speed60_to_80Counter)}`,
+        },
+    calcu(details?.speed80_to_100Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: `${calcu(details?.speed80_to_100Counter)}`,
+          y: `${calcu(details?.speed80_to_100Counter)}`,
+        },
+    calcu(details?.speed100plusCounter) == 0
+      ? {x: null, y: null}
+      : {
+          x: `${calcu(details?.speed100plusCounter)}`,
+          y: `${calcu(details?.speed100plusCounter)}`,
+        },
+  ];
   return (
     <>
       <LinearGradient
@@ -130,7 +185,6 @@ function DriverBehaviour(props) {
                 </View>
               </View>
             </View>
-            {/* {details.ignitionStatus == 'Off' ? ( */}
             <LinearGradient
               colors={['#3C6A74', '#5AB8B5']}
               start={{x: 0, y: 1}}
@@ -159,7 +213,6 @@ function DriverBehaviour(props) {
                 </Text>
               </View>
             </LinearGradient>
-            {/* ) : ( */}
             <LinearGradient
               colors={['#3C6A74', '#5AB8B5']}
               start={{x: 0, y: 1}}
@@ -189,7 +242,6 @@ function DriverBehaviour(props) {
                 </Text>
               </View>
             </LinearGradient>
-            {/* )} */}
           </LinearGradient>
           <Text
             style={{
@@ -211,9 +263,9 @@ function DriverBehaviour(props) {
             }}>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+                justifyContent: 'center',
                 paddingHorizontal: 10,
+                alignItems: 'center',
               }}>
               <LinearGradient
                 colors={['#E6BB0D', '#D97400']}
@@ -222,14 +274,20 @@ function DriverBehaviour(props) {
                   height: 20,
                   borderRadius: 4,
                 }}></LinearGradient>
-              <Text style={{fontSize: 16, paddingLeft: 15, color: 'white'}}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: 'white',
+                  alignSelf: 'center',
+                }}>
                 0-20
               </Text>
             </View>
             <View
               style={{
-                flexDirection: 'row',
+                justifyContent: 'center',
                 alignItems: 'center',
+
                 paddingHorizontal: 10,
               }}>
               <LinearGradient
@@ -239,14 +297,12 @@ function DriverBehaviour(props) {
                   borderRadius: 4,
                   height: 20,
                 }}></LinearGradient>
-              <Text style={{fontSize: 16, paddingLeft: 15, color: 'white'}}>
-                20-40
-              </Text>
+              <Text style={{fontSize: 16, color: 'white'}}>20-40</Text>
             </View>
             <View
               style={{
-                flexDirection: 'row',
                 alignItems: 'center',
+                justifyContent: 'center',
                 paddingHorizontal: 10,
               }}>
               <LinearGradient
@@ -256,14 +312,12 @@ function DriverBehaviour(props) {
                   borderRadius: 4,
                   height: 20,
                 }}></LinearGradient>
-              <Text style={{fontSize: 16, paddingLeft: 15, color: 'white'}}>
-                40-60
-              </Text>
+              <Text style={{fontSize: 16, color: 'white'}}>40-60</Text>
             </View>
             <View
               style={{
-                flexDirection: 'row',
                 alignItems: 'center',
+                justifyContent: 'center',
                 paddingHorizontal: 10,
               }}>
               <LinearGradient
@@ -273,9 +327,37 @@ function DriverBehaviour(props) {
                   borderRadius: 4,
                   height: 20,
                 }}></LinearGradient>
-              <Text style={{fontSize: 16, paddingLeft: 15, color: 'white'}}>
-                60-80
-              </Text>
+              <Text style={{fontSize: 16, color: 'white'}}>60-80</Text>
+            </View>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingHorizontal: 10,
+              }}>
+              <LinearGradient
+                colors={['pink', 'pink']}
+                style={{
+                  width: 20,
+                  borderRadius: 4,
+                  height: 20,
+                }}></LinearGradient>
+              <Text style={{fontSize: 16, color: 'white'}}>80-100</Text>
+            </View>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingHorizontal: 10,
+              }}>
+              <LinearGradient
+                colors={['green', 'green']}
+                style={{
+                  width: 20,
+                  borderRadius: 4,
+                  height: 20,
+                }}></LinearGradient>
+              <Text style={{fontSize: 16, color: 'white'}}>100 +</Text>
             </View>
           </View>
           <View>
@@ -284,31 +366,15 @@ function DriverBehaviour(props) {
                 duration: 1000,
                 easing: 'bounce',
               }}
-              // data={[
-              //   {y: 53, x: `${calcu(53)}%`},
-              //   {y: 23, x: `${calcu(23)}%`},
-              //   {y: 5, x: `${calcu(5)}%`},
-              //   {y: 3, x: `${calcu(3)}%`},
-              // ]}
-              data={[
-                {
-                  y: Number(details?.speed0_to_20Counter),
-                  x: `${calcu(details?.speed0_to_20Counter)}`,
-                },
-                {
-                  y: Number(details?.speed20_to_40Counter),
-                  x: `${calcu(details?.speed20_to_40Counter)}`,
-                },
-                {
-                  y: Number(details?.speed40_to_60Counter),
-                  x: `${calcu(details?.speed40_to_60Counter)}`,
-                },
-                {
-                  y: Number(details?.speed60_to_80Counter),
-                  x: `${calcu(details?.speed60_to_80Counter)}`,
-                },
+              data={driverBehaviourData}
+              colorScale={[
+                '#16BCD4',
+                '#E6BB0D',
+                '#FF5050',
+                '#E653DD',
+                'pink',
+                'green',
               ]}
-              colorScale={['#16BCD4', '#E6BB0D', '#FF5050', '#E653DD']}
               labelRadius={({innerRadius}) => innerRadius + 20}
               radius={({datum}) => 80 + datum.y / 3}
               innerRadius={65}
@@ -326,8 +392,8 @@ function DriverBehaviour(props) {
                 position: 'absolute',
                 height: 130,
                 width: 130,
-                top: 160,
-                left: 140,
+                bottom: screen.height / 5,
+                left: screen.width / 3,
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: 5,

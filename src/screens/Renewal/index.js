@@ -37,7 +37,6 @@ const Renewal = props => {
     let password = loginDetail.password;
     setLoginDetails(loginDetail);
     const response = await axiosGetData(`renewal/${username}/${password}`);
-    console.log('ppppppppp',response.data.renewal)
     setRenewalData(response.data.renewal);
     setLoading(false);
   };
@@ -60,13 +59,13 @@ const Renewal = props => {
   };
 
   const openRazorpay = async id => {
+    const totalAmount =
+      multiSelect.split(',').length * renewalData[0].renewalAmount;
     let options = {
       description: 'Credits towards consultation',
       currency: 'INR',
       key: 'rzp_test_E4WD45E4lmp4OM', // Your api key
-      amount:
-        renewalData[0].renewalAmount * 100 +
-        (renewalData[0].renewalAmount * 100 * 18) / 100,
+      amount: totalAmount * 100 + (totalAmount * 100 * 18) / 100,
       name: 'Eco-cosmo',
       prefill: {
         email: loginDetails.email,
@@ -87,9 +86,6 @@ const Renewal = props => {
         );
         console.log('renewalCallBack', response.data);
         getRenewal();
-
-        // http://54.169.20.116/devreact_v1_ec_apps/api/v3
-        // /renewalCallBack/globalcars/ae6343555ef7aefd8a60ff88c6363e9c/17/ecRenewValidate$
         Alert.alert(`Success : ${data.razorpay_payment_id}`);
       })
       .catch(error => {
@@ -106,6 +102,7 @@ const Renewal = props => {
     const response = await axiosGetData(
       `renewalInitiate/${loginDetails.accountId}/${loginDetails.password}/${multiSelect}`,
     );
+    console.log('response renewalInitiate', response.data);
     if (response.data.renewalInitiate.status == 'success') {
       const id = response.data.renewalInitiate.id;
       openRazorpay(id);
