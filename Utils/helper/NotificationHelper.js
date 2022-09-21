@@ -13,12 +13,12 @@ export async function requestUserPermission() {
 }
 async function getFCMToken() {
   let fcmtoken = await AsyncStorage.getItem('fcmtoken');
-  console.log(fcmtoken, 'oldtoken');
+  console.log(fcmtoken, ' oldtoken -=- oldtoken -=-= oldtoken-=-= oldtoken');
   if (!fcmtoken) {
     try {
       const fcmtoken = await messaging().getToken();
       if (fcmtoken) {
-        console.log(fcmtoken, 'newtoken');
+        console.log(fcmtoken, 'newtoken -= =-=newtoken -= -=newtoken--=');
         await AsyncStorage.setItem('fcmtoken', fcmtoken);
       }
     } catch (error) {

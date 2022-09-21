@@ -281,7 +281,7 @@ function LiveMapTracking(props) {
                               : vehicleData.heading == 'NE'
                               ? `${45}deg`
                               : vehicleData.heading == 'NW'
-                              ? `${255}deg`
+                              ? `${315}deg`
                               : vehicleData.heading == 'S'
                               ? `${180}deg`
                               : vehicleData.heading == 'SE'
