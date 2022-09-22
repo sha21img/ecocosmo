@@ -332,6 +332,8 @@ const App = () => {
   };
   useEffect(() => {
     LogBox.ignoreAllLogs();
+    LogBox.ignoreLogs(['Require cycle: node_modules/victory']);
+
     changeLang();
     initializeApp();
     requestUserPermission();
