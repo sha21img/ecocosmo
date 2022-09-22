@@ -24,6 +24,8 @@ import Toast from 'react-native-simple-toast';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SelectDropdown from 'react-native-select-dropdown';
 import {useIsFocused} from '@react-navigation/native';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+
 import MapView, {
   MarkerAnimated,
   Callout,
@@ -321,9 +323,16 @@ function MapHistory(props) {
   const [isActive, setIsActive] = useState(null);
   const [showCallout, setCallout] = useState(false);
   const CustomMarker1 = ({isVisibleMarker}) => {
+    const a = data?.filter(item => {
+      return item.stoppage !== '';
+    });
+    const getMessage = () => {
+      Toast.show('No stoppages found');
+      return null;
+    };
     return (
       <>
-        {isVisibleMarker
+        {isVisibleMarker && a.length > 0
           ? data
               ?.filter(item => {
                 return item.stoppage !== '';
@@ -375,7 +384,7 @@ function MapHistory(props) {
                   </>
                 );
               })
-          : null}
+          : getMessage()}
       </>
     );
   };
@@ -448,7 +457,6 @@ function MapHistory(props) {
         </LinearGradient>
       );
     };
-    console.log('Marker', isVisibleMarker, isActive);
     return (
       <>
         {isVisibleMarker
@@ -556,14 +564,20 @@ function MapHistory(props) {
                 // backgroundColor: 'green',
               }}>
               {isVisibleMarker ? (
-                <Image
-                  source={image.activeLocation}
-                  style={{resizeMode: 'contain', width: 25, height: 25}}
+                <Fontisto
+                  style={{
+                    color: 'green',
+                    fontSize: 30,
+                  }}
+                  name={'map-marker-alt'}
                 />
               ) : (
-                <Image
-                  source={image.inActiveLocation}
-                  style={{resizeMode: 'contain', width: 30, height: 30}}
+                <Fontisto
+                  style={{
+                    color: 'grey',
+                    fontSize: 30,
+                  }}
+                  name={'map-marker-alt'}
                 />
               )}
             </TouchableOpacity>
@@ -572,7 +586,7 @@ function MapHistory(props) {
                 disabled={!loading}
                 onPress={() => {
                   console.log('GOOOOOOOOOOOOOOOOOOOOOOOO');
-                  getMapHistory();
+                  animate == 'start' && getMapHistory();
                 }}
                 style={{
                   borderRadius: 50,
@@ -856,7 +870,7 @@ function MapHistory(props) {
                       setIsActive={setIsActive}
                     />
                   ) : (
-                    <CustomMarker1 isVisibleMarker={isVisibleMarker1} />
+                    <CustomMarker1 isVisibleMarker={isVisibleMarker} />
                   )}
                   <MarkerAnimated
                     flat={true}
