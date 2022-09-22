@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -12,24 +12,11 @@ import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
 import {__} from '../../../Utils/Translation/translation';
-import {VictoryPie, VictoryLegend} from 'victory-native';
+import {VictoryPie, VictoryLegend, VictoryLabel} from 'victory-native';
 import moment from 'moment';
-
 const screen = Dimensions.get('window');
-const ASPECT_RATIO = screen.width / screen.height;
-
 function DriverBehaviour(props) {
   const {details} = props.route.params;
-  console.log(
-    'detaaaaaaaaails',
-    parseFloat(details.speed0_to_20Counter),
-    parseFloat(details.speed20_to_40Counter),
-    parseFloat(details.speed40_to_60Counter),
-    parseFloat(details.speed60_to_80Counter),
-    parseFloat(details.speed80_to_100Counter),
-    parseFloat(details.speed100plusCounter),
-  );
-
   const date = parseFloat(details.validPacketTimeStamp) + 19800;
   const filterDate = moment.unix(date).format('DD-MM-YYYY');
   const filterTime = moment.unix(date).format('hh:mm:ss');
@@ -47,7 +34,8 @@ function DriverBehaviour(props) {
       return 0;
     } else {
       let percentage = (perc / TotalCounter) * 100;
-      return `${percentage.toFixed(1)}`;
+      console.log('percentagepercentage-=-=-=-=', percentage);
+      return parseFloat(`${percentage.toFixed(1)}`);
     }
   };
 
@@ -65,40 +53,42 @@ function DriverBehaviour(props) {
     calcu(details?.speed0_to_20Counter) == 0
       ? {x: null, y: null}
       : {
-          x: `${calcu(details?.speed0_to_20Counter)}`,
-          y: `${calcu(details?.speed0_to_20Counter)}`,
+          x: calcu(details?.speed0_to_20Counter),
+          y: calcu(details?.speed0_to_20Counter),
         },
     calcu(details?.speed20_to_40Counter) == 0
       ? {x: null, y: null}
       : {
-          x: `${calcu(details?.speed20_to_40Counter)}`,
-          y: `${calcu(details?.speed20_to_40Counter)}`,
+          x: calcu(details?.speed20_to_40Counter),
+          y: calcu(details?.speed20_to_40Counter),
         },
     calcu(details?.speed40_to_60Counter) == 0
       ? {x: null, y: null}
       : {
-          x: `${calcu(details?.speed40_to_60Counter)}`,
-          y: `${calcu(details?.speed40_to_60Counter)}`,
+          x: calcu(details?.speed40_to_60Counter),
+          y: calcu(details?.speed40_to_60Counter),
         },
     calcu(details?.speed60_to_80Counter) == 0
       ? {x: null, y: null}
       : {
-          x: `${calcu(details?.speed60_to_80Counter)}`,
-          y: `${calcu(details?.speed60_to_80Counter)}`,
+          x: calcu(details?.speed60_to_80Counter),
+          y: calcu(details?.speed60_to_80Counter),
         },
     calcu(details?.speed80_to_100Counter) == 0
       ? {x: null, y: null}
       : {
-          x: `${calcu(details?.speed80_to_100Counter)}`,
-          y: `${calcu(details?.speed80_to_100Counter)}`,
+          x: calcu(details?.speed80_to_100Counter),
+          y: calcu(details?.speed80_to_100Counter),
         },
     calcu(details?.speed100plusCounter) == 0
       ? {x: null, y: null}
       : {
-          x: `${calcu(details?.speed100plusCounter)}`,
-          y: `${calcu(details?.speed100plusCounter)}`,
+          x: calcu(details?.speed100plusCounter),
+          y: calcu(details?.speed100plusCounter),
         },
   ];
+  const [pieRef, setPieRef] = useState({width: 0, height: 0});
+
   return (
     <>
       <LinearGradient
@@ -360,7 +350,11 @@ function DriverBehaviour(props) {
               <Text style={{fontSize: 16, color: 'white'}}>100 +</Text>
             </View>
           </View>
-          <View>
+          <View
+            onLayout={event => {
+              var {x, y, width, height} = event.nativeEvent.layout;
+              setPieRef({height, width});
+            }}>
             <VictoryPie
               animate={{
                 duration: 1000,
@@ -375,10 +369,13 @@ function DriverBehaviour(props) {
                 'pink',
                 'green',
               ]}
+              // labels={d => d.y}
+
+              labelComponent={<VictoryLabel />}
+              // radius={({ datum }) => 50 + datum.y * 20}
               labelRadius={({innerRadius}) => innerRadius + 20}
-              radius={({datum}) => 80 + datum.y / 3}
+              radius={({datum}) => 80 + datum.y / 1.2}
               innerRadius={65}
-              height={450}
               style={{
                 labels: {
                   fill: 'white',
@@ -387,13 +384,14 @@ function DriverBehaviour(props) {
                 },
               }}
             />
+
             <View
               style={{
                 position: 'absolute',
                 height: 130,
                 width: 130,
-                bottom: screen.height / 5,
-                left: screen.width / 3,
+top:pieRef.width/2 - 65,
+                left: pieRef.width/2 - 65,
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: 5,
