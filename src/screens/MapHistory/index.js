@@ -61,7 +61,7 @@ function MapHistory(props) {
   const [degree, setDegree] = useState(null);
   const [vehicleData, setVehicleData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [speed, setSpeed] = useState(4000);
+  const [speed, setSpeed] = useState(5000);
   const [trackViewChanges, setTrackViewChanges] = useState(false);
   const [isVisibleMarker, setIsVisibleMarker] = useState(false);
   const [isVisibleMarker1, setIsVisibleMarker1] = useState(false);
@@ -150,7 +150,7 @@ function MapHistory(props) {
     };
     console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    let newCoordinate = response?.data?.EventHistory.slice(0, 9);
+    let newCoordinate = response?.data?.EventHistory;
     setLoading(true);
 
     console.log('mapHistory APi', newCoordinate?.length);
@@ -221,6 +221,7 @@ function MapHistory(props) {
     speedRef.current = speed;
   });
   useEffect(() => {
+    console.log('laaaaaaaaaaaaaaaaaaaaaaa', lastRide);
     if (lastRide == true) {
       clearInterval(interval);
     }
@@ -306,11 +307,9 @@ function MapHistory(props) {
       mapRef.current.animateCamera(newCoordinate, {
         duration: speedRef.current,
       });
-      // setT(null);
       // setAnimate('start');
       i = 1;
       setLastRide(true);
-
       //
       // mapRef?.current?.getCamera().then(cam => {
       //   cam.zoom -= 3;
@@ -1043,22 +1042,22 @@ function MapHistory(props) {
                           borderRadius: 10,
                         }}
                         onPress={() => {
-                          if (speed > 1000) {
+                          if (speed > 500) {
                             setSpeed(prev => {
-                              return prev - 1000;
+                              return prev - 1500;
                             });
                           } else {
-                            setSpeed(4000);
+                            setSpeed(5000);
                           }
                         }}>
                         <Text style={{fontSize: 14, color: 'white'}}>
-                          {speed == 4000
+                          {speed == 5000
                             ? '1x'
-                            : speed == 3000
+                            : speed == 3500
                             ? '2x'
                             : speed == 2000
                             ? '4x'
-                            : speed == 1000
+                            : speed == 500
                             ? '8x'
                             : null}
                         </Text>

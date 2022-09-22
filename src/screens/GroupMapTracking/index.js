@@ -59,7 +59,7 @@ function GroupMapTracking(props) {
     const response = await axiosGetData(
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
-    const detail = response.data.vehicles;
+    const detail = response?.data?.vehicles;
     // console.log('GroupMapTracking', detail);
     setCoordinate(prev => {
       return {
