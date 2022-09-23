@@ -66,6 +66,7 @@ function MapHistory(props) {
   const [isVisibleMarker, setIsVisibleMarker] = useState(false);
   const [isVisibleMarker1, setIsVisibleMarker1] = useState(false);
   const [lastRide, setLastRide] = useState(false);
+  const [loop, setLoop] = useState(1);
 
   const [coordinates, setCoordinates] = useState({
     coordinate: {
@@ -217,8 +218,11 @@ function MapHistory(props) {
   let i = 1;
   const [interval, setT] = useState(null);
   const speedRef = useRef(speed);
+  const loopRef = useRef(loop);
+  console.log('llllllllllloooooooooooooooooopppppppppp', loopRef.current);
   useEffect(() => {
     speedRef.current = speed;
+    loopRef.current = loop;
   });
   useEffect(() => {
     console.log('laaaaaaaaaaaaaaaaaaaaaaa', lastRide);
@@ -253,15 +257,15 @@ function MapHistory(props) {
   };
 
   function animateMarkerAndCamera(datas) {
-    console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiii', i);
-    if (i <= data?.length - 1) {
+    console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiii', loopRef.current);
+    if (loopRef.current <= data?.length - 1) {
       const cord1 = {
-        latitude: parseFloat(data[i - 1].lat),
-        longitude: parseFloat(data[i - 1].lng),
+        latitude: parseFloat(data[loopRef.current - 1].lat),
+        longitude: parseFloat(data[loopRef.current - 1].lng),
       };
       const cord2 = {
-        latitude: parseFloat(data[i].lat),
-        longitude: parseFloat(data[i].lng),
+        latitude: parseFloat(data[loopRef.current].lat),
+        longitude: parseFloat(data[loopRef.current].lng),
       };
 
       const y =
@@ -277,24 +281,30 @@ function MapHistory(props) {
       setDegree(brng);
 
       let newCoordinate = {
-        latitude: parseFloat(data[i]?.lat),
-        longitude: parseFloat(data[i]?.lng),
+        latitude: parseFloat(data[loopRef.current]?.lat),
+        longitude: parseFloat(data[loopRef.current]?.lng),
         latitudeDelta: 0.012,
         longitudeDelta: 0.012,
       };
       const newCamera = {
         center: {
-          latitude: parseFloat(data[i]?.lat),
-          longitude: parseFloat(data[i]?.lng),
+          latitude: parseFloat(data[loopRef.current]?.lat),
+          longitude: parseFloat(data[loopRef.current]?.lng),
         },
         pitch: 0,
         heading: 0,
       };
       if (myMarker && mapRef.current) {
+        console.log(
+          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+          speedRef.current,
+        );
         myMarker.animateMarkerToCoordinate(newCoordinate, speedRef.current);
         mapRef.current.animateCamera(newCamera, {duration: speedRef.current});
       }
-      i++;
+      setLoop(prev => {
+        return prev + 1;
+      });
     } else {
       console.log('0987654321234567890');
       setAnimate('start');
@@ -308,7 +318,7 @@ function MapHistory(props) {
         duration: speedRef.current,
       });
       // setAnimate('start');
-      i = 1;
+      setLoop(1);
       setLastRide(true);
       //
       // mapRef?.current?.getCamera().then(cam => {
@@ -1043,10 +1053,27 @@ function MapHistory(props) {
                         }}
                         onPress={() => {
                           if (speed > 500) {
+                            // clearInterval(interval);
+                            setT(
+                              setInterval(() => {
+                                console.log('aaaaabbbccc');
+                                animateMarkerAndCamera();
+                              }, speedRef.current),
+                            );
                             setSpeed(prev => {
                               return prev - 1500;
                             });
                           } else {
+                            // clearInterval(interval);
+
+                            setT(
+                              setInterval(() => {
+                                console.log('aaaaabbbccc');
+                                animateMarkerAndCamera();
+                              }, speedRef.current),
+                            );
+                            // clearInterval(interval);
+
                             setSpeed(5000);
                           }
                         }}>
@@ -1093,6 +1120,7 @@ function MapHistory(props) {
                         duration: speedRef.current,
                       });
                       setLastRide(true);
+                      setLoop(1);
                       // mapRef?.current?.getCamera().then(cam => {
                       //   cam.zoom -= 3;
                       //   mapRef?.current?.animateCamera(cam);
