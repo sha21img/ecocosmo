@@ -151,7 +151,7 @@ function MapHistory(props) {
     };
     console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    let newCoordinate = response?.data?.EventHistory;
+    let newCoordinate = response?.data?.EventHistory
     setLoading(true);
 
     console.log('mapHistory APi', newCoordinate?.length);
@@ -228,8 +228,9 @@ function MapHistory(props) {
     console.log('laaaaaaaaaaaaaaaaaaaaaaa', lastRide);
     if (lastRide == true) {
       clearInterval(interval);
+      // setT(null);
     }
-  }, [lastRide]);
+  });
 
   const start = datas => {
     console.log('markerRef.current', mapRef.current);
@@ -320,6 +321,7 @@ function MapHistory(props) {
       // setAnimate('start');
       setLoop(1);
       setLastRide(true);
+      // setT('')
       //
       // mapRef?.current?.getCamera().then(cam => {
       //   cam.zoom -= 3;
@@ -928,6 +930,8 @@ function MapHistory(props) {
                     style={{position: 'absolute', bottom: 0, width: '100%'}}
                     onPress={() => {
                       setAnimate('stop'), start('start'), setIsActive(null);
+                      
+                      setLastRide(false);
                     }}>
                     <LinearGradient
                       colors={['#0065B3', '#083273']}
@@ -1053,18 +1057,27 @@ function MapHistory(props) {
                         }}
                         onPress={() => {
                           if (speed > 500) {
-                            // clearInterval(interval);
-                            setT(
-                              setInterval(() => {
-                                console.log('aaaaabbbccc');
-                                animateMarkerAndCamera();
-                              }, speedRef.current),
-                            );
+                            clearInterval(interval);
                             setSpeed(prev => {
                               return prev - 1500;
                             });
+                            // const a = speedRef.current - 1500;
+                            
+                            setT(
+                              setInterval(() => {
+                                console.log('aaaaabbbccc');
+                                animateMarkerAndCamera();
+                              },speedRef.current),
+                            );
                           } else {
-                            // clearInterval(interval);
+                            clearInterval(interval);
+                            setSpeed(5000);
+                            speedRef.current = 5000;
+
+                            console.log(
+                              '.........................................................................',
+                              speedRef.current,
+                            );
 
                             setT(
                               setInterval(() => {
@@ -1073,8 +1086,6 @@ function MapHistory(props) {
                               }, speedRef.current),
                             );
                             // clearInterval(interval);
-
-                            setSpeed(5000);
                           }
                         }}>
                         <Text style={{fontSize: 14, color: 'white'}}>
@@ -1119,7 +1130,7 @@ function MapHistory(props) {
                       mapRef.current.animateCamera(newCoordinate, {
                         duration: speedRef.current,
                       });
-                      setLastRide(true);
+                      // setLastRide(true);
                       setLoop(1);
                       // mapRef?.current?.getCamera().then(cam => {
                       //   cam.zoom -= 3;
