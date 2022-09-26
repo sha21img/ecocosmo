@@ -377,38 +377,28 @@ function Dashboard2({
   }, []);
   return (
     <>
-      {isShow ? (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <ActivityIndicator />
-        </View>
-      ) : (
-        <FlatList
-          data={details}
-          contentContainerStyle={{paddingBottom: 100}}
-          keyExtractor={({item, index}) => index}
-          showsVerticalScrollIndicator={false}
-          renderItem={item => renderItem(item)}
-          refreshControl={
-            <RefreshControl
-              enabled={true}
-              refreshing={isShow}
-              onRefresh={() => onRefreshPage(type, details, setIsShow)}
-            />
-          }
-        />
-      )}
-        <VehicleMenu
-          mobileNumber={mobileNumber}
-          visible={visible}
-          calling={calling}
-          setVisible={setVisible}
-          details={isData}
-        />
+      <FlatList
+        data={details}
+        contentContainerStyle={{paddingBottom: 100}}
+        keyExtractor={({item, index}) => index}
+        showsVerticalScrollIndicator={false}
+        renderItem={item => renderItem(item)}
+        refreshControl={
+          <RefreshControl
+            enabled={true}
+            refreshing={isShow}
+            onRefresh={() => onRefreshPage(type, details, setIsShow)}
+          />
+        }
+      />
+
+      <VehicleMenu
+        mobileNumber={mobileNumber}
+        visible={visible}
+        calling={calling}
+        setVisible={setVisible}
+        details={isData}
+      />
     </>
   );
 }

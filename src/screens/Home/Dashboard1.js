@@ -13,6 +13,8 @@ import {
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import {__} from '../../../Utils/Translation/translation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import styles from './DashStyle1';
 import {useNetInfo} from '@react-native-community/netinfo';
 
@@ -214,166 +216,224 @@ const Dashboard1 = ({
     });
     // console.log('item', item.features, 'item');
     return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => {
-          getMobileNumber(item);
-          isSetData(item);
-        }}>
-        <View style={styles.card1Container}>
-          <Image
-            resizeMode="contain"
-            source={{uri: item.equipmentIcon}}
-            style={{
-              height: 30,
-              width: 70,
-            }}
-          />
-          <View style={{paddingHorizontal: 10}}>
-            <Text style={styles.driverCarNumber}>{item.deviceId}</Text>
-            <View style={styles.driverCarSpeedBox}>
-              <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>
-              <Text style={styles.driverCarSpeed}>{item.statusMessage}</Text>
+      <>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => {
+            getMobileNumber(item);
+            isSetData(item);
+          }}>
+          <View style={styles.card1Container}>
+            <Image
+              resizeMode="contain"
+              source={{uri: item.equipmentIcon}}
+              style={{
+                height: 30,
+                width: 70,
+              }}
+            />
+            <View style={{paddingHorizontal: 10}}>
+              <Text style={styles.driverCarNumber}>{item.deviceId}</Text>
+              <View style={styles.driverCarSpeedBox}>
+                <Text style={{fontSize: 10, color: '#46BE30'}}>{'\u2B24'}</Text>
+                <Text style={styles.driverCarSpeed}>{item.statusMessage}</Text>
+              </View>
             </View>
           </View>
-        </View>
-        <View style={{backgroundColor: 'lightgreen', height: 150}}>
-          <MapView
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '100%',
-              height: '100%',
-            }}
-            zoomEnabled={true}
-            trackViewChanges={false}
-            scrollEnabled={false}
-            pointerEvents="none"
-            minZoomLevel={15}
-            initialRegion={{
-              latitude: parseFloat(item.lat),
-              longitude: parseFloat(item.lng),
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            provider={PROVIDER_GOOGLE}>
-            <Marker
-              // ref={markerRef}
-              key={index.toString()}
-              coordinate={{
+          <View style={{backgroundColor: 'lightgreen', height: 150}}>
+            <MapView
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+              }}
+              zoomEnabled={true}
+              trackViewChanges={false}
+              scrollEnabled={false}
+              pointerEvents="none"
+              minZoomLevel={15}
+              initialRegion={{
                 latitude: parseFloat(item.lat),
                 longitude: parseFloat(item.lng),
-              }}>
-              <Image
-                resizeMode="contain"
-                source={{uri: item.equipmentIcon}}
-                style={{
-                  height: 20,
-                  width: 70,
-                }}
-              />
-            </Marker>
-          </MapView>
-        </View>
-        <LinearGradient
-          colors={['#45E384', '#02D958']}
-          style={styles.driverCarDetailBox}>
-          <View style={styles.imageContainer}>
-            {parseFloat(item.validPacketTimeStamp) -
-              parseFloat(item.lastPowerCutTime) >
-            300 ? (
-              <Image source={image.battery} style={styles.images} />
-            ) : (
-              <Image source={image.batteryOff} style={styles.images} />
-            )}
-
-            {parseFloat(item.validPacketTimeStamp) -
-              parseFloat(item.lastLowBatteryTime) >
-            21600 ? (
-              <Image source={image.charge} style={styles.images} />
-            ) : (
-              <Image source={image.chargeOff} style={styles.images} />
-            )}
-
-            {parseFloat(item.validPacketTimeStamp) <
-            parseFloat(item.lastNoGpsSignalTime) ? (
-              <Image source={image.locationOff} style={styles.images} />
-            ) : (
-              <Image source={image.location} style={styles.images} />
-            )}
-            {parseFloat(item.statusTermInfo & 2) == 2 ? (
-              <Image source={image.shokker} style={styles.images} />
-            ) : (
-              <Image source={image.shokkerOff} style={styles.images} />
-            )}
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+              provider={PROVIDER_GOOGLE}>
+              <Marker
+                // ref={markerRef}
+                key={index.toString()}
+                coordinate={{
+                  latitude: parseFloat(item.lat),
+                  longitude: parseFloat(item.lng),
+                }}>
+                <Image
+                  resizeMode="contain"
+                  source={{uri: item.equipmentIcon}}
+                  style={{
+                    height: 20,
+                    width: 70,
+                  }}
+                />
+              </Marker>
+            </MapView>
           </View>
+          <LinearGradient
+            colors={['#45E384', '#02D958']}
+            style={styles.driverCarDetailBox}>
+            <View style={styles.imageContainer}>
+              {parseFloat(item.validPacketTimeStamp) -
+                parseFloat(item.lastPowerCutTime) >
+              300 ? (
+                <Image source={image.battery} style={styles.images} />
+              ) : (
+                <Image source={image.batteryOff} style={styles.images} />
+              )}
+
+              {parseFloat(item.validPacketTimeStamp) -
+                parseFloat(item.lastLowBatteryTime) >
+              21600 ? (
+                <Image source={image.charge} style={styles.images} />
+              ) : (
+                <Image source={image.chargeOff} style={styles.images} />
+              )}
+
+              {parseFloat(item.validPacketTimeStamp) <
+              parseFloat(item.lastNoGpsSignalTime) ? (
+                <Image source={image.locationOff} style={styles.images} />
+              ) : (
+                <Image source={image.location} style={styles.images} />
+              )}
+              {parseFloat(item.statusTermInfo & 2) == 2 ? (
+                <Image source={image.shokker} style={styles.images} />
+              ) : (
+                <Image source={image.shokkerOff} style={styles.images} />
+              )}
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                // width: wp('65%'),
+                justifyContent: 'flex-start',
+                // alignItems:'center'
+                // backgroundColor:'red',
+                // flexWrap:'nowrap'
+              }}>
+              <View style={styles.driverDetailBox}>
+                <Text style={styles.driverDetailText1}>
+                  {__('CHECK IN DATE & TIME')}
+                </Text>
+                <Text style={styles.driverDetailText2}>{filterDate}</Text>
+                <Text style={styles.driverDetailText2}>{filterTime}</Text>
+              </View>
+              <View style={styles.driverDetailBox}>
+                <Text style={styles.driverDetailText1}>{__('TODAYS ODO')}</Text>
+                <Text style={styles.driverDetailText2}>
+                  {Math.floor(item.todaysODO)} {__('KM')}
+                </Text>
+              </View>
+              <View style={styles.driverDetailBox}>
+                <Text style={styles.driverDetailText1}>{__('SPEED')}</Text>
+                <Text style={styles.driverDetailText2}>
+                  {Math.floor(item.speed)} {__('KM/H')}
+                </Text>
+              </View>
+            </View>
+            {loginDetails?.accountName == 'demo101' ? (
+              <View style={styles.disablebutton}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}>{__('Call')}</Text>
+              </View>
+            ) : isData?.mobilenumber !== '' ? (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  isSetData(item), calling(item);
+                }}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}> {__('Call')}</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.disablebutton}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}>{__('Call')}</Text>
+              </View>
+            )}
+          </LinearGradient>
+          <LinearGradient
+            colors={['#395DBF', '#16BCD4']}
+            start={{x: 0, y: 0.5}}
+            end={{x: 1, y: 0.5}}
+            style={styles.driverAddressBox}>
+            <Text style={styles.driverAddressText}>{item.address}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+        {/* <View>
           <View
             style={{
+              backgroundColor: 'red',
               flexDirection: 'row',
-              // width: wp('65%'),
-              justifyContent: 'flex-start',
-              // alignItems:'center'
-              // backgroundColor:'red',
-              // flexWrap:'nowrap'
+              justifyContent: 'space-between',
             }}>
-            <View style={styles.driverDetailBox}>
-              <Text style={styles.driverDetailText1}>
-                {__('CHECK IN DATE & TIME')}
-              </Text>
-              <Text style={styles.driverDetailText2}>{filterDate}</Text>
-              <Text style={styles.driverDetailText2}>{filterTime}</Text>
+            <Text
+              numberOfLines={1}
+              style={{fontSize: 22, fontWeight: 'bold', color: 'white'}}>
+              MH12 RN 0790
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                borderRadius: 5,
+                borderWidth: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 5,
+                borderColor: 'white',
+              }}>
+              <Ionicons
+                style={{
+                  color: 'white',
+                  fontSize: 20,
+                }}
+                name={'call'}
+              />
+              <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
             </View>
-            <View style={styles.driverDetailBox}>
-              <Text style={styles.driverDetailText1}>{__('TODAYS ODO')}</Text>
-              <Text style={styles.driverDetailText2}>
-                {Math.floor(item.todaysODO)} {__('KM')}
-              </Text>
-            </View>
-            <View style={styles.driverDetailBox}>
-              <Text style={styles.driverDetailText1}>{__('SPEED')}</Text>
-              <Text style={styles.driverDetailText2}>
-                {Math.floor(item.speed)} {__('KM/H')}
-              </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 5,
+                borderRadius: 5,
+                borderWidth: 1,
+                borderColor: 'white',
+              }}>
+              <Entypo
+                style={{
+                  color: 'orange',
+                  fontSize: 20,
+                }}
+                name={'location'}
+              />
+              <Text style={{color: 'white', paddingLeft: 4}}>Live Track</Text>
             </View>
           </View>
-          {loginDetails?.accountName == 'demo101' ? (
-            <View style={styles.disablebutton}>
-              <Image
-                source={image.callimg}
-                style={{height: 15, width: 15, marginRight: 7}}
-              />
-              <Text style={styles.buttonText}>{__('Call')}</Text>
-            </View>
-          ) : isData?.mobilenumber !== '' ? (
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                isSetData(item), calling(item);
-              }}>
-              <Image
-                source={image.callimg}
-                style={{height: 15, width: 15, marginRight: 7}}
-              />
-              <Text style={styles.buttonText}> {__('Call')}</Text>
-            </TouchableOpacity>
-          ) : (
-            <View style={styles.disablebutton}>
-              <Image
-                source={image.callimg}
-                style={{height: 15, width: 15, marginRight: 7}}
-              />
-              <Text style={styles.buttonText}>{__('Call')}</Text>
-            </View>
-          )}
-        </LinearGradient>
-        <LinearGradient
-          colors={['#395DBF', '#16BCD4']}
-          start={{x: 0, y: 0.5}}
-          end={{x: 1, y: 0.5}}
-          style={styles.driverAddressBox}>
-          <Text style={styles.driverAddressText}>{item.address}</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+          <Text style={{fontSize: 12, width: '80%'}}>
+            177 New Apollo Indl Estate Mogra Lane Andheri, Mumbai,
+            Bharuch,400069,India
+          </Text>
+        </View> */}
+      </>
       // <>
       //   <TouchableOpacity
       //     activeOpacity={0.8}
@@ -712,35 +772,20 @@ const Dashboard1 = ({
 
   return (
     <>
-      {isShow ? (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <ActivityIndicator />
-        </View>
-      ) : !isShow && details === [] ? (
-        <View style={{height: 200, backgroundColor: 'red'}}>
-          <Text style={{color: 'black'}}>kljjhjgh</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={details}
-          contentContainerStyle={{paddingBottom: 100}}
-          keyExtractor={({item, index}) => index}
-          showsVerticalScrollIndicator={false}
-          renderItem={(item, index) => renderItem(item, index)}
-          refreshControl={
-            <RefreshControl
-              enabled={true}
-              refreshing={isShow}
-              onRefresh={() => onRefreshPage(type, details, setIsShow)}
-            />
-          }
-        />
-      )}
+      <FlatList
+        data={details}
+        contentContainerStyle={{paddingBottom: 100}}
+        keyExtractor={({item, index}) => index}
+        showsVerticalScrollIndicator={false}
+        renderItem={(item, index) => renderItem(item, index)}
+        // refreshControl={
+        //   <RefreshControl
+        //     enabled={true}
+        //     refreshing={isShow}
+        //     onRefresh={() => onRefreshPage(type, details, setIsShow)}
+        //   />
+        // }
+      />
 
       <VehicleMenu
         mobileNumber={mobileNumber}
