@@ -256,7 +256,7 @@ const MainScreen = props => {
           swipeEnabled: Platform.OS == 'android' ? false : true,
         }}>
         <Drawer.Screen name="HomeStack" component={HomeStack} />
-        <Drawer.Screen name="Alerts" component={MainHome} />
+        <Drawer.Screen name="Alerts" component={Alerts} />
         <Drawer.Screen name="AboutUs" component={AboutUs} />
         <Drawer.Screen name="Renewal" component={Renewal} />
         <Drawer.Screen name="ContactUs" component={ContactUs} />
@@ -264,6 +264,11 @@ const MainScreen = props => {
         <Drawer.Screen name="DriverBehaviour" component={DriverBehaviour} />
         <Drawer.Screen name="GroupMapTracking" component={GroupMapTracking} />
         <Drawer.Screen name="MapHistory" component={MapHistory} />
+        <Stack.Screen
+          name="MainHome"
+          component={MainHome}
+          options={{headerShown: false}}
+        />
       </Drawer.Navigator>
     </>
   );
@@ -397,6 +402,7 @@ const App = () => {
                     component={ChatDetails}
                     options={{headerShown: false}}
                   />
+
                   <Stack.Screen
                     name="Reports"
                     component={Reports}
