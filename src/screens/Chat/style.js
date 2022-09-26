@@ -122,5 +122,37 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   textHead: {fontWeight: 'bold', color: '#B9B9B9'},
+  drawImg:{height: 20, width: 23, marginVertical: 5},
+  chatText:{
+    fontSize: Size.large,
+    color: colors.white,
+    paddingHorizontal: 10,
+  },
+  chatDetailBox:{
+    padding: 10,
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'white',
+    marginBottom: 1.5,
+  },
+  accountTextCont:{
+    paddingLeft: 10,
+    width: '84%',
+  },
+  accountBox:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  accountText:{
+    marginTop: 5,
+    fontWeight: 'bold',
+    fontSize: 18,
+    width: '70%',
+  },
+  msgText:{
+    paddingVertical: 5,
+    fontWeight: 'bold',
+    fontSize: 16,
+  }
 });
 export default styles;
