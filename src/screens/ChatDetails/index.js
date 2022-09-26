@@ -137,18 +137,7 @@ const ChatDetails = props => {
                   key={Math.random()}
                   start={{x: 1, y: 0}}
                   end={{x: 0, y: 1}}
-                  style={{
-                    width: '60%',
-                    marginHorizontal: 10,
-                    paddingHorizontal: 10,
-                    margin: 20,
-                    marginLeft: 'auto',
-                    elevation: 10,
-                    paddingTop: 10,
-                    borderTopLeftRadius: 5,
-                    borderBottomLeftRadius: 5,
-                    borderBottomRightRadius: 5,
-                  }}>
+                  style={styles.linearGrad1}>
                   <View>
                     <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                       {item.message}
@@ -168,18 +157,7 @@ const ChatDetails = props => {
                   key={Math.random()}
                   start={{x: 1, y: 0}}
                   end={{x: 0, y: 1}}
-                  style={{
-                    margin: 20,
-                    width: '60%',
-                    marginHorizontal: 10,
-                    paddingHorizontal: 10,
-                    paddingTop: 10,
-                    borderTopRightRadius: 10,
-                    borderBottomLeftRadius: 10,
-                    borderBottomRightRadius: 10,
-                    marginTop: 20,
-                    elevation: 10,
-                  }}>
+                  style={styles.linearGrad2}>
                   <View>
                     <Text
                       style={{
@@ -200,36 +178,17 @@ const ChatDetails = props => {
             );
           })}
         </ScrollView>
-        <View
-          style={{
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <View style={styles.msgBox}>
           <TextInput
             placeholder={__('Message')}
             value={message}
-            style={{
-              backgroundColor: colors.white,
-              width: '80%',
-              borderRadius: 7,
-              elevation: 5,
-              fontSize: 18,
-              padding: 10,
-            }}
+            style={styles.msgInput}
             onChangeText={newText => setMessage(newText)}
           />
           <TouchableOpacity onPress={() => getChatDetail()}>
             <LinearGradient
               colors={['#395DBF', '#16BCD4']}
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 50,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+              style={styles.linearGrad3}>
               <FontAwesome
                 style={{
                   color: '#FFFFFF',

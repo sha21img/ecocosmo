@@ -179,26 +179,13 @@ function DriverBehaviour(props) {
               colors={['#3C6A74', '#5AB8B5']}
               start={{x: 0, y: 1}}
               end={{x: 1, y: 0}}
-              style={{
-                backgroundColor: 'red',
-                position: 'absolute',
-                padding: 10,
-                borderTopLeftRadius: 7,
-                borderTopRightRadius: 7,
-                bottom: -20,
-                left: 20,
-                minWidth: 175,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
+              style={styles.ignitionOffCont}>
+              <View style={styles.ignitionOffBox}>
                 <Image
                   source={image.chargePinOff}
                   style={{height: 20, width: 10}}
                 />
-                <Text style={{paddingLeft: 7, fontSize: 12, color: 'white'}}>
+                <Text style={styles.ignitionText}>
                   {__('Ignition Off')}: {getTime(details.todaysIdleTimeSeconds)}
                 </Text>
               </View>
@@ -207,147 +194,56 @@ function DriverBehaviour(props) {
               colors={['#3C6A74', '#5AB8B5']}
               start={{x: 0, y: 1}}
               end={{x: 1, y: 0}}
-              style={{
-                backgroundColor: 'red',
-                position: 'absolute',
-                padding: 10,
-                borderBottomLeftRadius: 7,
-                borderBottomRightRadius: 7,
-                bottom: -60,
-                minWidth: 175,
-                left: 20,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
+              style={styles.linearGrad}>
+              <View style={styles.ignitionOnBox}>
                 <Image
                   source={image.chargePin}
                   style={{height: 20, width: 10}}
                 />
-                <Text style={{paddingLeft: 7, fontSize: 12, color: 'white'}}>
+                <Text style={styles.ignitionText}>
                   {__('Ignition On')}:{' '}
                   {getTime(details.todaysIgnitionOnTimeSeconds)}
                 </Text>
               </View>
             </LinearGradient>
           </LinearGradient>
-          <Text
-            style={{
-              alignSelf: 'center',
-              color: 'white',
-              marginTop: 60,
-              fontSize: 20,
-              fontWeight: 'bold',
-              paddingVertical: 10,
-            }}>
-            Speed Limit
-          </Text>
-          <View
-            style={{
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <View
-              style={{
-                justifyContent: 'center',
-                paddingHorizontal: 10,
-                alignItems: 'center',
-              }}>
+          <Text style={styles.speedTxt}>Speed Limit</Text>
+          <View style={styles.startNumCont}>
+            <View style={styles.startNumBox}>
               <LinearGradient
                 colors={['#E6BB0D', '#D97400']}
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 4,
-                }}></LinearGradient>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: 'white',
-                  alignSelf: 'center',
-                }}>
-                0-20
-              </Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.startTxt}>0-20</Text>
             </View>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-
-                paddingHorizontal: 10,
-              }}>
+            <View style={styles.startNumBox}>
               <LinearGradient
                 colors={['#FF5050', '#FF5050']}
-                style={{
-                  width: 20,
-                  borderRadius: 4,
-                  height: 20,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, color: 'white'}}>20-40</Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>20-40</Text>
             </View>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: 10,
-              }}>
+            <View style={styles.startGrad}>
               <LinearGradient
                 colors={['#68B9FB', '#68B9FB']}
-                style={{
-                  width: 20,
-                  borderRadius: 4,
-                  height: 20,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, color: 'white'}}>40-60</Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>40-60</Text>
             </View>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: 10,
-              }}>
+            <View style={styles.startNumBox}>
               <LinearGradient
                 colors={['#FF50DC', '#3B63E2']}
-                style={{
-                  width: 20,
-                  borderRadius: 4,
-                  height: 20,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, color: 'white'}}>60-80</Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>60-80</Text>
             </View>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: 10,
-              }}>
+            <View style={styles.startNumBox}>
               <LinearGradient
                 colors={['pink', 'pink']}
-                style={{
-                  width: 20,
-                  borderRadius: 4,
-                  height: 20,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, color: 'white'}}>80-100</Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>80-100</Text>
             </View>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: 10,
-              }}>
+            <View style={styles.startNumBox}>
               <LinearGradient
                 colors={['green', 'green']}
-                style={{
-                  width: 20,
-                  borderRadius: 4,
-                  height: 20,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, color: 'white'}}>100 +</Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>100 +</Text>
             </View>
           </View>
           <View
@@ -390,8 +286,8 @@ function DriverBehaviour(props) {
                 position: 'absolute',
                 height: 130,
                 width: 130,
-top:pieRef.width/2 - 65,
-                left: pieRef.width/2 - 65,
+                top: pieRef.width / 2 - 65,
+                left: pieRef.width / 2 - 65,
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: 5,
@@ -414,21 +310,9 @@ top:pieRef.width/2 - 65,
            */}
           <LinearGradient
             colors={['#395DBF', '#16BCD4']}
-            style={{
-              paddingHorizontal: 20,
-              marginHorizontal: 40,
-              marginVertical: 20,
-              paddingVertical: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: '#16BCD4',
-            }}>
+            style={styles.liveTrackGrad}>
             <TouchableOpacity>
-              <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-                {__('Live Tracking')}
-              </Text>
+              <Text style={styles.liveTrackTxt}>{__('Live Tracking')}</Text>
             </TouchableOpacity>
           </LinearGradient>
         </ScrollView>

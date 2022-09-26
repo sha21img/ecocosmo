@@ -118,4 +118,21 @@ export const styles = StyleSheet.create({
     fontSize: Size.extraLarge,
     fontWeight: 'bold',
   },
+  editIcon:{
+    color: '#fff',
+    fontSize: 10,
+    alignSelf: 'center',
+    marginHorizontal: 2,
+  },
+  custImgCont:{
+    resizeMode: 'contain',
+    position: 'absolute',
+    zIndex: 99,
+    top: -50,
+    alignSelf: 'center',
+  },
+  custImgBox:{
+    borderRadius: 50,
+    backgroundColor: 'green',
+  },
 });

@@ -66,7 +66,7 @@ const AddDriver = props => {
   };
 
   const getDetail = async () => {
-    console.log("first")
+    console.log('first');
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
@@ -96,17 +96,7 @@ const AddDriver = props => {
             colors={[colors.Modalcolor1, colors.white]}
             style={styles.modalBody}>
             <Image source={image.bigtastdriver} style={styles.modaldrager} />
-            <View
-              style={{
-                heigth: 66,
-                backgroundColor: colors.white,
-                marginTop: 108,
-                width: '92%',
-                borderRadius: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 15,
-              }}>
+            <View style={styles.box1}>
               <Image
                 source={image.taxtDriver}
                 style={{height: 17, width: 17, marginRight: 12}}
@@ -118,17 +108,7 @@ const AddDriver = props => {
                 onChangeText={newText => setName(newText)}
               />
             </View>
-            <View
-              style={{
-                heigth: 66,
-                backgroundColor: colors.white,
-                marginTop: 10,
-                width: '92%',
-                borderRadius: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 15,
-              }}>
+            <View style={styles.box2}>
               <Image source={image.greyCall} style={{height: 17, width: 17}} />
               {/* <TouchableOpacity
                 style={{flexDirection: 'row', alignItems: 'center'}}>

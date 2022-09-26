@@ -105,22 +105,9 @@ const Alerts = props => {
               <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
                 <Image source={image.drawer} style={styles.dashimg} />
               </TouchableOpacity>
-              <Text
-                style={{
-                  fontSize: Size.large,
-                  color: colors.white,
-                  paddingHorizontal: 10,
-                }}>
-                {__('Alerts')}
-              </Text>
+              <Text style={styles.alertText}>{__('Alerts')}</Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '50%',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
+            <View style={styles.shareText}>
               <Entypo
                 style={{
                   color: colors.white,
@@ -256,9 +243,6 @@ const Alerts = props => {
   );
 };
 export default Alerts;
-
-
-
 
 // <MapView
 //                 // minZoomLevel={15}
