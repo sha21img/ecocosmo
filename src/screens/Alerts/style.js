@@ -73,4 +73,16 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: 'grey',
   },
+  alertText:{
+    fontSize: Size.large,
+    color: colors.white,
+    paddingHorizontal: 10,
+  },
+  shareText:{
+    flexDirection: 'row',
+    width: '50%',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  }
+
 });

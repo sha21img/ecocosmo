@@ -28,8 +28,8 @@ import CheckBox from 'react-native-check-box';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const ForgotPassword_1 = props => {
-  const{username}=props?.route?.params;
-  console.log('aaaa',username)
+  const {username} = props?.route?.params;
+  console.log('aaaa', username);
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [newPassword, setnewPassword] = useState('');
@@ -89,11 +89,7 @@ const ForgotPassword_1 = props => {
       contentContainerStyle={{flexGrow: 1}}>
       <LinearGradient
         colors={[colors.mainThemeColor1, colors.mainThemeColor2]}
-        style={{
-          padding: 24,
-          width: '100%',
-          height: '100%',
-        }}>
+        style={styles.linearGrad}>
         {/* <ImageBackground source={image.LoginBackground} style={[styles.head]}> */}
         {/* <View style={styles.headerContainer}>
             <Image source={image.backArrow} style={{height: 12, width: 23}} />
@@ -101,15 +97,10 @@ const ForgotPassword_1 = props => {
               <Text style={{fontSize: Size.large}}>{__('English')}</Text>
             </TouchableOpacity>
           </View> */}
-        <View
-          style={{
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
+        <View style={styles.selectorCont}>
           <TouchableOpacity
             onPress={() => props.navigation.goBack()}
-            style={{paddingVertical: 10, alignItems: 'center'}}>
+            style={styles.selectorBox}>
             <Image source={image.backArrow} style={{height: 12, width: 23}} />
           </TouchableOpacity>
           <ModalSelector
@@ -123,30 +114,14 @@ const ForgotPassword_1 = props => {
               setLanguage(option.label);
               setDefaultLocale(option.label);
             }}>
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: '#fff',
-                borderRadius: 30,
-                paddingHorizontal: 18,
-                justifyContent: 'space-around',
-              }}>
+            <TouchableOpacity style={styles.inputBox}>
               <TextInput
-                style={{
-                  color: colors.black,
-                  fontSize: Size.medium,
-                  marginRight: 5,
-                  height: 40,
-                }}
+                style={styles.inputTxt}
                 editable={false}
                 value={changeLanguage(language)}
               />
               <MaterialIcons
-                style={{
-                  color: '#47BC30',
-                  fontSize: 16,
-                }}
+                style={styles.arrowIcon}
                 name={'keyboard-arrow-down'}
               />
             </TouchableOpacity>
@@ -161,7 +136,7 @@ const ForgotPassword_1 = props => {
         <Text style={[styles.headText]}>{__('VEHICLE TRACKING SYSTEM')}</Text>
         {/* </ImageBackground> */}
         <Text style={styles.forgotPassword}>{__('Forgot password Reset')}</Text>
-        <View >
+        <View>
           <View style={[styles.inputBox]}>
             <TextInput
               placeholder={__('enter OTP')}
@@ -195,7 +170,7 @@ const ForgotPassword_1 = props => {
 
             {/*  */}
           </View>
-          
+
           <View style={[styles.inputBox]}>
             <TextInput
               placeholder={__('confirm new password')}
@@ -219,23 +194,15 @@ const ForgotPassword_1 = props => {
           </View>
         </View>
         <TouchableOpacity
-            // key={el.id}
-            style={{
-              justifyContent: 'flex-end',
-              marginLeft: 'auto',
-              flexDirection: 'row',
-              marginTop: 5,
-              // paddingHorizontal:
-            }}>
-            <CheckBox
-              isChecked={show}
-              checkBoxColor="skyblue"
-              onClick={e => setShow(!show)}
-            />
-            <Text style={{marginLeft: 5, color: colors.white}}>
-              Show password
-            </Text>
-          </TouchableOpacity>
+          // key={el.id}
+          style={styles.checkBox}>
+          <CheckBox
+            isChecked={show}
+            checkBoxColor="skyblue"
+            onClick={e => setShow(!show)}
+          />
+          <Text style={styles.passText}>Show password</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleSubmit}>
           <LinearGradient
             colors={[colors.largeBtn1, colors.largeBtn2]}
@@ -247,8 +214,6 @@ const ForgotPassword_1 = props => {
             )}
           </LinearGradient>
         </TouchableOpacity>
-
-      
       </LinearGradient>
     </ScrollView>
   );

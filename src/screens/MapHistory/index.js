@@ -151,7 +151,7 @@ function MapHistory(props) {
     };
     console.log('maphistory eith time daata', data);
     const response = await axiosGetData('mapHistoryWithTime', data);
-    let newCoordinate = response?.data?.EventHistory
+    let newCoordinate = response?.data?.EventHistory;
     setLoading(true);
 
     console.log('mapHistory APi', newCoordinate?.length);
@@ -930,7 +930,7 @@ function MapHistory(props) {
                     style={{position: 'absolute', bottom: 0, width: '100%'}}
                     onPress={() => {
                       setAnimate('stop'), start('start'), setIsActive(null);
-                      
+
                       setLastRide(false);
                     }}>
                     <LinearGradient
@@ -1058,16 +1058,18 @@ function MapHistory(props) {
                         onPress={() => {
                           if (speed > 500) {
                             clearInterval(interval);
+                            speedRef.current -= 1500;
+
                             setSpeed(prev => {
                               return prev - 1500;
                             });
                             // const a = speedRef.current - 1500;
-                            
+
                             setT(
                               setInterval(() => {
                                 console.log('aaaaabbbccc');
                                 animateMarkerAndCamera();
-                              },speedRef.current),
+                              }, speedRef.current),
                             );
                           } else {
                             clearInterval(interval);

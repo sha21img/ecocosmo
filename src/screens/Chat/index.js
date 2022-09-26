@@ -57,19 +57,9 @@ const Chat = props => {
         <View style={styles.headerContainer}>
           <View style={styles.headerImageCont}>
             <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
-              <Image
-                source={image.drawer}
-                style={{height: 20, width: 23, marginVertical: 5}}
-              />
+              <Image source={image.drawer} style={styles.drawImg} />
             </TouchableOpacity>
-            <Text
-              style={{
-                fontSize: Size.large,
-                color: colors.white,
-                paddingHorizontal: 10,
-              }}>
-              {__('Chat')}
-            </Text>
+            <Text style={styles.chatText}>{__('Chat')}</Text>
           </View>
           <TouchableOpacity style={{flexDirection: 'row'}}>
             <Image source={image.search} />
@@ -79,13 +69,7 @@ const Chat = props => {
       {isLoading ? (
         <LinearGradient colors={['#BCE2FF', '#FFFFFF']} style={{flex: 1}}>
           <TouchableOpacity
-            style={{
-              padding: 10,
-              flexDirection: 'row',
-              width: '100%',
-              backgroundColor: 'white',
-              marginBottom: 1.5,
-            }}
+            style={styles.chatDetailBox}
             onPress={() =>
               props.navigation.navigate('ChatDetails', {
                 getDetails: getDetails,
@@ -98,24 +82,9 @@ const Chat = props => {
                 style={{width: 55, height: 55}}
               />
             </TouchableOpacity>
-            <View
-              style={{
-                paddingLeft: 10,
-                width: '84%',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    marginTop: 5,
-                    fontWeight: 'bold',
-                    fontSize: 18,
-                    width: '70%',
-                  }}>
+            <View style={styles.accountTextCont}>
+              <View style={styles.accountBox}>
+                <Text numberOfLines={1} style={styles.accountText}>
                   {loginDetails?.accountName}
                 </Text>
                 <Text style={{fontSize: 16}}>
@@ -124,13 +93,7 @@ const Chat = props => {
                   )}
                 </Text>
               </View>
-              <Text
-                numberOfLines={1}
-                style={{
-                  paddingVertical: 5,
-                  fontWeight: 'bold',
-                  fontSize: 16,
-                }}>
+              <Text numberOfLines={1} style={styles.msgText}>
                 {chatDetail[chatDetail?.length - 1]?.message}
               </Text>
             </View>
