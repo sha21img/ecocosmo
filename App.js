@@ -6,6 +6,7 @@ import Login from './src/screens/Login';
 import Splash from './src/screens/Splash';
 import SplashNew from './src/screens/SplashNew';
 import HomeStack from './src/screens/HomeStack';
+import MainHome from './src/screens/Home/MainHome';
 import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
@@ -255,7 +256,7 @@ const MainScreen = props => {
           swipeEnabled: Platform.OS == 'android' ? false : true,
         }}>
         <Drawer.Screen name="HomeStack" component={HomeStack} />
-        <Drawer.Screen name="Alerts" component={Alerts} />
+        <Drawer.Screen name="Alerts" component={MainHome} />
         <Drawer.Screen name="AboutUs" component={AboutUs} />
         <Drawer.Screen name="Renewal" component={Renewal} />
         <Drawer.Screen name="ContactUs" component={ContactUs} />
@@ -450,6 +451,11 @@ const App = () => {
                   <Stack.Screen
                     name="Nearby"
                     component={Nearby}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="MainHome"
+                    component={MainHome}
                     options={{headerShown: false}}
                   />
                 </>
