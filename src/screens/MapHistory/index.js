@@ -488,6 +488,7 @@ function MapHistory(props) {
                       console.log(',,,,,,', coordinate);
                     }}
                     icon={
+                      
                       coordinate.direction == 'E'
                         ? image.E
                         : coordinate.direction == 'N'
