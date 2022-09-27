@@ -23,19 +23,21 @@ import Storage from '../../../Utils/Storage';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
-
+import {useNetInfo} from '@react-native-community/netinfo';
+import {
+  check,
+  PERMISSIONS,
+  RESULTS,
+  request,
+  requestMultiple,
+} from 'react-native-permissions';
 export default function Home() {
-  // console.log('jijijijijijjijijiijijijiijiji');
-  const [selectedLanguage, setSelectedLanguage] = useState();
-  const [dashBoardType, setDashBoardType] = useState('Dashboard1');
   const [details, setDetails] = useState([]);
   const [newFilterDetails, setNewFilterDetails] = useState([]);
   const [filteredDetails, setFilteredDetails] = useState([]);
   const [isShow, setIsShow] = useState(true);
-  const [search, setSearch] = useState(true);
   const [type, setType] = useState('All');
   const [driverDetails, setDriverDetails] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
   const [countObj, setCountObj] = useState({
     Running: 0,
@@ -44,6 +46,17 @@ export default function Home() {
     'In-Active': 0,
     'No GPS': 0,
   });
+  const netInfo = useNetInfo();
+  const [locationPermission, setLocationPermission] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [alertMsg, setAlertMsg] = useState('');
+  const CarType = [
+    {type: 'Running', image: image.runningCar},
+    {type: 'Idle', image: image.idelCar},
+    {type: 'Waiting', image: image.WaitingCar},
+    {type: 'In-Active', image: image.InactiveCar},
+    {type: 'No GPS', image: image.noGpsCar},
+  ];
   useEffect(() => {
     console.log(
       '=============================================================================',
@@ -51,19 +64,60 @@ export default function Home() {
     getDetails('first');
     getVehicle();
   }, []);
-  // const onRefreshPage = React.useCallback((data, details, setIsShow) => {
-  //   console.log('hihihds');
-  //   // setIsRefreshing(true);
-  //   setIsShow(true);
-  //   // console.log('typeptprprp', data);
-  //   if (data === 'All') {
-  //     getDetails('refresh');
-  //   } else {
-  //     getRunningData(data, details);
-  //   }
-
-  //   setTimeout(() => setIsShow(false), 2000);
-  // }, []);
+  useEffect(() => {
+    if (netInfo.isConnected) {
+      if (Platform.OS == 'android') {
+        checkPermissionAndroid();
+      } else {
+        // checkPermissionIOS();
+      }
+    }
+  }, [netInfo.isConnected]);
+  const showPermissionError = (alertMsg = 'Please Enable Location Service') => {
+    setLocationPermission(true);
+    setAlertMsg(alertMsg);
+    setIsLoading(false);
+  };
+  const checkPermissionAndroid = () => {
+    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+      .then(result => {
+        switch (result) {
+          case RESULTS.UNAVAILABLE:
+            showPermissionError();
+            break;
+          case RESULTS.BLOCKED:
+            showPermissionError();
+            break;
+          case RESULTS.DENIED:
+            request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+              .then(result => {
+                if (result == RESULTS.GRANTED || result == RESULTS.LIMITED) {
+                  setIsLoading(false);
+                  setLocationPermission(false);
+                } else {
+                  showPermissionError();
+                }
+              })
+              .catch(err => {
+                showPermissionError(
+                  'Something Went Wrong While Checking Permission',
+                );
+              });
+            break;
+          case RESULTS.LIMITED:
+            setIsLoading(false);
+            setLocationPermission(false);
+            break;
+          case RESULTS.GRANTED:
+            setIsLoading(false);
+            setLocationPermission(false);
+            break;
+        }
+      })
+      .catch(error => {
+        showPermissionError('Something Went Wrong While Checking Permission');
+      });
+  };
   const getDetails = async () => {
     setCountObj({
       Running: 0,
@@ -166,9 +220,7 @@ export default function Home() {
       </LinearGradient>
       {!isShow ? (
         <ScrollView
-          style={{flex: 1, 
-          // backgroundColor:'#00266B',
-          }}
+          style={{flex: 1, backgroundColor: '#00266B'}}
           refreshControl={
             <RefreshControl
               enabled={true}
@@ -184,7 +236,6 @@ export default function Home() {
               width: '100%',
               flexDirection: 'row',
               justifyContent: 'center',
-              paddingHorizontal: 25,
               alignItems: 'center',
               marginVertical: 15,
             }}>
@@ -192,156 +243,179 @@ export default function Home() {
               source={image.whatsApp}
               style={{height: 34, width: 34, marginHorizontal: 15}}
             />
-            <Text numberOfLines={1} style={{width: '65%', fontSize: 14}}>
+            <Text
+              numberOfLines={1}
+              style={{width: '65%', fontSize: 14, color: 'white'}}>
               whatsapp://send?phone=+91989676997
             </Text>
           </TouchableOpacity>
-          {/* ['#00266B', '#2AB0CC'] */}
           <View
-         
             style={{
               borderRadius: 12,
-             
-            width:'80%',
-            height:100,
+              width: '80%',
+              height: 100,
               padding: 3,
-             alignSelf:'center',
-             backgroundColor:'#2AB0CC'
+              alignSelf: 'center',
+              backgroundColor: '#0F7DF1',
             }}>
             <LinearGradient
-            colors={['#2AB0CC','red']}
-            start={{x:0.8,y:0.7}}
-            end={{x:1,y:0.5}}
-            style={{
-              position:'absolute',
-              bottom:0,
-              right:0,
-              width:'50%',
-              height:50,
-              borderBottomRightRadius:10
-            }}
-            >
-
-            </LinearGradient>
-           {/* <View
-            style={{
-              borderRadius: 10,
-             width:'100%',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-              flexDirection: 'row',
-              alignSelf: 'center',
-            
-             backgroundColor:'white',
-             
-              padding: 15,
-            }}
-           >
-           <Image
-              source={image.whatsApp}
-              style={{height: 34, width: 34, marginHorizontal: 20}}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('MainHome', {
-                  details: newFilterDetails,
-                  driverDetails: driverDetails,
-                });
-              }}
+              colors={['#00266B', '#0F7DF1']}
+              start={{x: 1.5, y: -0.5}}
+              end={{x: 0.7, y: 1.5}}
               style={{
-                width: '50%',
-             
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: '80%',
+                height: '50%',
+                borderBottomRightRadius: 12,
+              }}></LinearGradient>
+            <View
+              style={{
+                borderRadius: 10,
+                width: '100%',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                flexDirection: 'row',
+                alignSelf: 'center',
+                backgroundColor: '#00266B',
+                height: '100%',
               }}>
-              <Text
+              <Image
+                resizeMode="contain"
+                source={image.allCar}
                 style={{
-                  textAlign: 'center',
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                
-                }}>
-                All
-              </Text>
-              <Text
+                  height: 40,
+                  width: 80,
+                  marginHorizontal: 30,
+                }}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('MainHome', {
+                    details: newFilterDetails,
+                    driverDetails: driverDetails,
+                  });
+                }}
                 style={{
-                  textAlign: 'center',
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                
+                  width: '50%',
                 }}>
-                ({details?.length})
-              </Text>
-              <Text style={{textAlign: 'center', fontSize: 18}}>Available</Text>
-            </TouchableOpacity>
-           </View> */}
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    color: 'white',
+                  }}>
+                  All
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 20,
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  ({details?.length})
+                </Text>
+                <Text
+                  style={{textAlign: 'center', color: 'white', fontSize: 18}}>
+                  Available
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
+          <Image source={image.mainBack} style={{width: '100%'}} />
           <View
             style={{
-              paddingVertical: 15,
               justifyContent: 'center',
               flexWrap: 'wrap',
-              paddingBottom: 100,
+              paddingTop: 10,
               flexDirection: 'row',
             }}>
-            {['Running', 'Idle', 'Waiting', 'In-Active', 'No GPS'].map(item => {
+            {CarType.map(item => {
               return (
-                <TouchableOpacity
-                  onPress={() => {
-                    setIsShow(true), getRunningData(item, details);
-                  }}
+                <View
                   style={{
-                    borderWidth: 2,
-                    borderColor: '#1B6CE5',
-                    padding: 15,
-                    margin: 10,
+                    margin: 5,
                     borderRadius: 10,
-                    minWidth: 120,
+                    padding: 3,
+                    backgroundColor: '#0F7DF1',
                   }}>
-                  <Text
+                  <LinearGradient
+                    colors={['#00266B', '#0F7DF1']}
+                    start={{x: 1.5, y: -0.5}}
+                    end={{x: 0.7, y: 1.5}}
                     style={{
-                      textAlign: 'center',
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                      //   color: 'white',
-                    }}>
-                    {item}
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: 'center',
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                      //   color: 'white',
-                    }}>
-                    {/* 6 */}({countObj[item]})
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: 'center',
-                      fontSize: 18,
-                      paddingVertical: 5,
-                    }}>
-                    Available
-                  </Text>
-                  <Image
-                    source={image.whatsApp}
-                    style={{
-                      height: 34,
-                      width: 34,
-                      marginTop: 10,
-                      alignSelf: 'center',
+                      position: 'absolute',
+                      bottom: 0,
+                      right: 0,
+                      width: '80%',
+                      height: '50%',
+                      borderBottomRightRadius: 12,
+                    }}></LinearGradient>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIsShow(true), getRunningData(item, details);
                     }}
-                  />
-                </TouchableOpacity>
+                    style={{
+                      borderColor: '#1B6CE5',
+                      paddingVertical: 10,
+                      borderRadius: 10,
+                      minWidth: 120,
+                      backgroundColor: '#00266B',
+                    }}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        color: 'white',
+                      }}>
+                      {item.type}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        color: 'white',
+                      }}>
+                      ({countObj[item.type]})
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 18,
+                        paddingVertical: 5,
+                        color: 'white',
+                      }}>
+                      Available
+                    </Text>
+                    <Image
+                      resizeMode="contain"
+                      source={item.image}
+                      style={{
+                        height: 28,
+                        width: 50,
+                        marginVertical: 10,
+                        alignSelf: 'center',
+                      }}
+                    />
+                  </TouchableOpacity>
+                </View>
               );
             })}
           </View>
+          <Image
+            source={image.mainBack}
+            style={{width: '100%', marginBottom: 120}}
+          />
         </ScrollView>
       ) : (
         <View
           style={{
             flex: 1,
-           
             alignItems: 'center',
             justifyContent: 'center',
           }}>
