@@ -1,8 +1,9 @@
 export const image = {
   Alert: require('./Alert.png'),
   maphistory: require('./maphistory.png'),
-
+  speedMeter: require('./speedMeter.png'),
   arrowDown: require('./arrowDown.png'),
+  road: require('./road.png'),
   parkingPoint: require('./parkingPoint.png'),
   atm: require('./atm.png'),
   battery: require('./battery.png'),
@@ -137,5 +138,25 @@ export const image = {
   inActiveLocation: require('./inActiveLocation.png'),
   carGreenUp1: require('./carGreenUp1.png'),
   blank: require('./blank.png'),
+  dashboardcar: require('./dashboardcar.png'),
+  // 
+  newbatteryoff: require('./newbatteryoff.png'),
+  newbatteryon: require('./newbatteryon.png'),
+  newchargeoff: require('./newchargeoff.png'),
+  newchargeon: require('./newchargeon.png'),
+  newlocationoff: require('./newlocationoff.png'),
+  newlocationon: require('./newlocationon.png'),
+  newpinoff: require('./newpinoff.png'),
+  newpinon: require('./newpinon.png'),
+
+  // 
+  RenewCar: require('./RenewCar.png'),
+  noGpsCar: require('./noGpsCar.png'),
+  InactiveCar: require('./InactiveCar.png'),
+  WaitingCar: require('./WaitingCar.png'),
+  idelCar: require('./idelCar.png'),
+  runningCar: require('./runningCar.png'),
+  mainBack: require('./mainBack.png'),
+  allCar: require('./allCar.png'),
   
 };

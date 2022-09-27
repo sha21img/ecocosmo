@@ -10,6 +10,8 @@ import {
   Linking,
   RefreshControl,
 } from 'react-native';
+import {Size} from '../../../assets/fonts/Fonts';
+
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import {__} from '../../../Utils/Translation/translation';
@@ -46,6 +48,7 @@ import VehicleMenu from '../VehicleMenu';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
 
 const Dashboard1 = ({
   details,
@@ -68,78 +71,17 @@ const Dashboard1 = ({
   const [number, setNumber] = useState(false);
 
   const [alertMsg, setAlertMsg] = useState('');
+  const navigation = useNavigation();
 
   const netInfo = useNetInfo();
-  const showPermissionError = (alertMsg = 'Please Enable Location Service') => {
-    setLocationPermission(true);
-    setAlertMsg(alertMsg);
-    setIsLoading(false);
-  };
-  const checkPermissionAndroid = () => {
-    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-      .then(result => {
-        switch (result) {
-          case RESULTS.UNAVAILABLE:
-            showPermissionError();
-            break;
-          case RESULTS.BLOCKED:
-            showPermissionError();
-            break;
-          case RESULTS.DENIED:
-            request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-              .then(result => {
-                if (result == RESULTS.GRANTED || result == RESULTS.LIMITED) {
-                  setIsLoading(false);
-                  setLocationPermission(false);
-                  getLocations();
-                } else {
-                  showPermissionError();
-                }
-              })
-              .catch(err => {
-                showPermissionError(
-                  'Something Went Wrong While Checking Permission',
-                );
-              });
-            break;
-          case RESULTS.LIMITED:
-            setIsLoading(false);
-            setLocationPermission(false);
-            getLocations();
-            break;
-          case RESULTS.GRANTED:
-            setIsLoading(false);
-            setLocationPermission(false);
-            getLocations();
-            break;
-        }
-      })
-      .catch(error => {
-        showPermissionError('Something Went Wrong While Checking Permission');
-      });
-  };
-  const getLocations = async () => {
-    Geolocation.getCurrentPosition(position => {
-      setCoordinate({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      });
-    });
-  };
+ 
+ 
   const getUserDetails = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
     setLoginDetails(succcess);
   };
   useEffect(() => {
-    // getLocation();
     getUserDetails();
-    if (netInfo.isConnected) {
-      if (Platform.OS == 'android') {
-        checkPermissionAndroid();
-      } else {
-        // checkPermissionIOS();
-      }
-    }
   }, [netInfo.isConnected]);
   const markerRef = useRef([]);
   const onRegionalChange = useCallback(
@@ -380,7 +322,7 @@ const Dashboard1 = ({
         <View>
           <View
             style={{
-              backgroundColor: 'red',
+              // backgroundColor: 'red',
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -388,33 +330,80 @@ const Dashboard1 = ({
             <Text
               numberOfLines={1}
               style={{fontSize: 22, fontWeight: 'bold', color: 'white'}}>
-              MH12 RN 0790
+              {item.deviceId}
             </Text>
             <View
               style={{
                 flexDirection: 'row',
               }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  borderRadius: 5,
-                  borderWidth: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: 5,
-                  borderColor: 'white',
-                  marginHorizontal: 10,
-                }}>
-                <Ionicons
+              {loginDetails?.accountName == 'demo101' ? (
+                <View
                   style={{
-                    color: 'white',
-                    fontSize: 18,
+                    flexDirection: 'row',
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 5,
+                    marginHorizontal: 10,
+                    backgroundColor: 'grey',
+                  }}>
+                  <Ionicons
+                    style={{
+                      color: 'white',
+                      fontSize: 18,
+                    }}
+                    name={'call'}
+                  />
+                  <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
+                </View>
+              ) : isData?.mobilenumber !== '' ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    isSetData(item), calling(item);
                   }}
-                  name={'call'}
-                />
-                <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
-              </View>
-              <View
+                  style={{
+                    flexDirection: 'row',
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 5,
+                    marginHorizontal: 10,
+                    backgroundColor: colors.callBtn,
+                  }}>
+                  <Ionicons
+                    style={{
+                      color: 'white',
+                      fontSize: 18,
+                    }}
+                    name={'call'}
+                  />
+                  <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
+                </TouchableOpacity>
+              ) : (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 5,
+                    marginHorizontal: 10,
+                    backgroundColor: 'grey',
+                  }}>
+                  <Ionicons
+                    style={{
+                      color: 'white',
+                      fontSize: 18,
+                    }}
+                    name={'call'}
+                  />
+                  <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
+                </View>
+              )}
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('LiveMapTracking', {details: item});
+                }}
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'center',
@@ -432,31 +421,238 @@ const Dashboard1 = ({
                   name={'location'}
                 />
                 <Text style={{color: 'white', paddingLeft: 4}}>Live Track</Text>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
-          <Text style={{fontSize: 12, width: '70%', paddingVertical: 5}}>
-            177 New Apollo Indl Estate Mogra Lane Andheri, Mumbai,
-            Bharuch,400069,India
+          <Text
+            style={{
+              fontSize: 12,
+              width: '65%',
+              paddingVertical: 5,
+              color: 'grey',
+            }}>
+            {item.address}
           </Text>
-          <View style={{flexDirection: 'row'}}>
-            <View style={{width: '50%'}}></View>
-            <View style={{borderWidth: 2, backgroundColor: '#00266B'}}>
-              <View style={{padding: 10}}>
-                <Text>Check In Time</Text>
-                <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity
+            onPress={() => {
+              getMobileNumber(item);
+              isSetData(item);
+            }}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              //  backgroundColor: 'green'
+            }}>
+            <View style={{position: 'relative'}}>
+              {/*  */}
+              <View
+                style={{
+                  position: 'absolute',
+                  flexDirection: 'row',
+                  zIndex: 99,
+                  top: 200,
+                  left: 30,
+                }}>
+                {parseFloat(item.validPacketTimeStamp) <
+                parseFloat(item.lastNoGpsSignalTime) ? (
+                  <Image
+                    source={image.newlocationoff}
+                    resizeMode="contain"
+                    style={{
+                      height: 20,
+                      width: 20,
+                      paddingHorizontal: 20,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={image.newlocationon}
+                    resizeMode="contain"
+                    style={{
+                      height: 20,
+                      width: 20,
+                      paddingHorizontal: 20,
+                    }}
+                  />
+                )}
+
+                {/*  */}
+                {parseFloat(item.validPacketTimeStamp) -
+                  parseFloat(item.lastPowerCutTime) >
+                300 ? (
+                  <Image
+                    source={image.newbatteryon}
+                    resizeMode="contain"
+                    style={{
+                      height: 20,
+                      width: 20,
+                      paddingHorizontal: 20,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={image.newbatteryoff}
+                    resizeMode="contain"
+                    style={{
+                      height: 20,
+                      width: 20,
+                      paddingHorizontal: 20,
+                    }}
+                  />
+                )}
+                {parseFloat(item.validPacketTimeStamp) -
+                  parseFloat(item.lastLowBatteryTime) >
+                21600 ? (
+                  <Image
+                    source={image.newchargeon}
+                    resizeMode="contain"
+                    style={{
+                      height: 20,
+                      width: 20,
+                      paddingHorizontal: 20,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={image.newchargeoff}
+                    resizeMode="contain"
+                    style={{
+                      height: 20,
+                      width: 20,
+                      paddingHorizontal: 20,
+                    }}
+                  />
+                )}
+
+                {parseFloat(item.statusTermInfo & 2) == 2 ? (
+                  <Image
+                    source={image.newpinon}
+                    resizeMode="contain"
+                    style={{
+                      height: 20,
+                      width: 20,
+                      paddingHorizontal: 20,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={image.newpinoff}
+                    resizeMode="contain"
+                    style={{
+                      height: 20,
+                      width: 20,
+                      paddingHorizontal: 20,
+                    }}
+                  />
+                )}
+              </View>
+              {/*  */}
+              {/*  */}
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 50,
+                  left: 85,
+                  color: '#24A520',
+                  zIndex: 99,
+                }}>
+                <Text
+                  style={{
+                    color: '#24A520',
+                  }}>
+                  Running
+                </Text>
+              </View>
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 70,
+                  left: 65,
+                  color: 'white',
+                  zIndex: 99,
+                }}>
+                <Text
+                  style={{
+                    color: 'white',
+                  }}>
+                  14M 38KM/H
+                </Text>
+              </View>
+              <Image
+                source={image.speedMeter}
+                resizeMode="contain"
+                style={{height: 250, width: 220}}
+              />
+              <Image
+                source={image.road}
+                resizeMode="contain"
+                style={{
+                  position: 'absolute',
+                  height: 150,
+                  width: 170,
+                  // backgroundColor: 'pink',
+                  top: 80,
+                  left: 25,
+                }}
+              />
+              <Image
+                source={image.dashboardcar}
+                resizeMode="contain"
+                style={{
+                  position: 'absolute',
+                  height: 120,
+                  width: 120,
+                  // backgroundColor: 'pink',
+                  top: 90,
+                  left: 50,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                backgroundColor: 'red',
+                paddingVertical: 20,
+              }}>
+              <View
+                style={{
+                  paddingVertical: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+
+                  // backgroundColor:'red',
+                  // flexWrap: 'wrap',
+                }}>
+                <Text
+                  style={{
+                    paddingVertical: 2,
+                    color: '#0080FF',
+                    fontWeight: 'bold',
+                    // flexGrow: 1,
+                    flexWrap: 'wrap',
+                    // fontSize: Size.tiny,
+                  }}>
+                  {__('CHECK IN DATE & TIME')}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 2,
+                    // backgroundColor:'red'
+                  }}>
                   <LinearGradient
                     colors={['#00266B', '#2AB0CC']}
                     start={{x: 0, y: 1}}
                     style={{
-                      height: 2,
+                      height: 1,
                       width: 40,
                       borderTopLeftRadius: 10,
                     }}></LinearGradient>
                   <View
                     style={{
-                      height: 2,
-                      width: 10,
+                      height: 1,
+                      width: 30,
                       backgroundColor: '#2AB0CC',
                     }}></View>
 
@@ -464,358 +660,160 @@ const Dashboard1 = ({
                     colors={['#2AB0CC', '#00266B']}
                     start={{x: 0, y: 1}}
                     style={{
-                      height: 2,
-                      width: 40,
+                      height: 1,
+                      width: 15,
                       borderTopRightRadius: 10,
                     }}></LinearGradient>
                 </View>
-                <Text>17:57:45</Text>
+                <Text
+                  style={{
+                    paddingVertical: 2,
+                    textAlign: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  {filterDate}
+                </Text>
+                <Text
+                  style={{
+                    paddingVertical: 2,
+                    textAlign: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  {filterTime}
+                </Text>
               </View>
-              {/* <View>
-                <Text>Today Odometer</Text>
-                <Text>5790456 KM</Text>
+              <View
+                style={{
+                  paddingVertical: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  // backgroundColor:'red',
+                  // flexWrap: 'wrap',
+                }}>
+                <Text
+                  style={{
+                    paddingVertical: 2,
+                    color: '#0080FF',
+                    fontWeight: 'bold',
+                  }}>
+                  {__('TODAYS ODO')}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 2,
+                    // backgroundColor:'red'
+                  }}>
+                  <LinearGradient
+                    colors={['#00266B', '#2AB0CC']}
+                    start={{x: 0, y: 1}}
+                    style={{
+                      height: 1,
+                      width: 40,
+                      borderTopLeftRadius: 10,
+                    }}></LinearGradient>
+                  <View
+                    style={{
+                      height: 1,
+                      width: 30,
+                      backgroundColor: '#2AB0CC',
+                    }}></View>
+
+                  <LinearGradient
+                    colors={['#2AB0CC', '#00266B']}
+                    start={{x: 0, y: 1}}
+                    style={{
+                      height: 1,
+                      width: 15,
+                      borderTopRightRadius: 10,
+                    }}></LinearGradient>
+                </View>
+                <Text
+                  style={{
+                    paddingVertical: 2,
+                    textAlign: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  {Math.floor(item.todaysODO)} {__('KM')}
+                </Text>
               </View>
-              <View>
-                <Text>Speed</Text>
-                <Text>16KM./H</Text>
-              </View> */}
+              <View
+                style={{
+                  paddingVertical: 8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  // backgroundColor:'red',
+                  // flexWrap: 'wrap',
+                }}>
+                <Text
+                  style={{
+                    paddingVertical: 2,
+                    color: '#0080FF',
+                    fontWeight: 'bold',
+                  }}>
+                  {__('SPEED')}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 2,
+                    // backgroundColor:'red'
+                  }}>
+                  <LinearGradient
+                    colors={['#00266B', '#2AB0CC']}
+                    start={{x: 0, y: 1}}
+                    style={{
+                      height: 1,
+                      width: 40,
+                      borderTopLeftRadius: 10,
+                    }}></LinearGradient>
+                  <View
+                    style={{
+                      height: 1,
+                      width: 30,
+                      backgroundColor: '#2AB0CC',
+                    }}></View>
+
+                  <LinearGradient
+                    colors={['#2AB0CC', '#00266B']}
+                    start={{x: 0, y: 1}}
+                    style={{
+                      height: 1,
+                      width: 15,
+                      borderTopRightRadius: 10,
+                    }}></LinearGradient>
+                </View>
+                <Text
+                  style={{
+                    paddingVertical: 2,
+                    textAlign: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  {Math.floor(item.speed)} {__('KM/H')}
+                </Text>
+              </View>
             </View>
-          </View>
+            {/*  */}
+
+            {/* <View
+              style={{
+                borderWidth: 2,
+                backgroundColor: '#00266B',
+                width: '20%',
+              }}>
+              
+            </View> */}
+          </TouchableOpacity>
         </View>
       </>
-      // <>
-      //   <TouchableOpacity
-      //     activeOpacity={0.8}
-      //     style={{marginBottom: 10, padding: 0}}
-      //     onPress={() => {
-      //       getMobileNumber(item);
-      //       isSetData(item);
-      //     }}>
-      //     <LinearGradient
-      //       colors={['#16BCD4', '#395DBF']}
-      //       start={{x: 0, y: 0.5}}
-      //       end={{x: 1, y: 0.5}}
-      //       style={{borderRadius: 15}}>
-      //       <View
-      //         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-      //         <View></View>
-      //         <View
-      //           style={{
-      //             // paddingHorizontal: 10,
-      //             width: '55%',
-      //             paddingBottom: 20,
-      //             paddingTop: 15,
-      //             // paddingLeft: 10,
-      //           }}>
-      //           <Text
-      //             style={{color: 'white', fontWeight: 'bold', fontSize: 22}}>
-      //             {item.deviceId}
-      //           </Text>
-      //           <Text
-      //             style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
-      //             {item.statusMessage}
-      //           </Text>
-      //           {loginDetails?.accountName == 'demo101' ? (
-      //             <View
-      //               style={{
-      //                 paddingVertical: 10,
-      //                 flexDirection: 'row',
-      //                 alignItems: 'center',
-      //                 justifyContent: 'space-around',
-      //                 paddingHorizontal: 12,
-      //                 backgroundColor: 'grey',
-      //                 borderRadius: 5,
-      //                 position: 'absolute',
-      //                 zIndex: 10,
-      //                 bottom: -20,
-      //                 maxWidth: 70,
-      //               }}>
-      //               <Image
-      //                 source={image.callimg}
-      //                 style={{height: 15, width: 15, marginRight: 7}}
-      //               />
-      //               <Text style={styles.buttonText}>{__('Call')}</Text>
-      //             </View>
-      //           ) : isData?.mobilenumber !== '' ? (
-      //             <TouchableOpacity
-      //               style={{
-      //                 flexDirection: 'row',
-      //                 alignItems: 'center',
-      //                 paddingHorizontal: 10,
-      //                 backgroundColor: colors.callBtn,
-      //                 paddingVertical: 10,
-      //                 maxWidth: 70,
-      //                 borderRadius: 5,
-      //                 position: 'absolute',
-      //                 zIndex: 10,
-      //                 bottom: -20,
-      //               }}
-      //               onPress={() => {
-      //                 isSetData(item), calling(item);
-      //               }}>
-      //               <Image
-      //                 source={image.callimg}
-      //                 style={{height: 15, width: 15, marginRight: 7}}
-      //               />
-      //               <Text style={styles.buttonText}> {__('Call')}</Text>
-      //             </TouchableOpacity>
-      //           ) : (
-      //             <View
-      //               style={{
-      //                 paddingVertical: 10,
-      //                 flexDirection: 'row',
-      //                 alignItems: 'center',
-      //                 justifyContent: 'space-around',
-      //                 paddingHorizontal: 12,
-      //                 backgroundColor: 'grey',
-      //                 borderRadius: 5,
-      //                 position: 'absolute',
-      //                 zIndex: 10,
-      //                 bottom: -20,
-      //                 maxWidth: 70,
-      //               }}>
-      //               <Image
-      //                 source={image.callimg}
-      //                 style={{height: 15, width: 15, marginRight: 7}}
-      //               />
-      //               <Text style={styles.buttonText}>{__('Call')}</Text>
-      //             </View>
-      //           )}
-      //         </View>
-      //       </View>
-      //       <View
-      //         style={{
-      //           backgroundColor: 'white',
-      //           borderRadius: 10,
-      //           paddingTop: 30,
-      //           paddingBottom: 15,
-      //           paddingHorizontal: 15,
-      //         }}>
-      //         <View
-      //           style={{position: 'absolute', zIndex: 10, top: -40, left: 15}}>
-      //           <Image
-      //             resizeMode="contain"
-      //             source={{uri: item.equipmentIcon}}
-      //             style={{
-      //               height: 50,
-      //               width: 120,
-      //             }}
-      //           />
-      //         </View>
-      //         <View
-      //           style={{
-      //             flexDirection: 'row',
-      //             justifyContent: 'space-between',
-      //           }}>
-      //           <View style={{alignItems: 'center'}}>
-      //             <Text
-      //               style={{
-      //                 fontSize: 12,
-      //                 color: '#616161',
-      //                 fontWeight: 'bold',
-      //                 paddingBottom: 5,
-      //               }}>
-      //               {__('CHECK IN DATE & TIME')}
-      //             </Text>
-      //             <Text
-      //               style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-      //               {filterDate}
-      //             </Text>
-      //             <Text
-      //               style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-      //               {filterTime}
-      //             </Text>
-      //           </View>
-      //           <View style={{alignItems: 'center'}}>
-      //             <Text
-      //               style={{
-      //                 fontSize: 12,
-      //                 color: '#616161',
-      //                 fontWeight: 'bold',
-      //                 paddingBottom: 5,
-      //               }}>
-      //               {__('TODAYS ODO')}
-      //             </Text>
-      //             <Text
-      //               style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-      //               {Math.floor(item.todaysODO)} {__('KM')}
-      //             </Text>
-      //           </View>
-      //           <View style={{alignItems: 'center'}}>
-      //             <Text
-      //               style={{
-      //                 fontSize: 12,
-      //                 color: '#616161',
-      //                 fontWeight: 'bold',
-      //                 paddingBottom: 5,
-      //               }}>
-      //               {__('SPEED')}
-      //             </Text>
-      //             <Text
-      //               style={{fontSize: 16, color: 'black', fontWeight: 'bold'}}>
-      //               {Math.floor(item.speed)} {__('KM/H')}
-      //             </Text>
-      //           </View>
-      //         </View>
-      //         <View
-      //           style={{
-      //             flexDirection: 'row',
-      //             padding: 5,
-      //             justifyContent: 'space-between',
-      //             backgroundColor: 'lightgrey',
-      //             alignItems: 'center',
-      //             borderRadius: 7,
-      //             marginVertical: 10,
-      //           }}>
-      //           <View
-      //             style={{
-      //               justifyContent: 'center',
-      //               alignItems: 'center',
-      //               paddingHorizontal: 10,
-      //             }}>
-      //             {parseFloat(item.validPacketTimeStamp) <
-      //             parseFloat(item.lastNoGpsSignalTime) ? (
-      //               <Image
-      //                 source={image.locationOff}
-      //                 style={{width: 20, height: 20}}
-      //               />
-      //             ) : (
-      //               <Image
-      //                 source={image.location}
-      //                 style={{width: 20, height: 20}}
-      //               />
-      //             )}
-      //             <Text
-      //               style={{
-      //                 fontSize: 12,
-      //                 color: '#616161',
-      //                 fontWeight: 'bold',
-      //               }}>
-      //               GPS On
-      //             </Text>
-      //           </View>
-      //           <View
-      //             style={{
-      //               borderLeftWidth: 1,
-      //               borderColor: '#616161',
-      //               height: 27,
-      //             }}
-      //           />
-      //           <View
-      //             style={{
-      //               justifyContent: 'center',
-      //               paddingHorizontal: 10,
-      //               alignItems: 'center',
-      //             }}>
-      //             {parseFloat(item.validPacketTimeStamp) -
-      //               parseFloat(item.lastPowerCutTime) >
-      //             300 ? (
-      //               <Image
-      //                 source={image.battery}
-      //                 style={{width: 20, height: 20}}
-      //               />
-      //             ) : (
-      //               <Image
-      //                 source={image.batteryOff}
-      //                 style={{width: 20, height: 20}}
-      //               />
-      //             )}
-      //             <Text
-      //               style={{
-      //                 fontSize: 12,
-      //                 color: '#616161',
-      //                 fontWeight: 'bold',
-      //               }}>
-      //               Battery
-      //             </Text>
-      //           </View>
-
-      //           <View
-      //             style={{
-      //               borderLeftWidth: 1,
-      //               borderColor: '#616161',
-      //               height: 27,
-      //             }}
-      //           />
-      //           <View
-      //             style={{
-      //               justifyContent: 'center',
-      //               paddingHorizontal: 10,
-      //               alignItems: 'center',
-      //             }}>
-      //             {parseFloat(item.validPacketTimeStamp) -
-      //               parseFloat(item.lastLowBatteryTime) >
-      //             21600 ? (
-      //               <Image
-      //                 source={image.charge}
-      //                 style={{width: 20, height: 20}}
-      //               />
-      //             ) : (
-      //               <Image
-      //                 source={image.chargeOff}
-      //                 style={{width: 20, height: 20}}
-      //               />
-      //             )}
-      //             <Text
-      //               style={{
-      //                 fontSize: 12,
-      //                 color: '#616161',
-      //                 fontWeight: 'bold',
-      //               }}>
-      //               Power
-      //             </Text>
-      //           </View>
-      //           <View
-      //             style={{
-      //               borderLeftWidth: 1,
-      //               borderColor: '#616161',
-      //               height: 27,
-      //             }}
-      //           />
-      //           <View
-      //             style={{
-      //               justifyContent: 'center',
-      //               paddingHorizontal: 10,
-      //               alignItems: 'center',
-      //             }}>
-      //             {parseFloat(item.statusTermInfo & 2) == 2 ? (
-      //               <Image
-      //                 source={image.shokker}
-      //                 style={{width: 20, height: 20}}
-      //               />
-      //             ) : (
-      //               <Image
-      //                 source={image.shokkerOff}
-      //                 style={{width: 20, height: 20}}
-      //               />
-      //             )}
-      //             <Text
-      //               style={{
-      //                 fontSize: 12,
-      //                 color: '#616161',
-      //                 fontWeight: 'bold',
-      //               }}>
-      //               Ignition
-      //             </Text>
-      //           </View>
-      //         </View>
-      //         {/*  */}
-      //         <View
-      //           style={{
-      //             paddingHorizontal: 25,
-      //           }}>
-      //           <Text
-      //             style={{
-      //               fontSize: 12,
-      //               textAlign: 'center',
-      //             }}>
-      //             {item.address}
-      //           </Text>
-      //         </View>
-      //       </View>
-      //     </LinearGradient>
-      //   </TouchableOpacity>
-      // </>
     );
   };
 
