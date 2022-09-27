@@ -356,7 +356,7 @@ export default function Home() {
                     }}></LinearGradient>
                   <TouchableOpacity
                     onPress={() => {
-                      setIsShow(true), getRunningData(item, details);
+                      setIsShow(true), getRunningData(item.type, details);
                     }}
                     style={{
                       borderColor: '#1B6CE5',

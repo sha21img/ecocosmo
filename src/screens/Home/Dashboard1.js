@@ -74,8 +74,7 @@ const Dashboard1 = ({
   const navigation = useNavigation();
 
   const netInfo = useNetInfo();
- 
- 
+
   const getUserDetails = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
     setLoginDetails(succcess);
@@ -159,7 +158,7 @@ const Dashboard1 = ({
     // console.log('item', item.features, 'item');
     return (
       <>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
             getMobileNumber(item);
@@ -318,8 +317,8 @@ const Dashboard1 = ({
             style={styles.driverAddressBox}>
             <Text style={styles.driverAddressText}>{item.address}</Text>
           </LinearGradient>
-        </TouchableOpacity>
-        <View>
+        </TouchableOpacity> */}
+        <View style={{paddingBottom: 20}}>
           <View
             style={{
               // backgroundColor: 'red',
@@ -610,7 +609,6 @@ const Dashboard1 = ({
             </View>
             <View
               style={{
-                backgroundColor: 'red',
                 paddingVertical: 20,
               }}>
               <View
@@ -631,7 +629,18 @@ const Dashboard1 = ({
                     flexWrap: 'wrap',
                     // fontSize: Size.tiny,
                   }}>
-                  {__('CHECK IN DATE & TIME')}
+                  {__('CHECK IN DATE')}
+                </Text>
+                <Text
+                  style={{
+                    paddingVertical: 2,
+                    color: '#0080FF',
+                    fontWeight: 'bold',
+                    // flexGrow: 1,
+                    flexWrap: 'wrap',
+                    // fontSize: Size.tiny,
+                  }}>
+                  {__('&  TIME')}
                 </Text>
                 <View
                   style={{
