@@ -20,7 +20,7 @@ import {__} from '../../../Utils/Translation/translation';
 import colors from '../../../assets/Colors';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
-import Entypo from 'react-native-vector-icons/Entypo';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 
@@ -139,11 +139,36 @@ export default function Home() {
               <Image source={image.drawer} style={{height: 20, width: 23}} />
             </TouchableOpacity>
           </View>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL(`tel:+91989676997`);
+            }}
+            style={{
+              flexDirection: 'row',
+              backgroundColor: 'green',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 7,
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+            }}>
+            <AntDesign
+              style={{
+                color: 'orange',
+                fontSize: 20,
+                paddingRight: 5,
+              }}
+              name={'customerservice'}
+            />
+            <Text style={{color: 'white'}}>+91989676997</Text>
+          </TouchableOpacity>
         </View>
       </LinearGradient>
       {!isShow ? (
         <ScrollView
-          style={{flex: 1}}
+          style={{flex: 1, 
+          // backgroundColor:'#00266B',
+          }}
           refreshControl={
             <RefreshControl
               enabled={true}
@@ -171,20 +196,48 @@ export default function Home() {
               whatsapp://send?phone=+91989676997
             </Text>
           </TouchableOpacity>
+          {/* ['#00266B', '#2AB0CC'] */}
           <View
+         
+            style={{
+              borderRadius: 12,
+             
+            width:'80%',
+            height:100,
+              padding: 3,
+             alignSelf:'center',
+             backgroundColor:'#2AB0CC'
+            }}>
+            <LinearGradient
+            colors={['#2AB0CC','red']}
+            start={{x:0.8,y:0.7}}
+            end={{x:1,y:0.5}}
+            style={{
+              position:'absolute',
+              bottom:0,
+              right:0,
+              width:'50%',
+              height:50,
+              borderBottomRightRadius:10
+            }}
+            >
+
+            </LinearGradient>
+           {/* <View
             style={{
               borderRadius: 10,
-              borderWidth: 2,
+             width:'100%',
               justifyContent: 'space-around',
               alignItems: 'center',
               flexDirection: 'row',
               alignSelf: 'center',
-              borderColor: '#1B6CE5',
-              width: '80%',
-              marginVertical: 5,
+            
+             backgroundColor:'white',
+             
               padding: 15,
-            }}>
-            <Image
+            }}
+           >
+           <Image
               source={image.whatsApp}
               style={{height: 34, width: 34, marginHorizontal: 20}}
             />
@@ -197,15 +250,14 @@ export default function Home() {
               }}
               style={{
                 width: '50%',
-                // justifyContent: 'center',
-                // alignContent: 'center',
+             
               }}>
               <Text
                 style={{
                   textAlign: 'center',
                   fontSize: 20,
                   fontWeight: 'bold',
-                  //   color: 'white',
+                
                 }}>
                 All
               </Text>
@@ -214,12 +266,13 @@ export default function Home() {
                   textAlign: 'center',
                   fontSize: 20,
                   fontWeight: 'bold',
-                  //   color: 'white',
+                
                 }}>
-                {/* 6 */}({details?.length})
+                ({details?.length})
               </Text>
               <Text style={{textAlign: 'center', fontSize: 18}}>Available</Text>
             </TouchableOpacity>
+           </View> */}
           </View>
 
           <View
@@ -288,6 +341,7 @@ export default function Home() {
         <View
           style={{
             flex: 1,
+           
             alignItems: 'center',
             justifyContent: 'center',
           }}>

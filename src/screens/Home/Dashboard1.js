@@ -377,11 +377,12 @@ const Dashboard1 = ({
             <Text style={styles.driverAddressText}>{item.address}</Text>
           </LinearGradient>
         </TouchableOpacity>
-        {/* <View>
+        <View>
           <View
             style={{
               backgroundColor: 'red',
               flexDirection: 'row',
+              alignItems: 'center',
               justifyContent: 'space-between',
             }}>
             <Text
@@ -392,47 +393,95 @@ const Dashboard1 = ({
             <View
               style={{
                 flexDirection: 'row',
-                borderRadius: 5,
-                borderWidth: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 5,
-                borderColor: 'white',
               }}>
-              <Ionicons
+              <View
                 style={{
-                  color: 'white',
-                  fontSize: 20,
-                }}
-                name={'call'}
-              />
-              <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 5,
-                borderRadius: 5,
-                borderWidth: 1,
-                borderColor: 'white',
-              }}>
-              <Entypo
+                  flexDirection: 'row',
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 5,
+                  borderColor: 'white',
+                  marginHorizontal: 10,
+                }}>
+                <Ionicons
+                  style={{
+                    color: 'white',
+                    fontSize: 18,
+                  }}
+                  name={'call'}
+                />
+                <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
+              </View>
+              <View
                 style={{
-                  color: 'orange',
-                  fontSize: 20,
-                }}
-                name={'location'}
-              />
-              <Text style={{color: 'white', paddingLeft: 4}}>Live Track</Text>
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 5,
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                }}>
+                <Entypo
+                  style={{
+                    color: 'orange',
+                    fontSize: 18,
+                  }}
+                  name={'location'}
+                />
+                <Text style={{color: 'white', paddingLeft: 4}}>Live Track</Text>
+              </View>
             </View>
           </View>
-          <Text style={{fontSize: 12, width: '80%'}}>
+          <Text style={{fontSize: 12, width: '70%', paddingVertical: 5}}>
             177 New Apollo Indl Estate Mogra Lane Andheri, Mumbai,
             Bharuch,400069,India
           </Text>
-        </View> */}
+          <View style={{flexDirection: 'row'}}>
+            <View style={{width: '50%'}}></View>
+            <View style={{borderWidth: 2, backgroundColor: '#00266B'}}>
+              <View style={{padding: 10}}>
+                <Text>Check In Time</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <LinearGradient
+                    colors={['#00266B', '#2AB0CC']}
+                    start={{x: 0, y: 1}}
+                    style={{
+                      height: 2,
+                      width: 40,
+                      borderTopLeftRadius: 10,
+                    }}></LinearGradient>
+                  <View
+                    style={{
+                      height: 2,
+                      width: 10,
+                      backgroundColor: '#2AB0CC',
+                    }}></View>
+
+                  <LinearGradient
+                    colors={['#2AB0CC', '#00266B']}
+                    start={{x: 0, y: 1}}
+                    style={{
+                      height: 2,
+                      width: 40,
+                      borderTopRightRadius: 10,
+                    }}></LinearGradient>
+                </View>
+                <Text>17:57:45</Text>
+              </View>
+              {/* <View>
+                <Text>Today Odometer</Text>
+                <Text>5790456 KM</Text>
+              </View>
+              <View>
+                <Text>Speed</Text>
+                <Text>16KM./H</Text>
+              </View> */}
+            </View>
+          </View>
+        </View>
       </>
       // <>
       //   <TouchableOpacity
