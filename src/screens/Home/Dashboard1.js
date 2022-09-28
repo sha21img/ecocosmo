@@ -326,14 +326,21 @@ const Dashboard1 = ({
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <Text
-              numberOfLines={1}
-              style={{fontSize: 22, fontWeight: 'bold', color: 'white'}}>
-              {item.deviceId}
-            </Text>
+            <View
+              style={{flexWrap: 'wrap', flexDirection: 'row', maxWidth: '49%'}}>
+              <Text
+                style={{
+                  fontSize: 22,
+                  fontWeight: 'bold',
+                  color: 'white',
+                }}>
+                {item.deviceId}
+              </Text>
+            </View>
             <View
               style={{
                 flexDirection: 'row',
+                maxWidth: '50%',
               }}>
               {loginDetails?.accountName == 'demo101' ? (
                 <View
@@ -342,18 +349,21 @@ const Dashboard1 = ({
                     borderRadius: 5,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    padding: 5,
-                    marginHorizontal: 10,
+                    padding: '3%',
+                    marginHorizontal: '3%',
                     backgroundColor: 'grey',
                   }}>
                   <Ionicons
                     style={{
                       color: 'white',
-                      fontSize: 18,
+                      fontSize: 14,
                     }}
                     name={'call'}
                   />
-                  <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
+                  <Text
+                    style={{color: 'white', paddingLeft: '3%', fontSize: 14}}>
+                    Call
+                  </Text>
                 </View>
               ) : isData?.mobilenumber !== '' ? (
                 <TouchableOpacity
@@ -365,18 +375,21 @@ const Dashboard1 = ({
                     borderRadius: 5,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    padding: 5,
-                    marginHorizontal: 10,
+                    padding: '3%',
+                    marginHorizontal: '3%',
                     backgroundColor: colors.callBtn,
                   }}>
                   <Ionicons
                     style={{
                       color: 'white',
-                      fontSize: 18,
+                      fontSize: 14,
                     }}
                     name={'call'}
                   />
-                  <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
+                  <Text
+                    style={{color: 'white', paddingLeft: '3%', fontSize: 14}}>
+                    Call
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 <View
@@ -385,18 +398,21 @@ const Dashboard1 = ({
                     borderRadius: 5,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    padding: 5,
-                    marginHorizontal: 10,
+                    padding: '3%',
+                    marginHorizontal: '3%',
                     backgroundColor: 'grey',
                   }}>
                   <Ionicons
                     style={{
                       color: 'white',
-                      fontSize: 18,
+                      fontSize: 14,
                     }}
                     name={'call'}
                   />
-                  <Text style={{color: 'white', paddingLeft: 4}}>Call</Text>
+                  <Text
+                    style={{color: 'white', paddingLeft: '3%', fontSize: 14}}>
+                    Call
+                  </Text>
                 </View>
               )}
               <TouchableOpacity
@@ -407,7 +423,7 @@ const Dashboard1 = ({
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  padding: 5,
+                  padding: '3%',
                   borderRadius: 5,
                   borderWidth: 1,
                   borderColor: 'white',
@@ -415,11 +431,13 @@ const Dashboard1 = ({
                 <Entypo
                   style={{
                     color: 'orange',
-                    fontSize: 18,
+                    fontSize: 14,
                   }}
                   name={'location'}
                 />
-                <Text style={{color: 'white', paddingLeft: 4}}>Live Track</Text>
+                <Text style={{color: 'white', fontSize: 14, paddingLeft: '3%'}}>
+                  Live Track
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -433,6 +451,7 @@ const Dashboard1 = ({
             {item.address}
           </Text>
           <TouchableOpacity
+            activeOpacity={0.5}
             onPress={() => {
               getMobileNumber(item);
               isSetData(item);
@@ -547,7 +566,7 @@ const Dashboard1 = ({
               </View>
               {/*  */}
               {/*  */}
-              <View
+              {/* <View
                 style={{
                   position: 'absolute',
                   top: 50,
@@ -559,22 +578,35 @@ const Dashboard1 = ({
                   style={{
                     color: '#24A520',
                   }}>
-                  Running
+                  {item.statusMessage}
                 </Text>
-              </View>
+              </View> */}
               <View
                 style={{
                   position: 'absolute',
-                  top: 70,
-                  left: 65,
+                  top: 55,
+                  left: 20,
+                  width: 180,
                   color: 'white',
                   zIndex: 99,
+                  // backgroundColor: 'cyan',
                 }}>
                 <Text
                   style={{
-                    color: 'white',
+                    color: '#24A520',
+                    flexGrow: 1,
+                    textAlign: 'center',
+                    flexWrap: 'wrap',
                   }}>
-                  14M 38KM/H
+                  {item.statusMessage}
+                </Text>
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                  }}>
+                  {/* 14M 38KM/H */}
+                  {Math.floor(item.speed)} {__('KM/H')}
                 </Text>
               </View>
               <Image
