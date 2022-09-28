@@ -249,7 +249,14 @@ export default function Home() {
               whatsapp://send?phone=+91989676997
             </Text>
           </TouchableOpacity>
-          <View
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => {
+              navigation.navigate('MainHome', {
+                details: newFilterDetails,
+                driverDetails: driverDetails,
+              });
+            }}
             style={{
               borderRadius: 12,
               width: '80%',
@@ -290,13 +297,7 @@ export default function Home() {
                   marginHorizontal: 30,
                 }}
               />
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('MainHome', {
-                    details: newFilterDetails,
-                    driverDetails: driverDetails,
-                  });
-                }}
+              <View
                 style={{
                   width: '50%',
                 }}>
@@ -322,9 +323,9 @@ export default function Home() {
                   style={{textAlign: 'center', color: 'white', fontSize: 18}}>
                   Available
                 </Text>
-              </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
           <Image source={image.mainBack} style={{width: '100%'}} />
           <View
             style={{
@@ -335,7 +336,11 @@ export default function Home() {
             }}>
             {CarType.map(item => {
               return (
-                <View
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsShow(true), getRunningData(item.type, details);
+                  }}
+                  activeOpacity={0.7}
                   style={{
                     margin: 5,
                     borderRadius: 10,
@@ -354,10 +359,7 @@ export default function Home() {
                       height: '50%',
                       borderBottomRightRadius: 12,
                     }}></LinearGradient>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setIsShow(true), getRunningData(item.type, details);
-                    }}
+                  <View
                     style={{
                       borderColor: '#1B6CE5',
                       paddingVertical: 10,
@@ -402,8 +404,8 @@ export default function Home() {
                         alignSelf: 'center',
                       }}
                     />
-                  </TouchableOpacity>
-                </View>
+                  </View>
+                </TouchableOpacity>
               );
             })}
           </View>
