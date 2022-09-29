@@ -11,10 +11,10 @@ function Tabs({tab, onPress, icon, isSelected, index}) {
         onPress(tab.name, index);
       }}
       style={{
-        flex: 1,
+        // flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 5,
+        paddingHorizontal: 5,
       }}>
       <Image
         source={
@@ -38,6 +38,9 @@ function Tabs({tab, onPress, icon, isSelected, index}) {
           height: 40,
         }}
       />
+      <Text style={{color: 'white', marginTop: 5}}>
+        {tab.name == 'CustomerProfile' ? 'Profile' : tab.name}
+      </Text>
     </TouchableOpacity>
   );
 }

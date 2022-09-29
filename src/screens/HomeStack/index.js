@@ -42,13 +42,8 @@ function HomeStack(props) {
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            backgroundColor: colors.white,
-            width: '90%',
-            borderRadius: 100,
-            paddingHorizontal: 20,
-            paddingVertical: 6,
-            elevation: 2,
+            marginHorizontal: 50,
+            width: '80%',
           }}>
           {routes.map((route, index) => (
             <Tabs
@@ -69,22 +64,19 @@ function HomeStack(props) {
     <Tab.Navigator
       initialRouteName="Home"
       tabBarOptions={{
-        showLabel: false,
+        showLabel: true,
         activeTintColor: '#438EFA',
       }}
       tabBar={props => <CustomTabBar {...props} />}>
       <Tab.Screen
         name="Home"
-        children={(props) => <Home props={props} />}
+        children={props => <Home props={props} />}
         // component={Home}
         initialParams={{icon: 'home'}}
+
         // props={props}
       />
-      <Tab.Screen
-        name="Chat"
-        component={Chat}
-        initialParams={{icon: 'chat'}}
-      />
+      <Tab.Screen name="Chat" component={Chat} initialParams={{icon: 'chat'}} />
       <Tab.Screen
         name="Notifications"
         component={Notifications}

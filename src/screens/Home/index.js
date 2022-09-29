@@ -10,9 +10,10 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+import PrimaryDashboard from './PrimaryDashboard';
+import SecondaryDashboard from './SecondaryDashboard';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
-import ModalSelector from 'react-native-modal-selector';
 import styles from './style';
 import Dashboard1 from './Dashboard1';
 import Dashboard2 from './Dashboard2';
@@ -24,6 +25,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import {useNetInfo} from '@react-native-community/netinfo';
+import ModalSelector from 'react-native-modal-selector';
+
 import {
   check,
   PERMISSIONS,
@@ -31,12 +34,17 @@ import {
   request,
   requestMultiple,
 } from 'react-native-permissions';
-export default function Home() {
+import Entypo from 'react-native-vector-icons/Entypo';
+
+export default function Home({props}) {
   const [details, setDetails] = useState([]);
   const [newFilterDetails, setNewFilterDetails] = useState([]);
   const [filteredDetails, setFilteredDetails] = useState([]);
   const [isShow, setIsShow] = useState(true);
   const [type, setType] = useState('All');
+  const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
+  const [searchFilterDetails, setSearchFilterDetails] = useState([]);
+
   const [driverDetails, setDriverDetails] = useState([]);
   const navigation = useNavigation();
   const [countObj, setCountObj] = useState({
@@ -47,9 +55,12 @@ export default function Home() {
     'No GPS': 0,
   });
   const netInfo = useNetInfo();
+  const [secondaryDetails, setSecondaryDetails] = useState([]);
   const [locationPermission, setLocationPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [alertMsg, setAlertMsg] = useState('');
+  const [search, setSearch] = useState(true);
+
   const CarType = [
     {type: 'Running', image: image.runningCar},
     {type: 'Idle', image: image.idelCar},
@@ -58,12 +69,13 @@ export default function Home() {
     {type: 'No GPS', image: image.noGpsCar},
   ];
   useEffect(() => {
+    setDashBoardType('Dashboard 1');
     console.log(
       '=============================================================================',
     );
     getDetails('first');
     getVehicle();
-  }, []);
+  }, [props]);
   useEffect(() => {
     if (netInfo.isConnected) {
       if (Platform.OS == 'android') {
@@ -118,6 +130,39 @@ export default function Home() {
         showPermissionError('Something Went Wrong While Checking Permission');
       });
   };
+  let index = 0;
+
+  const data = [
+    {key: index++, label: 'Dashboard 1'},
+    {key: index++, label: 'Dashboard 2'},
+  ];
+  const changeDasboardType = dashBoardType => {
+    return __(dashBoardType);
+  };
+  const searchFunction = text => {
+    console.log(
+      'poiuytrdfghjkoiuytdcvbkoiuytfbnkloiuyfvbkisearchFunctionsearchFunctionsearchFunction',
+      text,
+    );
+    // let filteredData = filterDetails.filter(item => {
+    //   return item.deviceId.includes(text);
+    // });
+    // setFilteredDetails(filteredData);
+    // console.log('this is searched text', filteredData);
+    // console.log('text', text);
+    if (text !== null && text !== undefined && text !== '') {
+      var newArr = [];
+      newArr = filteredDetails.filter(item => {
+        return item.deviceId.toLowerCase().includes(text.toLowerCase());
+      });
+      console.log('filteredDetails', newArr.length);
+      newArr !== null && newArr !== undefined && newArr.length > 0
+        ? setSecondaryDetails(newArr)
+        : setSecondaryDetails([]);
+    } else {
+      setSecondaryDetails(filteredDetails);
+    }
+  };
   const getDetails = async () => {
     setCountObj({
       Running: 0,
@@ -140,6 +185,8 @@ export default function Home() {
     setDetails(detail);
     setFilteredDetails(detail);
     setNewFilterDetails(detail);
+    setSecondaryDetails(detail);
+    setSearchFilterDetails(detail);
     // if (data === 'first') {
     detail?.forEach(element => {
       // setCountObj({[element.status]:element.status+1})
@@ -161,22 +208,10 @@ export default function Home() {
     const driverDetails = response.data.driverDetails;
     setDriverDetails(driverDetails);
   };
-  const getRunningData = (data, details) => {
-    // console.log('data', data);
-    setType(data);
-    const filterDetails = details.filter(item => {
-      return item.status == data;
-    });
-    setNewFilterDetails(filterDetails);
-    setIsShow(false);
-    navigation.navigate('MainHome', {
-      details: filterDetails,
-      driverDetails: driverDetails,
-      setIsShow: setIsShow,
-    });
-  };
+
   const onRefreshPage = React.useCallback((data, details) => {
     getDetails();
+    setIsShow(!isShow);
   });
 
   return (
@@ -192,33 +227,144 @@ export default function Home() {
               onPress={() => navigation.openDrawer()}>
               <Image source={image.drawer} style={{height: 20, width: 23}} />
             </TouchableOpacity>
+            <View style={{marginLeft: 15}}>
+              <ModalSelector
+                initValue="Select tickets"
+                accessible={true}
+                data={data}
+                scrollViewAccessibilityLabel={'Scrollable options'}
+                style={{flexDirection: 'row'}}
+                onChange={option => {
+                  setDashBoardType(option.label);
+                }}>
+                <TouchableOpacity style={styles.dashboardContainer}>
+                  <TextInput
+                    style={styles.dashboardText}
+                    editable={false}
+                    value={changeDasboardType(dashBoardType)}
+                  />
+                  <Image
+                    source={image.arrowDown}
+                    style={styles.dashboardArrow}
+                  />
+                </TouchableOpacity>
+              </ModalSelector>
+            </View>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              Linking.openURL(`tel:+91989676997`);
-            }}
-            style={{
-              flexDirection: 'row',
-              backgroundColor: 'green',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 7,
-              paddingVertical: 5,
-              paddingHorizontal: 10,
-            }}>
-            <AntDesign
-              style={{
-                color: 'orange',
-                fontSize: 20,
-                paddingRight: 5,
+          {dashBoardType == 'Dashboard 1' ? (
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL(`tel:+91989676997`);
               }}
-              name={'customerservice'}
-            />
-            <Text style={{color: 'white'}}>+91989676997</Text>
-          </TouchableOpacity>
+              style={{
+                flexDirection: 'row',
+                backgroundColor: 'green',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 7,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+              }}>
+              <AntDesign
+                style={{
+                  color: 'orange',
+                  fontSize: 20,
+                  paddingRight: 5,
+                }}
+                name={'customerservice'}
+              />
+              <Text style={{color: 'white'}}>+91989676997</Text>
+            </TouchableOpacity>
+          ) : (
+            <>
+              <View style={styles.alertContainer}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Notifications')}>
+                  <Image
+                    source={image.Notification1}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                </TouchableOpacity>
+                {search ? (
+                  <TouchableOpacity onPress={() => setSearch(false)}>
+                    <Image source={image.search} style={styles.searchIcon} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSearch(true);
+                      setNewFilterDetails(filteredDetails);
+                      setSecondaryDetails(filteredDetails);
+                    }}>
+                    <Entypo
+                      style={{
+                        color: colors.white,
+                        fontSize: 24,
+                        marginLeft: 10,
+                        paddingVertical: 5,
+                      }}
+                      name={'cross'}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </>
+          )}
         </View>
+        {!search ? (
+          <View
+            style={{
+              width: '100%',
+              marginBottom: 20,
+              marginTop: 10,
+              borderRadius: 7,
+              alignItems: 'center',
+            }}>
+            <TextInput
+              placeholder="Select vehicle number"
+              style={{
+                backgroundColor: colors.white,
+                borderRadius: 7,
+                width: '90%',
+                paddingHorizontal: 10,
+              }}
+              onChangeText={searchFunction}
+            />
+          </View>
+        ) : null}
       </LinearGradient>
       {!isShow ? (
+        dashBoardType == 'Dashboard 1' ? (
+          <PrimaryDashboard
+            primaryFilterDetails={newFilterDetails}
+            primaryDriverDetails={driverDetails}
+            countObj={countObj}
+            onRefreshPage={onRefreshPage}
+            isShow={isShow}
+            setIsShow={setIsShow}
+          />
+        ) : (
+          <SecondaryDashboard
+            secondaryFilterDetails={secondaryDetails}
+            secondaryDriverDetails={driverDetails}
+            countObj={countObj}
+            filteredDetails={filteredDetails}
+            onRefreshPage={onRefreshPage}
+            isShow={isShow}
+            setIsShow={setIsShow}
+          />
+        )
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator />
+        </View>
+      )}
+      {/* {!isShow ? (
         <ScrollView
           style={{flex: 1, backgroundColor: '#00266B'}}
           refreshControl={
@@ -423,7 +569,7 @@ export default function Home() {
           }}>
           <ActivityIndicator />
         </View>
-      )}
+      )} */}
     </>
   );
 }
