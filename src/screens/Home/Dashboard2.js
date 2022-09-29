@@ -383,13 +383,13 @@ function Dashboard2({
         keyExtractor={({item, index}) => index}
         showsVerticalScrollIndicator={false}
         renderItem={item => renderItem(item)}
-        refreshControl={
-          <RefreshControl
-            enabled={true}
-            refreshing={isShow}
-            onRefresh={() => onRefreshPage(type, details, setIsShow)}
-          />
-        }
+        // refreshControl={
+        //   <RefreshControl
+        //     enabled={true}
+        //     refreshing={isShow}
+        //     onRefresh={() => onRefreshPage(type, details, setIsShow)}
+        //   />
+        // }
       />
 
       <VehicleMenu

@@ -38,15 +38,6 @@ function MainHome(props) {
   // const [driverDetails, setDriverDetails] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  let index = 0;
-
-  const data = [
-    {key: index++, label: 'Dashboard 1'},
-    {key: index++, label: 'Dashboard 2'},
-  ];
-  const changeDasboardType = dashBoardType => {
-    return __(dashBoardType);
-  };
   useEffect(() => {
     setDashBoardType('Dashboard 1');
     setNewFilterDetails(details);
@@ -93,7 +84,7 @@ function MainHome(props) {
   return (
     <>
       <LinearGradient
-        colors={['#395DBF', '#16BCD4']}
+        colors={['#00266B', '#00266B']}
         start={{x: 0, y: 0.5}}
         end={{x: 1, y: 0.5}}>
         <View style={styles.headerContainer}>
@@ -103,7 +94,7 @@ function MainHome(props) {
               onPress={() => navigation.openDrawer()}>
               <Image source={image.drawer} style={{height: 20, width: 23}} />
             </TouchableOpacity>
-            <View style={{marginLeft: 15}}>
+            {/* <View style={{marginLeft: 15}}>
               <ModalSelector
                 initValue="Select tickets"
                 accessible={true}
@@ -125,7 +116,7 @@ function MainHome(props) {
                   />
                 </TouchableOpacity>
               </ModalSelector>
-            </View>
+            </View> */}
           </View>
           <View style={styles.alertContainer}>
             <TouchableOpacity
@@ -181,18 +172,18 @@ function MainHome(props) {
       </LinearGradient>
 
       <View style={styles.carDetailCard}>
-        {dashBoardType === 'Dashboard 1' && (
-          <Dashboard1
-            details={newFilterDetails}
-            // isShow={isShow}
-            driverDetails={driverDetails}
-            // onRefreshPage={onRefreshPage}
-            // type={type}
-            // isShow={isShow}
-            // setIsShow={setIsShow}
-          />
-        )}
-        {dashBoardType === 'Dashboard 2' && (
+        {/* {dashBoardType === 'Dashboard 1' && ( */}
+        <Dashboard1
+          details={newFilterDetails}
+          // isShow={isShow}
+          driverDetails={driverDetails}
+          // onRefreshPage={onRefreshPage}
+          // type={type}
+          // isShow={isShow}
+          // setIsShow={setIsShow}
+        />
+        {/* )} */}
+        {/* {dashBoardType === 'Dashboard 2' && (
           <Dashboard2
             details={newFilterDetails}
             // isShow={isShow}
@@ -202,7 +193,7 @@ function MainHome(props) {
             // isShow={isShow}
             // setIsShow={setIsShow}
           />
-        )}
+        )} */}
       </View>
     </>
   );

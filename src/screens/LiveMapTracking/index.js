@@ -229,6 +229,7 @@ function LiveMapTracking(props) {
           Math.cos(cord2.longitude - cord1.longitude);
       const θ = Math.atan2(y, x);
       var brng = ((θ * 180) / Math.PI + 360) % 360;
+      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', brng);
       updateState({
         heading: brng,
         curLoc: {
@@ -290,7 +291,10 @@ function LiveMapTracking(props) {
               }}>
               {Object.keys(coordinate).length > 0 && (
                 <>
-                {console.log(heading, 'vehiheadingheadingheadingheadingheadingheadingcleData.heading')}
+                  {console.log(
+                    heading,
+                    'vehiheadingheadingheadingheadingheadingheadingcleData.heading',
+                  )}
                   <Marker.Animated
                     // rotation={heading}
                     icon={{uri: detail.markerIcon}}
