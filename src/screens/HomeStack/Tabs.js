@@ -11,10 +11,7 @@ function Tabs({tab, onPress, icon, isSelected, index}) {
         onPress(tab.name, index);
       }}
       style={{
-        // flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: 5,
       }}>
       <Image
         source={

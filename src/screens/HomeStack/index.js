@@ -26,9 +26,7 @@ function HomeStack(props) {
     const handlePress = (activeTab, index) => {
       console.log('activeTab', activeTab);
       setIsSelected(activeTab);
-      // if (state.index !== index) {
       navigation.navigate(activeTab);
-      // }
     };
     return (
       <View
@@ -37,13 +35,12 @@ function HomeStack(props) {
           bottom: 30,
           width: '100%',
           alignItems: 'center',
-          justifyContent: 'center',
         }}>
         <View
           style={{
+            width: '90%',
             flexDirection: 'row',
-            marginHorizontal: 50,
-            width: '80%',
+            justifyContent: 'space-around',
           }}>
           {routes.map((route, index) => (
             <Tabs
