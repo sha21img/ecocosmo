@@ -171,6 +171,12 @@ const Dashboard1 = ({
               style={{
                 height: 30,
                 width: 70,
+
+
+
+
+
+
               }}
             />
             <View style={{paddingHorizontal: 10}}>
@@ -627,7 +633,7 @@ const Dashboard1 = ({
                 }}
               />
               <Image
-                source={image.dashboardcar}
+                source={{uri: item.equipmentIcon}}
                 resizeMode="contain"
                 style={{
                   position: 'absolute',

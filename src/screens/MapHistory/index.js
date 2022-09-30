@@ -44,7 +44,7 @@ function MapHistory(props) {
   const [newImei, setNewImei] = useState(imei || ime);
   const [parkMode, setParkMode] = useState(true);
   const [selected, setSelected] = useState(
-    props?.route?.params?.details?.deviceId || 'All Vehicle',
+     'All Vehicle',
   );
   const [open, setOpen] = useState(false);
   const [dateStart, setDateStart] = useState(new Date());
@@ -67,7 +67,7 @@ function MapHistory(props) {
   const [isVisibleMarker1, setIsVisibleMarker1] = useState(false);
   const [lastRide, setLastRide] = useState(false);
   const [loop, setLoop] = useState(1);
-
+console.log('props?.route?.params?.details?.deviceId',props?.route?.params?.details?.deviceId)
   const [coordinates, setCoordinates] = useState({
     coordinate: {
       latitude: 30.7046,
@@ -80,25 +80,31 @@ function MapHistory(props) {
   React.useEffect(() => {
     if (focus == true) {
       const filterImei = imei || ime;
-      console.log('props', filterImei);
+      console.log('baharwala', filterImei);
       setNewImei(imei || ime);
+      // setSelected(props?.route?.params?.details?.deviceId || 'All Vehicle')
       var a = moment(new Date()).format('YYYY-MM-DD');
       setFdate(a);
       if (props?.route?.params?.summaryData != undefined) {
+        console.log('props?.route?.params?.summaryData',props?.route?.params?.summaryData)
         const summaryData = props?.route?.params?.summaryData;
         console.log('summaryD', summaryData['startTime:']);
         console.log('summaryData', summaryData['endTime:']);
-        var fTime = moment(summaryData['startTime:']).format('hh:mm');
-        var endTime = moment(summaryData['endTime:']).format('hh:mm');
-        console.log('fTime', fTime);
-        console.log('endTime', endTime);
+        // var fTime = moment(summaryData['startTime:']).format('hh:mm');
+        // var endTime = moment(summaryData['endTime:']).format('hh:mm');
+        var fTime = moment(summaryData['startTime:']).format('HH:mm');
+        var endTime = moment(summaryData['endTime:']).format('HH:mm');
+        // console.log('fTime-=-=', fTimea
+        
+
         setFtime(fTime);
         setFtimeend(endTime);
         getMapHistory(a, endTime, fTime);
         setIsVisibleMarker(true);
       } else {
+        console.log('//////////////////////////////////////////////////////////////////////')
         setFtime('00:00');
-        var ab = moment(new Date()).format('hh:mm');
+        var ab = moment(new Date()).format('HH:mm');
         console.log('avavava', ab);
         setFtimeend(ab);
         getMapHistory(a, ab, fTime);
@@ -112,10 +118,12 @@ function MapHistory(props) {
   const getImei = async filterImei => {
     console.log('filterImei for ma[', filterImei);
     const data = await Storage.getVehicleDetail('vehicle_detail');
+    // console.log(first)
     if (filterImei !== undefined) {
       const filterVehicle = data.find(item => {
         return item.imei === filterImei;
       });
+      console.log('filterVehiclefilterVehicle',filterVehicle)
       setSelected(filterVehicle.deviceId);
     } else {
       setSelected(data[0]?.deviceId);
@@ -128,7 +136,8 @@ function MapHistory(props) {
     setNewImei(imei);
   };
   const getMapHistory = async (date, endTime, startTime) => {
-    console.log('gggetetetetmamam', loading);
+    console.log('endTimeendTimeendTimeendTimeendTimeendTimeendTime', endTime);
+    console.log('startTimestartTimestartTimestartTimestartTime', startTime);
     setLoading(false);
 
     const loginDetail = await Storage.getLoginDetail('login_detail');
@@ -186,7 +195,7 @@ function MapHistory(props) {
     let fDateStart = new Date(currentDate);
     setFdate(formatDate(fDateStart.toString()));
 
-    const fTimeStart = moment(fDateStart).format('hh:mm');
+    const fTimeStart = moment(fDateStart).format('HH:mm');
     setFtime(fTimeStart);
   };
   const onChangeEnd = selectedDate => {
@@ -198,7 +207,7 @@ function MapHistory(props) {
     setFdateend(formatDate(fDateEnd.toString()));
     let fTimeEnd = fDateEnd.toLocaleTimeString().slice(0, 40);
 
-    const endTime = moment(fDateEnd).format('hh:mm');
+    const endTime = moment(fDateEnd).format('HH:mm');
     setFtimeend(endTime);
   };
   const showMode = currentMode => {
@@ -488,7 +497,6 @@ function MapHistory(props) {
                       console.log(',,,,,,', coordinate);
                     }}
                     icon={
-                      
                       coordinate.direction == 'E'
                         ? image.E
                         : coordinate.direction == 'N'
@@ -593,28 +601,28 @@ function MapHistory(props) {
                 />
               )}
             </TouchableOpacity>
-            {props?.route?.params?.summaryData == undefined ? (
-              <TouchableOpacity
-                disabled={!loading}
-                onPress={() => {
-                  console.log('GOOOOOOOOOOOOOOOOOOOOOOOO');
-                  animate == 'start' && getMapHistory();
-                }}
+            {/* {props?.route?.params?.summaryData == undefined ? ( */}
+            <TouchableOpacity
+              disabled={!loading}
+              onPress={() => {
+                console.log('GOOOOOOOOOOOOOOOOOOOOOOOO');
+                animate == 'start' && getMapHistory();
+              }}
+              style={{
+                borderRadius: 50,
+                float: 'right',
+                justifyContent: 'flex-end',
+              }}>
+              <Text
                 style={{
-                  borderRadius: 50,
-                  float: 'right',
-                  justifyContent: 'flex-end',
+                  fontSize: Size.large,
+                  color: colors.white,
+                  paddingHorizontal: 15,
                 }}>
-                <Text
-                  style={{
-                    fontSize: Size.large,
-                    color: colors.white,
-                    paddingHorizontal: 15,
-                  }}>
-                  {__('Go')}
-                </Text>
-              </TouchableOpacity>
-            ) : null}
+                {__('Go')}
+              </Text>
+            </TouchableOpacity>
+            {/* ) : null} */}
           </View>
         </View>
       </LinearGradient>
@@ -723,6 +731,7 @@ function MapHistory(props) {
         <DatePicker
           modal
           open={open}
+          // is24hour={true}
           date={dtype == 'start' ? dateStart : dateEnd}
           onConfirm={date => {
             dtype == 'start' ? onChangeStart(date) : onChangeEnd(date);
@@ -888,7 +897,7 @@ function MapHistory(props) {
                     flat={true}
                     icon={
                       animate == 'stop'
-                        ? image.carGreenUp1
+                        ? image.carGreenUp
                         : animate == 'start'
                         ? image.blank
                         : null

@@ -257,6 +257,7 @@ const MainScreen = props => {
         }}>
         <Drawer.Screen name="HomeStack" component={HomeStack} />
         <Drawer.Screen name="Alerts" component={Alerts} />
+        <Drawer.Screen name="AlertSetting" component={AlertSetting} />
         <Drawer.Screen name="AboutUs" component={AboutUs} />
         <Drawer.Screen name="Renewal" component={Renewal} />
         <Drawer.Screen name="ContactUs" component={ContactUs} />

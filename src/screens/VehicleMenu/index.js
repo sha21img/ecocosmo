@@ -90,7 +90,7 @@ const VehicleMenu = props => {
       setVisibles(!visibles);
     } else {
       // console.log('pppppppppppppppppppppplkm ',details)
-      navigation.navigate(data, {details: details});
+      navigation.navigate(data, {details: details,summaryData:undefined});
     }
   };
   const getUserDetails = async () => {
