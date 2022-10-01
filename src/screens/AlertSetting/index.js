@@ -38,7 +38,7 @@ const AlertSetting = props => {
     email: details.email == 'Off' ? false : true,
     call: details.email == 'Off' ? false : true,
     days: details.days,
-    isActive: details.isActive == 'Off' ? false : true,
+    isActive: details.isActive == 'No' ? false : true,
     anc: details.anc,
     data: details.data,
     mobiles: details.mobiles,
@@ -202,7 +202,8 @@ const AlertSetting = props => {
       </LinearGradient>
       <View style={styles.subHeader}>
         <Text style={styles.subHeaderText}>
-          {__('Ignition')} {newDetail['isActive'] == false ? 'Off' : 'On'}
+          {__(details.alertName)}
+           {/* {newDetail['isActive'] == false ? 'Off' : 'On'} */}
         </Text>
         {/* <Image source={image.selected} /> */}
         <CheckBox
@@ -218,7 +219,7 @@ const AlertSetting = props => {
           // setState({ ...state, [event.target.name]: event.target.checked });
         />
       </View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.bodyheading}>
           <Text style={styles.bodyHeadingText}>{__('Alert Setting')}</Text>
         </View>

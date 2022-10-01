@@ -39,6 +39,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
   },
+  box11: {
+    width: '100%',
+    backgroundColor: 'grey',
+    elevation: 24,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
   box1text: {
     fontSize: Size.large,
     color: colors.textcolor,
@@ -53,4 +63,26 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
   },
+  box22: {
+    paddingVertical: 12,
+    borderBottomWidth: 0.5,
+    borderColor: '#BCBCBC',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    backgroundColor: 'grey',
+  },
+  alertText:{
+    fontSize: Size.large,
+    color: colors.white,
+    paddingHorizontal: 10,
+  },
+  shareText:{
+    flexDirection: 'row',
+    width: '50%',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  }
+
 });

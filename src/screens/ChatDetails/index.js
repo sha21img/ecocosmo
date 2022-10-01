@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   ActivityIndicator,
+  Platform,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -14,50 +15,67 @@ import {Size} from '../../../assets/fonts/Fonts';
 import {image} from '../../../assets/images';
 import {__} from '../../../Utils/Translation/translation';
 import styles from './style';
+import moment from 'moment';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {baseUrl} from '../../../Utils/ApiController';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
 
 const ChatDetails = props => {
-  const [message, setMessage] = useState();
-  const [chatDetail, setChatDetail] = useState([]);
+  const {getDetails, loginDetails} = props.route.params;
+  const [message, setMessage] = useState('');
+  const [chatDetail, setChatDetail] = useState();
 
   // const {details} = props?.route?.params;
   // console.log('pppppppp', details);
-  useEffect(() => {
-    // getChatDetail();
-    getChat();
-  });
-  const getChat = async () => {
-    const loginDetails = await Storage.getLoginDetail('login_detail');
-    const data = {
-      // accountId: loginDetails?.accountId || '',
-      // password: loginDetails?.password || '',
-      accountId: 'virendratest',
-      password: 'ae6343555ef7aefd8a60ff88c6363e9c',
-    };
-    console.log('chat', data);
-    const response = await axiosGetData('getCustMessages', data);
-    console.log('chatDetCustMes====tailResponse', response.data);
-  };
+
+  // const getChat = async () => {
+  //   const loginDetails = await Storage.getLoginDetail('login_detail');
+  //   setLoginDetails(loginDetails);
+  //   const data = {
+  //     // accountId: loginDetails?.accountId || '',
+  //     // password: loginDetails?.password || '',
+  //     accountId: 'virendratest',
+  //     password: 'ae6343555ef7aefd8a60ff88c6363e9c',
+  //   };
+  //   const response = await axiosGetData('getCustMessages', data);
+  //   setChatDetail(response.data.messages);
+  // };
   const getChatDetail = async () => {
     const loginDetails = await Storage.getLoginDetail('login_detail');
-    console.log('lllllll', details);
 
     const data = {
       fname: '',
       lname: '',
       mobile: loginDetails?.mobile || '',
       email: loginDetails?.email || '',
-      message: details.message || '',
-      type: details.type || '',
+      message: message,
+      type: Platform.OS == 'android' ? 'android' : 'ios',
+      // accountId: 'virendratest',
       accountId: loginDetails?.accountId || '',
       managerId: '',
     };
     console.log('chatDetailParamas', data);
     const response = await axiosGetData('reachus', data);
     console.log('chatDetailResponse', response.data);
+    setMessage('');
   };
+  const scrollViewRef = React.useRef();
+  useEffect(() => {
+    // getChat();
+    const interval = setInterval(() => {
+      getFunction();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [message]);
+
+  const getFunction = async () => {
+    const details = await getDetails();
+    setChatDetail(details);
+  };
+
   return (
     <>
       <LinearGradient
@@ -67,113 +85,110 @@ const ChatDetails = props => {
         style={styles.header}>
         <View style={styles.headerContainer}>
           <View style={styles.headerImageCont}>
-            <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
-              <Image
-                source={image.drawer}
-                style={{height: 20, width: 23, marginVertical: 5}}
+            <TouchableOpacity
+              onPress={() => props.navigation.goBack()}
+              style={{paddingVertical: 10}}>
+              <MaterialCommunityIcons
+                style={{
+                  color: '#FFFFFF',
+                  fontSize: 30,
+                }}
+                name={'keyboard-backspace'}
               />
             </TouchableOpacity>
+            <Image
+              resizeMode="contain"
+              source={{uri: `${baseUrl}/download/customerIcon`}}
+              style={{width: 35, height: 35, borderRadius: 50, marginLeft: 10}}
+            />
             <Text
               style={{
                 fontSize: Size.large,
                 color: colors.white,
                 paddingHorizontal: 10,
               }}>
-              {__('Chat')}
+              {loginDetails?.accountName}
             </Text>
           </View>
           <TouchableOpacity style={{flexDirection: 'row'}}>
-            <Image source={image.search} />
+            <Ionicons
+              style={{
+                color: '#FFFFFF',
+                fontSize: 16,
+              }}
+              name={'call'}
+            />
           </TouchableOpacity>
         </View>
       </LinearGradient>
       <LinearGradient colors={['#BCE2FF', '#FFFFFF']} style={{flex: 1}}>
-        <ScrollView style={{flex: 1}}>
-          <TouchableOpacity
-            style={{
-              width: '60%',
-              backgroundColor: 'lightgreen',
-              marginHorizontal: 10,
-              paddingLeft: 10,
-              borderTopWidth: 10,
-              borderLeftWidth: 10,
-              borderLeftColor: 'white',
-              borderTopColor: 'transparent',
-              borderRightColor: 'transparent',
-              borderBottomColor: 'transparent',
-              elevation: 10,
-              marginTop: 20,
-            }}>
-            <View>
-              <Text style={{fonrSize: 16}}>
-                I am tracking this already I am tracking this already I am
-                tracking this already I am tracking this already I am tracking
-                this already I am tracking this already I am tracking this
-                already I am tracking this already
-              </Text>
-            </View>
-            <View style={{paddingTop: 10}}>
-              <Text>10:34 AM</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              width: '60%',
-              backgroundColor: 'lightpink',
-              marginHorizontal: 10,
-              paddingRight: 10,
-              borderWidth: 10,
-              borderLeftColor: 'transparent',
-              borderTopColor: 'transparent',
-              borderRightColor: 'white',
-              borderBottomColor: 'transparent',
-              marginTop: 20,
-              marginLeft: 'auto',
-              elevation: 10,
-            }}>
-            <View>
-              <Text style={{fonrSize: 16}}>
-                I am tracking this already I am tracking this already I am
-                tracking this already I am tracking this already I am tracking
-                this already I am tracking this already I am tracking this
-                already I am tracking this already
-              </Text>
-            </View>
-            <View style={{paddingTop: 10}}>
-              <Text>10:34 AM</Text>
-            </View>
-          </TouchableOpacity>
+        <ScrollView
+          style={{flex: 1}}
+          showsVerticalScrollIndicator={false}
+          ref={scrollViewRef}
+          onContentSizeChange={() =>
+            scrollViewRef.current.scrollToEnd({animated: true})
+          }>
+          {chatDetail?.map(item => {
+            return item.source == '0' ? (
+              <>
+                <LinearGradient
+                  colors={['#ffffff', '#ffffff']}
+                  key={Math.random()}
+                  start={{x: 1, y: 0}}
+                  end={{x: 0, y: 1}}
+                  style={styles.linearGrad1}>
+                  <View>
+                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                      {item.message}
+                    </Text>
+                  </View>
+                  <View style={{paddingVertical: 10}}>
+                    <Text style={{fontSize: 14}}>
+                      {moment(item.dateTime).format('hh:mm a')}
+                    </Text>
+                  </View>
+                </LinearGradient>
+              </>
+            ) : (
+              <>
+                <LinearGradient
+                  colors={['#16BCD4', '#395DBF']}
+                  key={Math.random()}
+                  start={{x: 1, y: 0}}
+                  end={{x: 0, y: 1}}
+                  style={styles.linearGrad2}>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: 'white',
+                      }}>
+                      {item.message}
+                    </Text>
+                  </View>
+                  <View style={{paddingVertical: 10}}>
+                    <Text style={{fontSize: 14, color: 'white'}}>
+                      {moment(item.dateTime).format('hh:mm a')}
+                    </Text>
+                  </View>
+                </LinearGradient>
+              </>
+            );
+          })}
         </ScrollView>
-        <View
-          style={{
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <View style={styles.msgBox}>
           <TextInput
             placeholder={__('Message')}
             value={message}
-            style={{
-              backgroundColor: colors.white,
-              width: '80%',
-              borderRadius: 7,
-              elevation: 5,
-              fontSize: 18,
-              padding: 10,
-            }}
+            style={styles.msgInput}
             onChangeText={newText => setMessage(newText)}
           />
           <TouchableOpacity onPress={() => getChatDetail()}>
             <LinearGradient
               colors={['#395DBF', '#16BCD4']}
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 50,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+              style={styles.linearGrad3}>
               <FontAwesome
                 style={{
                   color: '#FFFFFF',

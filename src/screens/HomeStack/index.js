@@ -26,9 +26,7 @@ function HomeStack(props) {
     const handlePress = (activeTab, index) => {
       console.log('activeTab', activeTab);
       setIsSelected(activeTab);
-      // if (state.index !== index) {
       navigation.navigate(activeTab);
-      // }
     };
     return (
       <View
@@ -37,18 +35,12 @@ function HomeStack(props) {
           bottom: 30,
           width: '100%',
           alignItems: 'center',
-          justifyContent: 'center',
         }}>
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            backgroundColor: colors.white,
             width: '90%',
-            borderRadius: 100,
-            paddingHorizontal: 20,
-            paddingVertical: 6,
-            elevation: 2,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
           }}>
           {routes.map((route, index) => (
             <Tabs
@@ -69,22 +61,19 @@ function HomeStack(props) {
     <Tab.Navigator
       initialRouteName="Home"
       tabBarOptions={{
-        showLabel: false,
+        showLabel: true,
         activeTintColor: '#438EFA',
       }}
       tabBar={props => <CustomTabBar {...props} />}>
       <Tab.Screen
         name="Home"
-        children={(props) => <Home props={props} />}
+        children={props => <Home props={props} />}
         // component={Home}
         initialParams={{icon: 'home'}}
+
         // props={props}
       />
-      <Tab.Screen
-        name="Chat"
-        component={Chat}
-        initialParams={{icon: 'chat'}}
-      />
+      <Tab.Screen name="Chat" component={Chat} initialParams={{icon: 'chat'}} />
       <Tab.Screen
         name="Notifications"
         component={Notifications}

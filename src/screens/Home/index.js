@@ -5,13 +5,15 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Linking,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+import PrimaryDashboard from './PrimaryDashboard';
+import SecondaryDashboard from './SecondaryDashboard';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
-import ModalSelector from 'react-native-modal-selector';
 import styles from './style';
 import Dashboard1 from './Dashboard1';
 import Dashboard2 from './Dashboard2';
@@ -19,23 +21,115 @@ import {__} from '../../../Utils/Translation/translation';
 import colors from '../../../assets/Colors';
 import {axiosGetData} from '../../../Utils/ApiController';
 import Storage from '../../../Utils/Storage';
-import Entypo from 'react-native-vector-icons/Entypo';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
+import {useNetInfo} from '@react-native-community/netinfo';
+import ModalSelector from 'react-native-modal-selector';
 
-function Home(props) {
-  const navigation = useNavigation();
-  console.log('jijijijijijjijijiijijijiijiji');
-  const [selectedLanguage, setSelectedLanguage] = useState();
-  const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
+import {
+  check,
+  PERMISSIONS,
+  RESULTS,
+  request,
+  requestMultiple,
+} from 'react-native-permissions';
+import Entypo from 'react-native-vector-icons/Entypo';
+
+export default function Home({props}) {
   const [details, setDetails] = useState([]);
   const [newFilterDetails, setNewFilterDetails] = useState([]);
   const [filteredDetails, setFilteredDetails] = useState([]);
   const [isShow, setIsShow] = useState(true);
-  const [search, setSearch] = useState(true);
   const [type, setType] = useState('All');
-  const [driverDetails, setDriverDetails] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const [dashBoardType, setDashBoardType] = useState('Dashboard 1');
+  const [searchFilterDetails, setSearchFilterDetails] = useState([]);
 
+  const [driverDetails, setDriverDetails] = useState([]);
+  const navigation = useNavigation();
+  const [countObj, setCountObj] = useState({
+    Running: 0,
+    Waiting: 0,
+    Idle: 0,
+    'In-Active': 0,
+    'No GPS': 0,
+  });
+  const netInfo = useNetInfo();
+  const [secondaryDetails, setSecondaryDetails] = useState([]);
+  const [locationPermission, setLocationPermission] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [alertMsg, setAlertMsg] = useState('');
+  const [search, setSearch] = useState(true);
+
+  const CarType = [
+    {type: 'Running', image: image.runningCar},
+    {type: 'Idle', image: image.idelCar},
+    {type: 'Waiting', image: image.WaitingCar},
+    {type: 'In-Active', image: image.InactiveCar},
+    {type: 'No GPS', image: image.noGpsCar},
+  ];
+  useEffect(() => {
+    setDashBoardType('Dashboard 1');
+    console.log(
+      '=============================================================================',
+    );
+    getDetails('first');
+    getVehicle();
+  }, [props]);
+  useEffect(() => {
+    if (netInfo.isConnected) {
+      if (Platform.OS == 'android') {
+        checkPermissionAndroid();
+      } else {
+        // checkPermissionIOS();
+      }
+    }
+  }, [netInfo.isConnected]);
+  const showPermissionError = (alertMsg = 'Please Enable Location Service') => {
+    setLocationPermission(true);
+    setAlertMsg(alertMsg);
+    setIsLoading(false);
+  };
+  const checkPermissionAndroid = () => {
+    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+      .then(result => {
+        switch (result) {
+          case RESULTS.UNAVAILABLE:
+            showPermissionError();
+            break;
+          case RESULTS.BLOCKED:
+            showPermissionError();
+            break;
+          case RESULTS.DENIED:
+            request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+              .then(result => {
+                if (result == RESULTS.GRANTED || result == RESULTS.LIMITED) {
+                  setIsLoading(false);
+                  setLocationPermission(false);
+                } else {
+                  showPermissionError();
+                }
+              })
+              .catch(err => {
+                showPermissionError(
+                  'Something Went Wrong While Checking Permission',
+                );
+              });
+            break;
+          case RESULTS.LIMITED:
+            setIsLoading(false);
+            setLocationPermission(false);
+            break;
+          case RESULTS.GRANTED:
+            setIsLoading(false);
+            setLocationPermission(false);
+            break;
+        }
+      })
+      .catch(error => {
+        showPermissionError('Something Went Wrong While Checking Permission');
+      });
+  };
   let index = 0;
 
   const data = [
@@ -45,15 +139,38 @@ function Home(props) {
   const changeDasboardType = dashBoardType => {
     return __(dashBoardType);
   };
-
-  const [countObj, setCountObj] = useState({
-    Running: 0,
-    Waiting: 0,
-    Idle: 0,
-    'In-Active': 0,
-    'No GPS': 0,
-  });
-  const getDetails = async data => {
+  const searchFunction = text => {
+    console.log(
+      'poiuytrdfghjkoiuytdcvbkoiuytfbnkloiuyfvbkisearchFunctionsearchFunctionsearchFunction',
+      text,
+    );
+    // let filteredData = filterDetails.filter(item => {
+    //   return item.deviceId.includes(text);
+    // });
+    // setFilteredDetails(filteredData);
+    // console.log('this is searched text', filteredData);
+    // console.log('text', text);
+    if (text !== null && text !== undefined && text !== '') {
+      var newArr = [];
+      newArr = filteredDetails.filter(item => {
+        return item.deviceId.toLowerCase().includes(text.toLowerCase());
+      });
+      console.log('filteredDetails', newArr.length);
+      newArr !== null && newArr !== undefined && newArr.length > 0
+        ? setSecondaryDetails(newArr)
+        : setSecondaryDetails([]);
+    } else {
+      setSecondaryDetails(filteredDetails);
+    }
+  };
+  const getDetails = async () => {
+    setCountObj({
+      Running: 0,
+      Waiting: 0,
+      Idle: 0,
+      'In-Active': 0,
+      'No GPS': 0,
+    });
     setIsShow(true);
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
@@ -64,18 +181,20 @@ function Home(props) {
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
     const detail = response.data.vehicles;
-    console.log('details', response.data);
     await Storage.setVehicleDetail(detail);
     setDetails(detail);
     setFilteredDetails(detail);
     setNewFilterDetails(detail);
-    if (data === 'first') {
-      detail?.forEach(element => {
-        setCountObj(prev => {
-          return {...prev, [element.status]: prev[element.status] + 1};
-        });
+    setSecondaryDetails(detail);
+    setSearchFilterDetails(detail);
+    // if (data === 'first') {
+    detail?.forEach(element => {
+      // setCountObj({[element.status]:element.status+1})
+      setCountObj(prev => {
+        return {...prev, [element.status]: prev[element.status] + 1};
       });
-    }
+    });
+    // }
 
     setIsShow(false);
   };
@@ -89,76 +208,12 @@ function Home(props) {
     const driverDetails = response.data.driverDetails;
     setDriverDetails(driverDetails);
   };
-  useEffect(() => {
-    setDashBoardType('Dashboard 1')
-  }, [props]);
-  useEffect(() => {
-    console.log(
-      '=============================================================================',
-    );
-    getDetails('first');
-    getVehicle();
-    // if (newDetail.length > 0) {
-    // console.log(
-    //   'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv',
-    //   newDetail,
-    // );
-    // newDetail.forEach(element => {
-    //   setCountObj(prev => {
-    //     return {...prev, [element.status]: prev[element.status] + 1};
-    //   });
-    // });
-    // }
-  }, []);
 
-  const searchFunction = text => {
-    // let filteredData = filterDetails.filter(item => {
-    //   return item.deviceId.includes(text);
-    // });
-    // setFilteredDetails(filteredData);
-    // console.log('this is searched text', filteredData);
-    // console.log('text', text);
-    if (text !== null && text !== undefined && text !== '') {
-      var newArr = [];
-      newArr = filteredDetails.filter(item => {
-        return item.deviceId.toLowerCase().includes(text.toLowerCase());
-      });
-      // console.log('filteredDetails', filteredDetails);
-      newArr !== null && newArr !== undefined && newArr.length > 0
-        ? setNewFilterDetails(newArr)
-        : setNewFilterDetails([]);
-    } else {
-      setNewFilterDetails(filteredDetails);
-    }
-  };
-  // const onRefreshPage = (setIsRefreshing) => {
-  //   setIsRefreshing(true);
-  //   getDetails('first');
-  // };
-  const getRunningData = (data, details) => {
-    // console.log('data', data);
-    setType(data);
-    const filterDetails = details.filter(item => {
-      return item.status == data;
-    });
-    setNewFilterDetails(filterDetails);
-    setIsShow(false);
-  };
-  // console.log('shahshshahah', type);
+  const onRefreshPage = React.useCallback((data, details) => {
+    getDetails();
+    setIsShow(!isShow);
+  });
 
-  const onRefreshPage = React.useCallback((data, details, setIsShow) => {
-    console.log('hihihds');
-    // setIsRefreshing(true);
-    setIsShow(true);
-    // console.log('typeptprprp', data);
-    if (data === 'All') {
-      getDetails('refresh');
-    } else {
-      getRunningData(data, details);
-    }
-
-    setTimeout(() => setIsShow(false), 2000);
-  }, []);
   return (
     <>
       <LinearGradient
@@ -196,35 +251,65 @@ function Home(props) {
               </ModalSelector>
             </View>
           </View>
-          <View style={styles.alertContainer}>
+          {dashBoardType == 'Dashboard 1' ? (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Notifications')}>
-              <Image
-                source={image.Notification1}
-                style={{height: 30, width: 30, resizeMode: 'contain'}}
+              onPress={() => {
+                Linking.openURL(`tel:+91989676997`);
+              }}
+              style={{
+                flexDirection: 'row',
+                backgroundColor: 'green',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 7,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+              }}>
+              <AntDesign
+                style={{
+                  color: 'orange',
+                  fontSize: 20,
+                  paddingRight: 5,
+                }}
+                name={'customerservice'}
               />
+              <Text style={{color: 'white'}}>+91989676997</Text>
             </TouchableOpacity>
-            {search ? (
-              <TouchableOpacity onPress={() => setSearch(false)}>
-                <Image source={image.search} style={styles.searchIcon} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => {
-                  setSearch(true), setNewFilterDetails(filteredDetails);
-                }}>
-                <Entypo
-                  style={{
-                    color: colors.white,
-                    fontSize: 24,
-                    marginLeft: 10,
-                    paddingVertical: 5,
-                  }}
-                  name={'cross'}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+          ) : (
+            <>
+              <View style={styles.alertContainer}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Notifications')}>
+                  <Image
+                    source={image.Notification1}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                </TouchableOpacity>
+                {search ? (
+                  <TouchableOpacity onPress={() => setSearch(false)}>
+                    <Image source={image.search} style={styles.searchIcon} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSearch(true);
+                      setNewFilterDetails(filteredDetails);
+                      setSecondaryDetails(filteredDetails);
+                    }}>
+                    <Entypo
+                      style={{
+                        color: colors.white,
+                        fontSize: 24,
+                        marginLeft: 10,
+                        paddingVertical: 5,
+                      }}
+                      name={'cross'}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </>
+          )}
         </View>
         {!search ? (
           <View
@@ -249,131 +334,242 @@ function Home(props) {
         ) : null}
       </LinearGradient>
       {!isShow ? (
-        <View style={styles.catagoryBox}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <TouchableOpacity
-              onPress={() => {
-                getDetails(), setType('All');
-              }}>
-              <Text
-                style={[
-                  styles.catagoryTextActive,
-                  {
-                    backgroundColor:
-                      type == 'All' ? colors.mainThemeColor1 : '#D8D8D8',
-                    color:
-                      type == 'All' ? colors.white : colors.inputPlaceholdr,
-                  },
-                ]}>
-                {__('All')} ({details?.length})
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setIsShow(true), getRunningData('Running', details);
-              }}>
-              <Text
-                style={[
-                  styles.catagoryTextActive,
-                  {
-                    backgroundColor:
-                      type == 'Running' ? colors.mainThemeColor1 : '#D8D8D8',
-                    color:
-                      type == 'Running' ? colors.white : colors.inputPlaceholdr,
-                  },
-                ]}>
-                {__('Running')}({countObj.Running})
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => getRunningData('Idle', details)}>
-              <Text
-                style={[
-                  styles.catagoryTextActive,
-                  {
-                    backgroundColor:
-                      type == 'Idle' ? colors.mainThemeColor1 : '#D8D8D8',
-                    color:
-                      type == 'Idle' ? colors.white : colors.inputPlaceholdr,
-                  },
-                ]}>
-                {__('Stop')}({countObj.Idle})
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => getRunningData('In-Active', details)}>
-              <Text
-                style={[
-                  styles.catagoryTextActive,
-                  {
-                    backgroundColor:
-                      type == 'In-Active' ? colors.mainThemeColor1 : '#D8D8D8',
-                    color:
-                      type == 'In-Active'
-                        ? colors.white
-                        : colors.inputPlaceholdr,
-                  },
-                ]}>
-                {__('In-Active')}({countObj['In-Active']})
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => getRunningData('No GPS', details)}>
-              <Text
-                style={[
-                  styles.catagoryTextActive,
-                  {
-                    backgroundColor:
-                      type == 'No GPS' ? colors.mainThemeColor1 : '#D8D8D8',
-                    color:
-                      type == 'No GPS' ? colors.white : colors.inputPlaceholdr,
-                  },
-                ]}>
-                {__('No GPS')}({countObj['No GPS']})
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => getRunningData('Waiting', details)}>
-              <Text
-                style={[
-                  styles.catagoryTextActive,
-                  {
-                    backgroundColor:
-                      type == 'Waiting' ? colors.mainThemeColor1 : '#D8D8D8',
-                    color:
-                      type == 'Waiting' ? colors.white : colors.inputPlaceholdr,
-                  },
-                ]}>
-                {__('Waiting')}({countObj.Waiting})
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
+        dashBoardType == 'Dashboard 1' ? (
+          <PrimaryDashboard
+            primaryFilterDetails={newFilterDetails}
+            primaryDriverDetails={driverDetails}
+            countObj={countObj}
+            onRefreshPage={onRefreshPage}
+            isShow={isShow}
+            setIsShow={setIsShow}
+          />
+        ) : (
+          <SecondaryDashboard
+            secondaryFilterDetails={secondaryDetails}
+            secondaryDriverDetails={driverDetails}
+            countObj={countObj}
+            filteredDetails={filteredDetails}
+            onRefreshPage={onRefreshPage}
+            isShow={isShow}
+            setIsShow={setIsShow}
+          />
+        )
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator />
         </View>
-      ) : null}
-      <View style={styles.carDetailCard}>
-        {dashBoardType === 'Dashboard 1' && (
-          <Dashboard1
-            details={newFilterDetails}
-            isShow={isShow}
-            driverDetails={driverDetails}
-            onRefreshPage={onRefreshPage}
-            type={type}
-            // isShow={isShow}
-            setIsShow={setIsShow}
+      )}
+      {/* {!isShow ? (
+        <ScrollView
+          style={{flex: 1, backgroundColor: '#00266B'}}
+          refreshControl={
+            <RefreshControl
+              enabled={true}
+              refreshing={isShow}
+              onRefresh={() => onRefreshPage(type, details, setIsShow)}
+            />
+          }>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL('whatsapp://send?phone=+91989676997')
+            }
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginVertical: 15,
+            }}>
+            <Image
+              source={image.whatsApp}
+              style={{height: 34, width: 34, marginHorizontal: 15}}
+            />
+            <Text
+              numberOfLines={1}
+              style={{width: '65%', fontSize: 14, color: 'white'}}>
+              whatsapp://send?phone=+91989676997
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => {
+              navigation.navigate('MainHome', {
+                details: newFilterDetails,
+                driverDetails: driverDetails,
+              });
+            }}
+            style={{
+              borderRadius: 12,
+              width: '80%',
+              height: 100,
+              padding: 3,
+              alignSelf: 'center',
+              backgroundColor: '#0F7DF1',
+            }}>
+            <LinearGradient
+              colors={['#00266B', '#0F7DF1']}
+              start={{x: 1.5, y: -0.5}}
+              end={{x: 0.7, y: 1.5}}
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: '80%',
+                height: '50%',
+                borderBottomRightRadius: 12,
+              }}></LinearGradient>
+            <View
+              style={{
+                borderRadius: 10,
+                width: '100%',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                flexDirection: 'row',
+                alignSelf: 'center',
+                backgroundColor: '#00266B',
+                height: '100%',
+              }}>
+              <Image
+                resizeMode="contain"
+                source={image.allCar}
+                style={{
+                  height: 40,
+                  width: 80,
+                  marginHorizontal: 30,
+                }}
+              />
+              <View
+                style={{
+                  width: '50%',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    color: 'white',
+                  }}>
+                  All
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 20,
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  ({details?.length})
+                </Text>
+                <Text
+                  style={{textAlign: 'center', color: 'white', fontSize: 18}}>
+                  Available
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <Image source={image.mainBack} style={{width: '100%'}} />
+          <View
+            style={{
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              paddingTop: 10,
+              flexDirection: 'row',
+            }}>
+            {CarType.map(item => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsShow(true), getRunningData(item.type, details);
+                  }}
+                  activeOpacity={0.7}
+                  style={{
+                    margin: 5,
+                    borderRadius: 10,
+                    padding: 3,
+                    backgroundColor: '#0F7DF1',
+                  }}>
+                  <LinearGradient
+                    colors={['#00266B', '#0F7DF1']}
+                    start={{x: 1.5, y: -0.5}}
+                    end={{x: 0.7, y: 1.5}}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      right: 0,
+                      width: '80%',
+                      height: '50%',
+                      borderBottomRightRadius: 12,
+                    }}></LinearGradient>
+                  <View
+                    style={{
+                      borderColor: '#1B6CE5',
+                      paddingVertical: 10,
+                      borderRadius: 10,
+                      minWidth: 120,
+                      backgroundColor: '#00266B',
+                    }}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        color: 'white',
+                      }}>
+                      {item.type}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        color: 'white',
+                      }}>
+                      ({countObj[item.type]})
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 18,
+                        paddingVertical: 5,
+                        color: 'white',
+                      }}>
+                      Available
+                    </Text>
+                    <Image
+                      resizeMode="contain"
+                      source={item.image}
+                      style={{
+                        height: 28,
+                        width: 50,
+                        marginVertical: 10,
+                        alignSelf: 'center',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          <Image
+            source={image.mainBack}
+            style={{width: '100%', marginBottom: 120}}
           />
-        )}
-        {dashBoardType === 'Dashboard 2' && (
-          <Dashboard2
-            details={newFilterDetails}
-            isShow={isShow}
-            driverDetails={driverDetails}
-            onRefreshPage={onRefreshPage}
-            type={type}
-            // isShow={isShow}
-            setIsShow={setIsShow}
-          />
-        )}
-      </View>
+        </ScrollView>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator />
+        </View>
+      )} */}
     </>
   );
 }
-
-export default Home;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Modal,
@@ -16,18 +16,16 @@ import {__} from '../../../Utils/Translation/translation';
 import EngineStopPopup from '../EngineStopPopup';
 import {useNavigation} from '@react-navigation/native';
 import {axiosGetData} from '../../../Utils/ApiController';
-
 import Storage from '../../../Utils/Storage';
 import AddDriver from '../AddDriver';
 
 const VehicleMenu = props => {
-  console.log('props.details.imeitwrtwertwert', props.details, 'props.details.imeitwrtwertwert');
   const navigation = useNavigation();
   const [visibles, setVisibles] = useState(false);
   const [modal, setModal] = useState(false);
+  const [loginDetails, setLoginDetails] = useState();
 
   const {details, visible, calling, mobileNumber} = props;
-  console.log('mobileNumbermobileNumber', mobileNumber);
   const data = [
     {
       id: 1,
@@ -81,6 +79,7 @@ const VehicleMenu = props => {
     {id: 10, image: image.modalmap, data: 'MAP HISTORY', routeTo: 'MapHistory'},
   ];
   const navigatorFrom = async data => {
+    console.log('5555', data);
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
     let password = loginDetail.password;
@@ -90,9 +89,18 @@ const VehicleMenu = props => {
     } else if (data === 'DRIVERDETAILS') {
       setVisibles(!visibles);
     } else {
-      navigation.navigate(data, {details: details});
+      // console.log('pppppppppppppppppppppplkm ',details)
+      navigation.navigate(data, {details: details,summaryData:undefined});
     }
   };
+  const getUserDetails = async () => {
+    console.log('vicky');
+    const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
+  };
+  useEffect(() => {
+    visible && getUserDetails();
+  }, [visible]);
   return (
     <>
       <Modal
@@ -110,7 +118,15 @@ const VehicleMenu = props => {
               {/* {__('RUNNING')} 14M 38KM/H */}
             </Text>
             <Text style={styles.modalHead}>{details.deviceId}</Text>
-            {mobileNumber?.mobilenumber !== '' ? (
+            {loginDetails?.accountName == 'demo101' ? (
+              <View style={styles.disablebutton}>
+                <Image
+                  source={image.callimg}
+                  style={{height: 15, width: 15, marginRight: 7}}
+                />
+                <Text style={styles.buttonText}>{__('Call')}</Text>
+              </View>
+            ) : mobileNumber?.mobilenumber !== '' ? (
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => calling(details)}>
@@ -128,13 +144,15 @@ const VehicleMenu = props => {
                 {data.map(el => {
                   return (
                     <TouchableOpacity
+                      key={Math.random()}
                       onPress={() => {
                         navigatorFrom(el.routeTo, {
                           imei: props.details.imei,
+                          details: props.details,
                         });
                       }}>
                       <View key={el.id} style={styles.modalCardBody}>
-                      {/* {props}props.details */}
+                        {/* {props}props.details */}
                         <Image
                           source={el.image}
                           style={styles.modalCardImage}
@@ -154,6 +172,7 @@ const VehicleMenu = props => {
         details={details}
         setVisible={setModal}
       />
+
       <AddDriver
         visible={visibles}
         setVisible={setVisibles}

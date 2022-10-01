@@ -114,34 +114,16 @@ const CustomerProfile = props => {
                 setIsEditable(true);
                 focusOn(input1);
               }}>
-              <Entypo
-                style={{
-                  color: '#fff',
-                  fontSize: 10,
-                  alignSelf: 'center',
-                  marginHorizontal: 2,
-                }}
-                name={'edit'}
-              />
+              <Entypo style={styles.editIcon} name={'edit'} />
               <Text style={styles.editText}>{__('Edit')}</Text>
             </TouchableOpacity>
           </View>
           <LinearGradient
             style={styles.FormContainer}
             colors={[colors.Modalcolor1, colors.white]}>
-            <View
-              style={{
-                resizeMode: 'contain',
-                position: 'absolute',
-                zIndex: 99,
-                top: -50,
-                alignSelf: 'center',
-              }}>
+            <View style={styles.custImgCont}>
               <TouchableOpacity
-                style={{
-                  borderRadius: 50,
-                  backgroundColor: 'green',
-                }}
+                style={styles.custImgBox}
                 onPress={() => {
                   ImagePicker.openPicker({
                     width: 300,
@@ -171,7 +153,9 @@ const CustomerProfile = props => {
               <Image source={image.callWhite} />
               <Text style={styles.subButtonText}>+91 - {primaryMobile}</Text>
             </TouchableOpacity>
-            <ScrollView style={{marginVertical: 16}}>
+            <ScrollView
+              style={{marginVertical: 16}}
+              showsVerticalScrollIndicator={false}>
               <View style={styles.TextFieldContainer}>
                 <Text style={styles.textFieldHeading}>{__('Account ID')}</Text>
                 <View style={styles.TextFieldSubContainer}>

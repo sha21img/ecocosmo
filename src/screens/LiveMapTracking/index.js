@@ -50,6 +50,7 @@ function LiveMapTracking(props) {
   const [mapType, setMapType] = useState(false);
   const [traffic, setTraffic] = useState(false);
   const [isMarkerShow, setIsMarkerShow] = useState(false);
+  const [vehicleData, setVehicleData] = useState(false);
 
   const mapRef = useRef();
   const markerRef = useRef();
@@ -129,11 +130,13 @@ function LiveMapTracking(props) {
       coordinate.timing(newCoordinate).start();
     }
   };
-  const animate = (latitude, longitude) => {
+  const animate = async (latitude, longitude) => {
     const newCoordinate = {latitude, longitude};
     if (Platform.OS == 'android') {
       if (markerRef.current) {
-        markerRef.current.animateMarkerToCoordinate(newCoordinate, 7000);
+        markerRef.current.animateMarkerToCoordinate(newCoordinate, 60000);
+        mapRef.current.animateToRegion(newCoordinate);
+        mapRef.current.animateCamera(newCoordinate, {duration: 60000});
       }
     } else {
       coordinate.timing(newCoordinate).start();
@@ -155,15 +158,18 @@ function LiveMapTracking(props) {
       longitudeDelta: LONGITUDE_DELTA,
     });
   };
-  // console.log('asssssssssssssssssssssssssssss', coordinate);
-
+  const updateRef = React.useRef(state.destinationCords);
+  useEffect(() => {
+    updateRef.current = state.destinationCords;
+  });
   useEffect(() => {
     const interval = setInterval(() => {
       getDetails();
-    }, 15000);
+    }, 20000);
     return () => clearInterval(interval);
   }, []);
   const getDetails = async () => {
+    const refUpdate = updateRef.current;
     const loginDetail = await Storage.getLoginDetail('login_detail');
     let username = loginDetail.accountId;
     let password = loginDetail.password;
@@ -171,47 +177,81 @@ function LiveMapTracking(props) {
     const response = await axiosGetData(
       `livetrack/${username}/${password}/${props.route.params.details.imei}/${type}`,
     );
-    console.log('poiuytrew0-----------', response.data);
+    console.log('poiuytrew0-----------', response.data.vehicle);
     setDetail(response.data.vehicle);
     const vehicleDetails = response.data.vehicle;
+    setVehicleData(vehicleDetails);
     const latitude = parseFloat(vehicleDetails.lat);
     const longitude = parseFloat(vehicleDetails.lng);
+    // const latitude = 26.876;
+    // const longitude = 75.7687;
     const lastlatitude = parseFloat(vehicleDetails.lastLat);
     const lastlongitude = parseFloat(vehicleDetails.lastLng);
-    animate(latitude, longitude);
-    updateState({
-      heading: heading,
-      curLoc: {
-        latitude,
-        longitude,
-      },
-      coordinate: new AnimatedRegion({
-        latitude: latitude,
-        longitude: longitude,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-      }),
-      destinationCords: {
-        latitude: lastlatitude,
-        longitude: lastlongitude,
-      },
-    });
-    // setState({
-    //   ...state,
-    //   // curLoc: {
-    //   //   latitude: parseFloat(response.data.vehicle.lat),
-    //   //   longitude: parseFloat(response.data.vehicle.lng),
-    //   // },
-    //   destinationCords: {
-    //     latitude: parseFloat(response.data?.vehicle?.lastLat),
-    //     longitude: parseFloat(response.data?.vehicle?.lastLng),
-    //   },
-    // });
+    console.log(
+      'this is location2-=3-2=3-2=3-=23=2-=3-2=3423-4=32   23=4 -=234-=32-4=',
+      refUpdate.latitude != latitude,
+    );
+    console.log(
+      'this is location2-=3-2=3-2=3-=23=2-=3-2=3423-4=32   23=4 -=234-=32-4=',
+      refUpdate.latitude,
+      latitude,
+    );
+    console.log(
+      'this is location2-=3-2=3-2=3-=23=2-=3-2=3423-4=32   23=4 -=234-=32-4=',
+      refUpdate.longitude != longitude,
+    );
+    console.log(
+      'this is location2-=3-2=3-2=3-=23=2-=3-2=3423-4=32   23=4 -=234-=32-4=',
+      refUpdate.longitude,
+      longitude,
+    );
+    if (refUpdate.latitude == latitude && refUpdate.longitude == longitude) {
+      console.log('nhi chala');
+    } else {
+      console.log('chal gya');
+      await animate(latitude, longitude);
+
+      const cord1 = {
+        latitude: parseFloat(lastlatitude),
+        longitude: parseFloat(lastlongitude),
+      };
+      const cord2 = {
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+      };
+
+      const y =
+        Math.sin(cord2.longitude - cord1.longitude) * Math.cos(cord2.latitude);
+      const x =
+        Math.cos(cord1.latitude) * Math.sin(cord2.latitude) -
+        Math.sin(cord1.latitude) *
+          Math.cos(cord2.latitude) *
+          Math.cos(cord2.longitude - cord1.longitude);
+      const θ = Math.atan2(y, x);
+      var brng = ((θ * 180) / Math.PI + 360) % 360;
+      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', brng);
+      updateState({
+        heading: brng,
+        curLoc: {
+          latitude: lastlatitude,
+          longitude: lastlongitude,
+        },
+        coordinate: new AnimatedRegion({
+          latitude: lastlatitude,
+          longitude: lastlongitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        }),
+        destinationCords: {
+          latitude: latitude,
+          longitude: longitude,
+        },
+      });
+    }
     setIsShow(true);
   };
   const [marginBottom, setMarginBottom] = useState(1);
   const [modal, setModal] = useState(false);
-  // console.log('detail.markerIcon', detail .markerIcon);
 
   const data1 = [
     {id: 0, imgUrl: image.mapPaper},
@@ -226,7 +266,7 @@ function LiveMapTracking(props) {
     } else {
       props.navigation.navigate(data, {details: details});
     }
-  }
+  };
   console.log('livecords', liveCords);
 
   return (
@@ -235,56 +275,58 @@ function LiveMapTracking(props) {
         <View style={style.container}>
           <View style={style.map_container}>
             <MapView
+              provider={PROVIDER_GOOGLE}
+              zoomEnabled={true}
+              zoomControlEnabled={true}
+              zoomTapEnabled={true}
               tracksViewChanges={false}
               mapType={mapType ? 'satellite' : 'standard'}
               showsTraffic={traffic}
               ref={mapRef}
               style={style.map}
-              // style={StyleSheet.absoluteFill}
               region={{
                 ...curLoc,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
-              }}
-              // initialRegion={{
-              //   ...curLoc,
-              //   latitudeDelta: LATITUDE_DELTA,
-              //   longitudeDelta: LONGITUDE_DELTA,
-              // }}
-            >
+              }}>
               {Object.keys(coordinate).length > 0 && (
-                <Marker.Animated ref={markerRef} coordinate={coordinate}>
-                  <Image
-                    source={{uri: detail.markerIcon}}
+                <>
+                  {console.log(
+                    heading,
+                    'vehiheadingheadingheadingheadingheadingheadingcleData.heading',
+                  )}
+                  <Marker.Animated
+                    // rotation={heading}
+                    icon={{uri: detail.markerIcon}}
                     style={{
-                      width: 40,
-                      height: 40,
-                      transform: [{rotate: `${heading}deg`}],
+                      transform: [
+                        {
+                          rotate:
+                            heading === null || heading === undefined
+                              ? '0deg'
+                              : `${heading}deg`,
+                        },
+                      ],
                     }}
-                    resizeMode="contain"
+                    flat={true}
+                    ref={markerRef}
+                    coordinate={coordinate}
                   />
-                </Marker.Animated>
+                  <MapViewDirections
+                    origin={coordinate}
+                    destination={destinationCords}
+                    apikey={GOOGLE_MAP_KEY}
+                    strokeWidth={3}
+                    strokeColor="black"
+                    // optimizeWaypoints={true}
+                  />
+                </>
               )}
-
               {Object.keys(liveCords).length > 0 && isMarkerShow ? (
                 <>
-                  {/* {console.log('live wala chala h')} */}
                   <Marker.Animated
                     ref={markerRefs}
-                    coordinate={liveCords}
-                    // image={{uri:detail.markerIcon}}
-                  >
-                    {/* <Image
-                      source={{uri: detail.markerIcon}}
-                      style={{
-                        width: 40,
-                        height: 40,
-                        transform: [{rotate: `${heading}deg`}],
-                      }}
-                      resizeMode="contain"
-                    /> */}
-                  </Marker.Animated>
-
+                    coordinate={liveCords}></Marker.Animated>
                   <MapViewDirections
                     origin={liveCords}
                     destination={curLoc}
@@ -294,38 +336,6 @@ function LiveMapTracking(props) {
                     optimizeWaypoints={true}
                   />
                 </>
-              ) : null}
-
-              {Object.keys(destinationCords).length > 0 && !isMarkerShow ? (
-                <MapViewDirections
-                  origin={curLoc}
-                  destination={destinationCords}
-                  apikey={GOOGLE_MAP_KEY}
-                  strokeWidth={3}
-                  strokeColor="black"
-                  optimizeWaypoints={true}
-                  onStart={params => {
-                    // console.log(
-                    //   `Started routing between "${params.origin}" and "${params.destination}"`,
-                    // );
-                  }}
-                  onReady={result => {
-                    // console.log(`Distance: ${result.distance} km`);
-                    // console.log(`Duration: ${result.duration} min.`);
-                    // fetchTime(result.distance, result.duration),
-                    mapRef.current.fitToCoordinates(result.coordinates, {
-                      edgePadding: {
-                        // right: 30,
-                        // bottom: 300,
-                        // left: 30,
-                        // top: 100,
-                      },
-                    });
-                  }}
-                  onError={errorMessage => {
-                    // console.log('GOT AN ERROR');
-                  }}
-                />
               ) : null}
             </MapView>
             <TouchableOpacity
@@ -337,58 +347,7 @@ function LiveMapTracking(props) {
               onPress={onCenter}>
               <Image source={{uri: detail.markerIcon}} />
             </TouchableOpacity>
-
-            {/*  */}
-            {/* <MapView
-            tracksViewChanges={false}
-              style={style.map}
-              provider={PROVIDER_GOOGLE}
-              initialRegion={{
-                latitude: parseFloat(state.currLoc.latitude),
-                longitude: parseFloat(state.currLoc.longitude),
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              followsUserLocation={true}
-              showsMyLocationButton={true}
-              onMapReady={() => setMarginBottom(0)}>
-              <Marker
-                coordinate={{
-                  latitude: parseFloat(state.currLoc.latitude),
-                  longitude: parseFloat(state.currLoc.longitude),
-                }}
-              >
-                <Image
-                  resizeMode="contain"
-                  source={{uri: detail.markerIcon}}
-                  style={{
-                    height: 35,
-                    width: 70,
-                  }}
-                />
-              </Marker>
-              <Marker
-                coordinate={{latitude:26.8976,longitude:77.7685}}
-              >
-                <Image
-                  resizeMode="contain"
-                  source={{uri: detail.markerIcon}}
-                  style={{
-                    height: 35,
-                    width: 70,
-                  }}
-                />
-              </Marker>
-              <PolylineDirection
-                origin={state.currLoc}
-                destination={{latitude:26.8976,longitude:77.7685}}
-                apiKey="AIzaSyDuMZZzYTEBs7EONdnVfmZVXJluSzVbRkc"
-                strokeWidth={4}
-                strokeColor="hotpink"
-              />
-            </MapView> */}
           </View>
-          {/* modal1 */}
           <View style={style.top_container}>
             <TouchableOpacity
               onPress={() => props.navigation.goBack()}
@@ -420,12 +379,7 @@ function LiveMapTracking(props) {
                   width: '90%',
                 }}>
                 <Text style={style.firstboxtext1}>{details.deviceId}</Text>
-                <Text style={style.firstboxtext2}>
-                  {details.address}
-                  {/* {__(
-                    '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India',
-                  )} */}
-                </Text>
+                <Text style={style.firstboxtext2}>{details.address}</Text>
               </View>
             </LinearGradient>
             <TouchableOpacity
@@ -437,8 +391,6 @@ function LiveMapTracking(props) {
               />
             </TouchableOpacity>
           </View>
-          {/*  */}
-
           <View style={style.bottombox}>
             <LinearGradient
               colors={[colors.mainThemeColor2, colors.mainThemeColor1]}
@@ -459,7 +411,6 @@ function LiveMapTracking(props) {
                 </Text>
                 <Text style={style.secondboxtext11}>{__("TODAY'S ODO")}</Text>
               </View>
-
               <TouchableOpacity
                 style={{width: '50%'}}
                 onPress={() => {
@@ -485,13 +436,6 @@ function LiveMapTracking(props) {
           {activeImg ? (
             <MapIconList handlePress={iconPress} details={details} />
           ) : null}
-
-          {/* <TouchableOpacity
-            style={{position: 'absolute', bottom: 200}}
-            onPress={() => setIsActiveImg(!isActiveImg)}>
-            <Image source={image.mapPaper} style={style.mapPaper} />
-          </TouchableOpacity> */}
-
           {activeImg
             ? data1.map((item, index) => {
                 return (
@@ -510,106 +454,6 @@ function LiveMapTracking(props) {
                 );
               })
             : null}
-
-          {/* modal2 */}
-          {/* <View
-            style={{
-              position: 'absolute',
-              top: 18,
-              flexDirection: 'row',
-              width: '100%',
-              // alignItems: 'center',
-              justifyContent: 'space-around',
-            }}>
-            <View
-              style={{
-                width: '10%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={image.leftArrowblack}
-                style={{width: 30, height: 18}}
-              />
-            </View>
-            <LinearGradient
-              colors={[colors.mainThemeColor3, colors.mainThemeColor4]}
-              start={{x: 1.3, y: 0}}
-              end={{x: 0, y: 0}}
-              locations={[0, 0.9]}
-              style={{
-                borderRadius: 15,
-                width: '65%',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingHorizontal: 10,
-                  paddingVertical: 8,
-                  width: '100%',
-                  justifyContent: 'space-between',
-                }}>
-                <View
-                  style={{
-                    width: '15%',
-                    alignItems: 'center',
-                  }}>
-                  <Image
-                    source={image.carGreenUp}
-                    style={{width: 20, height: 40}}
-                  />
-                </View>
-                <View
-                  style={{
-                    // marginLeft: 25,
-                    width: '70%',
-                    // marginLeft:'auto'
-                    // marginHorizontal: 20
-                  }}>
-                  <Text style={style.firstboxtext1}>MH12 RN 0790</Text>
-                  <Text style={style.firstboxtext2}>
-                    {__(
-                      '177 New Apollo Indl Estate Mogra Lane Andheri Mumbai,Bharuch,400069,India',
-                    )}
-                  </Text>
-
-                  <View
-                    style={{
-                      backgroundColor: '#24A520',
-                      padding: 9,
-                      flexDirection: 'row',
-                      width: '66%',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      borderRadius: 6,
-                    }}>
-                    <Icon name="call" color="#fff" />
-                    <Text style={{color: '#fff'}}>Call Driver</Text>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    width: '15%',
-                  }}>
-                  <Image
-                    source={image.refresh}
-                    style={{width: 25, height: 25}}
-                  />
-                </View>
-              </View>
-            </LinearGradient>
-            <TouchableOpacity
-              style={style.dashimgbox}
-              onPress={() => setActiveImg(!activeImg)}>
-              <Image
-                source={image.dashboardcolor}
-                style={{width: 44, height: 44}}
-              />
-            </TouchableOpacity>
-          </View> */}
-
-          {/*  */}
           <EngineStopPopup
             visible={modal}
             setVisible={setModal}

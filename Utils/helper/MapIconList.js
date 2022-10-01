@@ -55,7 +55,7 @@ function MapIconList(props) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Image source={item.imgUrl} style={{width: 65, height: 65}} />
+          <Image source={item.imgUrl} style={{width: 50, height: 50}} />
         </TouchableOpacity>
         {!props.k ? (
           <EngineStopPopup

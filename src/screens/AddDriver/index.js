@@ -19,7 +19,6 @@ import Storage from '../../../Utils/Storage';
 import {useNavigation} from '@react-navigation/native';
 
 const AddDriver = props => {
-  console.log('this is props', props.details);
   const IMEI = props?.details?.imei;
   const navigation = useNavigation();
   const [number, setNumber] = useState('');
@@ -67,6 +66,7 @@ const AddDriver = props => {
   };
 
   const getDetail = async () => {
+    console.log('first');
     const succcess = await Storage.getLoginDetail('login_detail');
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
@@ -74,14 +74,15 @@ const AddDriver = props => {
       `getDriverDetails/${username}/${encodedPassWord}`,
     );
     const driverDetails = response.data.driverDetails;
-    const data = driverDetails?.filter((el)=>{
-      return (el.imei == IMEI)
-    })
-    setName(data[0]?.driverName)
-    setNumber(data[0]?.mobilenumber)
-    console.log('..........>>>>>', data)
-}
-useEffect(()=>{getDetail()},[props])
+    const data = driverDetails?.filter(el => {
+      return el.imei == IMEI;
+    });
+    setName(data[0]?.driverName);
+    setNumber(data[0]?.mobilenumber);
+  };
+  useEffect(() => {
+    props.visible && getDetail();
+  }, [props.visible]);
 
   return (
     <>
@@ -95,17 +96,7 @@ useEffect(()=>{getDetail()},[props])
             colors={[colors.Modalcolor1, colors.white]}
             style={styles.modalBody}>
             <Image source={image.bigtastdriver} style={styles.modaldrager} />
-            <View
-              style={{
-                heigth: 66,
-                backgroundColor: colors.white,
-                marginTop: 108,
-                width: '92%',
-                borderRadius: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 15,
-              }}>
+            <View style={styles.box1}>
               <Image
                 source={image.taxtDriver}
                 style={{height: 17, width: 17, marginRight: 12}}
@@ -117,17 +108,7 @@ useEffect(()=>{getDetail()},[props])
                 onChangeText={newText => setName(newText)}
               />
             </View>
-            <View
-              style={{
-                heigth: 66,
-                backgroundColor: colors.white,
-                marginTop: 10,
-                width: '92%',
-                borderRadius: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 15,
-              }}>
+            <View style={styles.box2}>
               <Image source={image.greyCall} style={{height: 17, width: 17}} />
               {/* <TouchableOpacity
                 style={{flexDirection: 'row', alignItems: 'center'}}>

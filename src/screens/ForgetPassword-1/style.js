@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
   },
   loginButton: {
-    marginVertical:20,
+    marginVertical: 20,
     paddingVertical: 15,
     width: '88%',
     alignSelf: 'center',
@@ -77,5 +77,42 @@ const styles = StyleSheet.create({
     fontSize: Size.extraLarge,
     fontWeight: 'bold',
   },
+  linearGrad: {
+    padding: 24,
+    width: '100%',
+    height: '100%',
+  },
+  selectorCont: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  selectorBox: {paddingVertical: 10, alignItems: 'center'},
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    paddingHorizontal: 18,
+    justifyContent: 'space-around',
+  },
+  inputTxt: {
+    color: colors.black,
+    fontSize: Size.medium,
+    marginRight: 5,
+    height: 40,
+  },
+  arrowIcon: {
+    color: '#47BC30',
+    fontSize: 16,
+  },
+  checkBox: {
+    justifyContent: 'flex-end',
+    marginLeft: 'auto',
+    flexDirection: 'row',
+    marginTop: 5,
+    // paddingHorizontal:
+  },
+  passText: {marginLeft: 5, color: colors.white},
 });
 export default styles;
