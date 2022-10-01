@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "277888074722",
+    "project_id": "vikasi-9d6db",
+    "storage_bucket": "vikasi-9d6db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277888074722:android:c36ae53550a092323aafbb",
+        "android_client_info": {
+          "package_name": "com.vikasi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "277888074722-e3nk7i12gj91dt5d802h0a09tos1vrgi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMF8H_iMU7ICkY9ySkhrMVWhK43urC1So"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "277888074722-e3nk7i12gj91dt5d802h0a09tos1vrgi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

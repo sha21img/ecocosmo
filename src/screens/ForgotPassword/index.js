@@ -32,6 +32,7 @@ const ForgotPassword = props => {
     if (response.data.message.message === 'success') {
       props.navigation.navigate('ForgotPassword-1', {
         companyName: props.route.params.companyName,
+        username: email,
       });
       setLoading(false);
     } else {
@@ -71,30 +72,14 @@ const ForgotPassword = props => {
                 setLanguage(option.label);
                 setDefaultLocale(option.label);
               }}>
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  backgroundColor: '#fff',
-                  borderRadius: 30,
-                  paddingHorizontal: 18,
-                  justifyContent: 'space-around',
-                }}>
+              <TouchableOpacity style={styles.changeLngBox}>
                 <TextInput
-                  style={{
-                    color: colors.black,
-                    fontSize: Size.medium,
-                    marginRight: 5,
-                    height: 40,
-                  }}
+                  style={styles.changeLngTxt}
                   editable={false}
                   value={changeLanguage(language)}
                 />
                 <MaterialIcons
-                  style={{
-                    color: '#47BC30',
-                    fontSize: 16,
-                  }}
+                  style={styles.arrowIcon}
                   name={'keyboard-arrow-down'}
                 />
               </TouchableOpacity>

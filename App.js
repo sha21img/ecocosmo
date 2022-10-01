@@ -6,6 +6,7 @@ import Login from './src/screens/Login';
 import Splash from './src/screens/Splash';
 import SplashNew from './src/screens/SplashNew';
 import HomeStack from './src/screens/HomeStack';
+import MainHome from './src/screens/Home/MainHome';
 import ForgotPassword from './src/screens/ForgotPassword';
 import NearbyPlaces from './src/screens/NearbyPlaces';
 import VehicleMenu from './src/screens/VehicleMenu';
@@ -39,6 +40,11 @@ import {LogBox} from 'react-native';
 import {axiosGetData} from './Utils/ApiController';
 import Reports from './src/screens/Reports';
 import {baseUrl} from './Utils/ApiController';
+import {logout} from './Utils/helper/logout';
+import {
+  requestUserPermission,
+  notificationListeners,
+} from './Utils/helper/NotificationHelper';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -63,11 +69,6 @@ const permanentRoutes = [
     icon: image.callIcon,
     route: 'ContactUs',
   },
-  {
-    label: 'Map History',
-    icon: image.mapIcon,
-    route: 'MapHistory',
-  },
 ];
 const Routes = [
   {
@@ -79,6 +80,12 @@ const Routes = [
     label: 'Group Live Tracking',
     icon: image.mapIcon,
     route: 'GroupMapTracking',
+  },
+
+  {
+    label: 'Map History',
+    icon: image.mapIcon,
+    route: 'MapHistory',
   },
   {
     label: 'Alerts',
@@ -102,7 +109,7 @@ const DrawerContent = props => {
   };
   return (
     <>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
         <LinearGradient
           colors={[colors.mainThemeColor3, colors.mainThemeColor1]}
           style={{flex: 1}}>
@@ -147,11 +154,15 @@ const DrawerContent = props => {
                     alignItems: 'center',
                   }}
                   onPress={() => {
-                    if (el.route == 'GroupMapTracking') {
-                      props.navigation.navigate('GroupMapTracking');
+                    if (el.route !== 'HomeStack') {
+                      props.navigation.navigate(el.route, {
+                        details: {imei: undefined},
+                        imei: undefined,
+                      });
                     } else {
                       props.navigation.navigate('HomeStack', {
                         screen: el.route,
+                        details: {imei: undefined},
                       });
                     }
                   }}>
@@ -178,7 +189,11 @@ const DrawerContent = props => {
                     paddingVertical: 5,
                     alignItems: 'center',
                   }}
-                  onPress={() => props.navigation.navigate(el.route)}>
+                  onPress={() =>
+                    props.navigation.navigate(el.route, {
+                      details: {imei: undefined},
+                    })
+                  }>
                   <Image source={el.icon} style={{height: 40, width: 40}} />
                   <Text
                     style={{
@@ -191,36 +206,31 @@ const DrawerContent = props => {
                 </TouchableOpacity>
               );
             })}
-            <TouchableOpacity
-              onPress={async () => {
-                await Storage.clearToken();
-                setToken(null);
-              }}>
-              <LinearGradient
-                colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
-                start={{x: 0, y: 0.5}}
-                end={{x: 1, y: 0.5}}
-                locations={[0.5, 1.5]}
-                style={{
-                  marginTop: 61,
-                  height: 56,
-                  width: '95%',
-                  alignSelf: 'center',
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: 160,
-                }}>
-                <Text
-                  style={{
-                    color: colors.white,
-                    fontSize: Size.large,
-                  }}>
-                  {__('Logout')}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
           </View>
+          <TouchableOpacity onPress={() => logout(setToken)}>
+            <LinearGradient
+              colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
+              start={{x: 0, y: 0.5}}
+              end={{x: 1, y: 0.5}}
+              locations={[0.5, 1.5]}
+              style={{
+                paddingVertical: 15,
+                width: '95%',
+                alignSelf: 'center',
+                borderRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 160,
+              }}>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontSize: Size.large,
+                }}>
+                {__('Logout')}
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </LinearGradient>
       </ScrollView>
     </>
@@ -247,6 +257,7 @@ const MainScreen = props => {
         }}>
         <Drawer.Screen name="HomeStack" component={HomeStack} />
         <Drawer.Screen name="Alerts" component={Alerts} />
+        <Drawer.Screen name="AlertSetting" component={AlertSetting} />
         <Drawer.Screen name="AboutUs" component={AboutUs} />
         <Drawer.Screen name="Renewal" component={Renewal} />
         <Drawer.Screen name="ContactUs" component={ContactUs} />
@@ -254,6 +265,11 @@ const MainScreen = props => {
         <Drawer.Screen name="DriverBehaviour" component={DriverBehaviour} />
         <Drawer.Screen name="GroupMapTracking" component={GroupMapTracking} />
         <Drawer.Screen name="MapHistory" component={MapHistory} />
+        <Stack.Screen
+          name="MainHome"
+          component={MainHome}
+          options={{headerShown: false}}
+        />
       </Drawer.Navigator>
     </>
   );
@@ -323,9 +339,12 @@ const App = () => {
   };
   useEffect(() => {
     LogBox.ignoreAllLogs();
-    changeLang();
+    LogBox.ignoreLogs(['Require cycle: node_modules/victory']);
 
+    changeLang();
     initializeApp();
+    requestUserPermission();
+    notificationListeners();
   }, []);
 
   if (isLoading == true) {
@@ -384,6 +403,7 @@ const App = () => {
                     component={ChatDetails}
                     options={{headerShown: false}}
                   />
+
                   <Stack.Screen
                     name="Reports"
                     component={Reports}
@@ -438,6 +458,11 @@ const App = () => {
                   <Stack.Screen
                     name="Nearby"
                     component={Nearby}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="MainHome"
+                    component={MainHome}
                     options={{headerShown: false}}
                   />
                 </>

@@ -11,13 +11,16 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Storage from '../../../Utils/Storage';
 import {AuthContext} from '../../../App';
 import {axiosGetData} from '../../../Utils/ApiController';
+import {logout} from '../../../Utils/helper/logout';
 
 function Setting({navigation}) {
   const [Ison, setIson] = useState(true);
   const {setToken} = React.useContext(AuthContext);
   const [notificationMessage, setNotificationMessage] = useState('');
+  const [loginDetails, setLoginDetails] = useState();
   const getNotification = async () => {
     const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const response = await axiosGetData(
@@ -27,7 +30,7 @@ function Setting({navigation}) {
   };
   useEffect(() => {
     getNotification();
-  });
+  }, []);
   const sendNotification = async value => {
     setIson(!Ison);
     let number;
@@ -37,7 +40,6 @@ function Setting({navigation}) {
       number = 1;
     }
     const succcess = await Storage.getLoginDetail('login_detail');
-
     let username = succcess.accountId;
     let encodedPassWord = succcess.password;
     const response = await axiosGetData(
@@ -63,6 +65,12 @@ function Setting({navigation}) {
         </View>
       </View>
       <TouchableOpacity
+        style={
+          loginDetails?.accountName == 'demo101'
+            ? {backgroundColor: 'grey'}
+            : {backgroundColor: 'transparent'}
+        }
+        disabled={loginDetails?.accountName == 'demo101' ? true : false}
         onPress={() => {
           navigation.navigate('ChangePassword');
         }}>
@@ -119,11 +127,7 @@ function Setting({navigation}) {
           }}
         />
       </View>
-      <TouchableOpacity
-        onPress={async () => {
-          await Storage.clearToken();
-          setToken(null);
-        }}>
+      <TouchableOpacity onPress={() => logout(setToken)}>
         <LinearGradient
           colors={[colors.subGradientcolour1, colors.subGradientcolour2]}
           start={{x: 0, y: 0.5}}

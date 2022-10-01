@@ -55,12 +55,7 @@ const EngineStopPopup = props => {
                 : __('Do you want to Stop vehicle?')}
             </Text>
             <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '77%',
-                marginTop: 25,
-              }}>
+              style={styles.featureBox}>
               <TouchableOpacity
                 onPress={() => props.setVisible(false)}
                 disabled={props.details?.features & (16 != 16) ? true : false}
@@ -80,13 +75,7 @@ const EngineStopPopup = props => {
                 disabled={props.details?.features & (16 != 16) ? true : false}
                 style={styles.loginButton}>
                 <LinearGradient
-                  style={{
-                    width: '100%',
-                    borderRadius: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    paddingVertical: 20,
-                  }}
+                  style={styles.linearGrad}
                   colors={[
                     props.details?.features & (16 != 16)
                       ? 'grey'

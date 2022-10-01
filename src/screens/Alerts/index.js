@@ -30,6 +30,8 @@ const Alerts = props => {
   const [data, setdata] = useState([]);
   const [filter, setFilter] = useState([]);
   const [imei, setImei] = useState('');
+  const [isActive, setIsActive] = useState({});
+  const [loginDetails, setLoginDetails] = useState();
   React.useEffect(() => {
     getImei();
   }, []);
@@ -37,6 +39,9 @@ const Alerts = props => {
   const getImei = async () => {
     const data = await Storage.getVehicleDetail('vehicle_detail');
     setdata(data);
+    const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
+    Select(data[0].deviceId, data[0].imei);
   };
   const focus = useIsFocused();
   useEffect(() => {
@@ -62,6 +67,7 @@ const Alerts = props => {
   };
 
   const Select = async (data, imei) => {
+    setIson(false);
     setSelected(data);
     setLoading(true);
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -81,7 +87,7 @@ const Alerts = props => {
       console.log('selecting for imei', response.data.alert_details);
       setalertResponse(response?.data?.alert_details);
       setLoading(false);
-      setIson(!Ison);
+      setIson(true);
       setImei(imei);
     }
     setLoading(false);
@@ -99,22 +105,9 @@ const Alerts = props => {
               <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
                 <Image source={image.drawer} style={styles.dashimg} />
               </TouchableOpacity>
-              <Text
-                style={{
-                  fontSize: Size.large,
-                  color: colors.white,
-                  paddingHorizontal: 10,
-                }}>
-                {__('Alerts')}
-              </Text>
+              <Text style={styles.alertText}>{__('Alerts')}</Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '50%',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
+            <View style={styles.shareText}>
               <Entypo
                 style={{
                   color: colors.white,
@@ -128,12 +121,15 @@ const Alerts = props => {
               />
             </View>
           </View>
-          <TouchableOpacity style={styles.textinputbox}>
+          <View style={styles.textinputbox}>
             <SelectDropdown
               buttonStyle={{
                 width: '100%',
                 borderRadius: 7,
+                backgroundColor:
+                  loginDetails?.accountName == 'demo101' ? 'grey' : 'white',
               }}
+              disabled={loginDetails?.accountName == 'demo101' ? true : false}
               data={data}
               defaultButtonText={selected}
               onSelect={(selectedItem, index) => {
@@ -159,12 +155,16 @@ const Alerts = props => {
                 );
               }}
             />
-          </TouchableOpacity>
+          </View>
         </LinearGradient>
-        <View style={styles.box1}>
+        <View
+          style={
+            loginDetails?.accountName == 'demo101' ? styles.box11 : styles.box1
+          }>
           <Text style={styles.box1text}>{__('Alert Setting')}</Text>
           <ToggleSwitch
             isOn={Ison}
+            disabled={loginDetails?.accountName == 'demo101' ? true : false}
             onColor={colors.toggleColoron}
             offColor={colors.toggleColorOff}
             size="large"
@@ -172,7 +172,7 @@ const Alerts = props => {
           />
         </View>
         {alertDataResponse?.length > 0 ? (
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             {loading ? (
               <ActivityIndicator color={colors.black} />
             ) : (
@@ -182,13 +182,23 @@ const Alerts = props => {
                       return (
                         <>
                           <TouchableOpacity
+                            // loginDetails?.accountName == 'demo101' ? 'grey' : 'white',
+                            disabled={
+                              loginDetails?.accountName == 'demo101'
+                                ? true
+                                : false
+                            }
                             onPress={() =>
                               props.navigation.navigate('AlertSetting', {
                                 details: el,
                               })
                             }
                             key={el.id}
-                            style={styles.box2}>
+                            style={
+                              loginDetails?.accountName == 'demo101'
+                                ? styles.box22
+                                : styles.box2
+                            }>
                             <Text
                               style={{
                                 fontSize: Size.large,
@@ -233,3 +243,127 @@ const Alerts = props => {
   );
 };
 export default Alerts;
+
+// <MapView
+//                 // minZoomLevel={15}
+//                 pitchEnabled={false}
+//                 style={{
+//                   width: Dimensions.get('window').width,
+//                   height: Dimensions.get('window').height,
+//                 }}
+//                 ref={mapRef}
+//                 caheEnabled
+//                 region={{
+//                   latitude: parseFloat(data[0]?.lat),
+//                   longitude: parseFloat(data[0]?.lng),
+//                   latitudeDelta: LATITUDE_DELTA,
+//                   longitudeDelta: LONGITUDE_DELTA,
+//                 }}>
+//                 {data
+//                   ?.filter(item => {
+//                     console.log('5555555555555555555555555555555555555', item);
+//                     item.stoppage;
+//                   })
+//                   .map((coordinate, index) => {
+//                     console.log(
+//                       'ppppppppppppppppppppppppppppppppppppp',
+//                       coordinate,
+//                     );
+//                     return (
+//                       <>
+//                         <MarkerAnimated
+//                           key={index}
+//                           coordinate={{
+//                             latitude: parseFloat(coordinate.lat),
+//                             longitude: parseFloat(coordinate.lng),
+//                           }}>
+//                           <Image
+//                             resizeMode="contain"
+//                             source={image.parkingPoint}
+//                             style={{
+//                               height: 50,
+//                               width: 50,
+//                             }}
+//                           />
+//                           <Callout tooltip>
+//                             <LinearGradient
+//                               colors={[
+//                                 colors.mainThemeColor3,
+//                                 colors.mainThemeColor4,
+//                               ]}
+//                               start={{x: 1.3, y: 0}}
+//                               end={{x: 0, y: 0}}
+//                               locations={[0, 0.9]}
+//                               style={style.firstbox}>
+//                               <View style={{paddingBottom: 5}}>
+//                                 <Text style={style.firstboxtext1}>
+//                                   Address : {coordinate.stoppage.address}
+//                                 </Text>
+//                                 <Text style={style.firstboxtext1}>
+//                                   Stop Duration :{' '}
+//                                   {coordinate.stoppage.stopDuration}
+//                                 </Text>
+//                                 <Text style={style.firstboxtext1}>
+//                                   From : {coordinate.stoppage.stopTime1}
+//                                 </Text>
+//                                 <Text style={style.firstboxtext1}>
+//                                   To : {coordinate.stoppage.stopTime2}
+//                                 </Text>
+//                               </View>
+//                             </LinearGradient>
+//                           </Callout>
+//                         </MarkerAnimated>
+//                       </>
+//                     );
+//                   })}
+
+//                 <MarkerAnimated
+//                   ref={marker => {
+//                     // console.log('marker', marker);
+//                     setMyMarker(marker);
+//                   }}
+//                   style={{
+//                     transform: [
+//                       {
+//                         rotate: degree === null ? '0deg' : `${degree}deg`,
+//                       },
+//                     ],
+//                   }}
+//                   // key={index.toString()}
+//                   coordinate={{
+//                     latitude: parseFloat(data[0]?.lat),
+//                     longitude: parseFloat(data[0]?.lng),
+//                   }}>
+//                   {animate == 'stop' ? (
+//                     <Image
+//                       resizeMode="contain"
+//                       source={image.carGreenUp}
+//                       style={{
+//                         height: 30,
+//                         width: 30,
+//                       }}
+//                     />
+//                   ) : animate == 'start' ? (
+//                     <Image
+//                       resizeMode="contain"
+//                       source={image.carGreenUp}
+//                       style={{
+//                         height: 0,
+//                         width: 0,
+//                       }}
+//                     />
+//                   ) : null}
+//                 </MarkerAnimated>
+//                 <Polyline
+//                   strokeWidth={2}
+//                   strokeColor="red"
+//                   coordinates={[
+//                     ...data.map((value, index) => {
+//                       return {
+//                         latitude: parseFloat(value.lat),
+//                         longitude: parseFloat(value.lng),
+//                       };
+//                     }),
+//                   ]}
+//                 />
+//               </MapView>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -30,6 +30,7 @@ function Dashboard2({
   const [isData, isSetData] = useState({});
   const [visible, setVisible] = useState(false);
   const [mobileNumber, setMobileNumber] = useState([]);
+  const [loginDetails, setLoginDetails] = useState();
 
   const calling = async data => {
     const succcess = await Storage.getLoginDetail('login_detail');
@@ -52,7 +53,7 @@ function Dashboard2({
     const filterData = driverDetails?.filter(item => {
       return item.deviceId === number.deviceId;
     });
-    console.log('filterDatafilterDatafilterDatafilterData', filterData);
+    // console.log('filterDatafilterDatafilterDatafilterData', filterData);
     setMobileNumber(filterData[0]);
     setVisible(true);
     return filterData[0];
@@ -237,8 +238,8 @@ function Dashboard2({
                     style={{padding: 0.5}}></LinearGradient>
                 </>
               )}
-              {parseFloat(item.lastNoGpsSignalTime) >
-              parseFloat(item.validPacketTimeStamp) ? (
+              {parseFloat(item.validPacketTimeStamp) <
+              parseFloat(item.lastNoGpsSignalTime) ? (
                 <>
                   <View
                     style={{
@@ -247,7 +248,7 @@ function Dashboard2({
                       justifyContent: 'center',
                     }}>
                     <Image
-                      source={image.locationWhite}
+                      source={image.locationWhiteOff}
                       style={{width: 13, height: 18}}
                     />
                   </View>
@@ -264,7 +265,7 @@ function Dashboard2({
                       justifyContent: 'center',
                     }}>
                     <Image
-                      source={image.locationWhiteOff}
+                      source={image.locationWhite}
                       style={{width: 13, height: 18}}
                     />
                   </View>
@@ -322,8 +323,15 @@ function Dashboard2({
                 />
                 <Text style={styles.buttonText}> {__('Call')}</Text>
               </TouchableOpacity> */}
-
-              {isData?.mobilenumber != '' ? (
+              {loginDetails?.accountName == 'demo101' ? (
+                <View style={styles.disablebutton}>
+                  <Image
+                    source={image.callimg}
+                    style={{height: 15, width: 15, marginRight: 7}}
+                  />
+                  <Text style={styles.buttonText}>{__('Call')}</Text>
+                </View>
+              ) : isData?.mobilenumber != '' ? (
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
@@ -336,13 +344,13 @@ function Dashboard2({
                   <Text style={styles.buttonText}> {__('Call')}</Text>
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity style={styles.disablebutton}>
+                <View style={styles.disablebutton}>
                   <Image
                     source={image.callimg}
                     style={{height: 15, width: 15, marginRight: 7}}
                   />
                   <Text style={styles.buttonText}> {__('Call')}</Text>
-                </TouchableOpacity>
+                </View>
               )}
             </View>
           </View>
@@ -360,33 +368,30 @@ function Dashboard2({
       </TouchableOpacity>
     );
   };
+  const getUserDetails = async () => {
+    const succcess = await Storage.getLoginDetail('login_detail');
+    setLoginDetails(succcess);
+  };
+  useEffect(() => {
+    getUserDetails();
+  }, []);
   return (
     <>
-      {isShow ? (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <ActivityIndicator />
-        </View>
-      ) : (
-        <FlatList
-          data={details}
-          contentContainerStyle={{paddingBottom: 100}}
-          keyExtractor={({item, index}) => index}
-          showsVerticalScrollIndicator={false}
-          renderItem={item => renderItem(item)}
-          refreshControl={
-            <RefreshControl
-              enabled={true}
-              refreshing={isShow}
-              onRefresh={() => onRefreshPage(type, details, setIsShow)}
-            />
-          }
-        />
-      )}
+      <FlatList
+        data={details}
+        contentContainerStyle={{paddingBottom: 100}}
+        keyExtractor={({item, index}) => index}
+        showsVerticalScrollIndicator={false}
+        renderItem={item => renderItem(item)}
+        // refreshControl={
+        //   <RefreshControl
+        //     enabled={true}
+        //     refreshing={isShow}
+        //     onRefresh={() => onRefreshPage(type, details, setIsShow)}
+        //   />
+        // }
+      />
+
       <VehicleMenu
         mobileNumber={mobileNumber}
         visible={visible}

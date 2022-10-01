@@ -20,6 +20,7 @@ import {__} from '../../../Utils/Translation/translation';
 import {styles} from './style';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import messaging from '@react-native-firebase/messaging';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -37,6 +38,13 @@ function Notifications(props) {
   const [searched, setSearched] = useState('1');
 
   const GetNotification = async () => {
+
+    console.log('enter')
+    const fcmtoken = await messaging().getToken();
+    console.log("this is -=-=-=-= -= -= -= - =- =- =- - =- ", fcmtoken)
+    console.log('exit')
+
+
     // let accountid = 'GlobalCars';
     const succcess = await Storage.getLoginDetail('login_detail');
     const data = await Storage.getVehicleDetail('vehicle_detail');

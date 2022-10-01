@@ -81,5 +81,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 3,
   },
+  changeLngBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    paddingHorizontal: 18,
+    justifyContent: 'space-around',
+  },
+  changeLngTxt: {
+    color: colors.black,
+    fontSize: Size.medium,
+    marginRight: 5,
+    height: 40,
+  },
+  arrowIcon: {
+    color: '#47BC30',
+    fontSize: 16,
+  },
 });
 export default styles;

@@ -1,37 +1,41 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
   Image,
   TextInput,
   ScrollView,
+  Dimensions,
   TouchableOpacity,
 } from 'react-native';
 import {image} from '../../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
 import {__} from '../../../Utils/Translation/translation';
-import {VictoryPie, VictoryLegend} from 'victory-native';
+import {VictoryPie, VictoryLegend, VictoryLabel} from 'victory-native';
 import moment from 'moment';
-
+const screen = Dimensions.get('window');
 function DriverBehaviour(props) {
   const {details} = props.route.params;
-  console.log('detaaaaaaaaails', details.validPacketTimeStamp);
   const date = parseFloat(details.validPacketTimeStamp) + 19800;
   const filterDate = moment.unix(date).format('DD-MM-YYYY');
   const filterTime = moment.unix(date).format('hh:mm:ss');
 
   const calcu = perc => {
-    let TotalSpeed =
-      Number(details.speed0_to_20Counter) +
-      Number(details.speed20_to_40Counter) +
-      Number(details.speed40_to_60Counter) +
-      Number(details.speed60_to_80Counter);
+    const TotalCounter =
+      parseFloat(details.speed0_to_20Counter) +
+      parseFloat(details.speed20_to_40Counter) +
+      parseFloat(details.speed40_to_60Counter) +
+      parseFloat(details.speed60_to_80Counter) +
+      parseFloat(details.speed80_to_100Counter) +
+      parseFloat(details.speed100plusCounter);
     if (perc == 0) {
+      console.log('zero');
       return 0;
     } else {
-      let percentage = (perc / TotalSpeed) * 100;
-      return percentage.toFixed(1);
+      let percentage = (perc / TotalCounter) * 100;
+      console.log('percentagepercentage-=-=-=-=', percentage);
+      return parseFloat(`${percentage.toFixed(1)}`);
     }
   };
 
@@ -44,36 +48,77 @@ function DriverBehaviour(props) {
     }min`;
     return time;
   };
+
+  const driverBehaviourData = [
+    calcu(details?.speed0_to_20Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: calcu(details?.speed0_to_20Counter),
+          y: calcu(details?.speed0_to_20Counter),
+        },
+    calcu(details?.speed20_to_40Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: calcu(details?.speed20_to_40Counter),
+          y: calcu(details?.speed20_to_40Counter),
+        },
+    calcu(details?.speed40_to_60Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: calcu(details?.speed40_to_60Counter),
+          y: calcu(details?.speed40_to_60Counter),
+        },
+    calcu(details?.speed60_to_80Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: calcu(details?.speed60_to_80Counter),
+          y: calcu(details?.speed60_to_80Counter),
+        },
+    calcu(details?.speed80_to_100Counter) == 0
+      ? {x: null, y: null}
+      : {
+          x: calcu(details?.speed80_to_100Counter),
+          y: calcu(details?.speed80_to_100Counter),
+        },
+    calcu(details?.speed100plusCounter) == 0
+      ? {x: null, y: null}
+      : {
+          x: calcu(details?.speed100plusCounter),
+          y: calcu(details?.speed100plusCounter),
+        },
+  ];
+  const [pieRef, setPieRef] = useState({width: 0, height: 0});
+
   return (
     <>
       <LinearGradient
         colors={['#16BCD4', '#395DBF']}
         style={styles.mainContainer}>
-        <ScrollView>
-          <View style={styles.headerContainer}>
-            <View style={styles.headerDashboard}>
-              <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
-                <Image source={image.drawer} style={{height: 20, width: 23}} />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.dashboardText}
-                editable={false}
-                value={details.deviceId}
-              />
-            </View>
-            <View style={styles.alertContainer}>
-              <TouchableOpacity
-                onPress={() => props.navigation.navigate('Notifications')}>
-                <Image
-                  source={image.Notification1}
-                  style={{height: 30, width: 30, resizeMode: 'contain'}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image source={image.search} style={styles.searchIcon} />
-              </TouchableOpacity>
-            </View>
+        <View style={styles.headerContainer}>
+          <View style={styles.headerDashboard}>
+            <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+              <Image source={image.drawer} style={{height: 20, width: 23}} />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.dashboardText}
+              editable={false}
+              value={details.deviceId}
+            />
           </View>
+          <View style={styles.alertContainer}>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate('Notifications')}>
+              <Image
+                source={image.Notification1}
+                style={{height: 30, width: 30, resizeMode: 'contain'}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image source={image.search} style={styles.searchIcon} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <LinearGradient
             colors={['#BCE2FF', '#FFFFFF']}
             style={styles.card2Container}>
@@ -130,189 +175,103 @@ function DriverBehaviour(props) {
                 </View>
               </View>
             </View>
-            {/* {details.ignitionStatus == 'Off' ? ( */}
             <LinearGradient
               colors={['#3C6A74', '#5AB8B5']}
               start={{x: 0, y: 1}}
               end={{x: 1, y: 0}}
-              style={{
-                backgroundColor: 'red',
-                position: 'absolute',
-                padding: 10,
-                borderTopLeftRadius: 7,
-                borderTopRightRadius: 7,
-                bottom: -20,
-                left: 20,
-                minWidth: 175,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
+              style={styles.ignitionOffCont}>
+              <View style={styles.ignitionOffBox}>
                 <Image
                   source={image.chargePinOff}
                   style={{height: 20, width: 10}}
                 />
-                <Text style={{paddingLeft: 7, fontSize: 12, color: 'white'}}>
+                <Text style={styles.ignitionText}>
                   {__('Ignition Off')}: {getTime(details.todaysIdleTimeSeconds)}
                 </Text>
               </View>
             </LinearGradient>
-            {/* ) : ( */}
             <LinearGradient
               colors={['#3C6A74', '#5AB8B5']}
               start={{x: 0, y: 1}}
               end={{x: 1, y: 0}}
-              style={{
-                backgroundColor: 'red',
-                position: 'absolute',
-                padding: 10,
-                borderBottomLeftRadius: 7,
-                borderBottomRightRadius: 7,
-                bottom: -60,
-                minWidth: 175,
-                left: 20,
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
+              style={styles.linearGrad}>
+              <View style={styles.ignitionOnBox}>
                 <Image
                   source={image.chargePin}
                   style={{height: 20, width: 10}}
                 />
-                <Text style={{paddingLeft: 7, fontSize: 12, color: 'white'}}>
+                <Text style={styles.ignitionText}>
                   {__('Ignition On')}:{' '}
                   {getTime(details.todaysIgnitionOnTimeSeconds)}
                 </Text>
               </View>
             </LinearGradient>
-            {/* )} */}
           </LinearGradient>
-          <Text
-            style={{
-              alignSelf: 'center',
-              color: 'white',
-              marginTop: 60,
-              fontSize: 20,
-              fontWeight: 'bold',
-              paddingVertical: 10,
-            }}>
-            Speed Limit
-          </Text>
-          <View
-            style={{
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 10,
-              }}>
+          <Text style={styles.speedTxt}>Speed Limit</Text>
+          <View style={styles.startNumCont}>
+            <View style={styles.startNumBox}>
               <LinearGradient
                 colors={['#E6BB0D', '#D97400']}
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 4,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, paddingLeft: 15, color: 'white'}}>
-                0-20
-              </Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.startTxt}>0-20</Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 10,
-              }}>
+            <View style={styles.startNumBox}>
               <LinearGradient
                 colors={['#FF5050', '#FF5050']}
-                style={{
-                  width: 20,
-                  borderRadius: 4,
-                  height: 20,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, paddingLeft: 15, color: 'white'}}>
-                20-40
-              </Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>20-40</Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 10,
-              }}>
+            <View style={styles.startGrad}>
               <LinearGradient
                 colors={['#68B9FB', '#68B9FB']}
-                style={{
-                  width: 20,
-                  borderRadius: 4,
-                  height: 20,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, paddingLeft: 15, color: 'white'}}>
-                40-60
-              </Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>40-60</Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 10,
-              }}>
+            <View style={styles.startNumBox}>
               <LinearGradient
                 colors={['#FF50DC', '#3B63E2']}
-                style={{
-                  width: 20,
-                  borderRadius: 4,
-                  height: 20,
-                }}></LinearGradient>
-              <Text style={{fontSize: 16, paddingLeft: 15, color: 'white'}}>
-                60-80
-              </Text>
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>60-80</Text>
+            </View>
+            <View style={styles.startNumBox}>
+              <LinearGradient
+                colors={['pink', 'pink']}
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>80-100</Text>
+            </View>
+            <View style={styles.startNumBox}>
+              <LinearGradient
+                colors={['green', 'green']}
+                style={styles.startGrad}></LinearGradient>
+              <Text style={styles.txt}>100 +</Text>
             </View>
           </View>
-          <View>
+          <View
+            onLayout={event => {
+              var {x, y, width, height} = event.nativeEvent.layout;
+              setPieRef({height, width});
+            }}>
             <VictoryPie
               animate={{
                 duration: 1000,
                 easing: 'bounce',
               }}
-              // data={[
-              //   {y: 53, x: `${calcu(53)}%`},
-              //   {y: 23, x: `${calcu(23)}%`},
-              //   {y: 5, x: `${calcu(5)}%`},
-              //   {y: 3, x: `${calcu(3)}%`},
-              // ]}
-              data={[
-                {
-                  y: Number(details?.speed0_to_20Counter),
-                  x: `${calcu(details?.speed0_to_20Counter)}`,
-                },
-                {
-                  y: Number(details?.speed20_to_40Counter),
-                  x: `${calcu(details?.speed20_to_40Counter)}`,
-                },
-                {
-                  y: Number(details?.speed40_to_60Counter),
-                  x: `${calcu(details?.speed40_to_60Counter)}`,
-                },
-                {
-                  y: Number(details?.speed60_to_80Counter),
-                  x: `${calcu(details?.speed60_to_80Counter)}`,
-                },
+              data={driverBehaviourData}
+              colorScale={[
+                '#16BCD4',
+                '#E6BB0D',
+                '#FF5050',
+                '#E653DD',
+                'pink',
+                'green',
               ]}
-              colorScale={['#16BCD4', '#E6BB0D', '#FF5050', '#E653DD']}
+              // labels={d => d.y}
+
+              labelComponent={<VictoryLabel />}
+              // radius={({ datum }) => 50 + datum.y * 20}
               labelRadius={({innerRadius}) => innerRadius + 20}
-              radius={({datum}) => 80 + datum.y / 3}
+              radius={({datum}) => 80 + datum.y / 1.2}
               innerRadius={65}
-              height={450}
               style={{
                 labels: {
                   fill: 'white',
@@ -321,13 +280,14 @@ function DriverBehaviour(props) {
                 },
               }}
             />
+
             <View
               style={{
                 position: 'absolute',
                 height: 130,
                 width: 130,
-                top: 160,
-                left: 140,
+                top: pieRef.width / 2 - 65,
+                left: pieRef.width / 2 - 65,
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: 5,
@@ -350,21 +310,9 @@ function DriverBehaviour(props) {
            */}
           <LinearGradient
             colors={['#395DBF', '#16BCD4']}
-            style={{
-              paddingHorizontal: 20,
-              marginHorizontal: 40,
-              marginVertical: 20,
-              paddingVertical: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: '#16BCD4',
-            }}>
+            style={styles.liveTrackGrad}>
             <TouchableOpacity>
-              <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>
-                {__('Live Tracking')}
-              </Text>
+              <Text style={styles.liveTrackTxt}>{__('Live Tracking')}</Text>
             </TouchableOpacity>
           </LinearGradient>
         </ScrollView>

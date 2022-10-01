@@ -24,7 +24,7 @@ import Toast from 'react-native-simple-toast';
 import DatePicker from 'react-native-date-picker';
 
 const UrlTracking = props => {
-  console.log('this is props', props.route.params.details.imei);
+  const {deviceId} = props.route.params.details;
   const IMEI = props.route.params.details.imei;
   const [day, setday] = useState(null);
   const [discription, setDiscription] = useState('');
@@ -34,7 +34,7 @@ const UrlTracking = props => {
   const [cdate, setCdate] = useState('');
   const [ctime, setCtime] = useState('');
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState('All Vehicle');
+  const [selected, setSelected] = useState(deviceId || 'All Vehicle');
   const [data, setdata] = useState();
   const [imei, setImei] = useState(IMEI || '');
 

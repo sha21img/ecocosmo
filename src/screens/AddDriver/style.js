@@ -74,4 +74,23 @@ export const styles = StyleSheet.create({
     fontSize: Size.extraLarge,
     fontWeight: 'bold',
   },
+  box1:{
+    heigth: 66,
+    backgroundColor: colors.white,
+    marginTop: 108,
+    width: '92%',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+  },box2:{
+    heigth: 66,
+    backgroundColor: colors.white,
+    marginTop: 10,
+    width: '92%',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+  }
 });

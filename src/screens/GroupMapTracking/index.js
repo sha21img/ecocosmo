@@ -59,7 +59,7 @@ function GroupMapTracking(props) {
     const response = await axiosGetData(
       `vehicles/${username}/${encodedPassWord}/${id}`,
     );
-    const detail = response.data.vehicles;
+    const detail = response?.data?.vehicles;
     // console.log('GroupMapTracking', detail);
     setCoordinate(prev => {
       return {
@@ -148,6 +148,7 @@ function GroupMapTracking(props) {
             style={{
               flex: 1,
             }}
+            trackViewChanges={false}
             // zoomEnabled={true}
             // trackViewChanges={false}
             // scrollEnabled={false}
@@ -169,6 +170,7 @@ function GroupMapTracking(props) {
               });
               return (
                 <Marker
+                trackViewChanges={false}
                   // ref={markerRef}
                   //   key={index.toString()}
                   coordinate={{
@@ -180,7 +182,7 @@ function GroupMapTracking(props) {
                     source={{uri: item.equipmentIcon}}
                     style={{
                       height: 25,
-                      width: 70,
+                      width: 35,
                     }}
                   />
 

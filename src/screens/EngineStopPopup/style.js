@@ -29,4 +29,17 @@ export const styles = StyleSheet.create({
     fontSize: Size.extraLarge,
     fontWeight: 'bold',
   },
+  featureBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '77%',
+    marginTop: 25,
+  },
+  linearGrad: {
+    width: '100%',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
 });
